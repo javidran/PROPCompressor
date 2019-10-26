@@ -14,7 +14,7 @@ public class Main {
         ProcesoFichero comp;
         ProcesoFichero desc;
 
-        Algoritmos tipoCompresor = Algoritmos.LZSS;
+        Algoritmos tipoCompresor = Algoritmos.LZW;
 
         comp = new ProcesoComprimir(fileIn);
         comp.setTipoC(tipoCompresor);

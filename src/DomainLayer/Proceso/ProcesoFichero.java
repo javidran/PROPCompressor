@@ -23,7 +23,7 @@ public abstract class ProcesoFichero {
                 compresorDecompresor = JPEG.getInstance();
                 break;
             case LZW:
-                // TODO
+                compresorDecompresor = LZW.getInstance();
                 break;
             case LZSS:
                 compresorDecompresor = LZSS.getInstance();

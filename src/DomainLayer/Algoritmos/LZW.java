@@ -1,4 +1,4 @@
-package domainLayer.algoritmos;
+package DomainLayer.Algoritmos;
 
 import java.io.*;
 import java.util.*;
@@ -96,20 +96,23 @@ public class LZW implements CompresorDecompresor {
         //File fileOut = new File(System.getProperty("user.home")+"\\Desktop\\PROProject"+input.getName().replace(".txt", ".lzwc"));
         File fileOut = new File(System.getProperty("user.home")+"\\Desktop\\PROProject"+"output.txt");
 
-        String archivo = input.getPath();
+        //String archivo = input.getPath();
         String datos = "";
         List<Integer> cadena = new ArrayList<Integer>();
-        try{
-            InputStream is = new FileInputStream(archivo);
-            byte[] buffer = new byte[is.available()];
-            is.read(buffer);
-            datos = new String(buffer);
-            is.close();
+
+        BufferedReader is = null;
+        try {
+            is = new BufferedReader(new FileReader(input));
+            int i;
+            while ((i=is.read())!=-1) {
+                cadena.add(i);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        catch(IOException e)
-        {
-            System.out.println("Error E: "+e);
-        }
+
         for (char a : datos.toCharArray()) {
             cadena.add((int) a);
         }
