@@ -49,6 +49,7 @@ public class ProcesoFichero {
 
     public void setTipoC(Algoritmos tipoC) {
         this.tipoC = tipoC;
+        asignarAlgoritmo();
     }
 
     public File getFicheroIn() {

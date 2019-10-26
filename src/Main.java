@@ -12,16 +12,16 @@ public class Main {
         ProcesoComprimir comp;
         ProcesoDescomprimir desc;
 
-        Algoritmos tipoCompresor = Algoritmos.JPEG;
+        Algoritmos tipoCompresor = Algoritmos.LZSS;
 
         comp = new ProcesoComprimir(fileIn);
         comp.setTipoC(tipoCompresor);
         comp.ejecutarProceso();
+        if(comp.isProcesado()) System.out.println("El archivo se ha comprimido correctamente");
         desc = new ProcesoDescomprimir(comp.getFicheroOut());
         desc.setTipoC(tipoCompresor);
         desc.ejecutarProceso();
-        if(desc.isProcesado()) System.out.println("El archivo se ha comprimido y descomprimido correctamente");
-
+        if(desc.isProcesado()) System.out.println("El archivo se ha descomprimido correctamente");
     }
 }
 
