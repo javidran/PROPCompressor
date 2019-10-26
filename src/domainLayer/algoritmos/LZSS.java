@@ -157,7 +157,7 @@ public class LZSS implements CompresorDecompresor {
 
             int index = 0;
             int n = data.length();
-            for (int i = 0; i < n; i++) {// for every compressed data
+            for (int i = 0; i < n-1; i++) {// for every compressed data
                 if (data.charAt(i) == '0') {// if it's not compressed
                     result.append(data.charAt(++i));// just add the following char to the output
                 } else /* if (data.charAt(i) == '1') */ {// if there is a mcatch, get the length and offset
