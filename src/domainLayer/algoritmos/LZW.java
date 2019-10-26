@@ -19,13 +19,12 @@ public class LZW implements CompresorDecompresor {
     }
 
     @Override
-    public int comprimir(File input, File output) {
-        return 0;
+    public OutputAlgoritmo comprimir(File input) {
+        return null;
     }
 
     @Override
-    public int descomprimir(File input, File output) {
-        return 0;
+    public OutputAlgoritmo descomprimir(File input) {
+        return null;
     }
-
 }
