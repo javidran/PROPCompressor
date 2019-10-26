@@ -1,33 +1,29 @@
-import domainLayer.algoritmos.*;
+// Creado por Joan Gamez Rodriguez
+import DomainLayer.Algoritmos.*;
+import DomainLayer.Proceso.ProcesoComprimir;
+import DomainLayer.Proceso.ProcesoDescomprimir;
+import DomainLayer.Proceso.ProcesoFichero;
 
 import java.io.File;
 
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         File fileIn = new File(args[0]);
         File fileComp = null, fileOut = null;
-        OutputAlgoritmo comp;
-        OutputAlgoritmo desc;
-        TipoCompresor tipoCompresor = TipoCompresor.LZW;
-        switch (tipoCompresor) {
-            case JPEG:
-                CompresorDecompresor compresorDecompresor = JPEG.getInstance();
-                comp = compresorDecompresor.comprimir(fileIn);
-                desc = compresorDecompresor.descomprimir(comp.outputFile);
-                System.out.println("Compression time: " + comp.tiempo + "\nDecompression time: " + desc.tiempo + "\n");
-                break;
-            case LZSS:
-                CompresorDecompresor compresordecompresor = LZSS.getInstance();
-                comp = compresordecompresor.comprimir(fileIn);
-                desc = compresordecompresor.descomprimir(comp.outputFile);
-                System.out.println("Compression time: " + comp.tiempo + "\nDecompression time: " + desc.tiempo + "\n");
-            case LZW:
-                CompresorDecompresor compresorecompresor = LZW.getInstance();
-                comp = compresorecompresor.comprimir(fileIn);
-                desc = compresorecompresor.descomprimir(comp.outputFile);
-                System.out.println("Compression time: " + comp.tiempo + "\nDecompression time: " + desc.tiempo + "\n");
-        }
+        ProcesoFichero comp;
+        ProcesoFichero desc;
+
+        Algoritmos tipoCompresor = Algoritmos.LZSS;
+
+        comp = new ProcesoComprimir(fileIn);
+        comp.setTipoC(tipoCompresor);
+        comp.ejecutarProceso();
+        if(comp.isProcesado()) System.out.println("El archivo se ha comprimido correctamente");
+        desc = new ProcesoDescomprimir(comp.getFicheroOut());
+        desc.setTipoC(tipoCompresor);
+        desc.ejecutarProceso();
+        if(desc.isProcesado()) System.out.println("El archivo se ha descomprimido correctamente");
     }
 }
 

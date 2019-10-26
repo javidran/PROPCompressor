@@ -1,7 +1,7 @@
-package domainLayer.algoritmos;
+// Creado por Javier Cabrera Rodriguez
+package DomainLayer.Algoritmos;
 
 import java.io.File;
-import java.io.IOException;
 
 public interface CompresorDecompresor {
 
