@@ -9,7 +9,7 @@ public class Main {
         File fileComp = null, fileOut = null;
         OutputAlgoritmo comp;
         OutputAlgoritmo desc;
-        TipoCompresor tipoCompresor = TipoCompresor.LZSS;
+        TipoCompresor tipoCompresor = TipoCompresor.LZW;
         switch (tipoCompresor) {
             case JPEG:
                 CompresorDecompresor compresorDecompresor = JPEG.getInstance();
@@ -22,6 +22,12 @@ public class Main {
                 comp = compresordecompresor.comprimir(fileIn);
                 desc = compresordecompresor.descomprimir(comp.outputFile);
                 System.out.println("Compression time: " + comp.tiempo + "\nDecompression time: " + desc.tiempo + "\n");
+            case LZW:
+                CompresorDecompresor compresorecompresor = LZW.getInstance();
+                comp = compresorecompresor.comprimir(fileIn);
+                //desc = compresorecompresor.descomprimir(comp.outputFile);
+                //System.out.println("Compression time: " + comp.tiempo + "\nDecompression time: " + desc.tiempo + "\n");
+                System.out.println("Compression time: " + comp.tiempo + "\n");
         }
     }
 }
