@@ -1,28 +1,27 @@
-import domainLayer.algoritmos.*;
+import DomainLayer.Algoritmos.*;
+import DomainLayer.Proceso.ProcesoComprimir;
+import DomainLayer.Proceso.ProcesoDescomprimir;
 
 import java.io.File;
 
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         File fileIn = new File(args[0]);
         File fileComp = null, fileOut = null;
-        OutputAlgoritmo comp;
-        OutputAlgoritmo desc;
-        TipoCompresor tipoCompresor = TipoCompresor.LZSS;
-        switch (tipoCompresor) {
-            case JPEG:
-                CompresorDecompresor compresorDecompresor = JPEG.getInstance();
-                comp = compresorDecompresor.comprimir(fileIn);
-                desc = compresorDecompresor.descomprimir(comp.outputFile);
-                System.out.println("Compression time: " + comp.tiempo + "\nDecompression time: " + desc.tiempo + "\n");
-                break;
-            case LZSS:
-                CompresorDecompresor compresordecompresor = LZSS.getInstance();
-                comp = compresordecompresor.comprimir(fileIn);
-                desc = compresordecompresor.descomprimir(comp.outputFile);
-                System.out.println("Compression time: " + comp.tiempo + "\nDecompression time: " + desc.tiempo + "\n");
-        }
+        ProcesoComprimir comp;
+        ProcesoDescomprimir desc;
+
+        Algoritmos tipoCompresor = Algoritmos.JPEG;
+
+        comp = new ProcesoComprimir(fileIn);
+        comp.setTipoC(tipoCompresor);
+        comp.ejecutarProceso();
+        desc = new ProcesoDescomprimir(comp.getFicheroOut());
+        desc.setTipoC(tipoCompresor);
+        desc.ejecutarProceso();
+        if(desc.isProcesado()) System.out.println("El archivo se ha comprimido y descomprimido correctamente");
+
     }
 }
 

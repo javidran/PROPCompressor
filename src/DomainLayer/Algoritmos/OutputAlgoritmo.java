@@ -1,4 +1,4 @@
-package domainLayer.algoritmos;
+package DomainLayer.Algoritmos;
 
 import java.io.File;
 
