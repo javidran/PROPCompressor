@@ -25,6 +25,15 @@ public class ProcesoDescomprimir extends ProcesoFichero {
         else if (ficheroIn.getAbsolutePath().endsWith(".imgc")) {
             return new Algoritmos[] {Algoritmos.JPEG};
         }
+        else if (ficheroIn.getAbsolutePath().endsWith(".lzss") ) {
+            return new Algoritmos[] {Algoritmos.LZSS};
+        }
+        else if (ficheroIn.getAbsolutePath().endsWith(".lz78") ) {
+            return new Algoritmos[] {Algoritmos.LZ78};
+        }
+        else if (ficheroIn.getAbsolutePath().endsWith(".lzw") ) {
+            return new Algoritmos[] {Algoritmos.LZW};
+        }
         return null;
     }
 

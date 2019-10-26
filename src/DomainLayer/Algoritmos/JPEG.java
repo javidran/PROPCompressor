@@ -77,7 +77,7 @@ public class JPEG implements CompresorDecompresor {
 
     public OutputAlgoritmo comprimir(File fileIn) { //pre: fileIn is .ppm P6, each of the three header parameters (magicNumber, dimensions, maxRGBValue) is in a different line, comments are between parameters
         long startTime = System.nanoTime(); //starting time
-        File fileOut = new File(System.getProperty("user.home")+"\\Desktop\\"+fileIn.getName().replace(".ppm", ".imgc")); //custom output format THIS WILL BE TAKEN BY CONTROLLER
+        File fileOut = new File(fileIn.getAbsolutePath().replace(".ppm", "_comp.imgc")); //custom output format THIS WILL BE TAKEN BY CONTROLLER
         try {
             BufferedReader originalImage = new BufferedReader (new FileReader(fileIn)); //creation of buffered reader to read header
             int fileOffset = 0;
@@ -208,8 +208,7 @@ public class JPEG implements CompresorDecompresor {
 
     public OutputAlgoritmo descomprimir(File fileIn) { //pre: file is .imgc and it is a .ppm P6 compressed file
         long startTime = System.nanoTime(); //starting time
-        String fileName = fileIn.getName();
-        File fileOut = new File(System.getProperty("user.home")+"\\Desktop\\"+fileName.replace(".imgc", "_out.ppm")); //custom output format THIS WILL BE TAKEN BY CONTROLLER
+        File fileOut = new File(fileIn.getAbsolutePath().replace("_comp.imgc", "_out.ppm")); //custom output format THIS WILL BE TAKEN BY CONTROLLER
         try {
             BufferedReader originalImage = new BufferedReader (new FileReader(fileIn)); //creation of buffered reader
             String magicNumber = originalImage.readLine(); //read ppm magicNumber
