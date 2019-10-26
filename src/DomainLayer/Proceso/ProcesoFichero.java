@@ -4,7 +4,7 @@ import DomainLayer.Algoritmos.*;
 
 import java.io.File;
 
-public class ProcesoFichero {
+public abstract class ProcesoFichero {
     protected File ficheroIn;
     protected File ficheroOut;
     protected Algoritmos tipoC;
@@ -34,6 +34,10 @@ public class ProcesoFichero {
                 throw new EnumConstantNotPresentException(Algoritmos.class, "El tipo de compresor" + tipoC + "no existe");
         }
     }
+
+    public abstract void ejecutarProceso() throws Exception;
+
+    public abstract Algoritmos[] tiposPosibles();
 
     public boolean isProcesado() {
         return procesado;
