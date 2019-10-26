@@ -1,6 +1,8 @@
 package domainLayer.algoritmos;
 
+import java.io.*;
 import java.io.File;
+import java.nio.CharBuffer;
 
 public class LZSS implements CompresorDecompresor {
     private static LZSS instance = null;
@@ -19,7 +21,7 @@ public class LZSS implements CompresorDecompresor {
     }
 
     @Override
-    public int comprimir(File input, File output) {
+    public int comprimir(File input, File fileOut) {
         //gestiono el pasar de file a string
 
 
@@ -89,12 +91,56 @@ public class LZSS implements CompresorDecompresor {
         //return result.toString(); // lo convertimos a stirng en si
         long endTime = System.nanoTime();
         long total_time = endTime -startTime;
-        return (int)total_time;
+        String comprimido = result.toString();
+
+        BufferedWriter writer = new BufferedWriter(new FileWriter(fileOut));
+        writer.write(comprimido);
+        writer.close();
+
+        OutputAlgoritmo outAlg = new OutputAlgoritmo((int)total_time, fileOut);
+        return outAlg;
     }
 
     @Override
-    public int descomprimir(File input, File output) {
-        return 0;
+    public int descomprimir(File input, File fileOut) throws IOException {
+
+        long startTime = System.nanoTime();
+
+        StringBuilder result = new StringBuilder();// we will append the decompressed output here
+        CharBuffer src = CharBuffer.wrap(data).asReadOnlyBuffer();// what we will decompress
+
+        int index = 0;
+        int n = data.length();
+        for (int i = 0; i < n; i++) {// for every compressed data
+            if (data.charAt(i) == '0') {// if it's not compressed
+                result.append(data.charAt(++i));// just add the following char to the output
+            } else /* if (data.charAt(i) == '1') */ {// if there is a mcatch, get the length and offset
+                i = i + 1;
+                int offset = (int) data.charAt(i);// offset is first
+                // result.append((int) data.charAt(i));
+                i = i + 1;
+                int matchlength = (int) data.charAt(i);// follwoed by the length of the match
+                // Now I will append the match that i get from the result itself
+                int start = result.length() - offset; // start of the chars I have to copy for the match
+                int length = start + matchlength; // The size of the part to copy
+                for (; start < length; start++) { // for every spot
+                    result.append(result.charAt(start));// get it from the uncoded part and put it in the act pos
+                }
+            }
+        }
+
+        long endTime = System.nanoTime();
+        long total_time = endTime -startTime;
+        String descomprimido = result.toString();
+
+        BufferedWriter writer = new BufferedWriter(new FileWriter(fileOut));
+        writer.write(descomprimido);
+        writer.close();
+
+        OutputAlgoritmo outAlg = new OutputAlgoritmo((int)total_time, fileOut);
+        return outAlg;
+        //return result.toString();
+
     }
 
 
