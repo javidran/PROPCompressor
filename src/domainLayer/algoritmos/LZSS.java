@@ -27,7 +27,7 @@ public class LZSS implements CompresorDecompresor {
     public OutputAlgoritmo comprimir(File fileIn) {
         //gestiono el pasar de file a string
         long startTime = System.nanoTime();
-        File fileOut = new File(System.getProperty("user.home")+"\\Desktop\\"+"Coded.txt"); //custom output format THIS WILL BE TAKEN BY CONTROLLER
+        File fileOut = new File(System.getProperty("user.home")+"//Desktop//"+"Coded.txt"); //custom output format THIS WILL BE TAKEN BY CONTROLLER
 
         try {
             String data = null;
@@ -133,7 +133,7 @@ public class LZSS implements CompresorDecompresor {
     @Override
     public OutputAlgoritmo descomprimir(File fileIn) {
         long startTime = System.nanoTime();
-        File fileOut = new File(System.getProperty("user.home")+"\\Desktop\\"+"Decoded.txt"); //custom output format THIS WILL BE TAKEN BY CONTROLLER
+        File fileOut = new File(System.getProperty("user.home")+"//Desktop//"+"Decoded.txt"); //custom output format THIS WILL BE TAKEN BY CONTROLLER
 
         try {
             String data = null;
