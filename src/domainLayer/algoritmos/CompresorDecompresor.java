@@ -4,7 +4,7 @@ import java.io.File;
 
 public interface CompresorDecompresor {
 
-    public int comprimir(File input, File output);
+    public OutputAlgoritmo comprimir(File input);
 
-    public int descomprimir(File input, File output);
+    public OutputAlgoritmo descomprimir(File input);
 }
