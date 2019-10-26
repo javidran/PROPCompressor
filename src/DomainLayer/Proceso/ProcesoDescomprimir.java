@@ -16,6 +16,7 @@ public class ProcesoDescomprimir extends ProcesoFichero {
         } else throw new Exception("No hay ningun tipo de descompresor compatible");
     }
 
+    @Override
     public Algoritmos[] tiposPosibles() {
         if (ficheroIn.getAbsolutePath().endsWith(".txt") ) {
             return new Algoritmos[] {Algoritmos.LZ78, Algoritmos.LZW, Algoritmos.LZSS};
@@ -26,6 +27,7 @@ public class ProcesoDescomprimir extends ProcesoFichero {
         return null;
     }
 
+    @Override
     public void ejecutarProceso() throws Exception {
         if(!procesado) {
             OutputAlgoritmo outputAlgoritmo = compresorDecompresor.descomprimir(ficheroIn);
