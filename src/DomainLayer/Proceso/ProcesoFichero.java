@@ -1,33 +1,19 @@
-package domainLayer.proceso;
+package DomainLayer.Proceso;
 
-import domainLayer.TipoCompresor;
-import domainLayer.algoritmos.CompresorDecompresor;
-import domainLayer.algoritmos.JPEG;
-import domainLayer.algoritmos.LZ78;
-import domainLayer.algoritmos.LZSS;
+import DomainLayer.Algoritmos.*;
 
 import java.io.File;
 
 public class ProcesoFichero {
     protected File ficheroIn;
     protected File ficheroOut;
-    protected TipoCompresor tipoC;
+    protected Algoritmos tipoC;
     protected CompresorDecompresor compresorDecompresor;
     protected boolean procesado;
 
     protected ProcesoFichero(File input) {
         ficheroIn = input;
         procesado = false;
-    }
-
-    public TipoCompresor[] tiposPosibles() {
-        if (ficheroIn.getAbsolutePath().endsWith(".txt") ) {
-            return new TipoCompresor[] {TipoCompresor.LZ78, TipoCompresor.LZW, TipoCompresor.LZSS};
-        }
-        else if (ficheroIn.getAbsolutePath().endsWith(".ppm")) {
-            return new TipoCompresor[] {TipoCompresor.JPEG};
-        }
-        return new TipoCompresor[0];
     }
 
     protected void asignarAlgoritmo() {
@@ -45,7 +31,7 @@ public class ProcesoFichero {
                 compresorDecompresor = LZ78.getInstance();
                 break;
             default:
-                throw new EnumConstantNotPresentException(TipoCompresor.class, "El tipo de compresor" + tipoC + "no existe");
+                throw new EnumConstantNotPresentException(Algoritmos.class, "El tipo de compresor" + tipoC + "no existe");
         }
     }
 
@@ -61,7 +47,7 @@ public class ProcesoFichero {
         this.ficheroOut = ficheroOut;
     }
 
-    public void setTipoC(TipoCompresor tipoC) {
+    public void setTipoC(Algoritmos tipoC) {
         this.tipoC = tipoC;
     }
 
@@ -73,7 +59,7 @@ public class ProcesoFichero {
         return ficheroOut;
     }
 
-    public TipoCompresor getTipoC() {
+    public Algoritmos getTipoC() {
         return tipoC;
     }
 }

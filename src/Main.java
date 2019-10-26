@@ -1,27 +1,34 @@
-import domainLayer.algoritmos.*;
+import DomainLayer.Algoritmos.*;
+import DomainLayer.Proceso.ProcesoComprimir;
+import DomainLayer.Proceso.ProcesoDescomprimir;
 
 import java.io.File;
 
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         File fileIn = new File(args[0]);
         File fileComp = null, fileOut = null;
-        OutputAlgoritmo comp;
-        OutputAlgoritmo desc;
-        TipoCompresor tipoCompresor = TipoCompresor.LZSS;
+        ProcesoComprimir comp;
+        ProcesoDescomprimir desc;
+
+        Algoritmos tipoCompresor = Algoritmos.JPEG;
+
         switch (tipoCompresor) {
             case JPEG:
-                CompresorDecompresor compresorDecompresor = JPEG.getInstance();
-                comp = compresorDecompresor.comprimir(fileIn);
-                desc = compresorDecompresor.descomprimir(comp.outputFile);
-                System.out.println("Compression time: " + comp.tiempo + "\nDecompression time: " + desc.tiempo + "\n");
+                comp = new ProcesoComprimir(fileIn);
+                comp.setTipoC(Algoritmos.JPEG);
+                comp.ejecutarProceso();
+                desc = new ProcesoDescomprimir(comp.getFicheroOut());
+                if(desc.isProcesado()) System.out.println("El archivo se ha comprimido y descomprimido correctamente");
                 break;
             case LZSS:
-                CompresorDecompresor compresordecompresor = LZSS.getInstance();
-                comp = compresordecompresor.comprimir(fileIn);
-                desc = compresordecompresor.descomprimir(comp.outputFile);
-                System.out.println("Compression time: " + comp.tiempo + "\nDecompression time: " + desc.tiempo + "\n");
+                comp = new ProcesoComprimir(fileIn);
+                comp.setTipoC(Algoritmos.LZSS);
+                comp.ejecutarProceso();
+                desc = new ProcesoDescomprimir(comp.getFicheroOut());
+                if(desc.isProcesado()) System.out.println("El archivo se ha comprimido y descomprimido correctamente");
+                break;
         }
     }
 }

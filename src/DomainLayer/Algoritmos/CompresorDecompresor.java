@@ -1,7 +1,6 @@
-package domainLayer.algoritmos;
+package DomainLayer.Algoritmos;
 
 import java.io.File;
-import java.io.IOException;
 
 public interface CompresorDecompresor {
 

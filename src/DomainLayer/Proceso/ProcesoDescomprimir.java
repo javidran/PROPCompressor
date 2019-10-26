@@ -1,7 +1,7 @@
-package domainLayer.proceso;
+package DomainLayer.Proceso;
 
-import domainLayer.TipoCompresor;
-import domainLayer.algoritmos.OutputAlgoritmo;
+import DomainLayer.Algoritmos.Algoritmos;
+import DomainLayer.Algoritmos.OutputAlgoritmo;
 
 import java.io.File;
 
@@ -9,20 +9,19 @@ public class ProcesoDescomprimir extends ProcesoFichero {
 
     public ProcesoDescomprimir(File input) throws Exception {
         super(input);
-        TipoCompresor[] tipos = null;
+        Algoritmos[] tipos = null;
         if((tipos=tiposPosibles()) !=null) {
             tipoC = tipos[0];
             asignarAlgoritmo();
         } else throw new Exception("No hay ningun tipo de compresor compatible");
     }
 
-    @Override
-    public TipoCompresor[] tiposPosibles() {
+    public Algoritmos[] tiposPosibles() {
         if (ficheroIn.getAbsolutePath().endsWith(".txt") ) {
-            return new TipoCompresor[] {TipoCompresor.LZ78, TipoCompresor.LZW, TipoCompresor.LZSS};
+            return new Algoritmos[] {Algoritmos.LZ78, Algoritmos.LZW, Algoritmos.LZSS};
         }
         else if (ficheroIn.getAbsolutePath().endsWith(".imgc")) {
-            return new TipoCompresor[] {TipoCompresor.JPEG};
+            return new Algoritmos[] {Algoritmos.JPEG};
         }
         return null;
     }
