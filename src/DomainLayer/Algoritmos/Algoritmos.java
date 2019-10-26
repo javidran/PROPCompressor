@@ -1,3 +1,4 @@
+// Creado por Joan Gamez Rodriguez
 package DomainLayer.Algoritmos;
 
 public enum Algoritmos {

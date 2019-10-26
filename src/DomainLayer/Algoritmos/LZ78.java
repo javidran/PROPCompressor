@@ -1,3 +1,4 @@
+// Creado por Javier Cabrera Rodriguez
 package DomainLayer.Algoritmos;
 
 import java.io.File;
@@ -27,6 +28,5 @@ public class LZ78 implements CompresorDecompresor {
     public OutputAlgoritmo descomprimir(File input) {
         return null;
     }
-
 
 }

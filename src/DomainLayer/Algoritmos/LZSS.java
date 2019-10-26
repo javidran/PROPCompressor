@@ -1,3 +1,4 @@
+// Creado por Jan Escorza Fuertes
 package DomainLayer.Algoritmos;
 
 import java.io.*;

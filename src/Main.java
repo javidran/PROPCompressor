@@ -1,3 +1,4 @@
+// Creado por Joan Gamez Rodriguez
 import DomainLayer.Algoritmos.*;
 import DomainLayer.Proceso.ProcesoComprimir;
 import DomainLayer.Proceso.ProcesoDescomprimir;
