@@ -4,5 +4,7 @@ public class Main {
 	// write your code here
         //test
         System.out.println("hello");
+
+        System.out.println("lzw");
     }
 }
