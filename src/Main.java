@@ -25,9 +25,8 @@ public class Main {
             case LZW:
                 CompresorDecompresor compresorecompresor = LZW.getInstance();
                 comp = compresorecompresor.comprimir(fileIn);
-                //desc = compresorecompresor.descomprimir(comp.outputFile);
-                //System.out.println("Compression time: " + comp.tiempo + "\nDecompression time: " + desc.tiempo + "\n");
-                System.out.println("Compression time: " + comp.tiempo + "\n");
+                desc = compresorecompresor.descomprimir(comp.outputFile);
+                System.out.println("Compression time: " + comp.tiempo + "\nDecompression time: " + desc.tiempo + "\n");
         }
     }
 }
