@@ -14,22 +14,14 @@ public class Main {
 
         Algoritmos tipoCompresor = Algoritmos.JPEG;
 
-        switch (tipoCompresor) {
-            case JPEG:
-                comp = new ProcesoComprimir(fileIn);
-                comp.setTipoC(Algoritmos.JPEG);
-                comp.ejecutarProceso();
-                desc = new ProcesoDescomprimir(comp.getFicheroOut());
-                if(desc.isProcesado()) System.out.println("El archivo se ha comprimido y descomprimido correctamente");
-                break;
-            case LZSS:
-                comp = new ProcesoComprimir(fileIn);
-                comp.setTipoC(Algoritmos.LZSS);
-                comp.ejecutarProceso();
-                desc = new ProcesoDescomprimir(comp.getFicheroOut());
-                if(desc.isProcesado()) System.out.println("El archivo se ha comprimido y descomprimido correctamente");
-                break;
-        }
+        comp = new ProcesoComprimir(fileIn);
+        comp.setTipoC(tipoCompresor);
+        comp.ejecutarProceso();
+        desc = new ProcesoDescomprimir(comp.getFicheroOut());
+        desc.setTipoC(tipoCompresor);
+        desc.ejecutarProceso();
+        if(desc.isProcesado()) System.out.println("El archivo se ha comprimido y descomprimido correctamente");
+
     }
 }
 
