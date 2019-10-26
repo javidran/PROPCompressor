@@ -7,9 +7,7 @@ import java.nio.CharBuffer;
 public class LZSS implements CompresorDecompresor {
     private static LZSS instance = null;
 
-    // private constructor restricted to this class itself
-    private LZSS() {
-    }
+
 
     // static method to create instance of Singleton class
     public static LZSS getInstance()
@@ -20,8 +18,13 @@ public class LZSS implements CompresorDecompresor {
         return instance;
     }
 
+    // private constructor restricted to this class itself
+    public LZSS() {
+
+    }
+
     @Override
-    public int comprimir(File input, File fileOut) {
+    public OutputAlgoritmo comprimir(File fileIn) {
         //gestiono el pasar de file a string
 
 
