@@ -29,11 +29,11 @@ public class DatosProceso {
     public double diffTamPercent(){
         long resta_compr = antiguoTamaño - nuevoTamaño;
         if(resta_compr<0){//es una compresión
-            return (antiguoTamaño/(double) nuevoTamaño)*100;
+            return Math.floor((antiguoTamaño/(double) nuevoTamaño)*100);
         }
         else{ //es una descompresion
             //long resta_decompr = nuevoTamaño - antiguoTamaño;
-            return (nuevoTamaño/(double) antiguoTamaño)*100;
+            return Math.floor((nuevoTamaño/(double) antiguoTamaño)*100);
         }
     }
 
