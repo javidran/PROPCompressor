@@ -12,12 +12,8 @@ public class DatosProceso {
         tiempo = time;
         antiguoTamaño = oldSize;
         nuevoTamaño = newSize;
+        System.out.println("El proceso ha tardado " + time/1000000000.0 + "s. El cambio de tamaño pasa de " + oldSize + "B a " + newSize + "B con diferencia de " + diffTam() + "B / " + diffTamPercent() + "%");
     }
-    /*
-    public void setTiempo(int time) { tiempo = time; }
-    public void setAntiguoTamaño(float oldSize) { antiguoTamaño = oldSize; }
-    public void setNuevoTamaño(float newSize) { antiguoTamaño = newSize; }
-     */
 
     public long diffTam(){
         long resta_compr = antiguoTamaño - nuevoTamaño;
