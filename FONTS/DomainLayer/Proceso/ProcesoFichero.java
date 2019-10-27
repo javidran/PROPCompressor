@@ -48,6 +48,8 @@ public abstract class ProcesoFichero {
 
     public abstract Algoritmos[] tiposPosibles();
 
+    public abstract boolean esComprimir();
+
     public boolean isProcesado() {
         return procesado;
     }
@@ -85,58 +87,42 @@ public abstract class ProcesoFichero {
         return tipoAlgoritmo;
     }
 
-    private void guardaDatos() throws IOException {
-        File estadistica = new File( System.getProperty("user.dir") +"/resources/estadistica"+tipoC+".txt");
+    protected void guardaDatos() throws IOException {
+        File estadistica = new File( System.getProperty("user.dir") +"/resources/estadistica_"+(esComprimir()? "1":"0")+"_"+tipoAlgoritmo+".txt");
         DatosProceso newDP = getDatosProceso();
-        List<Integer> datosAntiguos = new ArrayList<Integer>(); //
         long a = newDP.getTiempo();
         long b = newDP.getAntiguoTamaño();
         long c = newDP.getNuevoTamaño();
         long d = newDP.diffTam();
-        long numDatos = c;
+        long numDatos = 1;
         long tiempoMedio = a;
         long AvgMedio = d;
 
-        if (estadistica.createNewFile()) { //Creamos el archivo si no existia
-            FileReader fr = null;
-            try {
-                BufferedReader br = null;
-                InputStream inputStream = new FileInputStream(estadistica);
-                Reader inputStreamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
-                br = new BufferedReader(inputStreamReader);
-                double value = 0;
-                while ((value = br.read()) != -1) {
-                    datosAntiguos.add((int) value);
-                }
+        if (!estadistica.createNewFile()) {
+            System.out.println("Ya estaba el File estadistica creado");
+                BufferedReader br = new BufferedReader (new FileReader(estadistica));
+                String buff = br.readLine();
+                String[] parts = buff.split(" ");
+                numDatos = Integer.parseInt(parts[0]) + 1;
+                tiempoMedio = (Integer.parseInt(parts[1])*numDatos-1)/numDatos + a/numDatos;;
+                AvgMedio = (Integer.parseInt(parts[2])*numDatos-1)/numDatos + d/numDatos;
                 br.close();
-                int count = 0;
-                for (int di : datosAntiguos) { //Se supone que hay 3 valores
-                    if (count == 0) numDatos = di + c;
-                    count++;
-                    if (count == 1) tiempoMedio = di + a;
-                    count++;
-                    if (count == 2) AvgMedio = di + d;
-                    count++;
-                }
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
-        try {
-            RandomAccessFile archivo = new RandomAccessFile(estadistica, "rw");
+
+            RandomAccessFile archivo = new RandomAccessFile(estadistica, "w");
             archivo.seek(0);
             archivo.writeBytes(numDatos +" "+ tiempoMedio +" "+ AvgMedio);
             archivo.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         }
-        try {
-            FileWriter fw=new FileWriter(estadistica);
-            BufferedWriter bw=new BufferedWriter(fw);
+        else {
+            System.out.println("File vacio");
+            BufferedWriter bw = new BufferedWriter(new FileWriter(estadistica));
+            bw.write(numDatos +" "+ tiempoMedio +" "+ AvgMedio);
             bw.newLine();
-            bw.write(a+" "+b+" "+c+" "+d);
-        } catch (IOException e) {
-            e.printStackTrace();
+            bw.close();
         }
+        System.out.println("Común File estadistica");
+        BufferedWriter bw = new BufferedWriter(new FileWriter(estadistica));
+        bw.write(a+" "+b+" "+c+" "+d);
+        bw.close();
     }
 }
