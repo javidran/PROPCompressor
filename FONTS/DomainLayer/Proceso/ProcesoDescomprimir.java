@@ -12,7 +12,7 @@ public class ProcesoDescomprimir extends ProcesoFichero {
         super(input);
         Algoritmos[] tipos = null;
         if((tipos=tiposPosibles()) !=null) {
-            tipoC = tipos[0];
+            tipoAlgoritmo = tipos[0];
             asignarAlgoritmo();
         } else throw new Exception("No hay ningun tipo de descompresor compatible");
     }

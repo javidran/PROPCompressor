@@ -10,6 +10,7 @@ import java.io.File;
 
 public class CtrlProcesos {
     private static CtrlProcesos instance = null;
+    private static Algoritmos algoritmoPredeterminadoTexto = Algoritmos.LZSS;
 
     public static CtrlProcesos getInstance()
     {
@@ -19,17 +20,30 @@ public class CtrlProcesos {
         return instance;
     }
 
-    public File comprimirArchivo(File fileIn, Algoritmos tipoC) throws Exception {
+    public File comprimirArchivo(File fileIn, Algoritmos tipoAlgoritmo) throws Exception {
         ProcesoFichero comp = new ProcesoComprimir(fileIn);
-        if (tipoC != Algoritmos.PREDETERMINADO) comp.setTipoC(tipoC);
+        if (tipoAlgoritmo != Algoritmos.PREDETERMINADO)  comp.setTipoAlgoritmo(tipoAlgoritmo);
         comp.ejecutarProceso();
         return comp.getFicheroOut();
     }
 
-    public File descomprimirArchivo(File fileIn, Algoritmos tipoC) throws Exception {
+    public File comprimirArchivo(File fileIn) throws Exception {
+        ProcesoFichero comp = new ProcesoComprimir(fileIn);
+        comp.ejecutarProceso();
+        return comp.getFicheroOut();
+    }
+
+    public File descomprimirArchivo(File fileIn) throws Exception {
         ProcesoFichero desc = new ProcesoDescomprimir(fileIn);
-        if (tipoC != Algoritmos.PREDETERMINADO) desc.setTipoC(tipoC);
         desc.ejecutarProceso();
         return desc.getFicheroOut();
+    }
+
+    public static void setAlgoritmoPredeterminadoTexto(Algoritmos algoritmoPredeterminadoTexto) {
+        CtrlProcesos.algoritmoPredeterminadoTexto = algoritmoPredeterminadoTexto;
+    }
+
+    public static Algoritmos getAlgoritmoPredeterminadoTexto() {
+        return algoritmoPredeterminadoTexto;
     }
 }
