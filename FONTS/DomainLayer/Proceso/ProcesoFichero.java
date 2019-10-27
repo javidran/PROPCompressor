@@ -57,9 +57,17 @@ public abstract class ProcesoFichero {
         this.ficheroOut = ficheroOut;
     }
 
-    public void setTipoC(Algoritmos tipoC) {
-        this.tipoC = tipoC;
-        asignarAlgoritmo();
+    public boolean setTipoC(Algoritmos tipoC) {
+        Algoritmos[] algoritmos = tiposPosibles();
+        boolean esCompatible = false;
+        for(Algoritmos a : algoritmos) {
+            if(a == tipoC) esCompatible = true;
+        }
+        if(esCompatible) {
+            this.tipoC = tipoC;
+            asignarAlgoritmo();
+        }
+        return esCompatible;
     }
 
     public File getFicheroIn() {
