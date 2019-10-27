@@ -8,7 +8,7 @@ import java.io.File;
 public abstract class ProcesoFichero {
     protected File ficheroIn;
     protected File ficheroOut;
-    protected Algoritmos tipoC;
+    protected Algoritmos tipoAlgoritmo;
     protected CompresorDecompresor compresorDecompresor;
     protected boolean procesado;
     protected DatosProceso datos;
@@ -23,7 +23,7 @@ public abstract class ProcesoFichero {
     }
 
     protected void asignarAlgoritmo() {
-        switch (tipoC) {
+        switch (tipoAlgoritmo) {
             case JPEG:
                 compresorDecompresor = JPEG.getInstance();
                 break;
@@ -37,7 +37,7 @@ public abstract class ProcesoFichero {
                 compresorDecompresor = LZ78.getInstance();
                 break;
             default:
-                throw new EnumConstantNotPresentException(Algoritmos.class, "El tipo de compresor" + tipoC + "no existe");
+                throw new EnumConstantNotPresentException(Algoritmos.class, "El tipo de compresor" + tipoAlgoritmo + "no existe");
         }
     }
 
@@ -57,14 +57,14 @@ public abstract class ProcesoFichero {
         this.ficheroOut = ficheroOut;
     }
 
-    public boolean setTipoC(Algoritmos tipoC) {
+    public boolean setTipoAlgoritmo(Algoritmos tipoAlgoritmo) {
         Algoritmos[] algoritmos = tiposPosibles();
         boolean esCompatible = false;
         for(Algoritmos a : algoritmos) {
-            if(a == tipoC) esCompatible = true;
+            if(a == tipoAlgoritmo) esCompatible = true;
         }
         if(esCompatible) {
-            this.tipoC = tipoC;
+            this.tipoAlgoritmo = tipoAlgoritmo;
             asignarAlgoritmo();
         }
         return esCompatible;
@@ -78,7 +78,7 @@ public abstract class ProcesoFichero {
         return ficheroOut;
     }
 
-    public Algoritmos getTipoC() {
-        return tipoC;
+    public Algoritmos gettipoCompresor() {
+        return tipoAlgoritmo;
     }
 }

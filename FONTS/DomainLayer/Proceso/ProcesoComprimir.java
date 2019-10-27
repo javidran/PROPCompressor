@@ -1,6 +1,7 @@
 // Creado por Javier Cabrera Rodriguez
 package DomainLayer.Proceso;
 
+import Controllers.CtrlProcesos;
 import DomainLayer.Algoritmos.Algoritmos;
 import DomainLayer.Algoritmos.OutputAlgoritmo;
 
@@ -12,7 +13,8 @@ public class ProcesoComprimir extends ProcesoFichero {
         super(input);
         Algoritmos[] tipos = null;
         if((tipos=tiposPosibles()) !=null) {
-            tipoC = tipos[0];
+            if(tipos[0]==Algoritmos.JPEG) tipoAlgoritmo = Algoritmos.JPEG;
+            else tipoAlgoritmo = CtrlProcesos.getAlgoritmoPredeterminadoTexto();
             asignarAlgoritmo();
         } else throw new Exception("No hay ningun tipo de compresor compatible");
     }
