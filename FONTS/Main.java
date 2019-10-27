@@ -2,11 +2,6 @@
 import Controllers.CtrlDatos;
 import Controllers.CtrlProcesos;
 import DomainLayer.Algoritmos.*;
-import DomainLayer.Proceso.DatosProceso;
-import DomainLayer.Proceso.ProcesoComprimir;
-import DomainLayer.Proceso.ProcesoDescomprimir;
-import DomainLayer.Proceso.ProcesoFichero;
-import sun.rmi.transport.StreamRemoteCall;
 
 import java.io.File;
 import java.util.Scanner;
@@ -44,17 +39,25 @@ public class Main {
                             default:
                                 throw new EnumConstantNotPresentException(Algoritmos.class, "El tipo de compresor " + algoritmoComp + " no existe o no está disponible para un archivo .txt\n");
                         }
-                        File fileOutComp = ctrlProcesos.comprimirArchivo(fileInComp, tipoCompresor);
-                        if(fileOutComp != null) System.out.println("El archivo "+fileInComp.getName()+" se ha comprimido correctamente!\n");
+                        try {
+                            File fileOutComp = ctrlProcesos.comprimirArchivo(fileInComp, tipoCompresor);
+                            if (fileOutComp != null)
+                                System.out.println("El archivo " + fileInComp.getName() + " se ha comprimido correctamente!\n");
+                        }
+                        catch (Exception e) {}
                     }
                     else if (fileInComp.getName().endsWith(".ppm")) {
-                        File fileOutComp = ctrlProcesos.comprimirArchivo(fileInComp);
-                        if(fileOutComp != null) System.out.println("El archivo "+fileInComp.getName()+" se ha comprimido correctamente!\n");
+                        try {
+                            File fileOutComp = ctrlProcesos.comprimirArchivo(fileInComp);
+                            if (fileOutComp != null)
+                                System.out.println("El archivo " + fileInComp.getName() + " se ha comprimido correctamente!\n");
+                        }
+                        catch (Exception e) {}
                     }
                     else System.out.println("El formato del fichero debe de ser .txt o .ppm!");
                     break;
                 case "descomprimir":
-                    System.out.println("Escriba el path absoluto del fichero a descomprimir (.lzss, .lz78, lzw o .ppm!)");
+                    System.out.println("Escriba el path absoluto del fichero a descomprimir (.lzss, .lz78, lzw o .imgc!)");
                     File fileInDesc = new File(scanner.nextLine());
                     if (fileInDesc.getName().endsWith(".imgc")) {
                         tipoCompresor = Algoritmos.JPEG;
@@ -68,14 +71,18 @@ public class Main {
                     else {
                         tipoCompresor = Algoritmos.LZ78;
                     }
-                    File fileOutDesc = ctrlProcesos.descomprimirArchivo(fileInDesc);
-                    if(fileOutDesc != null) System.out.println("El archivo se ha descomprimido correctamente!\n");
+                    File fileOutDesc;
+                    try {
+                        fileOutDesc = ctrlProcesos.descomprimirArchivo(fileInDesc);
+                        if(fileOutDesc != null) System.out.println("El archivo se ha descomprimido correctamente!\n");
+                    }
+                    catch (Exception e) {}
                     break;
                 case "salir":
                     b = false;
                     break;
                 default:
-                    System.out.printf("Comando incorrecto! Los comandos disponibles son:\n\ncomprimir\ndescomprimir\nsalir\n");
+                    System.out.printf("Comando incorrecto!\n");
             }
         }
         /*
