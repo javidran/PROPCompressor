@@ -1,3 +1,4 @@
+// Creado por Sheida Vanesa Alfaro Taco
 package DomainLayer.Algoritmos;
 
 import java.io.*;
@@ -69,11 +70,9 @@ public class LZW implements CompresorDecompresor {
         }
         BufferedOutputStream  out = new BufferedOutputStream(os);
         try {
-            Iterator<Integer> Itr = salida.iterator();
-            while (Itr.hasNext()) {
-                int test = Itr.next();
+            for (int test : salida) {
                 out.write(test);
-                System.out.println(test);
+                //System.out.println(test);
             }
             //System.out.println(salida);
             out.flush();
