@@ -1,4 +1,5 @@
 // Creado por Joan Gamez Rodriguez
+import Controllers.CtrlDatos;
 import Controllers.CtrlProcesos;
 import DomainLayer.Algoritmos.*;
 import DomainLayer.Proceso.DatosProceso;
@@ -77,6 +78,10 @@ public class Main {
                     System.out.printf("Comando incorrecto! Los comandos disponibles son:\n\ncomprimir\ndescomprimir\nsalir\n");
             }
         }
+        /*
+        CtrlDatos ctrlDatos = CtrlDatos.getInstance();
+        ctrlDatos.estadisticasGlobales(Algoritmos.LZSS, true);
+         */
     }
 }
 
