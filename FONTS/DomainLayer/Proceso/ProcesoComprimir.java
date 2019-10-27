@@ -20,7 +20,7 @@ public class ProcesoComprimir extends ProcesoFichero {
     @Override
     public Algoritmos[] tiposPosibles() {
         if (ficheroIn.getAbsolutePath().endsWith(".txt") ) {
-            return new Algoritmos[] {Algoritmos.LZ78, Algoritmos.LZW, Algoritmos.LZSS};
+            return new Algoritmos[] {Algoritmos.LZSS, Algoritmos.LZW, Algoritmos.LZ78};
         }
         else if (ficheroIn.getAbsolutePath().endsWith(".ppm")) {
             return new Algoritmos[] {Algoritmos.JPEG};

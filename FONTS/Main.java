@@ -1,4 +1,5 @@
 // Creado por Joan Gamez Rodriguez
+import Controllers.CtrlProcesos;
 import DomainLayer.Algoritmos.*;
 import DomainLayer.Proceso.DatosProceso;
 import DomainLayer.Proceso.ProcesoComprimir;
@@ -11,46 +12,32 @@ import java.io.File;
 public class Main {
     public static void main(String[] args) throws Exception {
         File fileIn = new File(args[0]);
-        File fileComp = null, fileOut = null;
-        ProcesoFichero comp;
-        ProcesoFichero desc;
-
-        Algoritmos tipoCompresor = Algoritmos.LZSS;
-
-        comp = new ProcesoComprimir(fileIn);
-        comp.setTipoC(tipoCompresor);
-        comp.ejecutarProceso();
-
-        //Testing Datos proceso
-        DatosProceso test = comp.getDatosProceso();
-        long time = test.getTiempo();
-        long newSize = test.getNuevoTamaño();
-        long oldSize = test.getAntiguoTamaño();
-        long ladiferencia = test.diffTam();
-        double elpercent = test.diffTamPercent();
-
-        System.out.println("tiempo: "+time+" nuevoTamaño: "+newSize+" antiguotamaño: "+ oldSize+" la diferencia es: "+ladiferencia+" que es un:"+elpercent+"%");
-
-        //End Testing Datos proceso
-
-        if(comp.isProcesado()) System.out.println("El archivo se ha comprimido correctamente");
-        desc = new ProcesoDescomprimir(comp.getFicheroOut());
-        desc.setTipoC(tipoCompresor);
-        desc.ejecutarProceso();
-
-        //Testing Datos proceso
-        test = desc.getDatosProceso();
-         time = test.getTiempo();
-         newSize = test.getNuevoTamaño();
-         oldSize = test.getAntiguoTamaño();
-         ladiferencia = test.diffTam();
-         elpercent = test.diffTamPercent();
-
-        System.out.println("tiempo: "+time+" nuevoTamaño: "+newSize+" antiguotamaño: "+ oldSize+" la diferencia es: "+ladiferencia+" que es un:"+elpercent+"%");
-
-        //End Testing Datos proceso
-
-        if(desc.isProcesado()) System.out.println("El archivo se ha descomprimido correctamente");
+        String algoritmo = args[1];
+        CtrlProcesos ctrlProcesos = CtrlProcesos.getInstance();
+        Algoritmos tipoCompresor;
+        switch (algoritmo) {
+            case "jpeg":
+                tipoCompresor = Algoritmos.JPEG;
+                break;
+            case "lzss":
+                tipoCompresor = Algoritmos.LZSS;
+                break;
+            case "lzw":
+                tipoCompresor = Algoritmos.LZW;
+                break;
+            case "lz78":
+                tipoCompresor = Algoritmos.LZ78;
+                break;
+            case "predeterminado":
+                tipoCompresor = Algoritmos.PREDETERMINADO;
+                break;
+            default:
+                throw new EnumConstantNotPresentException(Algoritmos.class, "El tipo de compresor " + algoritmo + " no existe.\n");
+        }
+        File fileComp = ctrlProcesos.comprimirArchivo(fileIn, tipoCompresor);
+        if(fileComp != null) System.out.println("El archivo se ha comprimido correctamente");
+        File fileDesc = ctrlProcesos.descomprimirArchivo(fileComp, tipoCompresor);
+        if(fileDesc != null) System.out.println("El archivo se ha descomprimido correctamente");
     }
 }
 
