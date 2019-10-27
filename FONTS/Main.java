@@ -1,4 +1,5 @@
 // Creado por Joan Gamez Rodriguez
+import Controllers.CtrlDatos;
 import Controllers.CtrlProcesos;
 import DomainLayer.Algoritmos.*;
 import DomainLayer.Proceso.DatosProceso;
@@ -38,6 +39,9 @@ public class Main {
         if(fileComp != null) System.out.println("El archivo se ha comprimido correctamente");
         File fileDesc = ctrlProcesos.descomprimirArchivo(fileComp);
         if(fileDesc != null) System.out.println("El archivo se ha descomprimido correctamente");
+
+        CtrlDatos ctrlDatos = CtrlDatos.getInstance();
+        ctrlDatos.estadisticasGlobales(Algoritmos.LZSS, true);
     }
 }
 
