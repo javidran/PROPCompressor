@@ -15,10 +15,10 @@ import java.io.File;
 public class JPEG implements CompresorDecompresor {
     private static JPEG instance = null;
 
-    private int calidad;
-    private double[][] DCT = new double[8][8];
-    private int[][] LuminanceQuantizationTable = new int[8][8];   //50% compression
-    private int[][] ChrominanceQuantizationTable = new int[8][8]; //50% compression
+    private static int calidad;
+    private static double[][] DCT = new double[8][8];
+    private static int[][] LuminanceQuantizationTable = new int[8][8];   //50% compression
+    private static int[][] ChrominanceQuantizationTable = new int[8][8]; //50% compression
 
     public static JPEG getInstance()
     {
@@ -75,27 +75,35 @@ public class JPEG implements CompresorDecompresor {
         //WRITE AS JFIF
     }
 
-    public OutputAlgoritmo comprimir(File fileIn) { //pre: fileIn is .ppm P6, each of the three header parameters (magicNumber, dimensions, maxRGBValue) is in a different line, comments are between parameters
+    public void setCalidad(int calidad) {
+        this.calidad = calidad;
+    }
+
+    @Override
+    public OutputAlgoritmo comprimir(File fileIn) throws Exception {
         long startTime = System.nanoTime(); //starting time
-        File fileOut = new File(fileIn.getAbsolutePath().replace(".ppm", ".imgc")); //custom output format THIS WILL BE TAKEN BY CONTROLLER
+        File fileOut = new File(fileIn.getAbsolutePath().replace(".ppm", ".imgc")); //custom output format
         try {
             BufferedReader originalImage = new BufferedReader (new FileReader(fileIn)); //creation of buffered reader to read header
             int fileOffset = 0;
             String buff = originalImage.readLine();
             String magicNumber = buff; //read .ppm magicNumber, which is P6 (pixels are codified in binary)
+            if(!magicNumber.equals("P6")) throw new Exception("El formato de .ppm no es correcto!");
+
             buff = originalImage.readLine();
             while (buff.contains("#")) { //avoiding comments between parameters...
                 fileOffset += buff.length() + 1;
                 buff = originalImage.readLine();
             }
             String[] widthHeight = buff.split(" ");  //read and split dimensions into two (one for each value)
+            if (widthHeight.length > 2) throw new Exception("El formato de .ppm no es correcto!");
             buff = originalImage.readLine();
             while (buff.contains("#")) { //avoiding comments...
                 fileOffset += buff.length() + 1;
                 buff = originalImage.readLine();
             }
-            String rgbMVal = buff; //string of rgb maximum value per pixel (from 1 to 255, 8 bits)
-            buff = originalImage.readLine();
+            String rgbMVal = buff; //string of rgb maximum value per pixel (8 bits)
+            if (!rgbMVal.equals("255")) throw new Exception("El formato de .ppm no es correcto!");
             String space = " ", eol = "\n";
             fileOffset += magicNumber.getBytes().length + widthHeight[0].getBytes().length + space.getBytes().length + widthHeight[1].getBytes().length + rgbMVal.getBytes().length + eol.getBytes().length * 3; //skipping already read header...
             originalImage.close();
@@ -206,14 +214,18 @@ public class JPEG implements CompresorDecompresor {
         return outAlg;
     }
 
-    public OutputAlgoritmo descomprimir(File fileIn) { //pre: file is .imgc and it is a .ppm P6 compressed file
+    @Override
+    public OutputAlgoritmo descomprimir(File fileIn) throws Exception{
         long startTime = System.nanoTime(); //starting time
-        File fileOut = new File(fileIn.getAbsolutePath().replace(".imgc", "_out.ppm")); //custom output format THIS WILL BE TAKEN BY CONTROLLER
+        File fileOut = new File(fileIn.getAbsolutePath().replace(".imgc", "_out.ppm")); //custom output format
         try {
             BufferedReader originalImage = new BufferedReader (new FileReader(fileIn)); //creation of buffered reader
             String magicNumber = originalImage.readLine(); //read ppm magicNumber
+            if(!magicNumber.equals("P6")) throw new Exception("El formato de .ppm no es correcto!");
             String[] widthHeight = originalImage.readLine().split(" ");  //read and split dimensions into two (one for each value)
+            if (widthHeight.length > 2) throw new Exception("El formato de .ppm no es correcto!");
             String rgbMVal = originalImage.readLine();
+            if(!rgbMVal.equals("255")) throw new Exception("El formato de .ppm no es correcto!");
             int width = Integer.parseInt(widthHeight[0]);  //string to int
             int height = Integer.parseInt(widthHeight[1]); //string to int
             int rgbMaxVal = Integer.parseInt(rgbMVal); //string to int of rgb maximum value per pixel
