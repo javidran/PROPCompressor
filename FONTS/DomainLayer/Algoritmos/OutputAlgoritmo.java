@@ -4,10 +4,10 @@ package DomainLayer.Algoritmos;
 import java.io.File;
 
 public class OutputAlgoritmo {
-    public int tiempo;
+    public long tiempo;
     public File outputFile;
 
-    public OutputAlgoritmo(int tiempo, File outputFile) {
+    public OutputAlgoritmo(long tiempo, File outputFile) {
         this.tiempo = tiempo;
         this.outputFile = outputFile;
     }

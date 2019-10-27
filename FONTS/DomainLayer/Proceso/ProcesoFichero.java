@@ -11,10 +11,15 @@ public abstract class ProcesoFichero {
     protected Algoritmos tipoC;
     protected CompresorDecompresor compresorDecompresor;
     protected boolean procesado;
+    protected DatosProceso datos;
 
     protected ProcesoFichero(File input) {
         ficheroIn = input;
         procesado = false;
+    }
+
+    public DatosProceso getDatosProceso(){
+        return datos;
     }
 
     protected void asignarAlgoritmo() {

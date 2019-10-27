@@ -43,6 +43,7 @@ public class ProcesoDescomprimir extends ProcesoFichero {
             OutputAlgoritmo outputAlgoritmo = compresorDecompresor.descomprimir(ficheroIn);
             ficheroOut = outputAlgoritmo.outputFile;
             procesado = true;
+            datos = new DatosProceso(outputAlgoritmo.tiempo,ficheroIn.length(),ficheroOut.length());
         } else throw new Exception("El fichero ya ha sido descomprimido!");
     }
 }
