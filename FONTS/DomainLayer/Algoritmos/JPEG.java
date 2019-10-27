@@ -210,7 +210,7 @@ public class JPEG implements CompresorDecompresor {
         }
         long endTime = System.nanoTime(), totalTime = endTime - startTime; //ending time and total execution time
         //System.out.println("Execution time (compression): "+totalTime);
-        OutputAlgoritmo outAlg = new OutputAlgoritmo((int)totalTime, fileOut);
+        OutputAlgoritmo outAlg = new OutputAlgoritmo(totalTime, fileOut);
         return outAlg;
     }
 
@@ -319,7 +319,7 @@ public class JPEG implements CompresorDecompresor {
         }
         long endTime = System.nanoTime(), totalTime = endTime - startTime; //ending time and total execution time
         //System.out.println("Execution time (decompression): "+totalTime);
-        OutputAlgoritmo outAlg = new OutputAlgoritmo((int)totalTime, fileOut);
+        OutputAlgoritmo outAlg = new OutputAlgoritmo(totalTime, fileOut);
         return outAlg;
     }
 }

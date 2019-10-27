@@ -127,7 +127,7 @@ public class LZSS implements CompresorDecompresor {
         long endTime = System.nanoTime();
         long total_time = endTime -startTime;
 
-        OutputAlgoritmo outAlg = new OutputAlgoritmo((int)total_time, fileOut);
+        OutputAlgoritmo outAlg = new OutputAlgoritmo(total_time, fileOut);
         return outAlg;
     }
 
@@ -158,7 +158,7 @@ public class LZSS implements CompresorDecompresor {
 
             int index = 0;
             int n = data.length();
-            for (int i = 0; i < n-2; i++) {// for every compressed data
+            for (int i = 0; i < n-1; i++) {// for every compressed data//this has to be -2 IF EXTENDED ASCII and -1 IF SIMPLE ASCII
                 if (data.charAt(i) == '0') {// if it's not compressed
                     result.append(data.charAt(++i));// just add the following char to the output
                 } else /* if (data.charAt(i) == '1') */ {// if there is a mcatch, get the length and offset
@@ -187,7 +187,7 @@ public class LZSS implements CompresorDecompresor {
         }
         long endTime = System.nanoTime();
         long total_time = endTime -startTime;
-        OutputAlgoritmo outAlg = new OutputAlgoritmo((int)total_time, fileOut);
+        OutputAlgoritmo outAlg = new OutputAlgoritmo(total_time, fileOut);
         return outAlg;
         //return result.toString();
 

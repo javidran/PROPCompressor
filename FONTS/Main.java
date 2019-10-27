@@ -1,6 +1,7 @@
 // Creado por Joan Gamez Rodriguez
 import Controllers.CtrlProcesos;
 import DomainLayer.Algoritmos.*;
+import DomainLayer.Proceso.DatosProceso;
 import DomainLayer.Proceso.ProcesoComprimir;
 import DomainLayer.Proceso.ProcesoDescomprimir;
 import DomainLayer.Proceso.ProcesoFichero;
