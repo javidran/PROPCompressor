@@ -34,6 +34,7 @@ public class ProcesoComprimir extends ProcesoFichero {
             OutputAlgoritmo outputAlgoritmo = compresorDecompresor.comprimir(ficheroIn);
             ficheroOut = outputAlgoritmo.outputFile;
             procesado = true;
+            datos = new DatosProceso(outputAlgoritmo.tiempo,ficheroIn.length(),ficheroOut.length());
         } else throw new Exception("El fichero ya ha sido comprimido!");
     }
 
