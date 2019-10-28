@@ -99,16 +99,6 @@ public abstract class ProcesoFichero {
         long AvgMedio = d;
 
         if (estadistica.exists()) {
-            /*BufferedReader br = new BufferedReader (new FileReader(estadistica));
-            String buff = br.readLine();
-            String[] parts = buff.split(" ");
-            numDatos = Integer.parseInt(parts[0]) + 1;
-            tiempoMedio = (Integer.parseInt(parts[1])*numDatos-1)/numDatos + a/numDatos;;
-            AvgMedio = (Integer.parseInt(parts[2])*numDatos-1)/numDatos + d/numDatos;
-            br.close();*/
-
-            System.out.println("Entra");
-
             RandomAccessFile archivo = new RandomAccessFile(estadistica, "rw");
             archivo.seek(0);
             String buff = archivo.readLine();
@@ -116,12 +106,10 @@ public abstract class ProcesoFichero {
             numDatos = Integer.parseInt(parts[0]) + 1;
             tiempoMedio = (Integer.parseInt(parts[1])*(numDatos-1))/numDatos + a/numDatos;;
             AvgMedio = (Integer.parseInt(parts[2])*(numDatos-1))/numDatos + d/numDatos;
-            System.out.println("Hasta aquí llega bien");
             archivo.seek(0);
             archivo.writeBytes(numDatos +" "+ tiempoMedio +" "+ AvgMedio);
             archivo.close();
 
-            System.out.println("No llega aqui cuando ya existe el File");
             BufferedWriter bw = new BufferedWriter(new FileWriter(estadistica, true));
             CharSequence cs = (a + " " + b + " " + c + " " + d);
             bw.newLine();
@@ -129,7 +117,6 @@ public abstract class ProcesoFichero {
             bw.close();
         } else {
             estadistica.createNewFile();
-            System.out.println("File vacio");
             BufferedWriter bw = new BufferedWriter(new FileWriter(estadistica));
             bw.write(numDatos + " " + tiempoMedio + " " + AvgMedio);
             bw.newLine();
