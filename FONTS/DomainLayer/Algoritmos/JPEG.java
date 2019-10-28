@@ -70,12 +70,12 @@ public class JPEG implements CompresorDecompresor {
             String buff = originalImage.readLine();
             String magicNumber = buff; //read .ppm magicNumber, which is P6 (pixels are codified in binary)
             if(!magicNumber.equals("P6")) throw new Exception("El formato de .ppm no es correcto!");
-
             buff = originalImage.readLine();
             while (buff.contains("#")) { //avoiding comments between parameters...
                 fileOffset += buff.length() + 1;
                 buff = originalImage.readLine();
             }
+            if (buff.endsWith(" ")) throw new Exception("El formato de .ppm no es correcto!");
             String[] widthHeight = buff.split(" ");  //read and split dimensions into two (one for each value)
             if (widthHeight.length > 2) throw new Exception("El formato de .ppm no es correcto!");
             buff = originalImage.readLine();
