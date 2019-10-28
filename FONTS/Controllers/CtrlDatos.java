@@ -17,7 +17,7 @@ public class CtrlDatos {
     }
 
     public File estadisticasGlobales(Algoritmos algoritmo, boolean esCompresion) {
-        File file = new File(System.getProperty("user.dir") + "/resources/estadistica_" + (esCompresion? "1":"0") + algoritmo);
+        File file = new File(System.getProperty("user.dir") + "/resources/estadistica_" + (esCompresion? "1":"0") + "_" + algoritmo);
         //System.out.println(file.getAbsolutePath() + "       " + file.exists());
         return file;
     }

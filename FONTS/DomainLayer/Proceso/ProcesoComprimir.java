@@ -37,7 +37,13 @@ public class ProcesoComprimir extends ProcesoFichero {
             ficheroOut = outputAlgoritmo.outputFile;
             procesado = true;
             datos = new DatosProceso(outputAlgoritmo.tiempo,ficheroIn.length(),ficheroOut.length());
+            guardaDatos();
         } else throw new Exception("El fichero ya ha sido comprimido!");
+    }
+
+    @Override
+    public boolean esComprimir() {
+        return true;
     }
 
 }

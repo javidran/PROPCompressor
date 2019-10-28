@@ -3,7 +3,10 @@ package DomainLayer.Proceso;
 
 import DomainLayer.Algoritmos.*;
 
-import java.io.File;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class ProcesoFichero {
     protected File ficheroIn;
@@ -45,6 +48,8 @@ public abstract class ProcesoFichero {
 
     public abstract Algoritmos[] tiposPosibles();
 
+    public abstract boolean esComprimir();
+
     public boolean isProcesado() {
         return procesado;
     }
@@ -80,5 +85,44 @@ public abstract class ProcesoFichero {
 
     public Algoritmos gettipoCompresor() {
         return tipoAlgoritmo;
+    }
+
+    protected void guardaDatos() throws IOException {
+        File estadistica = new File( System.getProperty("user.dir") +"/resources/estadistica_"+(esComprimir()? "1":"0")+"_"+tipoAlgoritmo+".txt");
+        DatosProceso newDP = getDatosProceso();
+        long a = newDP.getTiempo();
+        long b = newDP.getAntiguoTamaño();
+        long c = newDP.getNuevoTamaño();
+        long d = newDP.diffTam();
+        long numDatos = 1;
+        long tiempoMedio = a;
+        long AvgMedio = d;
+
+        if (!estadistica.createNewFile()) {
+            System.out.println("Ya estaba el File estadistica creado");
+                BufferedReader br = new BufferedReader (new FileReader(estadistica));
+                String buff = br.readLine();
+                String[] parts = buff.split(" ");
+                numDatos = Integer.parseInt(parts[0]) + 1;
+                tiempoMedio = (Integer.parseInt(parts[1])*numDatos-1)/numDatos + a/numDatos;;
+                AvgMedio = (Integer.parseInt(parts[2])*numDatos-1)/numDatos + d/numDatos;
+                br.close();
+
+            RandomAccessFile archivo = new RandomAccessFile(estadistica, "w");
+            archivo.seek(0);
+            archivo.writeBytes(numDatos +" "+ tiempoMedio +" "+ AvgMedio);
+            archivo.close();
+        }
+        else {
+            System.out.println("File vacio");
+            BufferedWriter bw = new BufferedWriter(new FileWriter(estadistica));
+            bw.write(numDatos +" "+ tiempoMedio +" "+ AvgMedio);
+            bw.newLine();
+            bw.close();
+        }
+        System.out.println("Común File estadistica");
+        BufferedWriter bw = new BufferedWriter(new FileWriter(estadistica));
+        bw.write(a+" "+b+" "+c+" "+d);
+        bw.close();
     }
 }
