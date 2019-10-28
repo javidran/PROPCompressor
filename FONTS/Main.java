@@ -13,7 +13,7 @@ public class Main {
         boolean b = true;
         while (b) {
             Algoritmos tipoCompresor;
-            System.out.printf("Introduzca uno de los siguientes comandos disponibles:\n\ncomprimir\ndescomprimir\nsalir\n");
+            System.out.printf("Introduzca uno de los siguientes comandos disponibles:\n\ncomprimir\ndescomprimir\ncompdesc (PARA TESTING)\nsalir\n");
             Scanner scanner = new Scanner(System.in);
             String comando = scanner.nextLine();
             switch (comando) {
@@ -59,22 +59,53 @@ public class Main {
                 case "descomprimir":
                     System.out.println("Escriba el path absoluto del fichero a descomprimir (.lzss, .lz78, lzw o .imgc!)");
                     File fileInDesc = new File(scanner.nextLine());
-                    if (fileInDesc.getName().endsWith(".imgc")) {
-                        tipoCompresor = Algoritmos.JPEG;
-                    }
-                    else if (fileInDesc.getName().endsWith(".lzss")) {
-                        tipoCompresor = Algoritmos.LZSS;
-                    }
-                    else if (fileInDesc.getName().endsWith(".lzw")) {
-                        tipoCompresor = Algoritmos.LZW;
-                    }
-                    else {
-                        tipoCompresor = Algoritmos.LZ78;
-                    }
                     File fileOutDesc;
                     try {
                         fileOutDesc = ctrlProcesos.descomprimirArchivo(fileInDesc);
                         if(fileOutDesc != null) System.out.println("El archivo se ha descomprimido correctamente!\n");
+                    }
+                    catch (Exception e) {}
+                    break;
+                case "compdesc":
+                    System.out.println("Escriba el path absoluto del fichero a comprimir (.txt o .ppm!)");
+                    File fileInCompDesc = new File(scanner.nextLine()), fileComp = null, fileOutCompDesc;
+                    if (fileInCompDesc.getName().endsWith(".txt")) {
+                        System.out.printf("Escriba el algoritmo de compresión que quiera usar, de entre los siguientes:\npredeterminado\nlzss\nlz78\nlzw\n");
+                        String algoritmoComp = scanner.nextLine();
+                        switch (algoritmoComp) {
+                            case "lzss":
+                                tipoCompresor = Algoritmos.LZSS;
+                                break;
+                            case "lzw":
+                                tipoCompresor = Algoritmos.LZW;
+                                break;
+                            case "lz78":
+                                tipoCompresor = Algoritmos.LZ78;
+                                break;
+                            case "predeterminado":
+                                tipoCompresor = Algoritmos.PREDETERMINADO;
+                                break;
+                            default:
+                                throw new EnumConstantNotPresentException(Algoritmos.class, "El tipo de compresor " + algoritmoComp + " no existe o no está disponible para un archivo .txt\n");
+                        }
+                        try {
+                            fileComp = ctrlProcesos.comprimirArchivo(fileInCompDesc, tipoCompresor);
+                            if (fileComp != null)
+                                System.out.println("El archivo " + fileInCompDesc.getName() + " se ha comprimido correctamente!\n");
+                        }
+                        catch (Exception e) {}
+                    }
+                    else if (fileInCompDesc.getName().endsWith(".ppm")) {
+                        try {
+                            fileComp = ctrlProcesos.comprimirArchivo(fileInCompDesc);
+                            if (fileComp != null)
+                                System.out.println("El archivo " + fileInCompDesc.getName() + " se ha comprimido correctamente!\n");
+                        }
+                        catch (Exception e) {}
+                    }
+                    try {
+                        fileOutCompDesc = ctrlProcesos.descomprimirArchivo(fileComp);
+                        if(fileOutCompDesc != null) System.out.println("El archivo "+fileComp.getName()+" se ha descomprimido correctamente!\n");
                     }
                     catch (Exception e) {}
                     break;
