@@ -42,7 +42,7 @@ public class Main {
                         try {
                             File fileOutComp = ctrlProcesos.comprimirArchivo(fileInComp, tipoCompresor);
                             if (fileOutComp != null)
-                                System.out.println("El archivo " + fileInComp.getName() + " se ha comprimido correctamente!\n");
+                                System.out.println("El archivo " + fileInComp.getName() + " se ha comprimido correctamente!\n"); //A VECES SE COMPRIME Y DA NULL EL FILE!
                         }
                         catch (Exception e) {}
                     }
@@ -50,7 +50,7 @@ public class Main {
                         try {
                             File fileOutComp = ctrlProcesos.comprimirArchivo(fileInComp);
                             if (fileOutComp != null)
-                                System.out.println("El archivo " + fileInComp.getName() + " se ha comprimido correctamente!\n");
+                                System.out.println("El archivo " + fileInComp.getName() + " se ha comprimido correctamente!\n"); //A VECES SE COMPRIME Y DA NULL EL FILE!
                         }
                         catch (Exception e) {}
                     }
@@ -59,22 +59,10 @@ public class Main {
                 case "descomprimir":
                     System.out.println("Escriba el path absoluto del fichero a descomprimir (.lzss, .lz78, lzw o .imgc!)");
                     File fileInDesc = new File(scanner.nextLine());
-                    if (fileInDesc.getName().endsWith(".imgc")) {
-                        tipoCompresor = Algoritmos.JPEG;
-                    }
-                    else if (fileInDesc.getName().endsWith(".lzss")) {
-                        tipoCompresor = Algoritmos.LZSS;
-                    }
-                    else if (fileInDesc.getName().endsWith(".lzw")) {
-                        tipoCompresor = Algoritmos.LZW;
-                    }
-                    else {
-                        tipoCompresor = Algoritmos.LZ78;
-                    }
                     File fileOutDesc;
                     try {
                         fileOutDesc = ctrlProcesos.descomprimirArchivo(fileInDesc);
-                        if(fileOutDesc != null) System.out.println("El archivo se ha descomprimido correctamente!\n");
+                        if(fileOutDesc != null) System.out.println("El archivo se ha descomprimido correctamente!\n"); //A VECES SE COMPRIME Y DA NULL EL FILE!
                     }
                     catch (Exception e) {}
                     break;

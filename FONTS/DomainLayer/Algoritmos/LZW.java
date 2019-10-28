@@ -24,7 +24,7 @@ public class LZW implements CompresorDecompresor {
     public OutputAlgoritmo comprimir(File input) {
         long startTime = System.nanoTime();
         //File fileOut = new File(System.getProperty("user.home")+"\\Desktop\\PROProject"+input.getName().replace(".txt", ".lzwc"));
-        File fileOut = new File(input.getAbsolutePath().replace(".txt", ".lzw")); //custom output format THIS WILL BE TAKEN BY CONTROLLER
+        File fileOut = new File(input.getAbsolutePath().replace(".txt", ".lzw")); //custom output format
 
         //Pasar File input a String
         String archivo = input.getPath();
@@ -93,7 +93,7 @@ public class LZW implements CompresorDecompresor {
     public OutputAlgoritmo descomprimir(File input) {
         long startTime = System.nanoTime();
         //File fileOut = new File(System.getProperty("user.home")+"\\Desktop\\PROProject"+input.getName().replace(".txt", ".lzwc"));
-        File fileOut = new File(input.getAbsolutePath().replace(".lzw", "_out.txt")); //custom output format THIS WILL BE TAKEN BY CONTROLLER
+        File fileOut = new File(input.getAbsolutePath().replace(".lzw", "_out.txt")); //custom output format
 
         //String archivo = input.getPath();
         String datos = "";
@@ -155,7 +155,7 @@ public class LZW implements CompresorDecompresor {
         }
 
         long endTime = System.nanoTime(), totalTime = endTime - startTime;
-        OutputAlgoritmo OutA = new OutputAlgoritmo((int)totalTime, fileOut);;
+        OutputAlgoritmo OutA = new OutputAlgoritmo((int)totalTime, fileOut);
         return OutA;
     }
 }
