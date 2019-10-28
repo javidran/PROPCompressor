@@ -48,6 +48,8 @@ public class Main {
                     }
                     else if (fileInComp.getName().endsWith(".ppm")) {
                         try {
+                            System.out.println("Indique la calidad de compresión a usar (del 1 al 10)");
+                            ctrlProcesos.setCalidadJPEG(scanner.nextInt() * 10);
                             File fileOutComp = ctrlProcesos.comprimirArchivo(fileInComp);
                             if (fileOutComp != null)
                                 System.out.println("El archivo " + fileInComp.getName() + " se ha comprimido correctamente!\n");
@@ -97,6 +99,8 @@ public class Main {
                     }
                     else if (fileInCompDesc.getName().endsWith(".ppm")) {
                         try {
+                            System.out.println("Indique la calidad de compresión a usar (del 1 al 10)");
+                            ctrlProcesos.setCalidadJPEG(scanner.nextInt() * 10);
                             fileComp = ctrlProcesos.comprimirArchivo(fileInCompDesc);
                             if (fileComp != null)
                                 System.out.println("El archivo " + fileInCompDesc.getName() + " se ha comprimido correctamente!\n");
