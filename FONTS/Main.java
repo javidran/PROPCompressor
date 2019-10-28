@@ -13,7 +13,7 @@ public class Main {
         boolean b = true;
         while (b) {
             Algoritmos tipoCompresor;
-            System.out.printf("Introduzca uno de los siguientes comandos disponibles:\n\ncomprimir\ndescomprimir\ncompdesc (aún no va)\nsalir\n");
+            System.out.printf("Introduzca uno de los siguientes comandos disponibles:\n\ncomprimir\ndescomprimir\ncompdesc (PARA TESTING)\nsalir\n");
             Scanner scanner = new Scanner(System.in);
             String comando = scanner.nextLine();
             switch (comando) {
@@ -42,7 +42,7 @@ public class Main {
                         try {
                             File fileOutComp = ctrlProcesos.comprimirArchivo(fileInComp, tipoCompresor);
                             if (fileOutComp != null)
-                                System.out.println("El archivo " + fileInComp.getName() + " se ha comprimido correctamente!\n"); //A VECES SE COMPRIME Y DA NULL EL FILE!
+                                System.out.println("El archivo " + fileInComp.getName() + " se ha comprimido correctamente!\n");
                         }
                         catch (Exception e) {}
                     }
@@ -50,7 +50,7 @@ public class Main {
                         try {
                             File fileOutComp = ctrlProcesos.comprimirArchivo(fileInComp);
                             if (fileOutComp != null)
-                                System.out.println("El archivo " + fileInComp.getName() + " se ha comprimido correctamente!\n"); //A VECES SE COMPRIME Y DA NULL EL FILE!
+                                System.out.println("El archivo " + fileInComp.getName() + " se ha comprimido correctamente!\n");
                         }
                         catch (Exception e) {}
                     }
@@ -62,7 +62,7 @@ public class Main {
                     File fileOutDesc;
                     try {
                         fileOutDesc = ctrlProcesos.descomprimirArchivo(fileInDesc);
-                        if(fileOutDesc != null) System.out.println("El archivo se ha descomprimido correctamente!\n"); //A VECES SE COMPRIME Y DA NULL EL FILE!
+                        if(fileOutDesc != null) System.out.println("El archivo se ha descomprimido correctamente!\n");
                     }
                     catch (Exception e) {}
                     break;
