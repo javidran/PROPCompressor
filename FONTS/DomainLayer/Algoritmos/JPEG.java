@@ -16,7 +16,7 @@ public class JPEG implements CompresorDecompresor {
     private static JPEG instance = null;
 
     private static int calidad;
-    private static double[][] DCT = new double[8][8];
+    //private static double[][] DCT = new double[8][8];
     private static int[][] LuminanceQuantizationTable = new int[8][8];   //50% compression
     private static int[][] ChrominanceQuantizationTable = new int[8][8]; //50% compression
 
@@ -30,7 +30,7 @@ public class JPEG implements CompresorDecompresor {
 
     public JPEG() {
         calidad=50;
-        DCT = new double[][] {
+        /*DCT = new double[][] {
                 {.3536,  .3536,  .3536,  .3536,  .3536,  .3536,  .3536,  .3536},
                 {.4904,  .4157,  .2778,  .0975, -.0975, -.2778, -.4157, -.4904},
                 {.4619,  .1913, -.1913, -.4619, -.4619, -.1913,  .1913,  .4619},
@@ -39,7 +39,7 @@ public class JPEG implements CompresorDecompresor {
                 {.2778, -.4904,  .0975,  .4157, -.4157, -.0975,  .4904, -.2778},
                 {.1913, -.4619,  .4619, -.1913, -.1913,  .4619, -.4619,  .1913},
                 {.0975, -.2778,  .4157, -.4904,  .4904, -.4157,  .2778, -.0975}
-        };
+        };*/
 		/*DCT = new double[][] {
 			{ 6.1917, -0.3411,  1.2418,  0.1492,  0.1583,  0.2742, -0.0724,  0.0561},
 			{ 0.2205,  0.0214,  0.4503,  0.3947, -0.7846, -0.4391,  0.1001, -0.2554},
@@ -70,9 +70,6 @@ public class JPEG implements CompresorDecompresor {
                 {99, 99, 99, 99, 99, 99, 99, 99},
                 {99, 99, 99, 99, 99, 99, 99, 99}
         };
-        //ADD PRIVATE FUNCTIONS WITH COMMON CODE
-        //ADD SINGLETON METHODS
-        //WRITE AS JFIF
     }
 
     public void setCalidad(int calidad) {
