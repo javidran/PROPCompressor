@@ -15,7 +15,7 @@ import java.io.File;
 public class JPEG implements CompresorDecompresor {
     private static JPEG instance = null;
 
-    private static int calidad;
+    private static double calidad;
     //private static double[][] DCT = new double[8][8];
     private static int[][] LuminanceQuantizationTable = new int[8][8];   //50% compression
     private static int[][] ChrominanceQuantizationTable = new int[8][8]; //50% compression
@@ -29,27 +29,7 @@ public class JPEG implements CompresorDecompresor {
     }
 
     public JPEG() {
-        calidad=50;
-        /*DCT = new double[][] {
-                {.3536,  .3536,  .3536,  .3536,  .3536,  .3536,  .3536,  .3536},
-                {.4904,  .4157,  .2778,  .0975, -.0975, -.2778, -.4157, -.4904},
-                {.4619,  .1913, -.1913, -.4619, -.4619, -.1913,  .1913,  .4619},
-                {.4157, -.0975, -.4904, -.2778,  .2778,  .4904,  .0975, -.4157},
-                {.3536, -.3536, -.3536,  .3536,  .3536, -.3536, -.3536,  .3536},
-                {.2778, -.4904,  .0975,  .4157, -.4157, -.0975,  .4904, -.2778},
-                {.1913, -.4619,  .4619, -.1913, -.1913,  .4619, -.4619,  .1913},
-                {.0975, -.2778,  .4157, -.4904,  .4904, -.4157,  .2778, -.0975}
-        };*/
-		/*DCT = new double[][] {
-			{ 6.1917, -0.3411,  1.2418,  0.1492,  0.1583,  0.2742, -0.0724,  0.0561},
-			{ 0.2205,  0.0214,  0.4503,  0.3947, -0.7846, -0.4391,  0.1001, -0.2554},
-			{ 1.0423,  0.2214, -1.0017, -0.2720,  0.0789, -0.1952,  0.2801,  0.4713},
-			{-0.2340, -0.0392, -0.2617, -0.2866,  0.6351,  0.3501, -0.1433,  0.3550},
-			{ 0.2750,  0.0226,  0.1229,  0.2183, -0.2583, -0.0742, -0.2042, -0.5906},
-			{ 0.0653,  0.0428, -0.4721, -0.2905,  0.4745,  0.2875, -0.0284, -0.1311},
-			{ 0.3169,  0.0541, -0.1033, -0.0225, -0.0056,  0.1017, -0.1650, -0.1500},
-			{-0.2970, -0.0627,  0.1960,  0.0644, -0.1136, -0.1031,  0.1887,  0.1444}
-		};*/
+        calidad = 1.0;
         LuminanceQuantizationTable = new int[][] {
                 {16, 11, 10, 16,  24,  40,  51,  61},
                 {12, 12, 14, 19,  26,  58,  60,  55},
@@ -73,7 +53,10 @@ public class JPEG implements CompresorDecompresor {
     }
 
     public void setCalidad(int calidad) {
-        this.calidad = calidad;
+        if (calidad < 0) calidad = 0;
+        else if (calidad > 100) calidad = 100;
+        if (calidad > 50) this.calidad = (100 - calidad) / calidad;
+        else this.calidad = 50 / calidad;
     }
 
     @Override
@@ -126,7 +109,8 @@ public class JPEG implements CompresorDecompresor {
             }
             in.close();
 
-			/*int topi = 0, topj = 0;
+			int topi = 0, topj = 0;
+			double quantizationQuality;
 			double[][] buffY = new double[8][8];
 			double[][] buffCb = new double[8][8];
 			double[][] buffCr = new double[8][8];
@@ -136,31 +120,37 @@ public class JPEG implements CompresorDecompresor {
 				for (int y = 0; y < width; y += 8) {
 					for (int i = x; i < topi; ++i) {
 						for (int j = y; j < topj; ++j) {
+						    double alphau, alphav;
+						    if (i % 8 == 0) alphau = 1 / Math.sqrt(2);
+						    else alphau = 1;
+						    if (j % 8 == 0) alphav = 1 / Math.sqrt(2);
+						    else alphav = 1;
+                            buffY[i%8][j%8] = 0;
+                            buffCb[i%8][j%8] = 0;
+                            buffCr[i%8][j%8] = 0;
 							for (int k = x; k < topi; ++k) {
-								buffY[i%8][j%8] += DCT[i%8][k%8] * Y[k][j];
-								buffCb[i%8][j%8] += DCT[i%8][k%8] * Cb[k][j];
-								buffCr[i%8][j%8] += DCT[i%8][k%8] * Cr[k][j];
+							    for (int l = y; l < topj; ++l) {
+                                    double cosa = Math.cos(((2 * k + 1) * alphau * Math.PI) / 16);
+                                    double cosv = Math.cos(((2 * l + 1) * alphav * Math.PI) / 16);
+                                    buffY[i%8][j%8] += Y[k][l] * cosa * cosv;
+                                    buffCb[i%8][j%8] += Cb[k][l] * cosa * cosv;
+                                    buffCr[i%8][j%8] += Cr[k][l] * cosa * cosv;
+                                }
 							}
-							Y[i][j] = buffY[i%8][j%8];
-							Cb[i][j] = buffCb[i%8][j%8];
-							Cr[i][j] = buffCb[i%8][j%8];
-							System.out.println(buffY[i%8][j%8]+" "+buffCb[i%8][j%8]+" "+buffCr[i%8][j%8]);
+                            buffY[i%8][j%8] *= (alphau * alphav * 0.25);
+                            buffCb[i%8][j%8] *= (alphau * alphav * 0.25);
+                            buffCr[i%8][j%8] *= (alphau * alphav * 0.25);
 						}
 					}
-					for (int i = x; i < topi; ++i) {
-						for (int j = y; j < topj; ++j) {
-							for (int k = x; k < topi; ++k) {
-								buffY[i%8][j%8] += Y[i][k] * DCT[j%8][k%8];
-								buffCb[i%8][j%8] += Cb[i][k] * DCT[j%8][k%8];
-								buffCr[i%8][j%8] += Cr[i][k] * DCT[j%8][k%8];
-							}
-							Y[i][j] = buffY[i%8][j%8] / LuminanceQuantizationTable[i%8][j%8];
-							Cb[i][j] = buffCb[i%8][j%8] / ChrominanceQuantizationTable[i%8][j%8];
-							Cr[i][j] = buffCb[i%8][j%8] / ChrominanceQuantizationTable[i%8][j%8];
-						}
-					}
+                    for (int i = x; i < topi; ++i) {
+                        for (int j = y; j < topj; ++j) {
+                            Y[i][j] = buffY[i%8][j%8] / (LuminanceQuantizationTable[i%8][j%8] * calidad);
+                            Cb[i][j] = buffCb[i%8][j%8] / (ChrominanceQuantizationTable[i%8][j%8] * calidad);
+                            Cr[i][j] = buffCb[i%8][j%8] / (ChrominanceQuantizationTable[i%8][j%8] * calidad);
+                        }
+                    }
 				}
-			}*/
+			}
 
             BufferedWriter compressedImage = new BufferedWriter(new FileWriter(fileOut));
             compressedImage.write(magicNumber+"\n", 0, magicNumber.length() + 1); //writing same header as .ppm fileIn
