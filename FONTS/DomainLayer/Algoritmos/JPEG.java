@@ -16,7 +16,7 @@ public class JPEG implements CompresorDecompresor {
     private static JPEG instance = null;
 
     private static double calidad;
-    //private static double[][] DCT = new double[8][8];
+    private static int calidadPorcentaje;
     private static int[][] LuminanceQuantizationTable = new int[8][8];   //50% compression
     private static int[][] ChrominanceQuantizationTable = new int[8][8]; //50% compression
 
@@ -57,6 +57,7 @@ public class JPEG implements CompresorDecompresor {
         else if (calidad > 100) calidad = 100;
         if (calidad > 50) this.calidad = (100 - calidad) / calidad;
         else this.calidad = 50 / calidad;
+        calidadPorcentaje = calidad;
     }
 
     @Override
@@ -109,7 +110,7 @@ public class JPEG implements CompresorDecompresor {
             }
             in.close();
 
-			int topi = 0, topj = 0;
+			/*int topi = 0, topj = 0;
 			double quantizationQuality;
 			double[][] buffY = new double[8][8];
 			double[][] buffCb = new double[8][8];
@@ -150,12 +151,13 @@ public class JPEG implements CompresorDecompresor {
                         }
                     }
 				}
-			}
-
+			}*/
+            String qualityPercent = Integer.toString(calidadPorcentaje);
             BufferedWriter compressedImage = new BufferedWriter(new FileWriter(fileOut));
-            compressedImage.write(magicNumber+"\n", 0, magicNumber.length() + 1); //writing same header as .ppm fileIn
+            compressedImage.write(magicNumber+"\n", 0, magicNumber.length() + 1); //writing same header as .ppm fileIn + jpeg quality
             compressedImage.write(widthHeight[0]+" "+widthHeight[1]+"\n", 0, widthHeight[0].length() + widthHeight[1].length() + 2);
             compressedImage.write(rgbMVal + "\n", 0, rgbMVal.length() + 1);
+            compressedImage.write(qualityPercent+"\n", 0, qualityPercent.length() + 1);
             compressedImage.close();
 
             FileOutputStream fout = new FileOutputStream(fileOut, true);
@@ -196,7 +198,6 @@ public class JPEG implements CompresorDecompresor {
             System.err.println("Error: "+e);
         }
         long endTime = System.nanoTime(), totalTime = endTime - startTime; //ending time and total execution time
-        //System.out.println("Execution time (compression): "+totalTime);
         OutputAlgoritmo outAlg = new OutputAlgoritmo(totalTime, fileOut);
         return outAlg;
     }
@@ -213,11 +214,14 @@ public class JPEG implements CompresorDecompresor {
             if (widthHeight.length > 2) throw new Exception("El formato de .ppm no es correcto!");
             String rgbMVal = originalImage.readLine();
             if(!rgbMVal.equals("255")) throw new Exception("El formato de .ppm no es correcto!");
+            String quality = originalImage.readLine();
+            if(quality.length() > 3) throw new Exception("El formato de .ppm no es correcto!");
             int width = Integer.parseInt(widthHeight[0]);  //string to int
             int height = Integer.parseInt(widthHeight[1]); //string to int
             int rgbMaxVal = Integer.parseInt(rgbMVal); //string to int of rgb maximum value per pixel
+            int qualityPercent = Integer.parseInt(quality);
             String space = " ", eol = "\n";
-            int fileOffset = magicNumber.getBytes().length + widthHeight[0].getBytes().length + space.getBytes().length + widthHeight[1].getBytes().length + rgbMVal.getBytes().length + eol.getBytes().length * 3; //skipping already read header...
+            int fileOffset = magicNumber.getBytes().length + widthHeight[0].getBytes().length + space.getBytes().length + widthHeight[1].getBytes().length + rgbMVal.getBytes().length + quality.getBytes().length + eol.getBytes().length * 4; //skipping already read header...
             originalImage.close();
 
             FileInputStream fin = new FileInputStream(fileIn);
@@ -305,7 +309,6 @@ public class JPEG implements CompresorDecompresor {
             System.err.println("Error: "+e);
         }
         long endTime = System.nanoTime(), totalTime = endTime - startTime; //ending time and total execution time
-        //System.out.println("Execution time (decompression): "+totalTime);
         OutputAlgoritmo outAlg = new OutputAlgoritmo(totalTime, fileOut);
         return outAlg;
     }
