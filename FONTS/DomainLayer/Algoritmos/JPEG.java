@@ -145,13 +145,14 @@ public class JPEG implements CompresorDecompresor {
                             buffCr[i%8][j%8] *= (alphau * alphav * 0.25);
 						}
 					}
-                    for (int i = x; i < topi; ++i) {
-                        for (int j = y; j < topj; ++j) {
+                    for (int i = x; i < i + 8; ++i) {
+                        for (int j = y; j < j + 8; ++j) {
                             Y[i][j] = buffY[i%8][j%8] / (LuminanceQuantizationTable[i%8][j%8] * calidad);
                             Cb[i][j] = buffCb[i%8][j%8] / (ChrominanceQuantizationTable[i%8][j%8] * calidad);
                             Cr[i][j] = buffCb[i%8][j%8] / (ChrominanceQuantizationTable[i%8][j%8] * calidad);
-                            System.out.println((int)Math.round(Y[i][j]));
+                            if (i < 8) System.out.printf((int)Math.round(Y[i][j])+" ");
                         }
+                        if (i < 8) System.out.printf("\n");
                     }
 				}
 			}*/
