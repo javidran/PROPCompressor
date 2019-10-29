@@ -55,8 +55,8 @@ public class JPEG implements CompresorDecompresor {
     public void setCalidad(int calidad) {
         if (calidad < 0) calidad = 0;
         else if (calidad > 100) calidad = 100;
-        if (calidad > 50) this.calidad = (100 - calidad) / calidad;
-        else this.calidad = 50 / calidad;
+        if (calidad > 50) this.calidad = (100.0 - (double)calidad) / 50.0;
+        else this.calidad = 50.0 / (double)calidad;
         calidadPorcentaje = calidad;
     }
 
@@ -111,7 +111,6 @@ public class JPEG implements CompresorDecompresor {
             in.close();
 
 			/*int topi = 0, topj = 0;
-			double quantizationQuality;
 			double[][] buffY = new double[8][8];
 			double[][] buffCb = new double[8][8];
 			double[][] buffCr = new double[8][8];
@@ -119,7 +118,7 @@ public class JPEG implements CompresorDecompresor {
 				if (x + 7 < height) topi = x + 8;
 				else topi = height;
 				for (int y = 0; y < width; y += 8) {
-                    if (y + 7 < height) topj = y + 8;
+                    if (y + 7 < width) topj = y + 8;
                     else topj = width;
 					for (int i = x; i < topi; ++i) {
 						for (int j = y; j < topj; ++j) {
@@ -132,8 +131,8 @@ public class JPEG implements CompresorDecompresor {
                             buffCb[i%8][j%8] = 0;
                             buffCr[i%8][j%8] = 0;
 							for (int k = x; k < topi; ++k) {
+                                double cosa = Math.cos(((2 * k + 1) * (i % 8) * Math.PI) / 16);
 							    for (int l = y; l < topj; ++l) {
-                                    double cosa = Math.cos(((2 * k + 1) * (i % 8) * Math.PI) / 16);
                                     double cosv = Math.cos(((2 * l + 1) * (j % 8) * Math.PI) / 16);
                                     buffY[i%8][j%8] += Y[k][l] * cosa * cosv;
                                     buffCb[i%8][j%8] += Cb[k][l] * cosa * cosv;
@@ -145,17 +144,17 @@ public class JPEG implements CompresorDecompresor {
                             buffCr[i%8][j%8] *= (alphau * alphav * 0.25);
 						}
 					}
-                    for (int i = x; i < i + 8; ++i) {
-                        for (int j = y; j < j + 8; ++j) {
+                    for (int i = x; i < topi; ++i) {
+                        for (int j = y; j < topj; ++j) {
                             Y[i][j] = buffY[i%8][j%8] / (LuminanceQuantizationTable[i%8][j%8] * calidad);
                             Cb[i][j] = buffCb[i%8][j%8] / (ChrominanceQuantizationTable[i%8][j%8] * calidad);
                             Cr[i][j] = buffCb[i%8][j%8] / (ChrominanceQuantizationTable[i%8][j%8] * calidad);
-                            if (i < 8) System.out.printf((int)Math.round(Y[i][j])+" ");
                         }
-                        if (i < 8) System.out.printf("\n");
                     }
+
 				}
 			}*/
+
             String qualityPercent = Integer.toString(calidadPorcentaje);
             BufferedWriter compressedImage = new BufferedWriter(new FileWriter(fileOut));
             compressedImage.write(magicNumber+"\n", 0, magicNumber.length() + 1); //writing same header as .ppm fileIn + jpeg quality
