@@ -114,7 +114,7 @@ public class JPEG implements CompresorDecompresor {
 			double[][] buffY = new double[8][8];
 			double[][] buffCb = new double[8][8];
 			double[][] buffCr = new double[8][8];
-			for (int x = 0; x < height; x += 8) { //image DCT and quantization (done in pixel squares of 8x8)
+			for (int x = 0; x < height; x += 8) { //image DCT-II and quantization (done in pixel squares of 8x8)
 				if (x + 7 < height) topi = x + 8;
 				else topi = height;
 				for (int y = 0; y < width; y += 8) {
@@ -131,9 +131,9 @@ public class JPEG implements CompresorDecompresor {
                             buffCb[i%8][j%8] = 0;
                             buffCr[i%8][j%8] = 0;
 							for (int k = x; k < topi; ++k) {
-                                double cosa = Math.cos(((2 * k + 1) * (i % 8) * Math.PI) / 16);
+                                double cosa = Math.cos(((2 * k + 1) * (i % 8) * Math.PI) / 16.0);
 							    for (int l = y; l < topj; ++l) {
-                                    double cosv = Math.cos(((2 * l + 1) * (j % 8) * Math.PI) / 16);
+                                    double cosv = Math.cos(((2 * l + 1) * (j % 8) * Math.PI) / 16.0);
                                     buffY[i%8][j%8] += Y[k][l] * cosa * cosv;
                                     buffCb[i%8][j%8] += Cb[k][l] * cosa * cosv;
                                     buffCr[i%8][j%8] += Cr[k][l] * cosa * cosv;
@@ -168,7 +168,6 @@ public class JPEG implements CompresorDecompresor {
             for (int x = 0; x < height; ++x) { //TEST: writing data into file (first Luminance)
                 for (int y = 0; y < width; ++y) {
                     out.write((int)Math.round(Y[x][y]));
-                    //System.out.println((int)Math.round(Y[x][y]));
                 }
             }
             for (int x = 0; x < height; ++x) { //TEST: writing data into file (then Chrominance DownSampled to 25%, compressed image will weight 50% less than original)
@@ -236,15 +235,15 @@ public class JPEG implements CompresorDecompresor {
             int[][] Cb = new int[height][width];//chrominance blue
             int[][] Cr = new int[height][width];//chrominance red
             in.skip(fileOffset);
-            for (int x = 0; x < height; ++x) {//image luminace reading and [0,255] range reapplied
+            for (int x = 0; x < height; ++x) {//image luminace reading
                 for (int y = 0; y < width; ++y) {
-                    Y[x][y] = (byte)in.read() + 128; //(byte) because reads [0,255] but it's been stored in [-128,127]
+                    Y[x][y] = (byte)in.read(); //(byte) because reads [0,255] but it's been stored as [-128,127]
                 }
             }
-            for (int x = 0; x < height; x += 2) {//image chrominance reading and [0,255] range reapplied
+            for (int x = 0; x < height; x += 2) {//image chrominance reading
                 for (int y = 0; y < width; y += 2) {
-                    Cb[x][y] = (byte)in.read() + 128; //(byte) because reads [0,255] but it's been stored in [-128,127]
-                    Cr[x][y] = (byte)in.read() + 128; //(byte) because reads [0,255] but it's been stored in [-128,127]
+                    Cb[x][y] = (byte)in.read(); //(byte) because reads [0,255] but it's been stored as [-128,127]
+                    Cr[x][y] = (byte)in.read(); //(byte) because reads [0,255] but it's been stored as [-128,127]
                     if (x < height -1 && y < width -1) {
                         Cb[x][y+1] = Cb[x][y];
                         Cb[x+1][y] = Cb[x][y];
@@ -265,11 +264,60 @@ public class JPEG implements CompresorDecompresor {
             }
             in.close();
 
+            /*int topi = 0, topj = 0;
+            double[][] buffY = new double[8][8];
+            double[][] buffCb = new double[8][8];
+            double[][] buffCr = new double[8][8];
+            for (int x = 0; x < height; x += 8) { //image DCT-III and inverse quantization (done in pixel squares of 8x8)
+                if (x + 7 < height) topi = x + 8;
+                else topi = height;
+                for (int y = 0; y < width; y += 8) {
+                    if (y + 7 < width) topj = y + 8;
+                    else topj = width;
+                    for (int i = x; i < topi; ++i) {
+                        for (int j = y; j < topj; ++j) {
+                            Y[i][j] *= (LuminanceQuantizationTable[i%8][j%8] * calidad);
+                        }
+                    }
+                    for (int i = x; i < topi; ++i) {
+                        for (int j = y; j < topj; ++j) {
+                            double alphau, alphav;
+                            if (i % 8 == 0) alphau = 1 / Math.sqrt(2);
+                            else alphau = 1;
+                            if (j % 8 == 0) alphav = 1 / Math.sqrt(2);
+                            else alphav = 1;
+                            buffY[i%8][j%8] = 0;
+                            buffCb[i%8][j%8] = 0;
+                            buffCr[i%8][j%8] = 0;
+                            for (int k = 0; k < 8; ++k) {
+                                double cosa = Math.cos(((2 * k + 1) * (i % 8) * Math.PI) / 16.0);
+                                for (int l = 0; l < 8; ++l) {
+                                    double cosv = Math.cos(((2 * l + 1) * (j % 8) * Math.PI) / 16.0);
+                                    buffY[i%8][j%8] += alphau * alphav * (double)Y[k][l] * cosa * cosv;
+                                    buffCb[i%8][j%8] += alphau * alphav * (double)Cb[k][l] * cosa * cosv;
+                                    buffCr[i%8][j%8] += alphau * alphav * (double)Cr[k][l] * cosa * cosv;
+                                }
+                            }
+                            buffY[i%8][j%8] *= 0.25;
+                            buffCb[i%8][j%8] *= 0.25;
+                            buffCr[i%8][j%8] *= 0.25;
+                        }
+                    }
+                    for (int i = x; i < topi; ++i) {
+                        for (int j = y; j < topj; ++j) {
+                            Y[i][j] = (int)Math.round(buffY[i%8][j%8]);
+                            Cb[i][j] = (int)Math.round(buffCb[i%8][j%8]);
+                            Cr[i][j] = (int)Math.round(buffCr[i%8][j%8]);
+                        }
+                    }
+                }
+            }*/
+
             for (int x = 0; x < height; ++x) {//image color recomposition from YCbCr to RGB
                 for (int y = 0; y < width; ++y) {
-                    R[x][y] = (int)Math.round(1.164 * (double)(Y[x][y] - 16) + 1.596 * (double)(Cr[x][y] - 128));
-                    G[x][y] = (int)Math.round(1.164 * (double)(Y[x][y] - 16) - 0.391 * (double)(Cb[x][y] - 128) - 0.813 * (double)(Cr[x][y] - 128));
-                    B[x][y] = (int)Math.round(1.164 * (double)(Y[x][y] - 16) + 2.018 * (double)(Cb[x][y] - 128));
+                    R[x][y] = (int)Math.round(1.164 * (double)(Y[x][y] - 16 + 128) + 1.596 * (double)(Cr[x][y]));
+                    G[x][y] = (int)Math.round(1.164 * (double)(Y[x][y] - 16 + 128) - 0.391 * (double)(Cb[x][y]) - 0.813 * (double)(Cr[x][y]));
+                    B[x][y] = (int)Math.round(1.164 * (double)(Y[x][y] - 16 + 128) + 2.018 * (double)(Cb[x][y]));
                     if (R[x][y] > rgbMaxVal) { //controlling and correcting any value that is out of range (0 to rgbMaxVal)
                         R[x][y] = rgbMaxVal;
                     }
