@@ -110,7 +110,7 @@ public class JPEG implements CompresorDecompresor {
             }
             in.close();
 
-			int topi = 0, topj = 0;
+			/*int topi = 0, topj = 0;
 			double quantizationQuality;
 			double[][] buffY = new double[8][8];
 			double[][] buffCb = new double[8][8];
@@ -119,6 +119,8 @@ public class JPEG implements CompresorDecompresor {
 				if (x + 7 < height) topi = x + 8;
 				else topi = height;
 				for (int y = 0; y < width; y += 8) {
+                    if (y + 7 < height) topj = y + 8;
+                    else topj = width;
 					for (int i = x; i < topi; ++i) {
 						for (int j = y; j < topj; ++j) {
 						    double alphau, alphav;
@@ -152,7 +154,7 @@ public class JPEG implements CompresorDecompresor {
                         }
                     }
 				}
-			}
+			}*/
             String qualityPercent = Integer.toString(calidadPorcentaje);
             BufferedWriter compressedImage = new BufferedWriter(new FileWriter(fileOut));
             compressedImage.write(magicNumber+"\n", 0, magicNumber.length() + 1); //writing same header as .ppm fileIn + jpeg quality
