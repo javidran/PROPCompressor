@@ -54,7 +54,7 @@ public class JPEG implements CompresorDecompresor {
 
     public void setCalidad(int calidad) {
         if (calidad < 0) calidad = 0; //narrowing out-of-bounds quality preset to nearest value
-        else if (calidad > 90) calidad = 90;
+        else if (calidad > 80) calidad = 80;
         if (calidad > 50) this.calidad = (100.0 - (double)calidad) / 50.0; //calculating new quality scalar and setting it
         else this.calidad = 50.0 / (double)calidad;
         calidadPorcentaje = calidad; //setting new quality percentage (the one passed as parameter)
@@ -149,7 +149,9 @@ public class JPEG implements CompresorDecompresor {
                             Y[i][j] = buffY[i%8][j%8] / (LuminanceQuantizationTable[i%8][j%8] * calidad);
                             Cb[i][j] = buffCb[i%8][j%8] / (ChrominanceQuantizationTable[i%8][j%8] * calidad);
                             Cr[i][j] = buffCr[i%8][j%8] / (ChrominanceQuantizationTable[i%8][j%8] * calidad);
+                            if (i < 8 && j < 8) System.out.printf(Math.round(Cb[i][j])+" ");
                         }
+                        System.out.printf("\n");
                     }
 
 				}
@@ -226,9 +228,6 @@ public class JPEG implements CompresorDecompresor {
 
             FileInputStream fin = new FileInputStream(fileIn); //creation of buffered input stream to read pixel map
             BufferedInputStream in = new BufferedInputStream(fin);
-            int[][] R = new int[height][width];
-            int[][] G = new int[height][width];
-            int[][] B = new int[height][width];
             int[][] Y = new int[height][width];//luminance
             int[][] Cb = new int[height][width];//chrominance blue
             int[][] Cr = new int[height][width];//chrominance red
@@ -276,6 +275,8 @@ public class JPEG implements CompresorDecompresor {
                     for (int i = x; i < topi; ++i) {
                         for (int j = y; j < topj; ++j) {
                             Y[i][j] *= (LuminanceQuantizationTable[i%8][j%8] * calidad);
+                            Cb[i][j] *= (ChrominanceQuantizationTable[i%8][j%8] * calidad);
+                            Cr[i][j] *= (ChrominanceQuantizationTable[i%8][j%8] * calidad);
                         }
                     }
                     for (int i = x; i < topi; ++i) {
@@ -306,34 +307,7 @@ public class JPEG implements CompresorDecompresor {
                             Y[i][j] = (int)Math.round(buffY[i%8][j%8]);
                             Cb[i][j] = (int)Math.round(buffCb[i%8][j%8]);
                             Cr[i][j] = (int)Math.round(buffCr[i%8][j%8]);
-                            //if (Y[i][j] > 255 || Cb[i][j] > 255 || Cr[i][j] > 255) System.out.println("mec!");
                         }
-                    }
-                }
-            }
-
-            for (int x = 0; x < height; ++x) {//image color recomposition from YCbCr to RGB
-                for (int y = 0; y < width; ++y) {
-                    R[x][y] = (int)Math.round(1.164 * (double)(Y[x][y] - 16 + 128) + 1.596 * (double)(Cr[x][y]));
-                    G[x][y] = (int)Math.round(1.164 * (double)(Y[x][y] - 16 + 128) - 0.391 * (double)(Cb[x][y]) - 0.813 * (double)(Cr[x][y]));
-                    B[x][y] = (int)Math.round(1.164 * (double)(Y[x][y] - 16 + 128) + 2.018 * (double)(Cb[x][y]));
-                    if (R[x][y] > rgbMaxVal) { //controlling and correcting any value that is out of range (0 to rgbMaxVal)
-                        R[x][y] = rgbMaxVal;
-                    }
-                    else if (R[x][y] < 0) {
-                        R[x][y] = 0;
-                    }
-                    if (G[x][y] > rgbMaxVal) {
-                        G[x][y] = rgbMaxVal;
-                    }
-                    else if (G[x][y] < 0) {
-                        G[x][y] = 0;
-                    }
-                    if (B[x][y] > rgbMaxVal) {
-                        B[x][y] = rgbMaxVal;
-                    }
-                    else if (B[x][y] < 0) {
-                        B[x][y] = 0;
                     }
                 }
             }
@@ -346,11 +320,33 @@ public class JPEG implements CompresorDecompresor {
 
             FileOutputStream fout = new FileOutputStream(fileOut, true);
             BufferedOutputStream out = new BufferedOutputStream(fout);
+            int[] rgb = new int[3];
             for (int x = 0; x < height; ++x) { //writing data into file (RGB)
                 for (int y = 0; y < width; ++y) {
-                    out.write((byte)R[x][y]);
-                    out.write((byte)G[x][y]);
-                    out.write((byte)B[x][y]);
+                    rgb[0] = (int)Math.round(1.164 * (double)(Y[x][y] - 16 + 128) + 1.596 * (double)(Cr[x][y]));
+                    rgb[1] = (int)Math.round(1.164 * (double)(Y[x][y] - 16 + 128) - 0.391 * (double)(Cb[x][y]) - 0.813 * (double)(Cr[x][y]));
+                    rgb[2] = (int)Math.round(1.164 * (double)(Y[x][y] - 16 + 128) + 2.018 * (double)(Cb[x][y]));
+                    if (rgb[0] > rgbMaxVal) { //controlling and correcting any value that is out of range (0 to rgbMaxVal)
+                        rgb[0] = rgbMaxVal;
+                    }
+                    else if (rgb[0] < 0) {
+                        rgb[0] = 0;
+                    }
+                    if (rgb[1] > rgbMaxVal) {
+                        rgb[1] = rgbMaxVal;
+                    }
+                    else if (rgb[1] < 0) {
+                        rgb[1] = 0;
+                    }
+                    if (rgb[2] > rgbMaxVal) {
+                        rgb[2] = rgbMaxVal;
+                    }
+                    else if (rgb[2] < 0) {
+                        rgb[2] = 0;
+                    }
+                    out.write((byte)rgb[0]);
+                    out.write((byte)rgb[1]);
+                    out.write((byte)rgb[2]);
                 }
             }
             out.close();
