@@ -110,7 +110,7 @@ public class JPEG implements CompresorDecompresor {
             }
             in.close();
 
-			/*int topu = 0, topv = 0;
+			int topu = 0, topv = 0;
             double alphau, alphav, cosu, cosv;
             double[][] buffY = new double[8][8];
             double[][] buffCb = new double[8][8];
@@ -153,7 +153,7 @@ public class JPEG implements CompresorDecompresor {
                     }
 
 				}
-			}*/
+			}
 
             String qualityPercent = Integer.toString(calidadPorcentaje);
             BufferedWriter compressedImage = new BufferedWriter(new FileWriter(fileOut));
@@ -262,7 +262,7 @@ public class JPEG implements CompresorDecompresor {
             }
             in.close();
 
-            /*int topi = 0, topj = 0;
+            int topi = 0, topj = 0;
             double[][] buffY = new double[8][8];
             double[][] buffCb = new double[8][8];
             double[][] buffCr = new double[8][8];
@@ -283,11 +283,11 @@ public class JPEG implements CompresorDecompresor {
                             buffY[i%8][j%8] = 0;
                             buffCb[i%8][j%8] = 0;
                             buffCr[i%8][j%8] = 0;
-                            for (int u = 0; u < topi; ++u) {
+                            for (int u = x; u < topi; ++u) {
                                 if (u % 8 == 0) alphau = 1 / Math.sqrt(2);
                                 else alphau = 1;
                                 cosu = Math.cos(((2 * (i % 8) + 1) * (u % 8) * Math.PI) / 16.0);
-                                for (int v = 0; v < topj; ++v) {
+                                for (int v = y; v < topj; ++v) {
                                     if (v % 8 == 0) alphav = 1 / Math.sqrt(2);
                                     else alphav = 1;
                                     cosv = Math.cos(((2 * (j % 8) + 1) * (v % 8) * Math.PI) / 16.0);
@@ -306,10 +306,11 @@ public class JPEG implements CompresorDecompresor {
                             Y[i][j] = (int)Math.round(buffY[i%8][j%8]);
                             Cb[i][j] = (int)Math.round(buffCb[i%8][j%8]);
                             Cr[i][j] = (int)Math.round(buffCr[i%8][j%8]);
+                            //if (Y[i][j] > 255 || Cb[i][j] > 255 || Cr[i][j] > 255) System.out.println("mec!");
                         }
                     }
                 }
-            }*/
+            }
 
             for (int x = 0; x < height; ++x) {//image color recomposition from YCbCr to RGB
                 for (int y = 0; y < width; ++y) {
