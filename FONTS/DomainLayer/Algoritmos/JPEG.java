@@ -148,7 +148,7 @@ public class JPEG implements CompresorDecompresor {
                         for (int j = y; j < topv; ++j) {
                             Y[i][j] = buffY[i%8][j%8] / (LuminanceQuantizationTable[i%8][j%8] * calidad);
                             Cb[i][j] = buffCb[i%8][j%8] / (ChrominanceQuantizationTable[i%8][j%8] * calidad);
-                            Cr[i][j] = buffCb[i%8][j%8] / (ChrominanceQuantizationTable[i%8][j%8] * calidad);
+                            Cr[i][j] = buffCr[i%8][j%8] / (ChrominanceQuantizationTable[i%8][j%8] * calidad);
                         }
                     }
 
