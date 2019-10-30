@@ -54,7 +54,7 @@ public class JPEG implements CompresorDecompresor {
 
     public void setCalidad(int calidad) {
         if (calidad < 0) calidad = 0; //narrowing out-of-bounds quality preset to nearest value
-        else if (calidad > 100) calidad = 100;
+        else if (calidad > 90) calidad = 90;
         if (calidad > 50) this.calidad = (100.0 - (double)calidad) / 50.0; //calculating new quality scalar and setting it
         else this.calidad = 50.0 / (double)calidad;
         calidadPorcentaje = calidad; //setting new quality percentage (the one passed as parameter)
