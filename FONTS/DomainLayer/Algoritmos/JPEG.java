@@ -77,7 +77,7 @@ public class JPEG implements CompresorDecompresor {
             }
             if (buff.endsWith(" ")) throw new Exception("El formato de .ppm no es correcto!");
             String[] widthHeight = buff.split(" ");  //read and split dimensions into two (one for each value)
-            if (widthHeight.length > 2 || Integer.parseInt(widthHeight[0]) < 2 || Integer.parseInt(widthHeight[1]) < 2) throw new Exception("El formato de .ppm no es correcto!");
+            if (widthHeight.length > 2 || Integer.parseInt(widthHeight[0]) < 3 || Integer.parseInt(widthHeight[1]) < 3) throw new Exception("El formato de .ppm no es correcto!");
             buff = originalImage.readLine();
             while (buff.contains("#")) { //avoiding comments...
                 fileOffset += buff.length() + 1;
@@ -120,16 +120,22 @@ public class JPEG implements CompresorDecompresor {
                             downSampledCr[x/2][y/2] = (int)Math.round((Cr[x][y] + Cr[x][y+1] + Cr[x+1][y] + Cr[x+1][y+1]) / 4);
                         }
                         else if (x < height - 1 && y == width - 1) {
-                            if (y%2 != 0) downSampledCb[x/2][y/2] = (int)Math.round((Cb[x][y] + Cb[x+1][y]) / 2);
-                            if (y%2 != 0) downSampledCr[x/2][y/2] = (int)Math.round((Cr[x][y] + Cr[x+1][y]) / 2);
+                            if (y%2 != 0) {
+                                downSampledCb[x/2][y/2] = (int)Math.round((Cb[x][y] + Cb[x+1][y]) / 2);
+                                downSampledCr[x/2][y/2] = (int)Math.round((Cr[x][y] + Cr[x+1][y]) / 2);
+                            }
                         }
                         else if (x == height - 1 && y < width - 1) {
-                            if (x%2 != 0) downSampledCb[x/2][y/2] = (int)Math.round((Cb[x][y] + Cb[x][y+1]) / 2);
-                            if (x%2 != 0) downSampledCr[x/2][y/2] = (int)Math.round((Cr[x][y] + Cr[x][y+1]) / 2);
+                            if (x%2 != 0) {
+                                downSampledCb[x/2][y/2] = (int)Math.round((Cb[x][y] + Cb[x][y+1]) / 2);
+                                downSampledCr[x/2][y/2] = (int)Math.round((Cr[x][y] + Cr[x][y+1]) / 2);
+                            }
                         }
                         else {
-                            if (x%2 != 0 && y%2 != 0) downSampledCb[x/2][y/2] = (int)Math.round(Cb[x][y]);
-                            if (x%2 != 0 && y%2 != 0) downSampledCr[x/2][y/2] = (int)Math.round(Cr[x][y]);
+                            if (x%2 != 0 && y%2 != 0) {
+                                downSampledCb[x/2][y/2] = (int)Math.round(Cb[x][y]);
+                                downSampledCr[x/2][y/2] = (int)Math.round(Cr[x][y]);
+                            }
                         }
                     }
                 }
@@ -374,6 +380,36 @@ public class JPEG implements CompresorDecompresor {
                     if (x < height - 1 && y < width - 1) {
                         cb = Cb[x/2][y/2];
                         cr = Cr[x/2][y/2];
+                    }
+                    else if (x < height - 1 && y == width - 1) {
+                        if (y%2 == 0) {
+                            cb = Cb[x/2][(y/2)-1];
+                            cr = Cr[x/2][(y/2)-1];
+                        }
+                        else {
+                            cb = Cb[x/2][(y/2)-2];
+                            cr = Cr[x/2][(y/2)-2];
+                        }
+                    }
+                    else if (x == height - 1 && y < width - 1) {
+                        if (x%2 == 0) {
+                            cb = Cb[(x/2)-1][y/2];
+                            cr = Cr[(x/2)-1][y/2];
+                        }
+                        else {
+                            cb = Cb[(x/2)-2][y/2];
+                            cr = Cr[(x/2)-2][y/2];
+                        }
+                    }
+                    else {
+                        if (x%2 == 0 && y%2 == 0) {
+                            cb = Cb[(x/2)-1][(y/2)-1];
+                            cr = Cr[(x/2)-1][(y/2)-1];
+                        }
+                        else {
+                            cb = Cb[(x/2)-2][(y/2)-2];
+                            cr = Cr[(x/2)-2][(y/2)-2];
+                        }
                     }
                     rgb[0] = (int)Math.round(1.164 * (double)(Y[x][y] - 16 + 128) + 1.596 * (double)(cr));
                     rgb[1] = (int)Math.round(1.164 * (double)(Y[x][y] - 16 + 128) - 0.391 * (double)(cb) - 0.813 * (double)(cr));
