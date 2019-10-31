@@ -16,7 +16,7 @@ public class JPEG implements CompresorDecompresor {
     private static JPEG instance = null;
 
     private static double calidad;
-    private static int calidadPorcentaje;
+    private static int calidadHeader;
     private static int[][] LuminanceQuantizationTable = new int[8][8];   //50% compression
     private static int[][] ChrominanceQuantizationTable = new int[8][8]; //50% compression
 
@@ -53,11 +53,11 @@ public class JPEG implements CompresorDecompresor {
     }
 
     public void setCalidad(int calidad) {
-        if (calidad < 0) calidad = 0; //narrowing out-of-bounds quality preset to nearest value
+        if (calidad < 10) calidad = 10; //narrowing out-of-bounds quality preset to nearest value
         else if (calidad > 80) calidad = 80;
         if (calidad > 50) this.calidad = (100.0 - (double)calidad) / 50.0; //calculating new quality scalar and setting it
         else this.calidad = 50.0 / (double)calidad;
-        calidadPorcentaje = calidad; //setting new quality percentage (the one passed as parameter)
+        calidadHeader = calidad; //setting new quality percentage (the one passed as parameter)
     }
 
     @Override
@@ -77,7 +77,7 @@ public class JPEG implements CompresorDecompresor {
             }
             if (buff.endsWith(" ")) throw new Exception("El formato de .ppm no es correcto!");
             String[] widthHeight = buff.split(" ");  //read and split dimensions into two (one for each value)
-            if (widthHeight.length > 2) throw new Exception("El formato de .ppm no es correcto!");
+            if (widthHeight.length > 2 || Integer.parseInt(widthHeight[0]) < 2 || Integer.parseInt(widthHeight[1]) < 2) throw new Exception("El formato de .ppm no es correcto!");
             buff = originalImage.readLine();
             while (buff.contains("#")) { //avoiding comments...
                 fileOffset += buff.length() + 1;
@@ -112,7 +112,7 @@ public class JPEG implements CompresorDecompresor {
 
             double[][] downSampledCb = new double[height/2][width/2];
             double[][] downSampledCr = new double[height/2][width/2];
-            for (int x = 0; x < height; ++x) { //TEST: writing data into file (then Chrominance DownSampled to 25%, compressed image will weight 50% less than original)
+            for (int x = 0; x < height; ++x) { //Chrominance DownSampled to 25% each colour channel. Compressed image will be 50% less large than original thanks to this
                 for (int y = 0; y < width; ++y) {
                     if (x%2 == 0 && y%2 == 0) {
                         if (x < height - 1 && y < width - 1) {
@@ -205,7 +205,7 @@ public class JPEG implements CompresorDecompresor {
                 }
             }
 
-            String qualityPercent = Integer.toString(calidadPorcentaje);
+            String qualityPercent = Integer.toString(calidadHeader);
             BufferedWriter compressedImage = new BufferedWriter(new FileWriter(fileOut));
             compressedImage.write(magicNumber+"\n", 0, magicNumber.length() + 1); //writing same header as .ppm fileIn + jpeg quality
             compressedImage.write(widthHeight[0]+" "+widthHeight[1]+"\n", 0, widthHeight[0].length() + widthHeight[1].length() + 2);
@@ -280,7 +280,7 @@ public class JPEG implements CompresorDecompresor {
             int topi = 0, topj = 0;
             double[][] buffY = new double[8][8];
             double alphau, alphav, cosu, cosv;
-            for (int x = 0; x < height; x += 8) { //image inverse quantization and DCT-III (aka inverse DCT) (done in pixel squares of 8x8)
+            for (int x = 0; x < height; x += 8) { //image inverse quantization and DCT-III (aka inverse DCT) (done in pixel squares of 8x8) (luminance part)
                 if (x + 7 < height) topi = x + 8;
                 else topi = height;
                 for (int y = 0; y < width; y += 8) {
@@ -317,7 +317,7 @@ public class JPEG implements CompresorDecompresor {
             }
             double[][] buffCb = new double[8][8];
             double[][] buffCr = new double[8][8];
-            for (int x = 0; x < height/2; x += 8) { //image inverse quantization and DCT-III (aka inverse DCT) (done in pixel squares of 8x8)
+            for (int x = 0; x < height/2; x += 8) { //image inverse quantization and DCT-III (aka inverse DCT) (done in pixel squares of 8x8) (chrominance part)
                 if (x + 7 < height/2) topi = x + 8;
                 else topi = height/2;
                 for (int y = 0; y < width/2; y += 8) {
