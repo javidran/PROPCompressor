@@ -346,6 +346,7 @@ public class JPEG implements CompresorDecompresor {
                                     buffCr[i%8][j%8] += alphau * alphav * (double)Cr[u][v] * cosu * cosv;
                                 }
                             }
+                            buffCb[i%8][j%8] *= 0.25;
                             buffCr[i%8][j%8] *= 0.25;
                         }
                     }
