@@ -53,11 +53,11 @@ public class JPEG implements CompresorDecompresor {
     }
 
     public void setCalidad(int calidad) {
-        if (calidad < 0) calidad = 0;
-        else if (calidad > 100) calidad = 100;
-        if (calidad > 50) this.calidad = (100.0 - (double)calidad) / 50.0;
+        if (calidad < 0) calidad = 0; //narrowing out-of-bounds quality preset to nearest value
+        else if (calidad > 80) calidad = 80;
+        if (calidad > 50) this.calidad = (100.0 - (double)calidad) / 50.0; //calculating new quality scalar and setting it
         else this.calidad = 50.0 / (double)calidad;
-        calidadPorcentaje = calidad;
+        calidadPorcentaje = calidad; //setting new quality percentage (the one passed as parameter)
     }
 
     @Override
@@ -89,7 +89,7 @@ public class JPEG implements CompresorDecompresor {
             fileOffset += magicNumber.getBytes().length + widthHeight[0].getBytes().length + space.getBytes().length + widthHeight[1].getBytes().length + rgbMVal.getBytes().length + eol.getBytes().length * 3; //skipping already read header...
             originalImage.close();
 
-            FileInputStream fin = new FileInputStream(fileIn);
+            FileInputStream fin = new FileInputStream(fileIn); //creation of buffered input stream to read pixel map
             BufferedInputStream in = new BufferedInputStream(fin);
             int width = Integer.parseInt(widthHeight[0]);  //string to int of image width
             int height = Integer.parseInt(widthHeight[1]); //string to int of image height
@@ -110,50 +110,50 @@ public class JPEG implements CompresorDecompresor {
             }
             in.close();
 
-			/*int topi = 0, topj = 0;
-			double[][] buffY = new double[8][8];
-			double[][] buffCb = new double[8][8];
-			double[][] buffCr = new double[8][8];
-			for (int x = 0; x < height; x += 8) { //image DCT-II and quantization (done in pixel squares of 8x8)
-				if (x + 7 < height) topi = x + 8;
-				else topi = height;
-				for (int y = 0; y < width; y += 8) {
-                    if (y + 7 < width) topj = y + 8;
-                    else topj = width;
-					for (int i = x; i < topi; ++i) {
-						for (int j = y; j < topj; ++j) {
-						    double alphau, alphav;
-						    if (i % 8 == 0) alphau = 1 / Math.sqrt(2);
-						    else alphau = 1;
-						    if (j % 8 == 0) alphav = 1 / Math.sqrt(2);
+			int topu = 0, topv = 0;
+            double alphau, alphav, cosu, cosv;
+            double[][] buffY = new double[8][8];
+            double[][] buffCb = new double[8][8];
+            double[][] buffCr = new double[8][8];
+            for (int x = 0; x < height; x += 8) { //image DCT-II and quantization (done in pixel squares of 8x8)
+                if (x + 7 < height) topu = x + 8;
+				else topu = height;
+                for (int y = 0; y < width; y += 8) {
+                    if (y + 7 < width) topv = y + 8;
+                    else topv = width;
+                    for (int u = x; u < topu; ++u) {
+                        if (u % 8 == 0) alphau = 1 / Math.sqrt(2);
+                        else alphau = 1;
+                        for (int v = y; v < topv; ++v) {
+						    if (v % 8 == 0) alphav = 1 / Math.sqrt(2);
 						    else alphav = 1;
-                            buffY[i%8][j%8] = 0;
-                            buffCb[i%8][j%8] = 0;
-                            buffCr[i%8][j%8] = 0;
-							for (int k = x; k < topi; ++k) {
-                                double cosa = Math.cos(((2 * k + 1) * (i % 8) * Math.PI) / 16.0);
-							    for (int l = y; l < topj; ++l) {
-                                    double cosv = Math.cos(((2 * l + 1) * (j % 8) * Math.PI) / 16.0);
-                                    buffY[i%8][j%8] += Y[k][l] * cosa * cosv;
-                                    buffCb[i%8][j%8] += Cb[k][l] * cosa * cosv;
-                                    buffCr[i%8][j%8] += Cr[k][l] * cosa * cosv;
+                            buffY[u%8][v%8] = 0;
+                            buffCb[u%8][v%8] = 0;
+                            buffCr[u%8][v%8] = 0;
+							for (int i = x; i < topu; ++i) {
+                                cosu = Math.cos(((2 * (i % 8) + 1) * (u % 8) * Math.PI) / 16.0);
+							    for (int j = y; j < topv; ++j) {
+                                    cosv = Math.cos(((2 * (j % 8) + 1) * (v % 8) * Math.PI) / 16.0);
+                                    buffY[u%8][v%8] += Y[i][j] * cosu * cosv;
+                                    buffCb[u%8][v%8] += Cb[i][j] * cosu * cosv;
+                                    buffCr[u%8][v%8] += Cr[i][j] * cosu * cosv;
                                 }
 							}
-                            buffY[i%8][j%8] *= (alphau * alphav * 0.25);
-                            buffCb[i%8][j%8] *= (alphau * alphav * 0.25);
-                            buffCr[i%8][j%8] *= (alphau * alphav * 0.25);
+                            buffY[u%8][v%8] *= (alphau * alphav * 0.25);
+                            buffCb[u%8][v%8] *= (alphau * alphav * 0.25);
+                            buffCr[u%8][v%8] *= (alphau * alphav * 0.25);
 						}
 					}
-                    for (int i = x; i < topi; ++i) {
-                        for (int j = y; j < topj; ++j) {
+                    for (int i = x; i < topu; ++i) {
+                        for (int j = y; j < topv; ++j) {
                             Y[i][j] = buffY[i%8][j%8] / (LuminanceQuantizationTable[i%8][j%8] * calidad);
                             Cb[i][j] = buffCb[i%8][j%8] / (ChrominanceQuantizationTable[i%8][j%8] * calidad);
-                            Cr[i][j] = buffCb[i%8][j%8] / (ChrominanceQuantizationTable[i%8][j%8] * calidad);
+                            Cr[i][j] = buffCr[i%8][j%8] / (ChrominanceQuantizationTable[i%8][j%8] * calidad);
                         }
                     }
 
 				}
-			}*/
+			}
 
             String qualityPercent = Integer.toString(calidadPorcentaje);
             BufferedWriter compressedImage = new BufferedWriter(new FileWriter(fileOut));
@@ -188,8 +188,6 @@ public class JPEG implements CompresorDecompresor {
                         else {
                             out.write((int)Math.round(Cb[x][y]));
                             out.write((int)Math.round(Cr[x][y]));
-                            //System.out.println((int)Math.round(Cb[x][y]));
-                            //System.out.println((int)Math.round(Cr[x][y]));
                         }
                     }
                 }
@@ -226,12 +224,9 @@ public class JPEG implements CompresorDecompresor {
             int fileOffset = magicNumber.getBytes().length + widthHeight[0].getBytes().length + space.getBytes().length + widthHeight[1].getBytes().length + rgbMVal.getBytes().length + quality.getBytes().length + eol.getBytes().length * 4; //skipping already read header...
             originalImage.close();
 
-            FileInputStream fin = new FileInputStream(fileIn);
+            FileInputStream fin = new FileInputStream(fileIn); //creation of buffered input stream to read pixel map
             BufferedInputStream in = new BufferedInputStream(fin);
-            int[][] R = new int[height][width];
-            int[][] G = new int[height][width];
-            int[][] B = new int[height][width];
-            int[][] Y = new int[height][width];
+            int[][] Y = new int[height][width];//luminance
             int[][] Cb = new int[height][width];//chrominance blue
             int[][] Cr = new int[height][width];//chrominance red
             in.skip(fileOffset);
@@ -264,11 +259,12 @@ public class JPEG implements CompresorDecompresor {
             }
             in.close();
 
-            /*int topi = 0, topj = 0;
+            int topi = 0, topj = 0;
             double[][] buffY = new double[8][8];
             double[][] buffCb = new double[8][8];
             double[][] buffCr = new double[8][8];
-            for (int x = 0; x < height; x += 8) { //image DCT-III and inverse quantization (done in pixel squares of 8x8)
+            double alphau, alphav, cosu, cosv;
+            for (int x = 0; x < height; x += 8) { //image inverse quantization and DCT-III (aka inverse DCT) (done in pixel squares of 8x8)
                 if (x + 7 < height) topi = x + 8;
                 else topi = height;
                 for (int y = 0; y < width; y += 8) {
@@ -277,25 +273,26 @@ public class JPEG implements CompresorDecompresor {
                     for (int i = x; i < topi; ++i) {
                         for (int j = y; j < topj; ++j) {
                             Y[i][j] *= (LuminanceQuantizationTable[i%8][j%8] * calidad);
+                            Cb[i][j] *= (ChrominanceQuantizationTable[i%8][j%8] * calidad);
+                            Cr[i][j] *= (ChrominanceQuantizationTable[i%8][j%8] * calidad);
                         }
                     }
                     for (int i = x; i < topi; ++i) {
                         for (int j = y; j < topj; ++j) {
-                            double alphau, alphav;
-                            if (i % 8 == 0) alphau = 1 / Math.sqrt(2);
-                            else alphau = 1;
-                            if (j % 8 == 0) alphav = 1 / Math.sqrt(2);
-                            else alphav = 1;
                             buffY[i%8][j%8] = 0;
                             buffCb[i%8][j%8] = 0;
                             buffCr[i%8][j%8] = 0;
-                            for (int k = 0; k < 8; ++k) {
-                                double cosa = Math.cos(((2 * k + 1) * (i % 8) * Math.PI) / 16.0);
-                                for (int l = 0; l < 8; ++l) {
-                                    double cosv = Math.cos(((2 * l + 1) * (j % 8) * Math.PI) / 16.0);
-                                    buffY[i%8][j%8] += alphau * alphav * (double)Y[k][l] * cosa * cosv;
-                                    buffCb[i%8][j%8] += alphau * alphav * (double)Cb[k][l] * cosa * cosv;
-                                    buffCr[i%8][j%8] += alphau * alphav * (double)Cr[k][l] * cosa * cosv;
+                            for (int u = x; u < topi; ++u) {
+                                if (u % 8 == 0) alphau = 1 / Math.sqrt(2);
+                                else alphau = 1;
+                                cosu = Math.cos(((2 * (i % 8) + 1) * (u % 8) * Math.PI) / 16.0);
+                                for (int v = y; v < topj; ++v) {
+                                    if (v % 8 == 0) alphav = 1 / Math.sqrt(2);
+                                    else alphav = 1;
+                                    cosv = Math.cos(((2 * (j % 8) + 1) * (v % 8) * Math.PI) / 16.0);
+                                    buffY[i%8][j%8] += alphau * alphav * (double)Y[u][v] * cosu * cosv;
+                                    buffCb[i%8][j%8] += alphau * alphav * (double)Cb[u][v] * cosu * cosv;
+                                    buffCr[i%8][j%8] += alphau * alphav * (double)Cr[u][v] * cosu * cosv;
                                 }
                             }
                             buffY[i%8][j%8] *= 0.25;
@@ -311,32 +308,6 @@ public class JPEG implements CompresorDecompresor {
                         }
                     }
                 }
-            }*/
-
-            for (int x = 0; x < height; ++x) {//image color recomposition from YCbCr to RGB
-                for (int y = 0; y < width; ++y) {
-                    R[x][y] = (int)Math.round(1.164 * (double)(Y[x][y] - 16 + 128) + 1.596 * (double)(Cr[x][y]));
-                    G[x][y] = (int)Math.round(1.164 * (double)(Y[x][y] - 16 + 128) - 0.391 * (double)(Cb[x][y]) - 0.813 * (double)(Cr[x][y]));
-                    B[x][y] = (int)Math.round(1.164 * (double)(Y[x][y] - 16 + 128) + 2.018 * (double)(Cb[x][y]));
-                    if (R[x][y] > rgbMaxVal) { //controlling and correcting any value that is out of range (0 to rgbMaxVal)
-                        R[x][y] = rgbMaxVal;
-                    }
-                    else if (R[x][y] < 0) {
-                        R[x][y] = 0;
-                    }
-                    if (G[x][y] > rgbMaxVal) {
-                        G[x][y] = rgbMaxVal;
-                    }
-                    else if (G[x][y] < 0) {
-                        G[x][y] = 0;
-                    }
-                    if (B[x][y] > rgbMaxVal) {
-                        B[x][y] = rgbMaxVal;
-                    }
-                    else if (B[x][y] < 0) {
-                        B[x][y] = 0;
-                    }
-                }
             }
 
             BufferedWriter decompressedImage = new BufferedWriter(new FileWriter(fileOut));
@@ -347,11 +318,33 @@ public class JPEG implements CompresorDecompresor {
 
             FileOutputStream fout = new FileOutputStream(fileOut, true);
             BufferedOutputStream out = new BufferedOutputStream(fout);
-            for (int x = 0; x < height; ++x) { //TEST: writing data into file (RGB)
+            int[] rgb = new int[3];
+            for (int x = 0; x < height; ++x) { //writing data into file (RGB)
                 for (int y = 0; y < width; ++y) {
-                    out.write((byte)R[x][y]);
-                    out.write((byte)G[x][y]);
-                    out.write((byte)B[x][y]);
+                    rgb[0] = (int)Math.round(1.164 * (double)(Y[x][y] - 16 + 128) + 1.596 * (double)(Cr[x][y]));
+                    rgb[1] = (int)Math.round(1.164 * (double)(Y[x][y] - 16 + 128) - 0.391 * (double)(Cb[x][y]) - 0.813 * (double)(Cr[x][y]));
+                    rgb[2] = (int)Math.round(1.164 * (double)(Y[x][y] - 16 + 128) + 2.018 * (double)(Cb[x][y]));
+                    if (rgb[0] > rgbMaxVal) { //controlling and correcting any value that is out of range (0 to rgbMaxVal)
+                        rgb[0] = rgbMaxVal;
+                    }
+                    else if (rgb[0] < 0) {
+                        rgb[0] = 0;
+                    }
+                    if (rgb[1] > rgbMaxVal) {
+                        rgb[1] = rgbMaxVal;
+                    }
+                    else if (rgb[1] < 0) {
+                        rgb[1] = 0;
+                    }
+                    if (rgb[2] > rgbMaxVal) {
+                        rgb[2] = rgbMaxVal;
+                    }
+                    else if (rgb[2] < 0) {
+                        rgb[2] = 0;
+                    }
+                    out.write((byte)rgb[0]);
+                    out.write((byte)rgb[1]);
+                    out.write((byte)rgb[2]);
                 }
             }
             out.close();
