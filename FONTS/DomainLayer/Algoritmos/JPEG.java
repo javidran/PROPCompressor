@@ -93,49 +93,109 @@ public class JPEG implements CompresorDecompresor {
             BufferedInputStream in = new BufferedInputStream(fin);
             int width = Integer.parseInt(widthHeight[0]);  //string to int of image width
             int height = Integer.parseInt(widthHeight[1]); //string to int of image height
-            double[][] Y = new double[height][width];
-            double[][] Cb = new double[height][width];
-            double[][] Cr = new double[height][width];
+            int paddedWidth = width + (8 - width % 8), paddedHeight = height + (8 - height % 8);
+            double[][] Y = new double[paddedHeight][paddedWidth];
+            double[][] Cb = new double[paddedHeight][paddedWidth];
+            double[][] Cr = new double[paddedHeight][paddedWidth];
             double[] rgb = new double[3];//red green blue
             in.skip(fileOffset);
-            for (int x = 0; x < height; ++x) {//image color decomposition in YCbCr and centering values to 0 (range [-128,127])
-                for (int y = 0; y < width; ++y) {
+            for (int x = 0; x < paddedHeight; ++x) {//image color decomposition in YCbCr and centering values to 0 (range [-128,127]) (padding boundaries to have 8 multiple dimensions (needed for DCT))
+                for (int y = 0; y < paddedWidth; ++y) {
                     rgb[0] = in.read();
                     rgb[1] = in.read();
                     rgb[2] = in.read();
-                    Y[x][y] = 0.257 * rgb[0] + 0.504 * rgb[1] + 0.098 * rgb[2] + 16.0 - 128.0;
-                    Cb[x][y] = - 0.148 * rgb[0] - 0.291 * rgb[1] + 0.439 * rgb[2];
-                    Cr[x][y] = 0.439 * rgb[0] - 0.368 * rgb[1] - 0.071 * rgb[2];
+                    if (x < height - 1 && y < width - 1) {
+                        Y[x][y] = 0.257 * rgb[0] + 0.504 * rgb[1] + 0.098 * rgb[2] + 16.0 - 128.0;
+                        Cb[x][y] = - 0.148 * rgb[0] - 0.291 * rgb[1] + 0.439 * rgb[2];
+                        Cr[x][y] = 0.439 * rgb[0] - 0.368 * rgb[1] - 0.071 * rgb[2];
+                    }
+                    else if (x < height - 1 && y == width - 1) {
+                        Y[x][y] = Y[x][width-1];
+                        Cb[x][y] = Cb[x][width-1];
+                        Cr[x][y] = Cr[x][width-1];
+                    }
+                    else if (x == height - 1 && y < width - 1) {
+                        Y[x][y] = Y[height-1][y];
+                        Cb[x][y] = Cb[height-1][y];
+                        Cr[x][y] = Cr[height-1][y];
+                    }
+                    else {
+                        Y[x][y] = Y[height-1][width-1];
+                        Cb[x][y] = Cb[height-1][width-1];
+                        Cr[x][y] = Cr[height-1][width-1];
+                    }
                 }
             }
             in.close();
 
-            double[][] downSampledCb = new double[height/2][width/2];
-            double[][] downSampledCr = new double[height/2][width/2];
-            for (int x = 0; x < height; ++x) { //Chrominance DownSampled to 25% each colour channel. Compressed image will be 50% less large than original thanks to this
-                for (int y = 0; y < width; ++y) {
+            double[][] downSampledCb = new double[(paddedHeight/2)+4][(paddedWidth/2)+4];
+            double[][] downSampledCr = new double[(paddedHeight/2)+4][(paddedWidth/2)+4];
+            for (int x = 0; x < paddedHeight; ++x) { //Chrominance DownSampled to 25% each colour channel. Compressed image will be 50% less large than original thanks to this
+                for (int y = 0; y < paddedWidth; ++y) {
                     if (x%2 == 0 && y%2 == 0) {
-                        if (x < height - 1 && y < width - 1) {
+                        if (x < paddedHeight - 1 && y < paddedWidth - 1) {
                             downSampledCb[x/2][y/2] = (int)Math.round((Cb[x][y] + Cb[x][y+1] + Cb[x+1][y] + Cb[x+1][y+1]) / 4);
                             downSampledCr[x/2][y/2] = (int)Math.round((Cr[x][y] + Cr[x][y+1] + Cr[x+1][y] + Cr[x+1][y+1]) / 4);
                         }
-                        else if (x < height - 1 && y == width - 1) {
-                            if (y%2 != 0) {
-                                downSampledCb[x/2][y/2] = (int)Math.round((Cb[x][y] + Cb[x+1][y]) / 2);
-                                downSampledCr[x/2][y/2] = (int)Math.round((Cr[x][y] + Cr[x+1][y]) / 2);
-                            }
+                        else if (x < paddedHeight - 1 && y == paddedWidth - 1) {
+                            downSampledCb[x/2][y/2] = (int)Math.round((Cb[x][y] + Cb[x+1][y]) / 2);
+                            downSampledCb[x/2][(y/2)+1] = downSampledCb[x/2][y/2];
+                            downSampledCb[x/2][(y/2)+2] = downSampledCb[x/2][y/2];
+                            downSampledCb[x/2][(y/2)+3] = downSampledCb[x/2][y/2];
+                            downSampledCb[x/2][(y/2)+4] = downSampledCb[x/2][y/2];
+                            downSampledCr[x/2][y/2] = (int)Math.round((Cr[x][y] + Cr[x+1][y]) / 2);
+                            downSampledCr[x/2][(y/2)+1] = downSampledCr[x/2][y/2];
+                            downSampledCr[x/2][(y/2)+2] = downSampledCr[x/2][y/2];
+                            downSampledCr[x/2][(y/2)+3] = downSampledCr[x/2][y/2];
+                            downSampledCr[x/2][(y/2)+4] = downSampledCr[x/2][y/2];
                         }
-                        else if (x == height - 1 && y < width - 1) {
-                            if (x%2 != 0) {
-                                downSampledCb[x/2][y/2] = (int)Math.round((Cb[x][y] + Cb[x][y+1]) / 2);
-                                downSampledCr[x/2][y/2] = (int)Math.round((Cr[x][y] + Cr[x][y+1]) / 2);
-                            }
+                        else if (x == paddedHeight - 1 && y < paddedWidth - 1) {
+                            downSampledCb[x/2][y/2] = (int)Math.round((Cb[x][y] + Cb[x][y+1]) / 2);
+                            downSampledCb[(x/2)+1][y/2] = downSampledCb[x/2][y/2];
+                            downSampledCb[(x/2)+2][y/2] = downSampledCb[x/2][y/2];
+                            downSampledCb[(x/2)+3][y/2] = downSampledCb[x/2][y/2];
+                            downSampledCb[(x/2)+4][y/2] = downSampledCb[x/2][y/2];
+                            downSampledCr[x/2][y/2] = (int)Math.round((Cr[x][y] + Cr[x][y+1]) / 2);
+                            downSampledCr[(x/2)+1][y/2] = downSampledCr[x/2][y/2];
+                            downSampledCr[(x/2)+2][y/2] = downSampledCr[x/2][y/2];
+                            downSampledCr[(x/2)+3][y/2] = downSampledCr[x/2][y/2];
+                            downSampledCr[(x/2)+4][y/2] = downSampledCr[x/2][y/2];
                         }
                         else {
-                            if (x%2 != 0 && y%2 != 0) {
-                                downSampledCb[x/2][y/2] = (int)Math.round(Cb[x][y]);
-                                downSampledCr[x/2][y/2] = (int)Math.round(Cr[x][y]);
-                            }
+                            downSampledCb[x/2][y/2] = (int)Math.round(Cb[x][y]);
+                            downSampledCb[(x/2)+1][(y/2)+1] = downSampledCb[x/2][y/2];
+                            downSampledCb[(x/2)+1][(y/2)+2] = downSampledCb[x/2][y/2];
+                            downSampledCb[(x/2)+1][(y/2)+3] = downSampledCb[x/2][y/2];
+                            downSampledCb[(x/2)+1][(y/2)+4] = downSampledCb[x/2][y/2];
+                            downSampledCb[(x/2)+2][(y/2)+1] = downSampledCb[x/2][y/2];
+                            downSampledCb[(x/2)+2][(y/2)+2] = downSampledCb[x/2][y/2];
+                            downSampledCb[(x/2)+2][(y/2)+3] = downSampledCb[x/2][y/2];
+                            downSampledCb[(x/2)+2][(y/2)+4] = downSampledCb[x/2][y/2];
+                            downSampledCb[(x/2)+3][(y/2)+1] = downSampledCb[x/2][y/2];
+                            downSampledCb[(x/2)+3][(y/2)+2] = downSampledCb[x/2][y/2];
+                            downSampledCb[(x/2)+3][(y/2)+3] = downSampledCb[x/2][y/2];
+                            downSampledCb[(x/2)+3][(y/2)+4] = downSampledCb[x/2][y/2];
+                            downSampledCb[(x/2)+4][(y/2)+1] = downSampledCb[x/2][y/2];
+                            downSampledCb[(x/2)+4][(y/2)+2] = downSampledCb[x/2][y/2];
+                            downSampledCb[(x/2)+4][(y/2)+3] = downSampledCb[x/2][y/2];
+                            downSampledCb[(x/2)+4][(y/2)+4] = downSampledCb[x/2][y/2];
+                            downSampledCr[x/2][y/2] = (int)Math.round(Cr[x][y]);
+                            downSampledCr[(x/2)+1][(y/2)+1] = downSampledCr[x/2][y/2];
+                            downSampledCr[(x/2)+1][(y/2)+2] = downSampledCr[x/2][y/2];
+                            downSampledCr[(x/2)+1][(y/2)+3] = downSampledCr[x/2][y/2];
+                            downSampledCr[(x/2)+1][(y/2)+4] = downSampledCr[x/2][y/2];
+                            downSampledCr[(x/2)+2][(y/2)+1] = downSampledCr[x/2][y/2];
+                            downSampledCr[(x/2)+2][(y/2)+2] = downSampledCr[x/2][y/2];
+                            downSampledCr[(x/2)+2][(y/2)+3] = downSampledCr[x/2][y/2];
+                            downSampledCr[(x/2)+2][(y/2)+4] = downSampledCr[x/2][y/2];
+                            downSampledCr[(x/2)+3][(y/2)+1] = downSampledCr[x/2][y/2];
+                            downSampledCr[(x/2)+3][(y/2)+2] = downSampledCr[x/2][y/2];
+                            downSampledCr[(x/2)+3][(y/2)+3] = downSampledCr[x/2][y/2];
+                            downSampledCr[(x/2)+3][(y/2)+4] = downSampledCr[x/2][y/2];
+                            downSampledCr[(x/2)+4][(y/2)+1] = downSampledCr[x/2][y/2];
+                            downSampledCr[(x/2)+4][(y/2)+2] = downSampledCr[x/2][y/2];
+                            downSampledCr[(x/2)+4][(y/2)+3] = downSampledCr[x/2][y/2];
+                            downSampledCr[(x/2)+4][(y/2)+4] = downSampledCr[x/2][y/2];
                         }
                     }
                 }
@@ -144,12 +204,10 @@ public class JPEG implements CompresorDecompresor {
 			int topu = 0, topv = 0;
             double alphau, alphav, cosu, cosv;
             double[][] buffY = new double[8][8];
-            for (int x = 0; x < height; x += 8) { //image DCT-II and quantization (done in pixel squares of 8x8) for luminance
-                if (x + 7 < height) topu = x + 8;
-                else topu = height;
-                for (int y = 0; y < width; y += 8) {
-                    if (y + 7 < width) topv = y + 8;
-                    else topv = width;
+            for (int x = 0; x < paddedHeight; x += 8) { //image DCT-II and quantization (done in pixel squares of 8x8) for luminance
+                topu = x + 8;
+                for (int y = 0; y < paddedWidth; y += 8) {
+                    topv = y + 8;
                     for (int u = x; u < topu; ++u) {
                         if (u % 8 == 0) alphau = 1 / Math.sqrt(2);
                         else alphau = 1;
@@ -176,12 +234,10 @@ public class JPEG implements CompresorDecompresor {
             }
             double[][] buffCb = new double[8][8];
             double[][] buffCr = new double[8][8];
-            for (int x = 0; x < height/2; x += 8) { //image DCT-II and quantization (done in pixel squares of 8x8) for chrominance
-                if (x + 7 < height/2) topu = x + 8;
-                else topu = height/2;
-                for (int y = 0; y < width/2; y += 8) {
-                    if (y + 7 < width/2) topv = y + 8;
-                    else topv = width/2;
+            for (int x = 0; x < (paddedHeight/2)+4; x += 8) { //image DCT-II and quantization (done in pixel squares of 8x8) for chrominance
+                topu = x + 8;
+                for (int y = 0; y < (paddedWidth/2)+4; y += 8) {
+                    topv = y + 8;
                     for (int u = x; u < topu; ++u) {
                         if (u % 8 == 0) alphau = 1 / Math.sqrt(2);
                         else alphau = 1;
@@ -221,15 +277,15 @@ public class JPEG implements CompresorDecompresor {
 
             FileOutputStream fout = new FileOutputStream(fileOut, true);
             BufferedOutputStream  out= new BufferedOutputStream(fout);
-            for (int x = 0; x < height; ++x) { //TEST: writing data into file (first Luminance)
-                for (int y = 0; y < width; ++y) {
+            for (int x = 0; x < paddedHeight; ++x) { //TEST: writing data into file (first Luminance)
+                for (int y = 0; y < paddedWidth; ++y) {
                     out.write((int)Math.round(Y[x][y]));
                 }
             }
-            for (int x = 0; x < height/2; ++x) { //TEST: writing data into file (then Chrominance DownSampled to 25%, compressed image will weight 50% less than original)
-                for (int y = 0; y < width/2; ++y) {
-                        out.write((int)Math.round(downSampledCb[x][y]));
-                        out.write((int)Math.round(downSampledCr[x][y]));
+            for (int x = 0; x < (paddedHeight/2)+4; ++x) { //TEST: writing data into file (then Chrominance DownSampled to 25%, compressed image will weight 50% less than original)
+                for (int y = 0; y < (paddedWidth/2)+4; ++y) {
+                    out.write((int)Math.round(downSampledCb[x][y]));
+                    out.write((int)Math.round(downSampledCr[x][y]));
                 }
             }
             out.close();
@@ -266,17 +322,18 @@ public class JPEG implements CompresorDecompresor {
 
             FileInputStream fin = new FileInputStream(fileIn); //creation of buffered input stream to read pixel map
             BufferedInputStream in = new BufferedInputStream(fin);
-            int[][] Y = new int[height][width];//luminance
-            int[][] Cb = new int[height/2][width/2];//chrominance blue
-            int[][] Cr = new int[height/2][width/2];//chrominance red
+            int paddedWidth = width + (8 - width % 8), paddedHeight = height + (8 - height % 8);
+            int[][] Y = new int[paddedHeight][paddedWidth];//luminance
+            int[][] Cb = new int[(paddedHeight/2)+4][(paddedWidth/2)+4];//chrominance blue
+            int[][] Cr = new int[(paddedHeight/2)+4][(paddedWidth/2)+4];//chrominance red
             in.skip(fileOffset);
-            for (int x = 0; x < height; ++x) {//image luminace reading
-                for (int y = 0; y < width; ++y) {
+            for (int x = 0; x < paddedHeight; ++x) {//image luminace reading
+                for (int y = 0; y < paddedWidth; ++y) {
                     Y[x][y] = (byte)in.read(); //(byte) because reads [0,255] but it's been stored as [-128,127]
                 }
             }
-            for (int x = 0; x < height/2; ++x) {//image chrominance reading
-                for (int y = 0; y < width/2; ++y) {
+            for (int x = 0; x < (paddedHeight/2)+4; ++x) {//image chrominance reading
+                for (int y = 0; y < (paddedWidth/2)+4; ++y) {
                     Cb[x][y] = (byte)in.read(); //(byte) because reads [0,255] but it's been stored as [-128,127]
                     Cr[x][y] = (byte)in.read(); //(byte) because reads [0,255] but it's been stored as [-128,127]
                 }
@@ -286,12 +343,10 @@ public class JPEG implements CompresorDecompresor {
             int topi = 0, topj = 0;
             double[][] buffY = new double[8][8];
             double alphau, alphav, cosu, cosv;
-            for (int x = 0; x < height; x += 8) { //image inverse quantization and DCT-III (aka inverse DCT) (done in pixel squares of 8x8) (luminance part)
-                if (x + 7 < height) topi = x + 8;
-                else topi = height;
-                for (int y = 0; y < width; y += 8) {
-                    if (y + 7 < width) topj = y + 8;
-                    else topj = width;
+            for (int x = 0; x < paddedHeight; x += 8) { //image inverse quantization and DCT-III (aka inverse DCT) (done in pixel squares of 8x8) (luminance part)
+                topi = x + 8;
+                for (int y = 0; y < paddedWidth; y += 8) {
+                    topj = y + 8;
                     for (int i = x; i < topi; ++i) {
                         for (int j = y; j < topj; ++j) {
                             Y[i][j] *= (LuminanceQuantizationTable[i%8][j%8] * calidad);
@@ -323,12 +378,10 @@ public class JPEG implements CompresorDecompresor {
             }
             double[][] buffCb = new double[8][8];
             double[][] buffCr = new double[8][8];
-            for (int x = 0; x < height/2; x += 8) { //image inverse quantization and DCT-III (aka inverse DCT) (done in pixel squares of 8x8) (chrominance part)
-                if (x + 7 < height/2) topi = x + 8;
-                else topi = height/2;
-                for (int y = 0; y < width/2; y += 8) {
-                    if (y + 7 < width/2) topj = y + 8;
-                    else topj = width/2;
+            for (int x = 0; x < (paddedHeight/2)+4; x += 8) { //image inverse quantization and DCT-III (aka inverse DCT) (done in pixel squares of 8x8) (chrominance part)
+                topi = x + 8;
+                for (int y = 0; y < (paddedWidth/2)+4; y += 8) {
+                    topj = y + 8;
                     for (int i = x; i < topi; ++i) {
                         for (int j = y; j < topj; ++j) {
                             Cb[i][j] *= (ChrominanceQuantizationTable[i%8][j%8] * calidad);
@@ -377,43 +430,9 @@ public class JPEG implements CompresorDecompresor {
             int cb = Cb[0][0], cr = Cr[0][0];
             for (int x = 0; x < height; ++x) { //writing data into file (RGB)
                 for (int y = 0; y < width; ++y) {
-                    if (x < height - 1 && y < width - 1) {
-                        cb = Cb[x/2][y/2];
-                        cr = Cr[x/2][y/2];
-                    }
-                    else if (x < height - 1 && y == width - 1) {
-                        if (y%2 == 0) {
-                            cb = Cb[x/2][(y/2)-1];
-                            cr = Cr[x/2][(y/2)-1];
-                        }
-                        else {
-                            cb = Cb[x/2][(y/2)-2];
-                            cr = Cr[x/2][(y/2)-2];
-                        }
-                    }
-                    else if (x == height - 1 && y < width - 1) {
-                        if (x%2 == 0) {
-                            cb = Cb[(x/2)-1][y/2];
-                            cr = Cr[(x/2)-1][y/2];
-                        }
-                        else {
-                            cb = Cb[(x/2)-2][y/2];
-                            cr = Cr[(x/2)-2][y/2];
-                        }
-                    }
-                    else {
-                        if (x%2 == 0 && y%2 == 0) {
-                            cb = Cb[(x/2)-1][(y/2)-1];
-                            cr = Cr[(x/2)-1][(y/2)-1];
-                        }
-                        else {
-                            cb = Cb[(x/2)-2][(y/2)-2];
-                            cr = Cr[(x/2)-2][(y/2)-2];
-                        }
-                    }
-                    rgb[0] = (int)Math.round(1.164 * (double)(Y[x][y] - 16 + 128) + 1.596 * (double)(cr));
-                    rgb[1] = (int)Math.round(1.164 * (double)(Y[x][y] - 16 + 128) - 0.391 * (double)(cb) - 0.813 * (double)(cr));
-                    rgb[2] = (int)Math.round(1.164 * (double)(Y[x][y] - 16 + 128) + 2.018 * (double)(cb));
+                    rgb[0] = (int)Math.round(1.164 * (double)(Y[x][y] - 16 + 128) + 1.596 * (double)(Cr[x/2][y/2]));
+                    rgb[1] = (int)Math.round(1.164 * (double)(Y[x][y] - 16 + 128) - 0.391 * (double)(Cb[x/2][y/2]) - 0.813 * (double)(Cr[x/2][y/2]));
+                    rgb[2] = (int)Math.round(1.164 * (double)(Y[x][y] - 16 + 128) + 2.018 * (double)(Cb[x/2][y/2]));
                     if (rgb[0] > rgbMaxVal) { //controlling and correcting any value that is out of range (0 to rgbMaxVal)
                         rgb[0] = rgbMaxVal;
                     }
