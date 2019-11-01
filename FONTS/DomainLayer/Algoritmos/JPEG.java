@@ -170,8 +170,8 @@ public class JPEG implements CompresorDecompresor {
                     else {
                         downSampledCb[x/2][y/2] = Cb[x][y];
                         downSampledCr[x/2][y/2] = Cr[x][y];
-                        for (int i = (x/2)+1; i < downSampledPaddedHeight; ++i) {
-                            for (int j = (y/2)+1; j < downSampledPaddedWidth; ++j) {
+                        for (int i = x/2; i < downSampledPaddedHeight; ++i) {
+                            for (int j = y/2; j < downSampledPaddedWidth; ++j) {
                                 downSampledCb[i][j] = downSampledCb[x/2][y/2];
                                 downSampledCr[i][j] = downSampledCr[x/2][y/2];
                             }
