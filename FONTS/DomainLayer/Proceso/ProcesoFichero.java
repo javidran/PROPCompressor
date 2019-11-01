@@ -101,9 +101,11 @@ public abstract class ProcesoFichero {
             archivo.seek(0);
             String buff = archivo.readLine();
             String[] parts = buff.split(" ");
-            numDatos = Long.parseLong(parts[0]) + 1;
-            tiempoMedio = (Long.parseLong( parts[1])*(numDatos-1))/numDatos + a/numDatos;;
-            AvgMedio = (Long.parseLong(parts[2])*(numDatos-1))/numDatos + d/numDatos;
+            numDatos = (Long.parseLong(parts[0]) + 1);
+            long aux = ((Long.parseLong( parts[1])*(numDatos-1))/numDatos + a/numDatos);
+            tiempoMedio = aux;
+            aux =  ((Long.parseLong(parts[2])*(numDatos-1))/numDatos + d/numDatos);
+            AvgMedio = aux;
             archivo.seek(0);
             archivo.writeBytes(numDatos +" "+ tiempoMedio +" "+ AvgMedio);
             archivo.close();
