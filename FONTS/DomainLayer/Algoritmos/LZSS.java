@@ -79,8 +79,8 @@ public class LZSS implements CompresorDecompresor {
             int bitsetpos = 0;
             // BITSET end
 
-            int search_buffer_size = 127;// Because we want to keep it in a byte
-            int look_ahead_buffer_size = 127;//Deberian ambos ser 255
+            int search_buffer_size = 255;// Because we want to keep it in a byte
+            int look_ahead_buffer_size = 255;//Now the can be 255 and not 127
 
             // Gonna look through the whole array of bytes
             int n = data.length;
@@ -252,7 +252,8 @@ public class LZSS implements CompresorDecompresor {
                     //No hago ++ porque ya se hace a la siguiente vuelta del loop
                 } else /*if (match.get(pos_bitset))*/ {// if there is a mcatch, get the length and offset
                     Byte actual = data[i];//la posicion i es la correcta del
-                    int offset = actual.intValue();// offset is first
+                    int offset = byteToIntOffset(actual);
+                    // OLD offset: int offset = actual.intValue();// offset is first
                     ++i;
                     Byte actual2 = data[i];
                     int matchlength = actual2.intValue();
@@ -295,6 +296,15 @@ public class LZSS implements CompresorDecompresor {
         long total_time = endTime -startTime;
         OutputAlgoritmo outAlg = new OutputAlgoritmo(total_time, fileOut);
         return outAlg;
+    }
+
+    //Making the offset int
+    public static int byteToIntOffset(byte b)
+    {
+        return   b & 0xFF |
+                (0x00) << 8 |
+                (0x00) << 16 |
+                (0x00) << 24;
     }
 
 
