@@ -93,7 +93,11 @@ public class JPEG implements CompresorDecompresor {
             BufferedInputStream in = new BufferedInputStream(fin);
             int width = Integer.parseInt(widthHeight[0]);  //string to int of image width
             int height = Integer.parseInt(widthHeight[1]); //string to int of image height
-            int paddedWidth = width + (8 - width % 8), paddedHeight = height + (8 - height % 8);
+            int paddedWidth, paddedHeight;
+            if (width % 8 != 0) paddedWidth = width + (8 - width % 8);
+            else paddedWidth = width;
+            if (height % 8 != 0) paddedHeight = height + (8 - height % 8);
+            else paddedHeight = height;
             double[][] Y = new double[paddedHeight][paddedWidth];
             double[][] Cb = new double[paddedHeight][paddedWidth];
             double[][] Cr = new double[paddedHeight][paddedWidth];
