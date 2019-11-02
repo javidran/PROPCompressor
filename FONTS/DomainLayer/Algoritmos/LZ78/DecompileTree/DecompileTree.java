@@ -1,14 +1,14 @@
-package DomainLayer.Algoritmos.LZ78.DecompileTrie;
+package DomainLayer.Algoritmos.LZ78.DecompileTree;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DecompileTrie {
-    private DecompileTrieNode root;
+public class DecompileTree {
+    private DecompileTreeNode root;
     private int indexCount;
 
-    public DecompileTrie() {
-        root = new DecompileTrieNode();
+    public DecompileTree() {
+        root = new DecompileTreeNode();
         indexCount = 0;
     }
 
@@ -16,9 +16,9 @@ public class DecompileTrie {
         return insertAfterIndexRec(root, b, index);
     }
 
-    private List<Byte> insertAfterIndexRec(DecompileTrieNode t, byte b, int index) {
+    private List<Byte> insertAfterIndexRec(DecompileTreeNode t, byte b, int index) {
         if(t.index == index) {
-            DecompileTrieNode leaf = new DecompileTrieNode(b, ++indexCount);
+            DecompileTreeNode leaf = new DecompileTreeNode(b, ++indexCount);
             t.isLeaf = false;
             t.edges.add(leaf);
 
@@ -28,8 +28,8 @@ public class DecompileTrie {
             return list;
         }
         else if(!t.isLeaf) {
-            List<DecompileTrieNode> edges = t.edges;
-            for(DecompileTrieNode node : edges) {
+            List<DecompileTreeNode> edges = t.edges;
+            for(DecompileTreeNode node : edges) {
                 List<Byte> word = insertAfterIndexRec(node, b, index);
                 if(word != null) {
                     if(t.index != 0) word.add(t.c);
