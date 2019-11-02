@@ -9,10 +9,13 @@ class DecompileTrieNode {
     List<DecompileTrieNode> edges = new ArrayList<>();
     boolean isLeaf;
 
-    public DecompileTrieNode() {}
+    public DecompileTrieNode() {
+        isLeaf = true;
+    }
 
     public DecompileTrieNode(byte c, int index){
         this.c = c;
         this.index = index;
+        isLeaf = true;
     }
 }
