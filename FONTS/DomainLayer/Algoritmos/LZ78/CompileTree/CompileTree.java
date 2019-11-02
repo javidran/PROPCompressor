@@ -1,30 +1,30 @@
-package DomainLayer.Algoritmos.LZ78.CompileTrie;
+package DomainLayer.Algoritmos.LZ78.CompileTree;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CompileTrie {
-    private CompileTrieNode root;
+public class CompileTree {
+    private CompileTreeNode root;
     private int indexCount;
 
-    public CompileTrie() {
-        root = new CompileTrieNode();
+    public CompileTree() {
+        root = new CompileTreeNode();
         indexCount = 0;
     }
 
     // Inserts a word into the trie.
     public void insert(byte[] bytes) {
-        HashMap<Byte, CompileTrieNode> edges = root.edges;
+        HashMap<Byte, CompileTreeNode> edges = root.edges;
 
         for(int i=0; i < bytes.length; i++) {
             byte b = bytes[i];
 
-            CompileTrieNode t;
+            CompileTreeNode t;
             if(edges.containsKey(b)){
                 t = edges.get(b);
             } else {
-                t = new CompileTrieNode(b, indexCount++);
+                t = new CompileTreeNode(b, indexCount++);
                 edges.put(b, t);
             }
 
@@ -38,7 +38,7 @@ public class CompileTrie {
 
     // Returns if the word is in the trie.
     public boolean search(byte[] bytes) {
-        CompileTrieNode t = searchNode(bytes);
+        CompileTreeNode t = searchNode(bytes);
 
         if(t != null && t.isLeaf)
             return true;
@@ -46,9 +46,9 @@ public class CompileTrie {
             return false;
     }
 
-    public CompileTrieNode searchNode(byte[] bytes){
-        Map<Byte, CompileTrieNode> edges = root.edges;
-        CompileTrieNode t = null;
+    public CompileTreeNode searchNode(byte[] bytes){
+        Map<Byte, CompileTreeNode> edges = root.edges;
+        CompileTreeNode t = null;
         for(int i=0; i<bytes.length; i++){
             byte c = bytes[i];
             if(edges.containsKey(c)){
@@ -64,17 +64,17 @@ public class CompileTrie {
     // Inserts a word into the trie.
     public int insert(List<Byte> bytes) {
         int lastIndex = root.index;
-        HashMap<Byte, CompileTrieNode> edges = root.edges;
+        HashMap<Byte, CompileTreeNode> edges = root.edges;
 
         for(int i=0; i < bytes.size(); i++) {
             byte b = bytes.get(i);
 
-            CompileTrieNode t = root;
+            CompileTreeNode t = root;
             if(edges.containsKey(b)){
                 t = edges.get(b);
                 lastIndex = t.index;
             } else {
-                t = new CompileTrieNode(b, ++indexCount);
+                t = new CompileTreeNode(b, ++indexCount);
                 edges.put(b, t);
             }
 
@@ -90,7 +90,7 @@ public class CompileTrie {
 
     // Returns if the word is in the trie.
     public boolean search(List<Byte> bytes) {
-        CompileTrieNode t = searchNode(bytes);
+        CompileTreeNode t = searchNode(bytes);
 
         if(t != null && t.isLeaf)
             return true;
@@ -98,9 +98,9 @@ public class CompileTrie {
             return false;
     }
 
-    public CompileTrieNode searchNode(List<Byte> bytes){
-        Map<Byte, CompileTrieNode> edges = root.edges;
-        CompileTrieNode t = null;
+    public CompileTreeNode searchNode(List<Byte> bytes){
+        Map<Byte, CompileTreeNode> edges = root.edges;
+        CompileTreeNode t = null;
         for(int i=0; i<bytes.size(); i++){
             byte c = bytes.get(i);
             if(edges.containsKey(c)){
