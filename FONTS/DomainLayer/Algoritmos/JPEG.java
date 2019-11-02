@@ -369,8 +369,9 @@ public class JPEG implements CompresorDecompresor {
                     topj = y + 8;
                     boolean up = true;
                     int k = x, l = y;
-                    while (k < topi && l < topj) { //TEST: zig-zag writting Chrominance
+                    while (k < topi && l < topj) { //TEST: zig-zag reading Luminance
                         buffY[k%8][l%8] = (byte)(in.read()) * (LuminanceQuantizationTable[k%8][l%8] * calidad); //(byte) because reads [0,255] but it's been stored as [-128,127]
+                        Y[k][l] = (int)Math.round(buffY[k%8][l%8]);
                         if (k == x && l != topj - 1 && up) {
                             ++l;
                             up = false;
@@ -432,9 +433,11 @@ public class JPEG implements CompresorDecompresor {
                     topj = y + 8;
                     boolean up = true;
                     int k = x, l = y;
-                    while (k < topi && l < topj) { //TEST: zig-zag writting Chrominance
+                    while (k < topi && l < topj) { //TEST: zig-zag reading Chrominance
                         buffCb[k%8][l%8] = (byte)(in.read()) * (ChrominanceQuantizationTable[k%8][l%8] * calidad); //(byte) because reads [0,255] but it's been stored as [-128,127]
                         buffCr[k%8][l%8] = (byte)(in.read()) * (ChrominanceQuantizationTable[k%8][l%8] * calidad); //(byte) because reads [0,255] but it's been stored as [-128,127]
+                        Cb[k][l] = (int)Math.round(buffCb[k%8][l%8]);
+                        Cr[k][l] = (int)Math.round(buffCr[k%8][l%8]);
                         if (k == x && l != topj - 1 && up) {
                             ++l;
                             up = false;
