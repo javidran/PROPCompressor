@@ -190,17 +190,6 @@ public class JPEG implements CompresorDecompresor {
 
             FileOutputStream fout = new FileOutputStream(fileOut, true);
             BufferedOutputStream  out= new BufferedOutputStream(fout);
-            for (int x = 0; x < paddedHeight; ++x) { //TEST: writing data into file (first Luminance)
-                for (int y = 0; y < paddedWidth; ++y) {
-                    out.write((int)Math.round(Y[x][y]));
-                }
-            }
-            for (int x = 0; x < downSampledPaddedHeight; ++x) { //TEST: writing data into file (then Chrominance DownSampled to 25%, compressed image will weight 50% less than original)
-                for (int y = 0; y < downSampledPaddedWidth; ++y) {
-                    out.write((int)Math.round(downSampledCb[x][y]));
-                    out.write((int)Math.round(downSampledCr[x][y]));
-                }
-            }
 
 			int topu = 0, topv = 0;
             double alphau, alphav, cosu, cosv;
