@@ -180,6 +180,17 @@ public class JPEG implements CompresorDecompresor {
                 }
             }
 
+            String qualityPercent = Integer.toString(calidadHeader);
+            BufferedWriter compressedImage = new BufferedWriter(new FileWriter(fileOut));
+            compressedImage.write(magicNumber+"\n", 0, magicNumber.length() + 1); //writing same header as .ppm fileIn + jpeg quality
+            compressedImage.write(widthHeight[0]+" "+widthHeight[1]+"\n", 0, widthHeight[0].length() + widthHeight[1].length() + 2);
+            compressedImage.write(rgbMVal + "\n", 0, rgbMVal.length() + 1);
+            compressedImage.write(qualityPercent+"\n", 0, qualityPercent.length() + 1);
+            compressedImage.close();
+
+            FileOutputStream fout = new FileOutputStream(fileOut, true);
+            BufferedOutputStream  out= new BufferedOutputStream(fout);
+
 			int topu = 0, topv = 0;
             double alphau, alphav, cosu, cosv;
             double[][] buffY = new double[8][8];
@@ -204,9 +215,37 @@ public class JPEG implements CompresorDecompresor {
                             buffY[u%8][v%8] *= (alphau * alphav * 0.25);
                         }
                     }
-                    for (int i = x; i < topu; ++i) {
-                        for (int j = y; j < topv; ++j) {
-                            Y[i][j] = buffY[i%8][j%8] / (LuminanceQuantizationTable[i%8][j%8] * calidad);
+                    boolean up = true;
+                    int i = x, j = y;
+                    while (i < topu && j < topv) { //TEST: zig-zag writting Chrominance
+                        out.write((int)Math.round(buffY[i%8][j%8] / (LuminanceQuantizationTable[i%8][j%8] * calidad)));
+                        if (i == x && j != topv - 1 && up) {
+                            ++j;
+                            up = false;
+                        }
+                        else if (j == y && i != topu - 1 && !up) {
+                            ++i;
+                            up = true;
+                        }
+                        else if (i == topu - 1 && j != topv - 1 && !up) {
+                            ++j;
+                            up = true;
+                        }
+                        else if (j == topv - 1 && i != topu - 1 && up) {
+                            ++i;
+                            up = false;
+                        }
+                        else if (i == topu - 1 && j == topv - 1) {
+                            ++i;
+                            ++j;
+                        }
+                        else if (up) {
+                            --i;
+                            ++j;
+                        }
+                        else {
+                            ++i;
+                            --j;
                         }
                     }
                 }
@@ -237,34 +276,40 @@ public class JPEG implements CompresorDecompresor {
                             buffCr[u%8][v%8] *= (alphau * alphav * 0.25);
                         }
                     }
-                    for (int i = x; i < topu; ++i) {
-                        for (int j = y; j < topv; ++j) {
-                            downSampledCb[i][j] = buffCb[i%8][j%8] / (ChrominanceQuantizationTable[i%8][j%8] * calidad);
-                            downSampledCr[i][j] = buffCr[i%8][j%8] / (ChrominanceQuantizationTable[i%8][j%8] * calidad);
+                    boolean up = true;
+                    int i = x, j = y;
+                    while (i < topu && j < topv) { //TEST: zig-zag writting Chrominance
+                        out.write((int)Math.round(buffCb[i%8][j%8] / (ChrominanceQuantizationTable[i%8][j%8] * calidad)));
+                        out.write((int)Math.round(buffCr[i%8][j%8] / (ChrominanceQuantizationTable[i%8][j%8] * calidad)));
+                        if (i == x && j != topv - 1 && up) {
+                            ++j;
+                            up = false;
+                        }
+                        else if (j == y && i != topu - 1 && !up) {
+                            ++i;
+                            up = true;
+                        }
+                        else if (i == topu - 1 && j != topv - 1 && !up) {
+                            ++j;
+                            up = true;
+                        }
+                        else if (j == topv - 1 && i != topu - 1 && up) {
+                            ++i;
+                            up = false;
+                        }
+                        else if (i == topu - 1 && j == topv - 1) {
+                            ++i;
+                            ++j;
+                        }
+                        else if (up) {
+                            --i;
+                            ++j;
+                        }
+                        else {
+                            ++i;
+                            --j;
                         }
                     }
-                }
-            }
-
-            String qualityPercent = Integer.toString(calidadHeader);
-            BufferedWriter compressedImage = new BufferedWriter(new FileWriter(fileOut));
-            compressedImage.write(magicNumber+"\n", 0, magicNumber.length() + 1); //writing same header as .ppm fileIn + jpeg quality
-            compressedImage.write(widthHeight[0]+" "+widthHeight[1]+"\n", 0, widthHeight[0].length() + widthHeight[1].length() + 2);
-            compressedImage.write(rgbMVal + "\n", 0, rgbMVal.length() + 1);
-            compressedImage.write(qualityPercent+"\n", 0, qualityPercent.length() + 1);
-            compressedImage.close();
-
-            FileOutputStream fout = new FileOutputStream(fileOut, true);
-            BufferedOutputStream  out= new BufferedOutputStream(fout);
-            for (int x = 0; x < paddedHeight; ++x) { //TEST: writing data into file (first Luminance)
-                for (int y = 0; y < paddedWidth; ++y) {
-                    out.write((int)Math.round(Y[x][y]));
-                }
-            }
-            for (int x = 0; x < downSampledPaddedHeight; ++x) { //TEST: writing data into file (then Chrominance DownSampled to 25%, compressed image will weight 50% less than original)
-                for (int y = 0; y < downSampledPaddedWidth; ++y) {
-                    out.write((int)Math.round(downSampledCb[x][y]));
-                    out.write((int)Math.round(downSampledCr[x][y]));
                 }
             }
             out.close();
@@ -315,19 +360,6 @@ public class JPEG implements CompresorDecompresor {
             int[][] Cb = new int[downSampledPaddedHeight][downSampledPaddedWidth];//chrominance blue
             int[][] Cr = new int[downSampledPaddedHeight][downSampledPaddedWidth];//chrominance red
             in.skip(fileOffset);
-            for (int x = 0; x < paddedHeight; ++x) {//image luminace reading
-                for (int y = 0; y < paddedWidth; ++y) {
-                    Y[x][y] = (byte)in.read(); //(byte) because reads [0,255] but it's been stored as [-128,127]
-                }
-            }
-            for (int x = 0; x < downSampledPaddedHeight; ++x) {//image chrominance reading
-                for (int y = 0; y < downSampledPaddedWidth; ++y) {
-                    Cb[x][y] = (byte)in.read(); //(byte) because reads [0,255] but it's been stored as [-128,127]
-                    Cr[x][y] = (byte)in.read(); //(byte) because reads [0,255] but it's been stored as [-128,127]
-                }
-            }
-            in.close();
-
             int topi = 0, topj = 0;
             double[][] buffY = new double[8][8];
             double alphau, alphav, cosu, cosv;
@@ -335,9 +367,37 @@ public class JPEG implements CompresorDecompresor {
                 topi = x + 8;
                 for (int y = 0; y < paddedWidth; y += 8) {
                     topj = y + 8;
-                    for (int i = x; i < topi; ++i) {
-                        for (int j = y; j < topj; ++j) {
-                            Y[i][j] *= (LuminanceQuantizationTable[i%8][j%8] * calidad);
+                    boolean up = true;
+                    int k = x, l = y;
+                    while (k < topi && l < topj) { //TEST: zig-zag writting Chrominance
+                        buffY[k%8][l%8] = (byte)(in.read()) * (LuminanceQuantizationTable[k%8][l%8] * calidad); //(byte) because reads [0,255] but it's been stored as [-128,127]
+                        if (k == x && l != topj - 1 && up) {
+                            ++l;
+                            up = false;
+                        }
+                        else if (l == y && k != topi - 1 && !up) {
+                            ++k;
+                            up = true;
+                        }
+                        else if (k == topi - 1 && l != topj- 1 && !up) {
+                            ++l;
+                            up = true;
+                        }
+                        else if (l == topj - 1 && k != topi - 1 && up) {
+                            ++k;
+                            up = false;
+                        }
+                        else if (k == topi - 1 && l == topj - 1) {
+                            ++k;
+                            ++l;
+                        }
+                        else if (up) {
+                            --k;
+                            ++l;
+                        }
+                        else {
+                            ++k;
+                            --l;
                         }
                     }
                     for (int i = x; i < topi; ++i) {
@@ -370,10 +430,38 @@ public class JPEG implements CompresorDecompresor {
                 topi = x + 8;
                 for (int y = 0; y < downSampledPaddedWidth; y += 8) {
                     topj = y + 8;
-                    for (int i = x; i < topi; ++i) {
-                        for (int j = y; j < topj; ++j) {
-                            Cb[i][j] *= (ChrominanceQuantizationTable[i%8][j%8] * calidad);
-                            Cr[i][j] *= (ChrominanceQuantizationTable[i%8][j%8] * calidad);
+                    boolean up = true;
+                    int k = x, l = y;
+                    while (k < topi && l < topj) { //TEST: zig-zag writting Chrominance
+                        buffCb[k%8][l%8] = (byte)(in.read()) * (ChrominanceQuantizationTable[k%8][l%8] * calidad); //(byte) because reads [0,255] but it's been stored as [-128,127]
+                        buffCr[k%8][l%8] = (byte)(in.read()) * (ChrominanceQuantizationTable[k%8][l%8] * calidad); //(byte) because reads [0,255] but it's been stored as [-128,127]
+                        if (k == x && l != topj - 1 && up) {
+                            ++l;
+                            up = false;
+                        }
+                        else if (l == y && k != topi - 1 && !up) {
+                            ++k;
+                            up = true;
+                        }
+                        else if (k == topi - 1 && l != topj- 1 && !up) {
+                            ++l;
+                            up = true;
+                        }
+                        else if (l == topj - 1 && k != topi - 1 && up) {
+                            ++k;
+                            up = false;
+                        }
+                        else if (k == topi - 1 && l == topj - 1) {
+                            ++k;
+                            ++l;
+                        }
+                        else if (up) {
+                            --k;
+                            ++l;
+                        }
+                        else {
+                            ++k;
+                            --l;
                         }
                     }
                     for (int i = x; i < topi; ++i) {
@@ -405,6 +493,7 @@ public class JPEG implements CompresorDecompresor {
                     }
                 }
             }
+            in.close();
 
             BufferedWriter decompressedImage = new BufferedWriter(new FileWriter(fileOut));
             decompressedImage.write(magicNumber+"\n", 0, magicNumber.length() + 1); //writing same header as .ppm fileIn
