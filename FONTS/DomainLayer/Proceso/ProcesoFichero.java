@@ -2,11 +2,9 @@
 package DomainLayer.Proceso;
 
 import DomainLayer.Algoritmos.*;
+import DomainLayer.Algoritmos.LZ78.LZ78;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
 
 public abstract class ProcesoFichero {
     protected File ficheroIn;
