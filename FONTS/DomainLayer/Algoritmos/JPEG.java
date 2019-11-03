@@ -190,7 +190,6 @@ public class JPEG implements CompresorDecompresor {
 
             FileOutputStream fout = new FileOutputStream(fileOut, true);
             BufferedOutputStream  out= new BufferedOutputStream(fout);
-
 			int topu = 0, topv = 0;
             double alphau, alphav, cosu, cosv;
             double[][] buffY = new double[8][8];
@@ -217,7 +216,7 @@ public class JPEG implements CompresorDecompresor {
                     }
                     boolean up = true;
                     int i = x, j = y;
-                    while (i < topu && j < topv) { //TEST: zig-zag writting Chrominance
+                    while (i < topu && j < topv) { //TEST: zig-zag writting Luminance (Huffman yet to be applied)
                         out.write((int)Math.round(buffY[i%8][j%8] / (LuminanceQuantizationTable[i%8][j%8] * calidad)));
                         if (i == x && j != topv - 1 && up) {
                             ++j;
@@ -278,7 +277,7 @@ public class JPEG implements CompresorDecompresor {
                     }
                     boolean up = true;
                     int i = x, j = y;
-                    while (i < topu && j < topv) { //TEST: zig-zag writting Chrominance
+                    while (i < topu && j < topv) { //TEST: zig-zag writting Chrominance (Huffman yet to be applied)
                         out.write((int)Math.round(buffCb[i%8][j%8] / (ChrominanceQuantizationTable[i%8][j%8] * calidad)));
                         out.write((int)Math.round(buffCr[i%8][j%8] / (ChrominanceQuantizationTable[i%8][j%8] * calidad)));
                         if (i == x && j != topv - 1 && up) {
@@ -363,13 +362,13 @@ public class JPEG implements CompresorDecompresor {
             int topi = 0, topj = 0;
             double[][] buffY = new double[8][8];
             double alphau, alphav, cosu, cosv;
-            for (int x = 0; x < paddedHeight; x += 8) { //image inverse quantization and DCT-III (aka inverse DCT) (done in pixel squares of 8x8) (luminance part)
+            for (int x = 0; x < paddedHeight; x += 8) { //image inverse quantization and DCT-III (aka inverse DCT) (done in pixel squares of 8x8) for luminance
                 topi = x + 8;
                 for (int y = 0; y < paddedWidth; y += 8) {
                     topj = y + 8;
                     boolean up = true;
                     int k = x, l = y;
-                    while (k < topi && l < topj) { //TEST: zig-zag reading Luminance
+                    while (k < topi && l < topj) { //TEST: zig-zag reading Luminance (Huffman yet to be applied)
                         buffY[k%8][l%8] = (byte)(in.read()) * (LuminanceQuantizationTable[k%8][l%8] * calidad); //(byte) because reads [0,255] but it's been stored as [-128,127]
                         Y[k][l] = (int)Math.round(buffY[k%8][l%8]);
                         if (k == x && l != topj - 1 && up) {
@@ -427,13 +426,13 @@ public class JPEG implements CompresorDecompresor {
             }
             double[][] buffCb = new double[8][8];
             double[][] buffCr = new double[8][8];
-            for (int x = 0; x < downSampledPaddedHeight; x += 8) { //image inverse quantization and DCT-III (aka inverse DCT) (done in pixel squares of 8x8) (chrominance part)
+            for (int x = 0; x < downSampledPaddedHeight; x += 8) { //image inverse quantization and DCT-III (aka inverse DCT) (done in pixel squares of 8x8) for chrominance
                 topi = x + 8;
                 for (int y = 0; y < downSampledPaddedWidth; y += 8) {
                     topj = y + 8;
                     boolean up = true;
                     int k = x, l = y;
-                    while (k < topi && l < topj) { //TEST: zig-zag reading Chrominance
+                    while (k < topi && l < topj) { //TEST: zig-zag reading Chrominance (Huffman yet to be applied)
                         buffCb[k%8][l%8] = (byte)(in.read()) * (ChrominanceQuantizationTable[k%8][l%8] * calidad); //(byte) because reads [0,255] but it's been stored as [-128,127]
                         buffCr[k%8][l%8] = (byte)(in.read()) * (ChrominanceQuantizationTable[k%8][l%8] * calidad); //(byte) because reads [0,255] but it's been stored as [-128,127]
                         Cb[k][l] = (int)Math.round(buffCb[k%8][l%8]);
@@ -513,27 +512,9 @@ public class JPEG implements CompresorDecompresor {
                     rgb[0] = (int)Math.round(1.164 * (double)(Y[x][y] - 16 + 128) + 1.596 * (double)(Cr[x/2][y/2]));
                     rgb[1] = (int)Math.round(1.164 * (double)(Y[x][y] - 16 + 128) - 0.391 * (double)(Cb[x/2][y/2]) - 0.813 * (double)(Cr[x/2][y/2]));
                     rgb[2] = (int)Math.round(1.164 * (double)(Y[x][y] - 16 + 128) + 2.018 * (double)(Cb[x/2][y/2]));
-                    if (rgb[0] > rgbMaxVal) { //controlling and correcting any value that is out of range (0 to rgbMaxVal)
-                        rgb[0] = rgbMaxVal;
-                    }
-                    else if (rgb[0] < 0) {
-                        rgb[0] = 0;
-                    }
-                    if (rgb[1] > rgbMaxVal) {
-                        rgb[1] = rgbMaxVal;
-                    }
-                    else if (rgb[1] < 0) {
-                        rgb[1] = 0;
-                    }
-                    if (rgb[2] > rgbMaxVal) {
-                        rgb[2] = rgbMaxVal;
-                    }
-                    else if (rgb[2] < 0) {
-                        rgb[2] = 0;
-                    }
-                    out.write((byte)rgb[0]);
-                    out.write((byte)rgb[1]);
-                    out.write((byte)rgb[2]);
+                    out.write((byte)Math.max(0, Math.min(rgb[0], rgbMaxVal))); //controlling and correcting any value that is out of range (0 to rgbMaxVal)
+                    out.write((byte)Math.max(0, Math.min(rgb[1], rgbMaxVal)));
+                    out.write((byte)Math.max(0, Math.min(rgb[2], rgbMaxVal)));
                 }
             }
             out.close();
