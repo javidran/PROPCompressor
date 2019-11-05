@@ -2,11 +2,9 @@
 package DomainLayer.Proceso;
 
 import DomainLayer.Algoritmos.*;
+import DomainLayer.Algoritmos.LZ78.LZ78;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
 
 public abstract class ProcesoFichero {
     protected File ficheroIn;
@@ -103,9 +101,11 @@ public abstract class ProcesoFichero {
             archivo.seek(0);
             String buff = archivo.readLine();
             String[] parts = buff.split(" ");
-            numDatos = Long.parseLong(parts[0]) + 1;
-            tiempoMedio = (Long.parseLong( parts[1])*(numDatos-1))/numDatos + a/numDatos;;
-            AvgMedio = (Long.parseLong(parts[2])*(numDatos-1))/numDatos + d/numDatos;
+            numDatos = (Long.parseLong(parts[0]) + 1);
+            long aux = ((Long.parseLong( parts[1])*(numDatos-1))/numDatos + a/numDatos);
+            tiempoMedio = aux;
+            aux =  ((Long.parseLong(parts[2])*(numDatos-1))/numDatos + d/numDatos);
+            AvgMedio = aux;
             archivo.seek(0);
             archivo.writeBytes(numDatos +" "+ tiempoMedio +" "+ AvgMedio);
             archivo.close();
