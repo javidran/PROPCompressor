@@ -3,6 +3,7 @@ package DomainLayer.Proceso;
 
 import DomainLayer.Algoritmos.*;
 import DomainLayer.Algoritmos.LZ78.LZ78;
+import Exceptions.FormatoErroneoException;
 
 import java.io.*;
 
@@ -44,8 +45,6 @@ public abstract class ProcesoFichero {
 
     public abstract void ejecutarProceso() throws Exception;
 
-    public abstract Algoritmos[] tiposPosibles();
-
     public abstract boolean esComprimir();
 
     public boolean isProcesado() {
@@ -60,8 +59,8 @@ public abstract class ProcesoFichero {
         this.ficheroOut = ficheroOut;
     }
 
-    public boolean setTipoAlgoritmo(Algoritmos tipoAlgoritmo) {
-        Algoritmos[] algoritmos = tiposPosibles();
+    public boolean setTipoAlgoritmo(Algoritmos tipoAlgoritmo) throws FormatoErroneoException {
+        Algoritmos[] algoritmos = AnalizadorArchivo.algoritmosPosibles(ficheroIn.getAbsolutePath());
         boolean esCompatible = false;
         for(Algoritmos a : algoritmos) {
             if(a == tipoAlgoritmo) esCompatible = true;

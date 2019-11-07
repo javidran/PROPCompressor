@@ -122,10 +122,6 @@ public class Main {
                     System.out.printf("Comando incorrecto!\n");
             }
         }
-        /*
-        CtrlDatos ctrlDatos = CtrlDatos.getInstance();
-        ctrlDatos.estadisticasGlobales(Algoritmos.LZSS, true);
-         */
     }
 }
 
