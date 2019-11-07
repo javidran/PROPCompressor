@@ -2,6 +2,7 @@
 package Controllers;
 
 import DomainLayer.Algoritmos.Algoritmos;
+import DomainLayer.Algoritmos.JPEG;
 import DomainLayer.Proceso.ProcesoComprimir;
 import DomainLayer.Proceso.ProcesoDescomprimir;
 import DomainLayer.Proceso.ProcesoFichero;
@@ -45,5 +46,9 @@ public class CtrlProcesos {
 
     public static Algoritmos getAlgoritmoPredeterminadoTexto() {
         return algoritmoPredeterminadoTexto;
+    }
+
+    public void setCalidadJPEG(int calidadJPEG) {
+        JPEG.getInstance().setCalidad(calidadJPEG);
     }
 }
