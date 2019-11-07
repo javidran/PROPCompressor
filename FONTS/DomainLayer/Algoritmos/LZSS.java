@@ -79,10 +79,11 @@ public class LZSS implements CompresorDecompresor {
             int bitsetpos = 0;
             // BITSET end
 
-            int search_buffer_size = 255;// Because we want to keep it in a byte
-            int look_ahead_buffer_size = 255;//Now the can be 255 and not 127
+            int search_buffer_size = 4095;// MAX = 4095 50% quijote.txt
+            int look_ahead_buffer_size = 15;// MAX = 15
 
-            // Gonna look through the whole array of bytes
+
+        // Gonna look through the whole array of bytes
             int n = data.length;
             for (int act = 0; act < n; act++) {// for every position of the array
                 int sbufsize = Math.min(search_buffer_size, act);// we can at most go from the 0 to actual posotion in the
@@ -115,13 +116,20 @@ public class LZSS implements CompresorDecompresor {
                     }
                 } // We have checked all the dictionary for the longest match
                 if (maxlength >= 3) {// if there is a match of a certain length, big enough to compensate the bytes
-                    // of match
                     match.set(bitsetpos);// BITSET
-                    //result.add((byte) '1');// FLAG
                     int offsetnew = offset + 1;
-
-                    result.add((byte) offsetnew);
-                    result.add((byte) maxlength);// Length of match
+                    // NEW bitPlay
+                    int length1 = maxlength & 0xF;
+                    int off1 = (offsetnew << 4) & 0xF0; // OK
+                    int off2 = (offsetnew >> 4) & 0xFF; // OK
+                    byte mega_right = (byte) (length1 + off1);// OK
+                    byte mega_left = (byte) off2;
+                    result.add(mega_left);
+                    result.add(mega_right);
+                    // END NEW bitPlay
+                    // OLD
+                    // result.add((byte) offsetnew);
+                    // result.add((byte) maxlength);// Length of match
                     act = act + maxlength - 1; // me muevo a pasado el match para la siguiente vuelta
 
                 } else {
@@ -251,12 +259,13 @@ public class LZSS implements CompresorDecompresor {
                     result.write(data[i]);// just add the following char to the output
                     //No hago ++ porque ya se hace a la siguiente vuelta del loop
                 } else /*if (match.get(pos_bitset))*/ {// if there is a mcatch, get the length and offset
-                    Byte actual = data[i];//la posicion i es la correcta del
-                    int offset = byteToIntOffset(actual);
-                    // OLD offset: int offset = actual.intValue();// offset is first
+                    byte mega_left = data[i];
                     ++i;
-                    Byte actual2 = data[i];
-                    int matchlength = actual2.intValue();
+                    byte mega_right = data[i];
+                    int matchlength = mega_right & 0xF;
+                    int parcial1_off = (mega_right >> 4) & 0xF;
+                    int parcial2_off = (mega_left << 4) & 0xFF0;
+                    int offset = parcial1_off + parcial2_off;
                     // Now I will append the match that i get from the result itself
                     int sizeofbufnow = result.size();
                     int start = sizeofbufnow - offset; // start of the chars I have to copy for the match
@@ -269,7 +278,7 @@ public class LZSS implements CompresorDecompresor {
                 }
                 ++pos_bitset;//me muevo una en el bitset
                 if(pos_bitset>match.size()){//Si nos salimos de la medida *64 del bitset
-                    System.out.print("OJO MANOLO QUE NOS SALIMOS DEL BITSET " + i + "\n");
+                    System.out.print("Out of the bitset " + i + "\n");
                 }
             }
 
@@ -298,14 +307,6 @@ public class LZSS implements CompresorDecompresor {
         return outAlg;
     }
 
-    //Making the offset int
-    public static int byteToIntOffset(byte b)
-    {
-        return   b & 0xFF |
-                (0x00) << 8 |
-                (0x00) << 16 |
-                (0x00) << 24;
-    }
 
 
 }
