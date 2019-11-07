@@ -15,7 +15,7 @@ import java.io.File;
 public class JPEG implements CompresorDecompresor {
     private static JPEG instance = null;
 
-    private static double calidad;
+    private double calidad;
     private static int calidadHeader;
     private static int[][] LuminanceQuantizationTable = new int[8][8];   //50% compression
     private static int[][] ChrominanceQuantizationTable = new int[8][8]; //50% compression
@@ -338,7 +338,6 @@ public class JPEG implements CompresorDecompresor {
             int width = Integer.parseInt(widthHeight[0]);  //string to int
             int height = Integer.parseInt(widthHeight[1]); //string to int
             int rgbMaxVal = Integer.parseInt(rgbMVal); //string to int of rgb maximum value per pixel
-            int qualityPercent = Integer.parseInt(quality);
             String space = " ", eol = "\n";
             int fileOffset = magicNumber.getBytes().length + widthHeight[0].getBytes().length + space.getBytes().length + widthHeight[1].getBytes().length + rgbMVal.getBytes().length + quality.getBytes().length + eol.getBytes().length * 4; //skipping already read header...
             originalImage.close();
@@ -506,7 +505,6 @@ public class JPEG implements CompresorDecompresor {
             FileOutputStream fout = new FileOutputStream(fileOut, true);
             BufferedOutputStream out = new BufferedOutputStream(fout);
             int[] rgb = new int[3];
-            int cb = Cb[0][0], cr = Cr[0][0];
             for (int x = 0; x < height; ++x) { //writing data into file (RGB)
                 for (int y = 0; y < width; ++y) {
                     rgb[0] = (int)Math.round(1.164 * (double)(Y[x][y] - 16 + 128) + 1.596 * (double)(Cr[x/2][y/2]));
