@@ -39,9 +39,15 @@ public class LZ78 implements CompresorDecompresor {
 
         int i;
         byte symbol;
+        boolean reseted = false;
         CompileTree dictionary = new CompileTree();
 
-        while ((i = bfin.read()) != -1 && !dictionary.isFull()) {
+        while ((i = bfin.read()) != -1) {
+            if(dictionary.isFull()) {
+                reseted = true;
+                dictionary = new CompileTree();
+            }
+
             symbol = (byte) i;
 
             List<Byte> word = new ArrayList<>();
@@ -58,28 +64,36 @@ public class LZ78 implements CompresorDecompresor {
 
             List<Integer> indexPart = new ArrayList<>();
             indexPart.add(index & 0xFF);
-            if(index >= 256) {
-                indexPart.add((index >> 8) & 0xFF);
-                if(index > 65535) {
-                    indexPart.add((index >> 16) & 0xFF);
-                    if(index > 16777215) {
-                        indexPart.add((index >> 24) & 0xFF);
-                    }
+            if(index >= 0x3F) {
+                indexPart.add((index >> 6) & 0xFF);
+                if(index >= 0x3FFF) {
+                    indexPart.add((index >> 14) & 0xFF);
                 }
             }
 
-            bfout.write(indexPart.size());
-            for(int ind : indexPart) {
+            //bfout.write(indexPart.size());
+            for(int it = 0; it < indexPart.size(); ++it ) {
+                int ind = indexPart.get(it);
+                if(it == 0) {
+                    if(reseted) {
+                        ind = 0xC0 | (ind & 0x3F);
+                        reseted = false;
+                    }
+                    else {
+                        switch (indexPart.size()) { //case 1 is 0x00 | ind
+                            case 2:
+                                ind = 0x40 | (ind & 0x3F);
+                                break;
+                            case 3:
+                                ind = 0x80 | (ind & 0x3F);
+                                break;
+                        }
+                    }
+                }
                 bfout.write(ind);
             }
 
             bfout.write(word.get(word.size()-1));
-        }
-        if(dictionary.isFull()) {
-            bfout.write(5);
-            while((i = bfin.read()) != -1) {
-                bfout.write(i);
-            }
         }
 
         bfout.close();
@@ -98,27 +112,22 @@ public class LZ78 implements CompresorDecompresor {
         FileOutputStream fout = new FileOutputStream(fileOut);
         BufferedOutputStream bfout = new BufferedOutputStream(fout);
 
-        int flag;
+        int i;
         byte symbol;
         DecompileTree dictionary = new DecompileTree();
 
-        while ((flag = bfin.read()) != -1) {
-            if(flag == 5) {
-                int i;
-                while((i = bfin.read()) != -1) {
-                    bfout.write(i);
-                }
-                break;
+        while ((i = bfin.read()) != -1) {
+            int flag = i & 0xC0;
+            int index = i & 0x3F;
+            if(flag == 0xC0) {
+                dictionary = new DecompileTree();
             }
-            int index = bfin.read();
-            if(flag > 1) {
-                index += bfin.read() << 8;
-                if(flag > 2) {
-                    index += bfin.read() << 16;
-                    if(flag > 3) {
-                        index += bfin.read() << 24;
-                    }
-                }
+            else if (flag == 0x40) {
+                index += bfin.read() << 6;
+            }
+            else if(flag == 0x80) {
+                index += bfin.read() << 6;
+                index += bfin.read() << 14;
             }
             symbol = (byte) bfin.read();
 

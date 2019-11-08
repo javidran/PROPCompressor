@@ -65,6 +65,6 @@ public class CompileTree {
     }
 
     public boolean isFull() {
-        return Integer.MAX_VALUE == indexCount;
+        return 0x3FFFFF == indexCount;
     }
 }
