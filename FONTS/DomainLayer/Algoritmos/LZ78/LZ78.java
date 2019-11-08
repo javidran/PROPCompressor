@@ -41,7 +41,7 @@ public class LZ78 implements CompresorDecompresor {
         byte symbol;
         CompileTree dictionary = new CompileTree();
 
-        while ((i = bfin.read()) != -1 && !dictionary.full()) {
+        while ((i = bfin.read()) != -1 && !dictionary.isFull()) {
             symbol = (byte) i;
 
             List<Byte> word = new ArrayList<>();
@@ -54,19 +54,32 @@ public class LZ78 implements CompresorDecompresor {
                     word.add(symbol);
                 } else finished = true;
             }
-            int lastIndex = dictionary.insert(word);
+            int index = dictionary.insert(word);
 
-            int size = word.size();
-            int lastIndex0 = lastIndex & 0xFF;
-            int lastIndex1 = (lastIndex >> 8) & 0xFF;
-            int lastIndex2 = (lastIndex >> 16) & 0xFF;
-            int lastIndex3 = (lastIndex >> 24) & 0xFF;
+            List<Integer> indexPart = new ArrayList<>();
+            indexPart.add(index & 0xFF);
+            if(index >= 256) {
+                indexPart.add((index >> 8) & 0xFF);
+                if(index > 65535) {
+                    indexPart.add((index >> 16) & 0xFF);
+                    if(index > 16777215) {
+                        indexPart.add((index >> 24) & 0xFF);
+                    }
+                }
+            }
 
-            bfout.write(lastIndex0);
-            bfout.write(lastIndex1);
-            bfout.write(lastIndex2);
-            bfout.write(lastIndex3);
-            bfout.write(word.get(size -1));
+            bfout.write(indexPart.size());
+            for(int ind : indexPart) {
+                bfout.write(ind);
+            }
+
+            bfout.write(word.get(word.size()-1));
+        }
+        if(dictionary.isFull()) {
+            bfout.write(5);
+            while((i = bfin.read()) != -1) {
+                bfout.write(i);
+            }
         }
 
         bfout.close();
@@ -85,19 +98,31 @@ public class LZ78 implements CompresorDecompresor {
         FileOutputStream fout = new FileOutputStream(fileOut);
         BufferedOutputStream bfout = new BufferedOutputStream(fout);
 
-        int i;
+        int flag;
         byte symbol;
         DecompileTree dictionary = new DecompileTree();
 
-        while ((i = bfin.read()) != -1) {
-            int lastIndex0 = i;
-            int lastIndex1 = bfin.read() << 8;
-            int lastIndex2 = bfin.read() << 16;
-            int lastIndex3 = bfin.read() << 24;
-            int lastIndex = lastIndex0 + lastIndex1 + lastIndex2 + lastIndex3;
+        while ((flag = bfin.read()) != -1) {
+            if(flag == 5) {
+                int i;
+                while((i = bfin.read()) != -1) {
+                    bfout.write(i);
+                }
+                break;
+            }
+            int index = bfin.read();
+            if(flag > 1) {
+                index += bfin.read() << 8;
+                if(flag > 2) {
+                    index += bfin.read() << 16;
+                    if(flag > 3) {
+                        index += bfin.read() << 24;
+                    }
+                }
+            }
             symbol = (byte) bfin.read();
 
-            List<Byte> word = dictionary.insertAfterIndex(symbol, lastIndex);
+            List<Byte> word = dictionary.insertAfterIndex(symbol, index);
             int wordPos = word.size()-1;
             while(wordPos >= 0) {
                 byte res = word.get(wordPos);
