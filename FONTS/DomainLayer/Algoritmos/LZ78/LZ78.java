@@ -75,7 +75,7 @@ public class LZ78 implements CompresorDecompresor {
     }
 
     @Override
-    public OutputAlgoritmo descomprimir(File fileIn) throws Exception {
+    public OutputAlgoritmo descomprimir(File fileIn) throws IOException {
         long startTime = System.nanoTime();
 
         FileInputStream fin = new FileInputStream(fileIn);

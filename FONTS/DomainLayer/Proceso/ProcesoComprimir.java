@@ -3,7 +3,9 @@ package DomainLayer.Proceso;
 
 import Controllers.CtrlProcesos;
 import DomainLayer.Algoritmos.Algoritmos;
+import DomainLayer.Algoritmos.AnalizadorArchivo;
 import DomainLayer.Algoritmos.OutputAlgoritmo;
+import Exceptions.FormatoErroneoException;
 
 import java.io.File;
 
@@ -11,23 +13,12 @@ public class ProcesoComprimir extends ProcesoFichero {
 
     public ProcesoComprimir(File input) throws Exception {
         super(input);
-        Algoritmos[] tipos = null;
-        if((tipos=tiposPosibles()) !=null) {
-            if(tipos[0]==Algoritmos.JPEG) tipoAlgoritmo = Algoritmos.JPEG;
-            else tipoAlgoritmo = CtrlProcesos.getAlgoritmoPredeterminadoTexto();
-            asignarAlgoritmo();
-        } else throw new Exception("No hay ningun tipo de compresor compatible");
-    }
-
-    @Override
-    public Algoritmos[] tiposPosibles() {
-        if (ficheroIn.getAbsolutePath().endsWith(".txt") ) {
-            return new Algoritmos[] {Algoritmos.LZSS, Algoritmos.LZW, Algoritmos.LZ78};
-        }
-        else if (ficheroIn.getAbsolutePath().endsWith(".ppm")) {
-            return new Algoritmos[] {Algoritmos.JPEG};
-        }
-        return null;
+        String path = ficheroIn.getAbsolutePath();
+        if(!AnalizadorArchivo.esComprimible(path)) throw new FormatoErroneoException("Este archivo no es comprimible!");
+        Algoritmos[] tipos = AnalizadorArchivo.algoritmosPosibles(path);
+        if(tipos[0]==Algoritmos.JPEG) tipoAlgoritmo = Algoritmos.JPEG;
+        else tipoAlgoritmo = CtrlProcesos.getAlgoritmoPredeterminadoTexto();
+        asignarAlgoritmo();
     }
 
     @Override
@@ -37,7 +28,7 @@ public class ProcesoComprimir extends ProcesoFichero {
             ficheroOut = outputAlgoritmo.outputFile;
             procesado = true;
             datos = new DatosProceso(outputAlgoritmo.tiempo,ficheroIn.length(),ficheroOut.length());
-            //guardaDatos();
+            guardaDatos();
         } else throw new Exception("El fichero ya ha sido comprimido!");
     }
 
