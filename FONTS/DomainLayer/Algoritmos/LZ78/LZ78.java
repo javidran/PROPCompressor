@@ -2,8 +2,6 @@
 package DomainLayer.Algoritmos.LZ78;
 
 import DomainLayer.Algoritmos.CompresorDecompresor;
-import DomainLayer.Algoritmos.LZ78.CompileTree.CompileTree;
-import DomainLayer.Algoritmos.LZ78.DecompileTree.DecompileTree;
 import DomainLayer.Algoritmos.OutputAlgoritmo;
 
 import java.io.*;
@@ -39,9 +37,15 @@ public class LZ78 implements CompresorDecompresor {
 
         int i;
         byte symbol;
-        CompileTree dictionary = new CompileTree();
+        boolean reseted = false;
+        Trie dictionary = new Trie();
 
-        while ((i = bfin.read()) != -1 && !dictionary.full()) {
+        while ((i = bfin.read()) != -1) {
+            if(dictionary.isFull()) {
+                reseted = true;
+                dictionary = new Trie();
+            }
+
             symbol = (byte) i;
 
             List<Byte> word = new ArrayList<>();
@@ -54,19 +58,39 @@ public class LZ78 implements CompresorDecompresor {
                     word.add(symbol);
                 } else finished = true;
             }
-            int lastIndex = dictionary.insert(word);
+            int index = dictionary.insert(word);
 
-            int size = word.size();
-            int lastIndex0 = lastIndex & 0xFF;
-            int lastIndex1 = (lastIndex >> 8) & 0xFF;
-            int lastIndex2 = (lastIndex >> 16) & 0xFF;
-            int lastIndex3 = (lastIndex >> 24) & 0xFF;
+            List<Integer> indexPart = new ArrayList<>();
+            indexPart.add(index & 0xFF);
+            if(index >= 0x3F) {
+                indexPart.add((index >> 6) & 0xFF);
+                if(index >= 0x3FFF) {
+                    indexPart.add((index >> 14) & 0xFF);
+                }
+            }
 
-            bfout.write(lastIndex0);
-            bfout.write(lastIndex1);
-            bfout.write(lastIndex2);
-            bfout.write(lastIndex3);
-            bfout.write(word.get(size -1));
+            for(int it = 0; it < indexPart.size(); ++it ) {
+                int ind = indexPart.get(it);
+                if(it == 0) {
+                    if(reseted) {
+                        ind = 0xC0 | (ind & 0x3F);
+                        reseted = false;
+                    }
+                    else {
+                        switch (indexPart.size()) { //case 1 is 0x00 | ind
+                            case 2:
+                                ind = 0x40 | (ind & 0x3F);
+                                break;
+                            case 3:
+                                ind = 0x80 | (ind & 0x3F);
+                                break;
+                        }
+                    }
+                }
+                bfout.write(ind);
+            }
+
+            bfout.write(word.get(word.size()-1));
         }
 
         bfout.close();
@@ -87,17 +111,34 @@ public class LZ78 implements CompresorDecompresor {
 
         int i;
         byte symbol;
-        DecompileTree dictionary = new DecompileTree();
+        List<Pair> dictionary = new ArrayList<>();
+        dictionary.add(null);
 
         while ((i = bfin.read()) != -1) {
-            int lastIndex0 = i;
-            int lastIndex1 = bfin.read() << 8;
-            int lastIndex2 = bfin.read() << 16;
-            int lastIndex3 = bfin.read() << 24;
-            int lastIndex = lastIndex0 + lastIndex1 + lastIndex2 + lastIndex3;
+            int flag = i & 0xC0;
+            int index = i & 0x3F;
+            if(flag == 0xC0) {
+                dictionary = new ArrayList<>();
+                dictionary.add(null);
+            }
+            else if (flag == 0x40) {
+                index += bfin.read() << 6;
+            }
+            else if(flag == 0x80) {
+                index += bfin.read() << 6;
+                index += bfin.read() << 14;
+            }
             symbol = (byte) bfin.read();
 
-            List<Byte> word = dictionary.insertAfterIndex(symbol, lastIndex);
+            dictionary.add(new Pair(index, symbol));
+            List<Byte> word = new ArrayList<>();
+            word.add(symbol);
+            while(index != 0) {
+                Pair pair = dictionary.get(index);
+                index = pair.index;
+                word.add(pair.b);
+            }
+
             int wordPos = word.size()-1;
             while(wordPos >= 0) {
                 byte res = word.get(wordPos);
@@ -110,5 +151,15 @@ public class LZ78 implements CompresorDecompresor {
 
         long endTime = System.nanoTime();
         return new OutputAlgoritmo(endTime - startTime, fileOut);
+    }
+
+    static class Pair {
+        int index;
+        byte b;
+
+        Pair(int index, byte b) {
+            this.index = index;
+            this.b = b;
+        }
     }
 }
