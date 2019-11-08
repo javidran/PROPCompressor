@@ -2,6 +2,10 @@
 package DomainLayer.Algoritmos;
 
 import java.io.*;
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.*;
 
 public class LZW implements CompresorDecompresor {
@@ -23,66 +27,85 @@ public class LZW implements CompresorDecompresor {
     @Override
     public OutputAlgoritmo comprimir(File input) {
         long startTime = System.nanoTime();
-        //File fileOut = new File(System.getProperty("user.home")+"\\Desktop\\PROProject"+input.getName().replace(".txt", ".lzwc"));
-        File fileOut = new File(input.getAbsolutePath().replace(".txt", ".lzw")); //custom output format
+        File fileOut = new File(input.getAbsolutePath().replace(".txt", ".lzw")); // custom output format
 
-        //Pasar File input a String
-        String archivo = input.getPath();
-        String cadena = "";
-        try{
-            InputStream is = new FileInputStream(archivo);
-            byte[] buffer = new byte[is.available()];
-            is.read(buffer);
-            cadena = new String(buffer);
-            is.close();
-        }
-        catch(IOException e)
-        {
-            System.out.println("Error E: "+e);
-        }
-
-        //Ini ASCII
-        Map<String, Integer> mapa = new HashMap<String, Integer>();
+        Map<ByteBuffer , Integer> mapa = new HashMap<ByteBuffer, Integer>();
         for (int i = 0; i < 256; i++) {
-            mapa.put(String.valueOf((char) i), i);
+            byte[] y = new byte[1];
+            y[0] =  (byte) (i & 0xFF); // Del 0 to 127 and -128 to -1
+            mapa.put(ByteBuffer.wrap(y), i); // Ini map con ASCII
+            // En el map estan del 0 to 127 and -128 to -1 , Integer del 0 al 255
+            //TEST JAN
+            //byte[] bytesArray = ByteBuffer.wrap(y).array();
+            //for(byte hey : bytesArray ) System.out.println("the byte is --> "+(char)hey + " " + hey);
         }
-        String w = "";
-        String k;
-        int num = 256;
-        List<Integer> salida = new ArrayList<Integer>();
-        for (char i : cadena.toCharArray()) {
-            k = "" + i;
-            if (mapa.get(w + k) != null) {
-                w = w + k;
-            } else {
-                salida.add(mapa.get(w));
-                mapa.put(w + k, num++);
-                w = k;
-            }
-        }
-        salida.add(mapa.get(w));
 
-        FileOutputStream os = null;
+        FileInputStream fis;
+        FileOutputStream fos;
         try {
-            os = new FileOutputStream(fileOut, true);
-        } catch (FileNotFoundException e) {
-            System.err.println("Error File Output Stream: "+e);
-        }
-        BufferedOutputStream  out = new BufferedOutputStream(os);
-        try {
-            for (int test : salida) {
-                out.write(test);
-                //System.out.println(test);
+            fis = new FileInputStream(input);
+            BufferedInputStream entrada = new BufferedInputStream(fis);
+            fos = new FileOutputStream(fileOut);
+            BufferedOutputStream salida = new BufferedOutputStream(fos);
+            int PrimerByte = entrada.read();
+            byte i = (byte) PrimerByte;
+            int num = 256;
+            List<Byte> w = new ArrayList<Byte>();
+            w.add(i);
+            ByteBuffer wBB = null;
+            ByteBuffer wkBB;
+
+            int k;
+            while ((k = entrada.read()) != -1) {
+
+                byte[] wBBArray = new byte[w.size()];
+                for(int it = 0; it < wBBArray.length; ++it) {
+                    wBBArray[it] = w.get(it);
+                }
+                wBB = ByteBuffer.wrap(wBBArray); //Para el else
+
+                w.add((byte)k);
+                byte[] wkBBArray = new byte[w.size()];
+                for(int it = 0; it< wkBBArray.length; ++it) {
+                    wkBBArray[it] = w.get(it);
+                }
+                wkBB = ByteBuffer.wrap(wkBBArray); //Para el if
+
+                if (mapa.containsKey(wkBB) && mapa.get(wkBB) != null) {
+                    w.clear();
+                    for(byte byt : wkBB.array()) {
+                        w.add(byt);
+                    } //w = w+k
+                }
+                else {
+                    System.out.println();
+                    int n = mapa.get(wBB); //PORQUE NO TIENE EL W
+                    //System.out.println("En el else\n" +"Salida se añade el int " + n);
+                    byte[] array = {(byte)(n >> 24), (byte)(n >> 16), (byte)(n >> 8), (byte)n };
+                    for (byte b : array) {
+                        salida.write((byte) b);
+                    }
+                    mapa.put(wkBB, num++);
+                    w.clear();
+                    w.add((byte)k);
+                }
             }
-            //System.out.println(salida);
-            out.flush();
-            out.close();
-        } catch (IOException e) {
+            byte[] wBBArray = new byte[w.size()];
+            for(int it = 0; it < wBBArray.length; ++it) {
+                wBBArray[it] = w.get(it);
+            }
+            wBB = ByteBuffer.wrap(wBBArray);
+            int n = mapa.get(wBB); //PORQUE NO TIENE EL W
+            //System.out.println("En el else\n" +"Salida se añade el int " + n);
+            byte[] array = {(byte)(n >> 24), (byte)(n >> 16), (byte)(n >> 8), (byte)n };
+            for (byte b : array) {
+                salida.write((byte) b);
+            }
+            entrada.close();
+            salida.close();
+        } catch ( IOException e) {
             e.printStackTrace();
         }
-
-        System.out.println(mapa.size());
-        System.out.println(Math.ceil(Math.log(mapa.size()) / Math.log(2)) );
 
         long endTime = System.nanoTime(), totalTime = endTime - startTime;
         OutputAlgoritmo OutA = new OutputAlgoritmo((int)totalTime, fileOut);;
@@ -92,63 +115,86 @@ public class LZW implements CompresorDecompresor {
     @Override
     public OutputAlgoritmo descomprimir(File input) {
         long startTime = System.nanoTime();
-        //File fileOut = new File(System.getProperty("user.home")+"\\Desktop\\PROProject"+input.getName().replace(".txt", ".lzwc"));
-        File fileOut = new File(input.getAbsolutePath().replace(".lzw", "_out.txt")); //custom output format
+        File fileOut = new File(input.getAbsolutePath().replace(".lzw", "_out.txt")); // custom output format
 
-        //String archivo = input.getPath();
-        String datos = "";
-        List<Integer> cadena = new ArrayList<Integer>();
+        Map<Integer, ByteBuffer> mapa = new HashMap<Integer, ByteBuffer>();
+        for (int i = 0; i < 256; i++) { // Inicializar alfabeto ASCII
+            byte[] y = new byte[1];
+            y[0] =  (byte) (i & 0xFF); // Del 0 to 127 and -128 to -1
+            mapa.put(i,ByteBuffer.wrap(y));
+        }
 
-        BufferedReader is = null;
+        FileInputStream fis;
+        List<Integer> entrada = new ArrayList<Integer>();
         try {
-            is = new BufferedReader(new FileReader(input));
+            fis = new FileInputStream(input);
+            BufferedInputStream bis = new BufferedInputStream(fis);
+            byte[] c = new byte[4];
             int i;
-            while ((i=is.read())!=-1) {
-                cadena.add(i);
+            ByteBuffer wrapped;
+            Integer ni;
+            for (int x=0; (i = bis.read()) != -1; x++) {
+                c[x] = (byte)i;
+                if (x == 3) {
+                    ni = ((c[0] & 0xFF) << 24) | ((c[1] & 0xFF) << 16) | ((c[2] & 0xFF) << 8 ) | ((c[3] & 0xFF));
+                    entrada.add(ni);
+                    x=-1;
+                }
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            //Creo que no se añade un ultimo ni
+            bis.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        for (char a : datos.toCharArray()) {
-            cadena.add((int) a);
-        }
-        Map<Integer, String> mapa = new HashMap<Integer, String>();
-        for (int i = 0; i < 256; i++) { // Inicializar alfabeto ASCII
-            mapa.put(i, String.valueOf((char) i));
-        }
-        Iterator<Integer> it = cadena.iterator();
-        Integer oldC;
-        Integer newC;
-        String caracter;
-        String letras;
+        Iterator<Integer> nombreIterator = entrada.iterator();
+        Integer oldC, newC;
+        byte caracter; //bb
+        List<Byte> letras = new ArrayList<Byte>(); //bb
         int num = 256;
-        oldC = it.next(); //Leer input
-        caracter = mapa.get(oldC);
-        String salida = caracter;
-        while(it.hasNext()){
-            newC = it.next();
-            //System.out.println("CodNuevo: " + oldC + " y CodViejo:" + newC);
+        oldC = nombreIterator.next(); //Leer input
+        caracter = (byte)(mapa.get(oldC).array()[0] & 0xFF);
+        List<Byte> salida = new ArrayList<Byte>();
+        salida.add(caracter);
+
+        while(nombreIterator.hasNext()){
+            newC = nombreIterator.next(); //System.out.println("CodNuevo: " + oldC + " y CodViejo:" +newC);
             if (mapa.get(newC) == null) { //NO esta en el dic
-                letras = mapa.get(oldC);
-                letras = letras +  caracter;
-                //System.out.println("No en el diccionario: cadena = " + cadena);
+                letras.clear();
+                for(byte byt : mapa.get(oldC).array()) letras.add(byt); //cadena=Traducir(cód_viejo)
+                letras.add(caracter); //concat
             }
             else {
-                letras = mapa.get(newC);
-                //System.out.println("Si en el diccionario: cadena = " + cadena);
+                letras.clear();
+                for(byte byt : mapa.get(newC).array()) letras.add(byt);
             }
-            salida = salida + letras;
-            caracter = String.valueOf(letras.charAt(0));
-            mapa.put(num++, (mapa.get(oldC) + caracter));
+            salida.addAll(letras);
+            if(letras.size()>= 1) {
+                caracter = (byte)(letras.get(0) &0xFF); //carácter=Primer carácter de cadena
+            }
+
+            byte[] wArray = new byte[mapa.get(oldC).array().length + 1];
+            int it=0;
+            for(int l = 0; l< mapa.get(oldC).array().length; ++l) {
+                wArray[it] = mapa.get(oldC).array()[l];
+                it++;
+            }
+            wArray[it] = caracter;
+            mapa.put(num++, ( ByteBuffer.wrap(wArray)));
             oldC = newC;
         }
-
         try {
+            byte[] salid = new byte[salida.size()];
+            int j = 0;
+            for (byte x : salida) {
+                salid[j] = x;
+                j++;
+            }
+            String sal = new String(salid);
+            char [] outs =  sal.toCharArray();
+
             BufferedWriter writer = new BufferedWriter(new FileWriter(fileOut));
-            writer.write(salida);
+            for (char x : outs) writer.write(x);
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -157,5 +203,6 @@ public class LZW implements CompresorDecompresor {
         long endTime = System.nanoTime(), totalTime = endTime - startTime;
         OutputAlgoritmo OutA = new OutputAlgoritmo((int)totalTime, fileOut);
         return OutA;
+
     }
 }
