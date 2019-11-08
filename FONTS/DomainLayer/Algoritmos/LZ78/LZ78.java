@@ -3,7 +3,6 @@ package DomainLayer.Algoritmos.LZ78;
 
 import DomainLayer.Algoritmos.CompresorDecompresor;
 import DomainLayer.Algoritmos.LZ78.CompileTree.CompileTree;
-import DomainLayer.Algoritmos.LZ78.DecompileTree.DecompileTree;
 import DomainLayer.Algoritmos.OutputAlgoritmo;
 
 import java.io.*;
@@ -114,13 +113,15 @@ public class LZ78 implements CompresorDecompresor {
 
         int i;
         byte symbol;
-        DecompileTree dictionary = new DecompileTree();
+        List<Pair> dictionary = new ArrayList<>();
+        dictionary.add(null);
 
         while ((i = bfin.read()) != -1) {
             int flag = i & 0xC0;
             int index = i & 0x3F;
             if(flag == 0xC0) {
-                dictionary = new DecompileTree();
+                dictionary = new ArrayList<>();
+                dictionary.add(null);
             }
             else if (flag == 0x40) {
                 index += bfin.read() << 6;
@@ -131,7 +132,15 @@ public class LZ78 implements CompresorDecompresor {
             }
             symbol = (byte) bfin.read();
 
-            List<Byte> word = dictionary.insertAfterIndex(symbol, index);
+            dictionary.add(new Pair(index, symbol));
+            List<Byte> word = new ArrayList<>();
+            word.add(symbol);
+            while(index != 0) {
+                Pair pair = dictionary.get(index);
+                index = pair.index;
+                word.add(pair.b);
+            }
+
             int wordPos = word.size()-1;
             while(wordPos >= 0) {
                 byte res = word.get(wordPos);
@@ -144,5 +153,15 @@ public class LZ78 implements CompresorDecompresor {
 
         long endTime = System.nanoTime();
         return new OutputAlgoritmo(endTime - startTime, fileOut);
+    }
+
+    class Pair {
+        int index;
+        byte b;
+
+        public Pair(int index, byte b) {
+            this.index = index;
+            this.b = b;
+        }
     }
 }
