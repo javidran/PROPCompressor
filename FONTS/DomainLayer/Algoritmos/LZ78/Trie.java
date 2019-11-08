@@ -42,22 +42,17 @@ public class Trie {
     // Returns if the word is in the trie.
     public boolean search(List<Byte> bytes) {
         TrieNode t = searchNode(bytes);
-
-        if(t != null && t.isLeaf)
-            return true;
-        else
-            return false;
+        return t != null && t.isLeaf;
     }
 
     public TrieNode searchNode(List<Byte> bytes){
         Map<Byte, TrieNode> edges = root.edges;
         TrieNode t = null;
-        for(int i=0; i<bytes.size(); i++){
-            byte c = bytes.get(i);
-            if(edges.containsKey(c)){
+        for (byte c : bytes) {
+            if (edges.containsKey(c)) {
                 t = edges.get(c);
                 edges = t.edges;
-            }else{
+            } else {
                 return null;
             }
         }
@@ -68,7 +63,7 @@ public class Trie {
         return 0x3FFFFF == indexCount;
     }
 
-    class TrieNode {
+    static class TrieNode {
         byte c;
         int index;
         HashMap<Byte, TrieNode> edges = new HashMap<>();

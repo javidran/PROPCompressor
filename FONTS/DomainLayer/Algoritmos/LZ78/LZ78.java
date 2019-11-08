@@ -69,7 +69,6 @@ public class LZ78 implements CompresorDecompresor {
                 }
             }
 
-            //bfout.write(indexPart.size());
             for(int it = 0; it < indexPart.size(); ++it ) {
                 int ind = indexPart.get(it);
                 if(it == 0) {
@@ -154,7 +153,7 @@ public class LZ78 implements CompresorDecompresor {
         return new OutputAlgoritmo(endTime - startTime, fileOut);
     }
 
-    class Pair {
+    static class Pair {
         int index;
         byte b;
 
