@@ -28,7 +28,7 @@ public class JPEG implements CompresorDecompresor {
         return instance;
     }
 
-    public JPEG() {
+    private JPEG() {
         calidad = 1.0;
         LuminanceQuantizationTable = new int[][] {
                 {16, 11, 10, 16,  24,  40,  51,  61},
@@ -102,7 +102,8 @@ public class JPEG implements CompresorDecompresor {
             double[][] Cb = new double[paddedHeight][paddedWidth];
             double[][] Cr = new double[paddedHeight][paddedWidth];
             double[] rgb = new double[3];//red green blue
-            in.skip(fileOffset);
+            long skipped = in.skip(fileOffset);
+            if (skipped != fileOffset) throw new Exception("Error al leer fichero!");
             for (int x = 0; x < height; ++x) {//image color decomposition in YCbCr and centering values to 0 (range [-128,127]) (padding boundaries to have 8 multiple dimensions (needed for DCT))
                 for (int y = 0; y < width; ++y) {
                     rgb[0] = in.read();
@@ -190,7 +191,7 @@ public class JPEG implements CompresorDecompresor {
 
             FileOutputStream fout = new FileOutputStream(fileOut, true);
             BufferedOutputStream  out= new BufferedOutputStream(fout);
-			int topu = 0, topv = 0;
+			int topu, topv;
             double alphau, alphav, cosu, cosv;
             double[][] buffY = new double[8][8];
             for (int x = 0; x < paddedHeight; x += 8) { //image DCT-II and quantization (done in pixel squares of 8x8) for luminance
@@ -212,12 +213,13 @@ public class JPEG implements CompresorDecompresor {
                                 }
                             }
                             buffY[u%8][v%8] *= (alphau * alphav * 0.25);
+                            buffY[u%8][v%8] /= (LuminanceQuantizationTable[u%8][v%8] * calidad);
                         }
                     }
                     boolean up = true;
                     int i = x, j = y;
                     while (i < topu && j < topv) { //TEST: zig-zag writting Luminance (Huffman yet to be applied)
-                        out.write((int)Math.round(buffY[i%8][j%8] / (LuminanceQuantizationTable[i%8][j%8] * calidad)));
+                        out.write((int)Math.round(buffY[i%8][j%8]));
                         if (i == x && j != topv - 1 && up) {
                             ++j;
                             up = false;
@@ -272,14 +274,16 @@ public class JPEG implements CompresorDecompresor {
                                 }
                             }
                             buffCb[u%8][v%8] *= (alphau * alphav * 0.25);
+                            buffCb[u%8][v%8] /= (ChrominanceQuantizationTable[u%8][v%8] * calidad);
                             buffCr[u%8][v%8] *= (alphau * alphav * 0.25);
+                            buffCr[u%8][v%8] /= (ChrominanceQuantizationTable[u%8][v%8] * calidad);
                         }
                     }
                     boolean up = true;
                     int i = x, j = y;
                     while (i < topu && j < topv) { //TEST: zig-zag writting Chrominance (Huffman yet to be applied)
-                        out.write((int)Math.round(buffCb[i%8][j%8] / (ChrominanceQuantizationTable[i%8][j%8] * calidad)));
-                        out.write((int)Math.round(buffCr[i%8][j%8] / (ChrominanceQuantizationTable[i%8][j%8] * calidad)));
+                        out.write((int)Math.round(buffCb[i%8][j%8]));
+                        out.write((int)Math.round(buffCr[i%8][j%8]));
                         if (i == x && j != topv - 1 && up) {
                             ++j;
                             up = false;
@@ -317,8 +321,7 @@ public class JPEG implements CompresorDecompresor {
             System.err.println("Error: "+e);
         }
         long endTime = System.nanoTime(), totalTime = endTime - startTime; //ending time and total execution time
-        OutputAlgoritmo outAlg = new OutputAlgoritmo(totalTime, fileOut);
-        return outAlg;
+        return new OutputAlgoritmo(totalTime, fileOut);
     }
 
     @Override
@@ -357,8 +360,9 @@ public class JPEG implements CompresorDecompresor {
             int[][] Y = new int[paddedHeight][paddedWidth];//luminance
             int[][] Cb = new int[downSampledPaddedHeight][downSampledPaddedWidth];//chrominance blue
             int[][] Cr = new int[downSampledPaddedHeight][downSampledPaddedWidth];//chrominance red
-            in.skip(fileOffset);
-            int topi = 0, topj = 0;
+            long skipped = in.skip(fileOffset);
+            if (skipped != fileOffset) throw new Exception("Error al leer fichero!");
+            int topi, topj;
             double[][] buffY = new double[8][8];
             double alphau, alphav, cosu, cosv;
             for (int x = 0; x < paddedHeight; x += 8) { //image inverse quantization and DCT-III (aka inverse DCT) (done in pixel squares of 8x8) for luminance
@@ -521,7 +525,6 @@ public class JPEG implements CompresorDecompresor {
             System.err.println("Error: "+e);
         }
         long endTime = System.nanoTime(), totalTime = endTime - startTime; //ending time and total execution time
-        OutputAlgoritmo outAlg = new OutputAlgoritmo(totalTime, fileOut);
-        return outAlg;
+        return new OutputAlgoritmo(totalTime, fileOut);
     }
 }
