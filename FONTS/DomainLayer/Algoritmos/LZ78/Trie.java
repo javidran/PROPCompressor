@@ -1,31 +1,31 @@
-package DomainLayer.Algoritmos.LZ78.CompileTree;
+package DomainLayer.Algoritmos.LZ78;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CompileTree {
-    private CompileTreeNode root;
+public class Trie {
+    private TrieNode root;
     private int indexCount;
 
-    public CompileTree() {
-        root = new CompileTreeNode();
+    public Trie() {
+        root = new TrieNode();
         indexCount = 0;
     }
 
     public int insert(List<Byte> bytes) {
         int lastIndex = root.index;
-        HashMap<Byte, CompileTreeNode> edges = root.edges;
+        HashMap<Byte, TrieNode> edges = root.edges;
 
         for(int i=0; i < bytes.size(); i++) {
             byte b = bytes.get(i);
 
-            CompileTreeNode t = root;
+            TrieNode t = root;
             if(edges.containsKey(b)){
                 t = edges.get(b);
                 lastIndex = t.index;
             } else {
-                t = new CompileTreeNode(b, ++indexCount);
+                t = new TrieNode(b, ++indexCount);
                 edges.put(b, t);
             }
 
@@ -41,7 +41,7 @@ public class CompileTree {
 
     // Returns if the word is in the trie.
     public boolean search(List<Byte> bytes) {
-        CompileTreeNode t = searchNode(bytes);
+        TrieNode t = searchNode(bytes);
 
         if(t != null && t.isLeaf)
             return true;
@@ -49,9 +49,9 @@ public class CompileTree {
             return false;
     }
 
-    public CompileTreeNode searchNode(List<Byte> bytes){
-        Map<Byte, CompileTreeNode> edges = root.edges;
-        CompileTreeNode t = null;
+    public TrieNode searchNode(List<Byte> bytes){
+        Map<Byte, TrieNode> edges = root.edges;
+        TrieNode t = null;
         for(int i=0; i<bytes.size(); i++){
             byte c = bytes.get(i);
             if(edges.containsKey(c)){
@@ -66,5 +66,19 @@ public class CompileTree {
 
     public boolean isFull() {
         return 0x3FFFFF == indexCount;
+    }
+
+    class TrieNode {
+        byte c;
+        int index;
+        HashMap<Byte, TrieNode> edges = new HashMap<>();
+        boolean isLeaf;
+
+        TrieNode() {}
+
+        TrieNode(byte c, int index){
+            this.c = c;
+            this.index = index;
+        }
     }
 }

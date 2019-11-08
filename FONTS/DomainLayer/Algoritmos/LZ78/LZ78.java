@@ -2,7 +2,6 @@
 package DomainLayer.Algoritmos.LZ78;
 
 import DomainLayer.Algoritmos.CompresorDecompresor;
-import DomainLayer.Algoritmos.LZ78.CompileTree.CompileTree;
 import DomainLayer.Algoritmos.OutputAlgoritmo;
 
 import java.io.*;
@@ -39,12 +38,12 @@ public class LZ78 implements CompresorDecompresor {
         int i;
         byte symbol;
         boolean reseted = false;
-        CompileTree dictionary = new CompileTree();
+        Trie dictionary = new Trie();
 
         while ((i = bfin.read()) != -1) {
             if(dictionary.isFull()) {
                 reseted = true;
-                dictionary = new CompileTree();
+                dictionary = new Trie();
             }
 
             symbol = (byte) i;
@@ -159,7 +158,7 @@ public class LZ78 implements CompresorDecompresor {
         int index;
         byte b;
 
-        public Pair(int index, byte b) {
+        Pair(int index, byte b) {
             this.index = index;
             this.b = b;
         }
