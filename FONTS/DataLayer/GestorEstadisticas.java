@@ -62,11 +62,11 @@ public class GestorEstadisticas {
 
     public void obtenerDatosPrincipales (Algoritmos alg, boolean esCompresion) {}
 
-    public int getNumeroElementos (Algoritmos alg, boolean esCompresion) {}
+    public int getNumeroElementos (Algoritmos alg, boolean esCompresion) { return 0;}
 
-    public int getTiempoMedio (Algoritmos alg, boolean esCompresion) {}
+    public int getTiempoMedio (Algoritmos alg, boolean esCompresion) {return 0;}
 
-    public int getPorcentajeAhorradoMedio (Algoritmos alg, boolean esCompresion) {}
+    public int getPorcentajeAhorradoMedio (Algoritmos alg, boolean esCompresion) {return 0;}
 
     //public HashMap<int, long[3]> getDatosEstadistica (Algoritmos alg, boolean esCompresion) {}
 }
