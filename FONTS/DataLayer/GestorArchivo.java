@@ -8,6 +8,7 @@ import java.util.List;
 
 
 public class GestorArchivo {
+
     public static byte[] leeArchivo(String path) throws IOException {
         List<Byte> srclist = new ArrayList<>();// List to store bytes
 

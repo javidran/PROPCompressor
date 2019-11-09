@@ -153,7 +153,7 @@ public class LZW implements CompresorDecompresor {
 
             byte[] wArray = new byte[mapa.get(oldC).array().length + 1];
             int it=0;
-            for(int l = 0; l< mapa.get(oldC).array().length; ++l) {
+            for(int l = 0; l < mapa.get(oldC).array().length; ++l) {
                 wArray[it] = mapa.get(oldC).array()[l];
                 it++;
             }
