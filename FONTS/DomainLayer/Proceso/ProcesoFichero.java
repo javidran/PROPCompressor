@@ -9,7 +9,7 @@ import java.io.*;
 
 public abstract class ProcesoFichero {
     protected byte[] input;
-    protected byte[] output;
+    protected byte[] output = null;
     protected Algoritmos tipoAlgoritmo;
     protected CompresorDecompresor compresorDecompresor;
     protected boolean procesado;
@@ -18,6 +18,7 @@ public abstract class ProcesoFichero {
     protected ProcesoFichero(byte[] input, Algoritmos algoritmo) {
         procesado = false;
         this.input = input;
+        output = null;
         tipoAlgoritmo = algoritmo;
         asignarAlgoritmo();
     }
@@ -53,33 +54,12 @@ public abstract class ProcesoFichero {
         return procesado;
     }
 
-    public void setFicheroIn(File ficheroIn) {
-        this.ficheroIn = ficheroIn;
+    public byte[] getInput() {
+        return input;
     }
 
-    public void setFicheroOut(File ficheroOut) {
-        this.ficheroOut = ficheroOut;
-    }
-
-    public boolean setTipoAlgoritmo(Algoritmos tipoAlgoritmo) throws FormatoErroneoException {
-        Algoritmos[] algoritmos = AnalizadorArchivo.algoritmosPosibles(ficheroIn.getAbsolutePath());
-        boolean esCompatible = false;
-        for(Algoritmos a : algoritmos) {
-            if(a == tipoAlgoritmo) esCompatible = true;
-        }
-        if(esCompatible) {
-            this.tipoAlgoritmo = tipoAlgoritmo;
-            asignarAlgoritmo();
-        }
-        return esCompatible;
-    }
-
-    public File getFicheroIn() {
-        return ficheroIn;
-    }
-
-    public File getFicheroOut() {
-        return ficheroOut;
+    public byte[] getOutput() {
+        return output;
     }
 
     public Algoritmos gettipoCompresor() {

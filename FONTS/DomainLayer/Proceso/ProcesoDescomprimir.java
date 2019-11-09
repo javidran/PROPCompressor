@@ -2,11 +2,7 @@
 package DomainLayer.Proceso;
 
 import DomainLayer.Algoritmos.Algoritmos;
-import DomainLayer.Algoritmos.AnalizadorArchivo;
 import DomainLayer.Algoritmos.OutputAlgoritmo;
-import Exceptions.FormatoErroneoException;
-
-import java.io.File;
 
 public class ProcesoDescomprimir extends ProcesoFichero {
 
@@ -17,11 +13,14 @@ public class ProcesoDescomprimir extends ProcesoFichero {
     @Override
     public void ejecutarProceso() throws Exception {
         if(!procesado) {
-            OutputAlgoritmo outputAlgoritmo = compresorDecompresor.descomprimir(ficheroIn);
-            ficheroOut = outputAlgoritmo.output;
+            OutputAlgoritmo outputAlgoritmo = compresorDecompresor.descomprimir(input);
+            output = outputAlgoritmo.output;
             procesado = true;
-            datos = new DatosProceso(outputAlgoritmo.tiempo,ficheroIn.length,ficheroOut.length);
-            //guardaDatos();
+            try {
+                datos = new DatosProceso(outputAlgoritmo.tiempo, input.length, output.length, esComprimir());
+            } catch (Exception e) {
+                datos = null;
+            }
         } else throw new Exception("El fichero ya ha sido descomprimido!");
     }
 
