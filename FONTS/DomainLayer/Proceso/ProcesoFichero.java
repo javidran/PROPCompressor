@@ -3,19 +3,16 @@ package DomainLayer.Proceso;
 
 import DomainLayer.Algoritmos.*;
 import DomainLayer.Algoritmos.LZ78.LZ78;
-import Exceptions.FormatoErroneoException;
-
-import java.io.*;
 
 public abstract class ProcesoFichero {
     protected byte[] input;
     protected byte[] output = null;
-    protected Algoritmos tipoAlgoritmo;
+    protected Algoritmo tipoAlgoritmo;
     protected CompresorDecompresor compresorDecompresor;
     protected boolean procesado;
     protected DatosProceso datos;
 
-    protected ProcesoFichero(byte[] input, Algoritmos algoritmo) {
+    protected ProcesoFichero(byte[] input, Algoritmo algoritmo) {
         procesado = false;
         this.input = input;
         output = null;
@@ -42,7 +39,7 @@ public abstract class ProcesoFichero {
                 compresorDecompresor = LZ78.getInstance();
                 break;
             default:
-                throw new EnumConstantNotPresentException(Algoritmos.class, "El tipo de compresor" + tipoAlgoritmo + "no existe");
+                throw new EnumConstantNotPresentException(Algoritmo.class, "El tipo de compresor" + tipoAlgoritmo + "no existe");
         }
     }
 
@@ -62,7 +59,7 @@ public abstract class ProcesoFichero {
         return output;
     }
 
-    public Algoritmos gettipoCompresor() {
+    public Algoritmo gettipoCompresor() {
         return tipoAlgoritmo;
     }
 

@@ -1,12 +1,12 @@
 // Creado por Javier Cabrera Rodriguez
 package DomainLayer.Proceso;
 
-import DomainLayer.Algoritmos.Algoritmos;
+import DomainLayer.Algoritmos.Algoritmo;
 import DomainLayer.Algoritmos.OutputAlgoritmo;
 
 public class ProcesoComprimir extends ProcesoFichero {
 
-    public ProcesoComprimir(byte[] input, Algoritmos algoritmo) throws Exception {
+    public ProcesoComprimir(byte[] input, Algoritmo algoritmo) throws Exception {
         super(input, algoritmo);
     }
 
