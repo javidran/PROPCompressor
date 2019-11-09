@@ -78,7 +78,6 @@ public class LZW implements CompresorDecompresor {
                     } //w = w+k
                 }
                 else {
-                    System.out.println();
                     int n = mapa.get(wBB); //PORQUE NO TIENE EL W
                     //System.out.println("En el else\n" +"Salida se añade el int " + n);
                     byte[] array = {(byte)(n >> 24), (byte)(n >> 16), (byte)(n >> 8), (byte)n };
