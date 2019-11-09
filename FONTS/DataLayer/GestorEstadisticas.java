@@ -1,3 +1,4 @@
+// Creado por Sheida Vanesa Alfaro Taco
 package DataLayer;
 
 import DomainLayer.Algoritmos.Algoritmos;
@@ -21,7 +22,7 @@ public class GestorEstadisticas {
         long a = dp.getTiempo();
         long b = dp.getOldSize();
         long c = dp.getNewSize();
-        long d = dp.diffTam();
+        long d = dp.getDiffSize();
         long numDatos = 1;
         long tiempoMedio = a;
         long AvgMedio = d;
