@@ -15,9 +15,10 @@ public class GestorArchivo {
         File fileIn = new File(path); // custom output format
         FileInputStream fis = new FileInputStream(fileIn);
         BufferedInputStream entrada = new BufferedInputStream(fis);
-        byte b;
-        while ((b = (byte) entrada.read()) != -1) {
-            srclist.add(b);
+        int b;
+        while ((b = entrada.read()) != -1) {
+            byte d= (byte) b;
+            srclist.add(d);
         }
         entrada.close();
 
