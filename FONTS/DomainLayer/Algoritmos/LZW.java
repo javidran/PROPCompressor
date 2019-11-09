@@ -89,9 +89,10 @@ public class LZW implements CompresorDecompresor {
                 salida.add((byte) b);
             }
             byte [] result = new byte[salida.size()];
+            int it = 0;
             for (int l = 0; l < salida.size(); l++) {
-                result[i] = salida.get(l);
-                i++;
+                result[it] = salida.get(l);
+                it++;
             }
         long endTime = System.nanoTime(), totalTime = endTime - startTime;
         OutputAlgoritmo OutA = new OutputAlgoritmo((int)totalTime, result);;

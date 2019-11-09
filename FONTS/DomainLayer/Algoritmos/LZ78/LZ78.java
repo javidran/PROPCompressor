@@ -107,7 +107,7 @@ public class LZ78 implements CompresorDecompresor {
         dictionary.add(null);
 
         for (int i=0; i<datosInput.length; ++i) {
-            int index = datosInput[i];
+            int index = datosInput[++i];
             int flag = index & 0xC0;
             index = index & 0x3F;
             if(flag == 0xC0) {

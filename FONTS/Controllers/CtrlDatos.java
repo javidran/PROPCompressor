@@ -23,22 +23,23 @@ public class CtrlDatos {
     }
 
     public void guardaArchivo (byte[] data, String path, Algoritmos alg, boolean esCompresion, boolean sobreescribir) throws IOException {
+        String [] pathSplitted = path.split("\\.");
         switch (alg) {
             case LZW:
                 if(esCompresion) path = path.replace(".txt", ".lzw");
-                else path = path.replace(".lzw", ".txt");
+                else path = path.replace("."+pathSplitted[pathSplitted.length - 1], "_out.txt");
                 break;
             case LZSS:
                 if(esCompresion) path = path.replace(".txt", ".lzss");
-                else path = path.replace(".lzss", ".txt");
+                else path = path.replace("."+pathSplitted[pathSplitted.length - 1], "_out.txt");
                 break;
             case LZ78:
                 if(esCompresion) path = path.replace(".txt", ".lz78");
-                else path = path.replace(".lz78", ".txt");
+                else path = path.replace("."+pathSplitted[pathSplitted.length - 1], "_out.txt");
                 break;
             case JPEG:
                 if(esCompresion) path = path.replace(".ppm", ".imgc");
-                else path = path.replace(".imgc", ".ppm");
+                else path = path.replace("."+pathSplitted[pathSplitted.length - 1], "_out.ppm");
                 break;
         }
         GestorArchivo.guardaArchivo(data, path, sobreescribir);

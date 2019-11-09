@@ -51,13 +51,12 @@ public class CtrlProcesos {
         CtrlDatos ctrlDatos = CtrlDatos.getInstance();
         ProcesoFichero comp = new ProcesoComprimir(ctrlDatos.leerArchivo(path), tipoAlgoritmo);
         comp.ejecutarProceso();
-        Algoritmos[] algoritmos = algoritmosPosibles(path);
-        ProcesoFichero desc = new ProcesoDescomprimir(comp.getOutput(), algoritmos[0]);
+        ProcesoFichero desc = new ProcesoDescomprimir(comp.getOutput(), tipoAlgoritmo);
         desc.ejecutarProceso();
-        ctrlDatos.guardaArchivo(desc.getOutput(), path, algoritmos[0], false, true);
+        ctrlDatos.guardaArchivo(desc.getOutput(), path, tipoAlgoritmo, false, true);
         DatosProceso dp = desc.getDatosProceso();
         if(dp != null) {
-            ctrlDatos.actualizaEstadistica(dp, algoritmos[0], false);
+            ctrlDatos.actualizaEstadistica(dp, tipoAlgoritmo, false);
         }
     }
 

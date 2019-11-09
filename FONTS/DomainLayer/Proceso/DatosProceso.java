@@ -26,8 +26,8 @@ public class DatosProceso {
     }
 
     public double getDiffSizePercentage() {
-        if(esCompresion) return Math.floor((oldSize /(double) newSize)*100);
-        else return Math.floor((newSize /(double) oldSize)*100);
+        if(esCompresion) return Math.floor((newSize /(double) oldSize)*100);
+        else return Math.floor((oldSize /(double) newSize)*100);
     }
 
     public long getTiempo() { return tiempo; }
