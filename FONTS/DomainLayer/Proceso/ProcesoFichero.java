@@ -8,16 +8,18 @@ import Exceptions.FormatoErroneoException;
 import java.io.*;
 
 public abstract class ProcesoFichero {
-    protected File ficheroIn;
-    protected File ficheroOut;
+    protected byte[] input;
+    protected byte[] output;
     protected Algoritmos tipoAlgoritmo;
     protected CompresorDecompresor compresorDecompresor;
     protected boolean procesado;
     protected DatosProceso datos;
 
-    protected ProcesoFichero(File input) {
-        ficheroIn = input;
+    protected ProcesoFichero(byte[] input, Algoritmos algoritmo) {
         procesado = false;
+        this.input = input;
+        tipoAlgoritmo = algoritmo;
+        asignarAlgoritmo();
     }
 
     public DatosProceso getDatosProceso(){
@@ -84,6 +86,7 @@ public abstract class ProcesoFichero {
         return tipoAlgoritmo;
     }
 
+    /*
     protected void guardaDatos() throws IOException {
         File estadistica = new File( System.getProperty("user.dir") +"/resources/estadistica_"+(esComprimir()? "1":"0")+"_"+tipoAlgoritmo+".txt");
         DatosProceso newDP = getDatosProceso();
@@ -127,5 +130,6 @@ public abstract class ProcesoFichero {
             bw2.close();
         }
     }
+    */
 
 }

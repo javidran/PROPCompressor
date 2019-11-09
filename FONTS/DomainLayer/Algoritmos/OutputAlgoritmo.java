@@ -5,10 +5,10 @@ import java.io.File;
 
 public class OutputAlgoritmo {
     public long tiempo;
-    public File outputFile;
+    public byte[] output;
 
-    public OutputAlgoritmo(long tiempo, File outputFile) {
+    public OutputAlgoritmo(long tiempo, byte[] output) {
         this.tiempo = tiempo;
-        this.outputFile = outputFile;
+        this.output = output;
     }
 }
