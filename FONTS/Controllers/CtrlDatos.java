@@ -2,6 +2,7 @@
 package Controllers;
 
 import DataLayer.GestorArchivo;
+import DataLayer.GestorEstadisticas;
 import DomainLayer.Algoritmos.Algoritmos;
 import DomainLayer.Proceso.DatosProceso;
 
