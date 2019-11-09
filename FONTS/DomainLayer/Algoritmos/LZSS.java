@@ -24,6 +24,14 @@ public class LZSS implements CompresorDecompresor {
         return instance;
     }
 
+    /**
+     * Transforma un array de bytes en un Integer
+     * <p>
+     *     El array de bytes debe tener idealmente 4 bytes
+     * </p>
+     * @param bytes El array de bytes que se quiere pasar a Integer
+     * @return Un Integer con el valor que se obtiene al pasar los 4 bytes del array a un Integer propiamente
+     */
     public static int fromByteArray(byte[] bytes) {
         return ByteBuffer.wrap(bytes).getInt();
     }
@@ -33,6 +41,15 @@ public class LZSS implements CompresorDecompresor {
 
     }
 
+    /**
+     * Comprime el array de bytes que se pas por parametro aplicando el algoritmo de compersión LZSS
+     * <p>
+     *     El array de bytes debería idealmente ser de una longitud significativa
+     * </p>
+     * @param data El array de bytes que se ha obtenido del contenido del fichero
+     * @return Una instancia de la clase OutputAlgoritmo que contiene el tiempo en el que se ha realizado la compresión
+     * y también el byte[] con el resultado de la compresión del byte[] data.
+     */
     @Override
     public OutputAlgoritmo comprimir(byte[] data) {
         //gestiono el pasar de file a string
@@ -195,6 +212,15 @@ public class LZSS implements CompresorDecompresor {
         return outAlg;
     }
 
+    /**
+     * Desomprime el array de bytes que se pas por parametro aplicando el algoritmo de descompersión LZSS
+     * <p>
+     *     El array de bytes está comprimido con el algoritmo de compresión LZSS
+     * </p>
+     * @param data El array de bytes que se ha obtenido del contenido del fichero .lzss o de la compresión directamente
+     * @return Una instancia de la clase OutputAlgoritmo que contiene el tiempo en el que se ha realizado la descompresión
+     * y también el byte[] con el resultado de la descompresión del byte[] data.
+     */
     @Override
     public OutputAlgoritmo descomprimir(byte[] data) {
         long startTime = System.nanoTime();
