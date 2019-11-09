@@ -34,14 +34,14 @@ public class LZSS implements CompresorDecompresor {
     }
 
     @Override
-    public OutputAlgoritmo comprimir(File fileIn) {
+    public OutputAlgoritmo comprimir(byte[] data) {
         //gestiono el pasar de file a string
         long startTime = System.nanoTime();
-        File fileOut = new File(fileIn.getAbsolutePath().replace(".txt", ".lzss")); //custom output format
+        //File fileOut = new File(fileIn.getAbsolutePath().replace(".txt", ".lzss")); //custom output format
 
-        //try {
+        //NO Longer Needed because we have a byte[] as input
             // READING the file into a byte array
-            BufferedInputStream srcfile = null;
+            /*BufferedInputStream srcfile = null;
             List<Byte> srclist = new ArrayList<Byte>();// List to store bytes
             try {
                 FileInputStream fin = new FileInputStream(fileIn); // create FileInputStream object
@@ -68,11 +68,11 @@ public class LZSS implements CompresorDecompresor {
             for (Byte b : srclist) {
                 data[i] = b;
                 ++i;
-            }
+            }*/
             // END of reading the file into a byte array
-
+        //END NO Longer Needed because we have a byte[] as input
             // We have the array of bytes
-            List<Byte> result = new ArrayList<Byte>();// List to store the resulting bytes (coded)
+            List<Byte> result = new ArrayList<>();// List to store the resulting bytes (coded)
             // BITSET
             BitSet match = new BitSet();// Lo iniciamos vacío y lo iremos llenando en cada momento en el que meteriamos
             // un flag
@@ -127,14 +127,10 @@ public class LZSS implements CompresorDecompresor {
                     result.add(mega_left);
                     result.add(mega_right);
                     // END NEW bitPlay
-                    // OLD
-                    // result.add((byte) offsetnew);
-                    // result.add((byte) maxlength);// Length of match
                     act = act + maxlength - 1; // me muevo a pasado el match para la siguiente vuelta
 
                 } else {
                     match.set(bitsetpos, false);// BITSET
-                    //result.add((byte) '0');// FLAG
                     result.add(data[act]);
                 }
                 ++bitsetpos;// BITSET
@@ -150,7 +146,7 @@ public class LZSS implements CompresorDecompresor {
             byte[] sizeofbitset_inarray = ByteBuffer.allocate(4).putInt(sizeofbitset).array();//array of 4 positions containing int
 
             // Method which write the bytes into a file
-            BufferedOutputStream endfile = null;
+           /* BufferedOutputStream endfile = null;
             try {
                 FileOutputStream fout = new FileOutputStream(fileOut); // create FileInputStream object
                 endfile = new BufferedOutputStream(fout); // create object of BufferedInputStream
@@ -170,27 +166,45 @@ public class LZSS implements CompresorDecompresor {
             } catch (Exception e) {
                 System.out.println("File not found" + e);
             }
-        //}
-        /*catch(IOException e) {
-            System.err.println("Error: "+e);
-        }*/
+        */
+        //Byte[] fusion1 = ArrayUtils.addAll(sizeofbitset_inarray, bitsetinbytes);
+        //Byte[] MegaResultArray = ArrayUtils.addAll(fusion1,);
+        int MegaResultArray_size = sizeofbitset_inarray.length + bitsetinbytes.length + result.size();
+        byte[] MegaResultArray = new byte[MegaResultArray_size];
+        int i = 0;//Recorre el MegaResultArray
+        for(int j=0; j<sizeofbitset_inarray.length; ++j){
+            MegaResultArray[i] = (byte) sizeofbitset_inarray[j];
+            i++;
+        }
+        // //Añado el bitset en bytes
+        for(int k=0; k<bitsetinbytes.length; ++k){
+            MegaResultArray[i] = bitsetinbytes[k];
+            i++;
+        }
+        //Añado lo comprimido
+        for (int l = 0; l < result.size(); l++) {
+            MegaResultArray[i] = result.get(l);
+            i++;
+        }
+        //Ya esta rellenado el byte[] resultante con toda la info y ahora i = MegaResultArray.length
 
-        //return result.toString(); // lo convertimos a stirng en si
         long endTime = System.nanoTime();
         long total_time = endTime -startTime;
-
-        OutputAlgoritmo outAlg = new OutputAlgoritmo(total_time, fileOut);
+        OutputAlgoritmo outAlg = new OutputAlgoritmo(total_time, MegaResultArray);
+        //OutputAlgoritmo outAlg = new OutputAlgoritmo(total_time, fileOut);
         return outAlg;
     }
 
     @Override
-    public OutputAlgoritmo descomprimir(File fileIn) {
+    public OutputAlgoritmo descomprimir(byte[] data) {
         long startTime = System.nanoTime();
-        File fileOut = new File(fileIn.getAbsolutePath().replace(".lzss", "_out.txt")); //custom output format
+        //File fileOut = new File(fileIn.getAbsolutePath().replace(".lzss", "_out.txt")); //custom output format
 
         //try {
             // READING the file into a byte array
+            /*// LECTURA ABANDONADA
             BufferedInputStream srcfile = null;
+
             List<Byte> srclist = new ArrayList<Byte>();// List to store bytes
             try {
                 FileInputStream fin = new FileInputStream(fileIn); // create FileInputStream object
@@ -222,6 +236,8 @@ public class LZSS implements CompresorDecompresor {
                 ++k;
             }
             // END of reading the file into a byte array
+
+             */ // END LECTURA ABANDONADA
 
             //BITSET
             //cojo los bytes que hacen el integer
@@ -272,7 +288,7 @@ public class LZSS implements CompresorDecompresor {
                     int length = start + matchlength; // The size of the part to copy
 
                     for (; start < length; start++) { // for every spot
-                        byte[] dataprevious = result.toByteArray();
+                        byte[] dataprevious = result.toByteArray(); //THE MAIN CAUSE OF BOTTLENECK AND STUPID SLOWNESS
                         result.write(dataprevious[start]);
                     }
                 }
@@ -285,6 +301,9 @@ public class LZSS implements CompresorDecompresor {
 
             // Method which writes the bytes into a file
             byte[] result_final = result.toByteArray();
+
+            /*// LECTURA ABANDONADA
+
             BufferedOutputStream endfile = null;
             try {
                 FileOutputStream fout = new FileOutputStream(fileOut); // create FileInputStream object
@@ -297,13 +316,14 @@ public class LZSS implements CompresorDecompresor {
             } catch (Exception e) {
                 System.out.println("File not found" + e);
             }
+            */
         /*}
         catch(IOException e) {
             System.err.println("Error: "+e);
         }*/
         long endTime = System.nanoTime();
         long total_time = endTime -startTime;
-        OutputAlgoritmo outAlg = new OutputAlgoritmo(total_time, fileOut);
+        OutputAlgoritmo outAlg = new OutputAlgoritmo(total_time, result_final);
         return outAlg;
     }
 
