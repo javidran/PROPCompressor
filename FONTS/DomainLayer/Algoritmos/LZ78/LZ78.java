@@ -107,7 +107,7 @@ public class LZ78 implements CompresorDecompresor {
         dictionary.add(null);
 
         for (int i=0; i<datosInput.length; ++i) {
-            int index = datosInput[++i];
+            int index = datosInput[i++] & 0xFF;
             int flag = index & 0xC0;
             index = index & 0x3F;
             if(flag == 0xC0) {
@@ -115,13 +115,13 @@ public class LZ78 implements CompresorDecompresor {
                 dictionary.add(null);
             }
             else if (flag == 0x40) {
-                index += datosInput[++i] << 6;
+                index += (datosInput[i++] & 0xFF) << 6;
             }
             else if(flag == 0x80) {
-                index += datosInput[++i] << 6;
-                index += datosInput[++i] << 14;
+                index += (datosInput[i++] & 0xFF)  << 6;
+                index += (datosInput[i++] & 0xFF)  << 14;
             }
-            symbol = datosInput[++i];
+            symbol = datosInput[i];
 
             dictionary.add(new Pair(index, symbol));
             List<Byte> word = new ArrayList<>();

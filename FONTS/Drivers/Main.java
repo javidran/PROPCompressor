@@ -1,21 +1,20 @@
-// Creado por Joan Gamez Rodriguez
-import Controllers.CtrlDatos;
+package Drivers;// Creado por Joan Gamez Rodriguez
+
 import Controllers.CtrlProcesos;
-import DomainLayer.Algoritmos.*;
+import DomainLayer.Algoritmos.Algoritmos;
 import Exceptions.FormatoErroneoException;
 
-import java.io.File;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        System.out.printf("Bienvenido a PROPresor!\n\n");
+        System.out.print("Bienvenido a PROPresor!\n\n");
         CtrlProcesos ctrlProcesos = CtrlProcesos.getInstance();
         boolean b = true;
         while (b) {
             try {
                 Algoritmos tipoCompresor;
-                System.out.printf("Introduzca uno de los siguientes comandos disponibles:\n\ncomprimir\ndescomprimir\ncompdesc (PARA TESTING)\nsalir\n");
+                System.out.print("Introduzca uno de los siguientes comandos disponibles:\n\ncomprimir\ndescomprimir\ncompdesc (PARA TESTING)\nsalir\n");
                 Scanner scanner = new Scanner(System.in);
                 String comando = scanner.nextLine();
                 String s;
@@ -27,7 +26,7 @@ public class Main {
                             s = scanner.nextLine();
                         } else s = args[0];
                         if (s.endsWith(".txt")) {
-                            System.out.printf("Escriba el algoritmo de compresión que quiera usar, de entre los siguientes:\npredeterminado\nlzss\nlz78\nlzw\n");
+                            System.out.print("Escriba el algoritmo de compresión que quiera usar, de entre los siguientes:\npredeterminado\nlzss\nlz78\nlzw\n");
                             String algoritmoComp = scanner.nextLine();
                             switch (algoritmoComp) {
                                 case "lzss":
@@ -70,7 +69,7 @@ public class Main {
                             s = scanner.nextLine();
                         } else s = args[0];
                         if (s.endsWith(".txt")) {
-                            System.out.printf("Escriba el algoritmo de compresión que quiera usar, de entre los siguientes:\npredeterminado\nlzss\nlz78\nlzw\n");
+                            System.out.print("Escriba el algoritmo de compresión que quiera usar, de entre los siguientes:\npredeterminado\nlzss\nlz78\nlzw\n");
                             String algoritmoComp = scanner.nextLine();
                             switch (algoritmoComp) {
                                 case "lzss":
@@ -101,7 +100,7 @@ public class Main {
                         b = false;
                         break;
                     default:
-                        System.out.printf("Comando incorrecto!\n");
+                        System.out.print("Comando incorrecto!\n");
                 }
             } catch (FormatoErroneoException e) {
                 System.out.println(e.getMessage());
