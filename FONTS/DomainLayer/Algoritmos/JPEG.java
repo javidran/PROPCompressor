@@ -2,18 +2,6 @@
 package DomainLayer.Algoritmos;
 
 import Exceptions.FormatoErroneoException;
-
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -380,7 +368,7 @@ public class JPEG implements CompresorDecompresor {
         }
         ++pos;
         String quality = buff;
-        if(quality.length() > 3) throw new Exception("El formato de .ppm no es correcto!");
+        if(quality.length() > 2) throw new Exception("El formato de .ppm no es correcto!");
         int width = Integer.parseInt(widthHeight[0]);  //string to int
         int height = Integer.parseInt(widthHeight[1]); //string to int
         int rgbMaxVal = Integer.parseInt(rgbMVal); //string to int of rgb maximum value per pixel
