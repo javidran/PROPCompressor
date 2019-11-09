@@ -3,24 +3,24 @@ package DomainLayer.Proceso;
 
 import DomainLayer.Algoritmos.*;
 import DomainLayer.Algoritmos.LZ78.LZ78;
-import Exceptions.FormatoErroneoException;
-
-import java.io.*;
 
 public abstract class ProcesoFichero {
-    protected File ficheroIn;
-    protected File ficheroOut;
-    protected Algoritmos tipoAlgoritmo;
+    protected byte[] input;
+    protected byte[] output = null;
+    protected Algoritmo tipoAlgoritmo;
     protected CompresorDecompresor compresorDecompresor;
     protected boolean procesado;
     protected DatosProceso datos;
 
-    protected ProcesoFichero(File input) {
-        ficheroIn = input;
+    protected ProcesoFichero(byte[] input, Algoritmo algoritmo) {
         procesado = false;
+        this.input = input;
+        output = null;
+        tipoAlgoritmo = algoritmo;
+        asignarAlgoritmo();
     }
 
-    public DatosProceso getDatosProceso(){
+    public DatosProceso getDatosProceso() {
         return datos;
     }
 
@@ -39,7 +39,7 @@ public abstract class ProcesoFichero {
                 compresorDecompresor = LZ78.getInstance();
                 break;
             default:
-                throw new EnumConstantNotPresentException(Algoritmos.class, "El tipo de compresor" + tipoAlgoritmo + "no existe");
+                throw new EnumConstantNotPresentException(Algoritmo.class, "El tipo de compresor" + tipoAlgoritmo + "no existe");
         }
     }
 
@@ -51,39 +51,19 @@ public abstract class ProcesoFichero {
         return procesado;
     }
 
-    public void setFicheroIn(File ficheroIn) {
-        this.ficheroIn = ficheroIn;
+    public byte[] getInput() {
+        return input;
     }
 
-    public void setFicheroOut(File ficheroOut) {
-        this.ficheroOut = ficheroOut;
+    public byte[] getOutput() {
+        return output;
     }
 
-    public boolean setTipoAlgoritmo(Algoritmos tipoAlgoritmo) throws FormatoErroneoException {
-        Algoritmos[] algoritmos = AnalizadorArchivo.algoritmosPosibles(ficheroIn.getAbsolutePath());
-        boolean esCompatible = false;
-        for(Algoritmos a : algoritmos) {
-            if(a == tipoAlgoritmo) esCompatible = true;
-        }
-        if(esCompatible) {
-            this.tipoAlgoritmo = tipoAlgoritmo;
-            asignarAlgoritmo();
-        }
-        return esCompatible;
-    }
-
-    public File getFicheroIn() {
-        return ficheroIn;
-    }
-
-    public File getFicheroOut() {
-        return ficheroOut;
-    }
-
-    public Algoritmos gettipoCompresor() {
+    public Algoritmo gettipoCompresor() {
         return tipoAlgoritmo;
     }
 
+    /*
     protected void guardaDatos() throws IOException {
         File estadistica = new File( System.getProperty("user.dir") +"/resources/estadistica_"+(esComprimir()? "1":"0")+"_"+tipoAlgoritmo+".txt");
         DatosProceso newDP = getDatosProceso();
@@ -127,5 +107,6 @@ public abstract class ProcesoFichero {
             bw2.close();
         }
     }
+    */
 
 }
