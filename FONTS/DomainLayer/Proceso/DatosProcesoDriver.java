@@ -1,7 +1,6 @@
 package DomainLayer.Proceso;// Creado por Joan Gamez Rodriguez
 
 //import Controllers.CtrlProcesos;
-import DomainLayer.Algoritmos.Algoritmo;
 
 import java.util.Scanner;
 
