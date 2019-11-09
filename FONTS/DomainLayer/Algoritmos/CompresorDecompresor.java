@@ -5,7 +5,7 @@ import java.io.File;
 
 public interface CompresorDecompresor {
 
-    public OutputAlgoritmo comprimir(File input) throws Exception;
+    public OutputAlgoritmo comprimir(byte[] datosInput) throws Exception;
 
-    public OutputAlgoritmo descomprimir(File input) throws Exception;
+    public OutputAlgoritmo descomprimir(byte[] datosInput) throws Exception;
 }
