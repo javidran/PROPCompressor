@@ -2,8 +2,7 @@
 package Controllers;
 
 import DataLayer.GestorArchivo;
-import DataLayer.GestorEstadisticas;
-import DomainLayer.Algoritmos.Algoritmos;
+import DomainLayer.Algoritmos.Algoritmo;
 import DomainLayer.Proceso.DatosProceso;
 
 import java.io.*;
@@ -22,9 +21,9 @@ public class CtrlDatos {
         return GestorArchivo.leeArchivo(path);
     }
 
-    public void guardaArchivo (byte[] data, String path, Algoritmos alg, boolean esCompresion, boolean sobreescribir) throws IOException {
+    public void guardaArchivo (byte[] data, String path, Algoritmo algoritmo, boolean esCompresion, boolean sobreescribir) throws IOException {
         String [] pathSplitted = path.split("\\.");
-        switch (alg) {
+        switch (algoritmo) {
             case LZW:
                 if(esCompresion) path = path.replace(".txt", ".lzw");
                 else path = path.replace("."+pathSplitted[pathSplitted.length - 1], "_out.txt");
@@ -45,27 +44,27 @@ public class CtrlDatos {
         GestorArchivo.guardaArchivo(data, path, sobreescribir);
     }
 
-    public void actualizaEstadistica(DatosProceso dp, Algoritmos alg, boolean esCompresion) {
+    public void actualizaEstadistica(DatosProceso dp, Algoritmo algoritmo, boolean esCompresion) {
 
     }
 
-    public void obtenerDatosPrincipales(Algoritmos alg, boolean esCompresion) {}
+    public void obtenerDatosPrincipales(Algoritmo alg, boolean esCompresion) {}
 
-    public int getNumeroElementos(Algoritmos alg, boolean esCompresion) {
+    public int getNumeroElementos(Algoritmo alg, boolean esCompresion) {
         return 0;
     }
 
-    public int getTiempoMedio(Algoritmos alg, boolean esCompresion) {
+    public int getTiempoMedio(Algoritmo alg, boolean esCompresion) {
         return 0;
     }
 
-    public int getPorcentajeAhorradoMedio(Algoritmos alg, boolean esCompresion) {
+    public int getPorcentajeAhorradoMedio(Algoritmo alg, boolean esCompresion) {
         return 0;
     }
 
     //public HashMap<int, long[3]> getDatosEstadistica(Algoritmos alg, boolean esCompresion) {  }
 
-    public File estadisticasGlobales(Algoritmos algoritmo, boolean esCompresion) {
+    public File estadisticasGlobales(Algoritmo algoritmo, boolean esCompresion) {
         File file = new File(System.getProperty("user.dir") + "/resources/estadistica_" + (esCompresion? "1":"0") + "_" + algoritmo);
         //System.out.println(file.getAbsolutePath() + "       " + file.exists());
         return file;

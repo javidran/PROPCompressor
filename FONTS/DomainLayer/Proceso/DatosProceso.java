@@ -19,6 +19,10 @@ public class DatosProceso {
         }
     }
 
+    /**
+     * Returns the difference between the original size and the new size.
+     * @return The difference between oldSize and newSize.
+     */
     public long getDiffSize() {
         if(esCompresion) return oldSize - newSize;
         else return newSize - oldSize;

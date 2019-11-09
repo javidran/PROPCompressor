@@ -1,7 +1,7 @@
 // Creado por Sheida Vanesa Alfaro Taco
 package DataLayer;
 
-import DomainLayer.Algoritmos.Algoritmos;
+import DomainLayer.Algoritmos.Algoritmo;
 import DomainLayer.Proceso.DatosProceso;
 
 import java.io.*;
@@ -17,7 +17,7 @@ public class GestorEstadisticas {
         return instance;
     }
 
-    protected void actualizarEstadistica(DatosProceso dp, Algoritmos alg, boolean esCompresion) throws IOException {
+    protected void actualizarEstadistica(DatosProceso dp, Algoritmo alg, boolean esCompresion) throws IOException {
         File estadistica = new File( System.getProperty("user.dir") +"/resources/estadistica_"+(esCompresion? "1":"0")+"_"+alg+".txt");
         long a = dp.getTiempo();
         long b = dp.getOldSize();
@@ -60,13 +60,13 @@ public class GestorEstadisticas {
         }
     }
 
-    public void obtenerDatosPrincipales (Algoritmos alg, boolean esCompresion) {}
+    public void obtenerDatosPrincipales (Algoritmo alg, boolean esCompresion) {}
 
-    public int getNumeroElementos (Algoritmos alg, boolean esCompresion) { return 0;}
+    public int getNumeroElementos (Algoritmo alg, boolean esCompresion) { return 0;}
 
-    public int getTiempoMedio (Algoritmos alg, boolean esCompresion) {return 0;}
+    public int getTiempoMedio (Algoritmo alg, boolean esCompresion) {return 0;}
 
-    public int getPorcentajeAhorradoMedio (Algoritmos alg, boolean esCompresion) {return 0;}
+    public int getPorcentajeAhorradoMedio (Algoritmo alg, boolean esCompresion) {return 0;}
 
     //public HashMap<int, long[3]> getDatosEstadistica (Algoritmos alg, boolean esCompresion) {}
 }
