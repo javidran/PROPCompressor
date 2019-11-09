@@ -17,7 +17,7 @@ public class GestorEstadisticas {
         return instance;
     }
 
-    protected void guardaDatos(DatosProceso dp, Algoritmos alg, boolean esCompresion) throws IOException {
+    protected void actualizarEstadistica(DatosProceso dp, Algoritmos alg, boolean esCompresion) throws IOException {
         File estadistica = new File( System.getProperty("user.dir") +"/resources/estadistica_"+(esCompresion? "1":"0")+"_"+alg+".txt");
         long a = dp.getTiempo();
         long b = dp.getOldSize();
@@ -59,4 +59,14 @@ public class GestorEstadisticas {
             bw2.close();
         }
     }
+
+    public void obtenerDatosPrincipales (Algoritmos alg, boolean esCompresion) {}
+
+    public int getNumeroElementos (Algoritmos alg, boolean esCompresion) {}
+
+    public int getTiempoMedio (Algoritmos alg, boolean esCompresion) {}
+
+    public int getPorcentajeAhorradoMedio (Algoritmos alg, boolean esCompresion) {}
+
+    //public HashMap<int, long[3]> getDatosEstadistica (Algoritmos alg, boolean esCompresion) {}
 }

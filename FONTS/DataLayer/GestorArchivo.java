@@ -8,15 +8,7 @@ import java.util.List;
 
 
 public class GestorArchivo {
-    private static GestorArchivo instance = null;
-
-    public static GestorArchivo getInstance(){
-        if (instance == null)
-            instance = new GestorArchivo();
-        return instance;
-    }
-
-    public byte[] leeArchivo(String path) throws IOException {
+    public static byte[] leeArchivo(String path) throws IOException {
         List<Byte> srclist = new ArrayList<>();// List to store bytes
 
         File fileIn = new File(path); // custom output format
@@ -39,7 +31,7 @@ public class GestorArchivo {
 
     }
 
-    public void guardaArchivo(byte[] data, String path, boolean sobrescribir) throws IOException {
+    public static void guardaArchivo(byte[] data, String path, boolean sobrescribir) throws IOException {
         //Miramos si existe el path
         File tempFile = new File(path);
         if (tempFile.exists() && !sobrescribir) throw new ArchivoYaExisteException("No se desea sobrescribir pero el fichero a escribir ya existe");

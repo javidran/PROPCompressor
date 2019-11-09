@@ -1,6 +1,7 @@
 // Creado por Sheida Vanesa Alfaro Taco
 package Controllers;
 
+import DataLayer.GestorArchivo;
 import DomainLayer.Algoritmos.Algoritmos;
 import DomainLayer.Proceso.DatosProceso;
 
@@ -16,33 +17,30 @@ public class CtrlDatos {
 
         return instance;
     }
-    public byte[] leerArchivo (String path) {
-        File archivo = new File(path);
-        byte[] archivoBytes = new byte[(int) archivo.length()];
-        try
-        {
-            FileInputStream fis = new FileInputStream(archivo);
-            int numBytes = fis.read(archivoBytes);
-            fis.close();
-        } catch (FileNotFoundException e) {
-            System.out.println("No se ha encontrado el archivo.");
-        } catch (IOException e) {
-            System.out.println("No se ha podido leer el archivo.");
-        }
-        return archivoBytes;
+    public byte[] leerArchivo (String path) throws IOException {
+        return GestorArchivo.leeArchivo(path);
     }
 
-    public void guardaArchivo (byte[] Data, String path, boolean sobreescribir) {
-        File archivo = new File(path);
-        try {
-            FileOutputStream fos = new FileOutputStream(archivo);
-            fos.write(Data);
-            fos.close();
-        } catch (FileNotFoundException e) {
-            System.out.println("No se ha encontrado el archivo.");
-        } catch (IOException e) {
-            System.out.println("No se ha podido escribir en el archivo.");
+    public void guardaArchivo (byte[] data, String path, Algoritmos alg, boolean esCompresion, boolean sobreescribir) throws IOException {
+        switch (alg) {
+            case LZW:
+                if(esCompresion) path = path.replace(".txt", ".lzw");
+                else path = path.replace(".lzw", ".txt");
+                break;
+            case LZSS:
+                if(esCompresion) path = path.replace(".txt", ".lzss");
+                else path = path.replace(".lzss", ".txt");
+                break;
+            case LZ78:
+                if(esCompresion) path = path.replace(".txt", ".lz78");
+                else path = path.replace(".lz78", ".txt");
+                break;
+            case JPEG:
+                if(esCompresion) path = path.replace(".ppm", ".imgc");
+                else path = path.replace(".imgc", ".ppm");
+                break;
         }
+        GestorArchivo.guardaArchivo(data, path, sobreescribir);
     }
 
     public void actualizaEstadistica(DatosProceso dp, Algoritmos alg, boolean esCompresion) {
