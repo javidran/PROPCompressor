@@ -261,7 +261,8 @@ public class LZSS implements CompresorDecompresor {
             match = BitSet.valueOf(bitsetinbytes); //de aqui sale un bitset estupendo
             //BITSET END
 
-            ByteArrayOutputStream result = new ByteArrayOutputStream();
+            //ByteArrayOutputStream result = new ByteArrayOutputStream();
+            List<Byte> result = new ArrayList<>();
 
 
             int n = data.length;//int tamaño bitse + bytes del bitset + bytes que van al resultado + pares de offset y length
@@ -272,7 +273,8 @@ public class LZSS implements CompresorDecompresor {
                 // System.out.print("Lo que hay en data[" + i + "] es: " + ((char) data[i]) +
                 // "\n");
                 if (! match.get(pos_bitset)) {// if it's not compressed
-                    result.write(data[i]);// just add the following char to the output
+                    //result.write(data[i]);// just add the following char to the output
+                    result.add(data[i]);
                     //No hago ++ porque ya se hace a la siguiente vuelta del loop
                 } else /*if (match.get(pos_bitset))*/ {// if there is a mcatch, get the length and offset
                     byte mega_left = data[i];
@@ -283,13 +285,15 @@ public class LZSS implements CompresorDecompresor {
                     int parcial2_off = (mega_left << 4) & 0xFF0;
                     int offset = parcial1_off + parcial2_off;
                     // Now I will append the match that i get from the result itself
+                    //int sizeofbufnow = result.size();
                     int sizeofbufnow = result.size();
                     int start = sizeofbufnow - offset; // start of the chars I have to copy for the match
                     int length = start + matchlength; // The size of the part to copy
 
                     for (; start < length; start++) { // for every spot
-                        byte[] dataprevious = result.toByteArray(); //THE MAIN CAUSE OF BOTTLENECK AND STUPID SLOWNESS
-                        result.write(dataprevious[start]);
+                        //byte[] dataprevious = result.toByteArray(); //THE MAIN CAUSE OF BOTTLENECK AND STUPID SLOWNESS
+                        //result.write(dataprevious[start]);
+                        result.add(result.get(start));
                     }
                 }
                 ++pos_bitset;//me muevo una en el bitset
@@ -300,7 +304,14 @@ public class LZSS implements CompresorDecompresor {
 
 
             // Method which writes the bytes into a file
-            byte[] result_final = result.toByteArray();
+            //byte[] result_final = result.toByteArray();
+            byte[] result_final = new byte[result.size()];
+            int i=0;
+            for(byte x : result){
+                result_final[i] = x;
+                i++;
+            }
+
 
             /*// LECTURA ABANDONADA
 
