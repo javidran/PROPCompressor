@@ -23,7 +23,8 @@ public abstract class ProcesoFichero {
         asignarAlgoritmo();
     }
 
-    public DatosProceso getDatosProceso(){
+    public DatosProceso getDatosProceso() throws Exception {
+        if(datos == null) throw new Exception("El dato está invalidado");
         return datos;
     }
 
