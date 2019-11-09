@@ -3,9 +3,11 @@ package Controllers;
 
 import DomainLayer.Algoritmos.Algoritmos;
 import DomainLayer.Algoritmos.JPEG;
+import DomainLayer.Proceso.DatosProceso;
 import DomainLayer.Proceso.ProcesoComprimir;
 import DomainLayer.Proceso.ProcesoDescomprimir;
 import DomainLayer.Proceso.ProcesoFichero;
+import Exceptions.ArchivoYaExisteException;
 import Exceptions.FormatoErroneoException;
 
 import java.io.File;
@@ -22,23 +24,41 @@ public class CtrlProcesos {
         return instance;
     }
 
-    public File comprimirArchivo(String path, Algoritmos tipoAlgoritmo) throws Exception {
-        ProcesoFichero comp = new ProcesoComprimir(path, tipoAlgoritmo);
-        if (tipoAlgoritmo != Algoritmos.PREDETERMINADO)  comp.setTipoAlgoritmo(tipoAlgoritmo);
+    public void comprimirArchivo(String path, Algoritmos tipoAlgoritmo) throws Exception {
+        CtrlDatos ctrlDatos = CtrlDatos.getInstance();
+        ProcesoFichero comp = new ProcesoComprimir(ctrlDatos.leerArchivo(path), tipoAlgoritmo);
         comp.ejecutarProceso();
-        return comp.getFicheroOut();
+        ctrlDatos.guardaArchivo(comp.getOutput(), path, tipoAlgoritmo, true, true);
+        DatosProceso dp = comp.getDatosProceso();
+        if(dp != null) {
+            ctrlDatos.actualizaEstadistica(dp, tipoAlgoritmo, true);
+        }
     }
 
-    public File comprimirArchivo(String path) throws Exception {
-        ProcesoFichero comp = new ProcesoComprimir(path);
-        comp.ejecutarProceso();
-        return comp.getFicheroOut();
-    }
-
-    public File descomprimirArchivo(String path) throws Exception {
-        ProcesoFichero desc = new ProcesoDescomprimir(path);
+    public void descomprimirArchivo(String path) throws Exception {
+        CtrlDatos ctrlDatos = CtrlDatos.getInstance();
+        Algoritmos[] algoritmos = algoritmosPosibles(path);
+        ProcesoFichero desc = new ProcesoDescomprimir(ctrlDatos.leerArchivo(path), algoritmos[0]);
         desc.ejecutarProceso();
-        return desc.getFicheroOut();
+        ctrlDatos.guardaArchivo(desc.getOutput(), path, algoritmos[0], false, true);
+        DatosProceso dp = desc.getDatosProceso();
+        if(dp != null) {
+            ctrlDatos.actualizaEstadistica(dp, algoritmos[0], false);
+        }
+    }
+
+    public void comprimirDescomprimirArchivo(String path, Algoritmos tipoAlgoritmo) throws Exception {
+        CtrlDatos ctrlDatos = CtrlDatos.getInstance();
+        ProcesoFichero comp = new ProcesoComprimir(ctrlDatos.leerArchivo(path), tipoAlgoritmo);
+        comp.ejecutarProceso();
+        Algoritmos[] algoritmos = algoritmosPosibles(path);
+        ProcesoFichero desc = new ProcesoDescomprimir(comp.getOutput(), algoritmos[0]);
+        desc.ejecutarProceso();
+        ctrlDatos.guardaArchivo(desc.getOutput(), path, algoritmos[0], false, true);
+        DatosProceso dp = desc.getDatosProceso();
+        if(dp != null) {
+            ctrlDatos.actualizaEstadistica(dp, algoritmos[0], false);
+        }
     }
 
     public static void setAlgoritmoPredeterminadoTexto(Algoritmos algoritmoPredeterminadoTexto) {
@@ -92,7 +112,7 @@ public class CtrlProcesos {
         }
     }
 
-    public static boolean esDesomprimible(String path) throws FormatoErroneoException {
+    public static boolean esDescomprimible(String path) throws FormatoErroneoException {
         String[] splitP = path.split("\\.");
         String type = splitP[splitP.length-1];
 
