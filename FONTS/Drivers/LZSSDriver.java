@@ -39,9 +39,9 @@ public class LZSSDriver {
                     System.out.println("Escriba el path absoluto del fichero .txt a comprimir");
                     s = scanner.nextLine();
                     if (s.endsWith(".txt")) {
-                        ctrlProcesos.comprimirDescomprimirArchivo(s, Algoritmos.LZSS);
-                        String[] ss = s.split("/");
-                        System.out.println("El archivo " + ss[ss.length - 1] + " se ha comprimido y descomprimido correctamente!\n");
+                        System.out.println("Se inicia el proceso");
+                        ctrlProcesos.comprimirDescomprimirArchivo(s, Algoritmo.LZSS);
+                        System.out.println("El archivo " + s + " se ha comprimido y descomprimido correctamente!\n");
                     } else System.out.println("El formato del fichero debe de ser .txt");
                     break;
                 case "salir":
