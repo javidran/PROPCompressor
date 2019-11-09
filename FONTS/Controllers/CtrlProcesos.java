@@ -3,9 +3,12 @@ package Controllers;
 
 import DomainLayer.Algoritmos.Algoritmos;
 import DomainLayer.Algoritmos.JPEG;
+import DomainLayer.Proceso.DatosProceso;
 import DomainLayer.Proceso.ProcesoComprimir;
 import DomainLayer.Proceso.ProcesoDescomprimir;
 import DomainLayer.Proceso.ProcesoFichero;
+import Exceptions.ArchivoYaExisteException;
+import Exceptions.FormatoErroneoException;
 
 import java.io.File;
 
@@ -21,23 +24,40 @@ public class CtrlProcesos {
         return instance;
     }
 
-    public File comprimirArchivo(File fileIn, Algoritmos tipoAlgoritmo) throws Exception {
-        ProcesoFichero comp = new ProcesoComprimir(fileIn);
-        if (tipoAlgoritmo != Algoritmos.PREDETERMINADO)  comp.setTipoAlgoritmo(tipoAlgoritmo);
+    public void comprimirArchivo(String path, Algoritmos tipoAlgoritmo) throws Exception {
+        CtrlDatos ctrlDatos = CtrlDatos.getInstance();
+        ProcesoFichero comp = new ProcesoComprimir(ctrlDatos.leerArchivo(path), tipoAlgoritmo);
         comp.ejecutarProceso();
-        return comp.getFicheroOut();
+        ctrlDatos.guardaArchivo(comp.getOutput(), path, tipoAlgoritmo, true, true);
+        DatosProceso dp = comp.getDatosProceso();
+        if(dp != null) {
+            ctrlDatos.actualizaEstadistica(dp, tipoAlgoritmo, true);
+        }
     }
 
-    public File comprimirArchivo(File fileIn) throws Exception {
-        ProcesoFichero comp = new ProcesoComprimir(fileIn);
-        comp.ejecutarProceso();
-        return comp.getFicheroOut();
-    }
-
-    public File descomprimirArchivo(File fileIn) throws Exception {
-        ProcesoFichero desc = new ProcesoDescomprimir(fileIn);
+    public void descomprimirArchivo(String path) throws Exception {
+        CtrlDatos ctrlDatos = CtrlDatos.getInstance();
+        Algoritmos[] algoritmos = algoritmosPosibles(path);
+        ProcesoFichero desc = new ProcesoDescomprimir(ctrlDatos.leerArchivo(path), algoritmos[0]);
         desc.ejecutarProceso();
-        return desc.getFicheroOut();
+        ctrlDatos.guardaArchivo(desc.getOutput(), path, algoritmos[0], false, true);
+        DatosProceso dp = desc.getDatosProceso();
+        if(dp != null) {
+            ctrlDatos.actualizaEstadistica(dp, algoritmos[0], false);
+        }
+    }
+
+    public void comprimirDescomprimirArchivo(String path, Algoritmos tipoAlgoritmo) throws Exception {
+        CtrlDatos ctrlDatos = CtrlDatos.getInstance();
+        ProcesoFichero comp = new ProcesoComprimir(ctrlDatos.leerArchivo(path), tipoAlgoritmo);
+        comp.ejecutarProceso();
+        ProcesoFichero desc = new ProcesoDescomprimir(comp.getOutput(), tipoAlgoritmo);
+        desc.ejecutarProceso();
+        ctrlDatos.guardaArchivo(desc.getOutput(), path, tipoAlgoritmo, false, true);
+        DatosProceso dp = desc.getDatosProceso();
+        if(dp != null) {
+            ctrlDatos.actualizaEstadistica(dp, tipoAlgoritmo, false);
+        }
     }
 
     public static void setAlgoritmoPredeterminadoTexto(Algoritmos algoritmoPredeterminadoTexto) {
@@ -50,5 +70,62 @@ public class CtrlProcesos {
 
     public void setCalidadJPEG(int calidadJPEG) {
         JPEG.getInstance().setCalidad(calidadJPEG);
+    }
+
+    public static Algoritmos[] algoritmosPosibles(String path) throws FormatoErroneoException {
+        String[] splittedPath = path.split("\\.");
+        String type = splittedPath[splittedPath.length-1];
+
+        switch (type) {
+            case "txt":
+                return new Algoritmos[] {Algoritmos.LZSS, Algoritmos.LZW, Algoritmos.LZ78};
+            case "ppm":
+            case "imgc":
+                return new Algoritmos[] {Algoritmos.JPEG};
+            case "lzss":
+                return new Algoritmos[] {Algoritmos.LZSS};
+            case "lz78":
+                return new Algoritmos[] {Algoritmos.LZ78};
+            case "lzw":
+                return new Algoritmos[] {Algoritmos.LZW};
+            default:
+                throw new FormatoErroneoException("No hay ningun tipo de algoritmo compatible");
+        }
+    }
+
+    public static boolean esComprimible(String path) throws FormatoErroneoException {
+        String[] splitP = path.split("\\.");
+        String type = splitP[splitP.length-1];
+
+        switch (type) {
+            case "txt":
+            case "ppm":
+                return true;
+            case "imgc":
+            case "lzss":
+            case "lz78":
+            case "lzw":
+                return false;
+            default:
+                throw new FormatoErroneoException("No hay ningun tipo de algoritmo compatible");
+        }
+    }
+
+    public static boolean esDescomprimible(String path) throws FormatoErroneoException {
+        String[] splitP = path.split("\\.");
+        String type = splitP[splitP.length-1];
+
+        switch (type) {
+            case "txt":
+            case "ppm":
+                return false;
+            case "imgc":
+            case "lzss":
+            case "lz78":
+            case "lzw":
+                return true;
+            default:
+                throw new FormatoErroneoException("No hay ningun tipo de algoritmo compatible");
+        }
     }
 }

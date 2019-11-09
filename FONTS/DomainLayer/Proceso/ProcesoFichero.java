@@ -8,19 +8,22 @@ import Exceptions.FormatoErroneoException;
 import java.io.*;
 
 public abstract class ProcesoFichero {
-    protected File ficheroIn;
-    protected File ficheroOut;
+    protected byte[] input;
+    protected byte[] output = null;
     protected Algoritmos tipoAlgoritmo;
     protected CompresorDecompresor compresorDecompresor;
     protected boolean procesado;
     protected DatosProceso datos;
 
-    protected ProcesoFichero(File input) {
-        ficheroIn = input;
+    protected ProcesoFichero(byte[] input, Algoritmos algoritmo) {
         procesado = false;
+        this.input = input;
+        output = null;
+        tipoAlgoritmo = algoritmo;
+        asignarAlgoritmo();
     }
 
-    public DatosProceso getDatosProceso(){
+    public DatosProceso getDatosProceso() {
         return datos;
     }
 
@@ -51,39 +54,19 @@ public abstract class ProcesoFichero {
         return procesado;
     }
 
-    public void setFicheroIn(File ficheroIn) {
-        this.ficheroIn = ficheroIn;
+    public byte[] getInput() {
+        return input;
     }
 
-    public void setFicheroOut(File ficheroOut) {
-        this.ficheroOut = ficheroOut;
-    }
-
-    public boolean setTipoAlgoritmo(Algoritmos tipoAlgoritmo) throws FormatoErroneoException {
-        Algoritmos[] algoritmos = AnalizadorArchivo.algoritmosPosibles(ficheroIn.getAbsolutePath());
-        boolean esCompatible = false;
-        for(Algoritmos a : algoritmos) {
-            if(a == tipoAlgoritmo) esCompatible = true;
-        }
-        if(esCompatible) {
-            this.tipoAlgoritmo = tipoAlgoritmo;
-            asignarAlgoritmo();
-        }
-        return esCompatible;
-    }
-
-    public File getFicheroIn() {
-        return ficheroIn;
-    }
-
-    public File getFicheroOut() {
-        return ficheroOut;
+    public byte[] getOutput() {
+        return output;
     }
 
     public Algoritmos gettipoCompresor() {
         return tipoAlgoritmo;
     }
 
+    /*
     protected void guardaDatos() throws IOException {
         File estadistica = new File( System.getProperty("user.dir") +"/resources/estadistica_"+(esComprimir()? "1":"0")+"_"+tipoAlgoritmo+".txt");
         DatosProceso newDP = getDatosProceso();
@@ -127,5 +110,6 @@ public abstract class ProcesoFichero {
             bw2.close();
         }
     }
+    */
 
 }

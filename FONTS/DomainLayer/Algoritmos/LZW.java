@@ -1,11 +1,7 @@
 // Creado por Sheida Vanesa Alfaro Taco
 package DomainLayer.Algoritmos;
 
-import java.io.*;
 import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.*;
 
 public class LZW implements CompresorDecompresor {
@@ -25,9 +21,9 @@ public class LZW implements CompresorDecompresor {
     }
 
     @Override
-    public OutputAlgoritmo comprimir(File input) {
+    public OutputAlgoritmo comprimir(byte[] datosInput) {
         long startTime = System.nanoTime();
-        File fileOut = new File(input.getAbsolutePath().replace(".txt", ".lzw")); // custom output format
+        List<Byte> salida = new ArrayList<>();
 
         Map<ByteBuffer , Integer> mapa = new HashMap<ByteBuffer, Integer>();
         for (int i = 0; i < 256; i++) {
@@ -40,23 +36,15 @@ public class LZW implements CompresorDecompresor {
             //for(byte hey : bytesArray ) System.out.println("the byte is --> "+(char)hey + " " + hey);
         }
 
-        FileInputStream fis;
-        FileOutputStream fos;
-        try {
-            fis = new FileInputStream(input);
-            BufferedInputStream entrada = new BufferedInputStream(fis);
-            fos = new FileOutputStream(fileOut);
-            BufferedOutputStream salida = new BufferedOutputStream(fos);
-            int PrimerByte = entrada.read();
-            byte i = (byte) PrimerByte;
+            byte i = datosInput[0];
             int num = 256;
             List<Byte> w = new ArrayList<Byte>();
             w.add(i);
             ByteBuffer wBB = null;
             ByteBuffer wkBB;
 
-            int k;
-            while ((k = entrada.read()) != -1) {
+            for ( int x = 1; x < datosInput.length; x++) {
+                byte k = datosInput[x];
 
                 byte[] wBBArray = new byte[w.size()];
                 for(int it = 0; it < wBBArray.length; ++it) {
@@ -78,12 +66,11 @@ public class LZW implements CompresorDecompresor {
                     } //w = w+k
                 }
                 else {
-                    System.out.println();
                     int n = mapa.get(wBB); //PORQUE NO TIENE EL W
                     //System.out.println("En el else\n" +"Salida se añade el int " + n);
                     byte[] array = {(byte)(n >> 24), (byte)(n >> 16), (byte)(n >> 8), (byte)n };
                     for (byte b : array) {
-                        salida.write((byte) b);
+                        salida.add((byte) b);
                     }
                     mapa.put(wkBB, num++);
                     w.clear();
@@ -99,23 +86,22 @@ public class LZW implements CompresorDecompresor {
             //System.out.println("En el else\n" +"Salida se añade el int " + n);
             byte[] array = {(byte)(n >> 24), (byte)(n >> 16), (byte)(n >> 8), (byte)n };
             for (byte b : array) {
-                salida.write((byte) b);
+                salida.add((byte) b);
             }
-            entrada.close();
-            salida.close();
-        } catch ( IOException e) {
-            e.printStackTrace();
-        }
-
+            byte [] result = new byte[salida.size()];
+            int it = 0;
+            for (int l = 0; l < salida.size(); l++) {
+                result[it] = salida.get(l);
+                it++;
+            }
         long endTime = System.nanoTime(), totalTime = endTime - startTime;
-        OutputAlgoritmo OutA = new OutputAlgoritmo((int)totalTime, fileOut);;
+        OutputAlgoritmo OutA = new OutputAlgoritmo((int)totalTime, result);;
         return OutA;
     }
 
     @Override
-    public OutputAlgoritmo descomprimir(File input) {
+    public OutputAlgoritmo descomprimir(byte[] datosInput) {
         long startTime = System.nanoTime();
-        File fileOut = new File(input.getAbsolutePath().replace(".lzw", "_out.txt")); // custom output format
 
         Map<Integer, ByteBuffer> mapa = new HashMap<Integer, ByteBuffer>();
         for (int i = 0; i < 256; i++) { // Inicializar alfabeto ASCII
@@ -124,17 +110,13 @@ public class LZW implements CompresorDecompresor {
             mapa.put(i,ByteBuffer.wrap(y));
         }
 
-        FileInputStream fis;
         List<Integer> entrada = new ArrayList<Integer>();
-        try {
-            fis = new FileInputStream(input);
-            BufferedInputStream bis = new BufferedInputStream(fis);
+
             byte[] c = new byte[4];
-            int i;
-            ByteBuffer wrapped;
             Integer ni;
-            for (int x=0; (i = bis.read()) != -1; x++) {
-                c[x] = (byte)i;
+            int i = 0;
+            for (int x=0; i < datosInput.length; x++) {
+                c[x] = datosInput[i++];
                 if (x == 3) {
                     ni = ((c[0] & 0xFF) << 24) | ((c[1] & 0xFF) << 16) | ((c[2] & 0xFF) << 8 ) | ((c[3] & 0xFF));
                     entrada.add(ni);
@@ -142,10 +124,6 @@ public class LZW implements CompresorDecompresor {
                 }
             }
             //Creo que no se añade un ultimo ni
-            bis.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         Iterator<Integer> nombreIterator = entrada.iterator();
         Integer oldC, newC;
@@ -175,7 +153,7 @@ public class LZW implements CompresorDecompresor {
 
             byte[] wArray = new byte[mapa.get(oldC).array().length + 1];
             int it=0;
-            for(int l = 0; l< mapa.get(oldC).array().length; ++l) {
+            for(int l = 0; l < mapa.get(oldC).array().length; ++l) {
                 wArray[it] = mapa.get(oldC).array()[l];
                 it++;
             }
@@ -183,26 +161,18 @@ public class LZW implements CompresorDecompresor {
             mapa.put(num++, ( ByteBuffer.wrap(wArray)));
             oldC = newC;
         }
-        try {
             byte[] salid = new byte[salida.size()];
             int j = 0;
             for (byte x : salida) {
                 salid[j] = x;
                 j++;
             }
+            /*
             String sal = new String(salid);
             char [] outs =  sal.toCharArray();
-
-            BufferedWriter writer = new BufferedWriter(new FileWriter(fileOut));
-            for (char x : outs) writer.write(x);
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        long endTime = System.nanoTime(), totalTime = endTime - startTime;
-        OutputAlgoritmo OutA = new OutputAlgoritmo((int)totalTime, fileOut);
+*/
+            long endTime = System.nanoTime(), totalTime = endTime - startTime;
+        OutputAlgoritmo OutA = new OutputAlgoritmo((int)totalTime, salid);
         return OutA;
-
     }
 }

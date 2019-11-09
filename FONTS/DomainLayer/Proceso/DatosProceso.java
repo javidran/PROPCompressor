@@ -3,51 +3,33 @@ package DomainLayer.Proceso;
 
 public class DatosProceso {
     private long tiempo;
-    private long antiguoTamaño;
-    private long nuevoTamaño;
+    private long oldSize;
+    private long newSize;
+    boolean esCompresion;
 
-    protected DatosProceso(long time, long oldSize, long newSize) {
+    protected DatosProceso(long time, long oldSize, long newSize, boolean esCompresion) throws Exception {
         tiempo = time;
-        antiguoTamaño = oldSize;
-        nuevoTamaño = newSize;
-        System.out.println("El proceso ha tardado " + time/1000000000.0 + "s. El cambio de tamaño pasa de " + oldSize + "B a " + newSize + "B con diferencia de " + diffTam() + "B / " + diffTamPercent() + "%");
-    }
-
-    public long diffTam() {
-        long resta_compr = antiguoTamaño - nuevoTamaño;
-        if(resta_compr>=0){//es una compresión
-            return resta_compr;
-        }
-        else{ //es una descompresion
-            long resta_decompr = nuevoTamaño - antiguoTamaño;
-            return resta_decompr;
+        this.oldSize = oldSize;
+        this.newSize = newSize;
+        this.esCompresion = esCompresion;
+        System.out.println("El proceso ha tardado " + time/1000000000.0 + "s. El cambio de tamaño pasa de " + oldSize + "B a " + newSize + "B con diferencia de " + getDiffSize() + "B / " + getDiffSizePercentage() + "%");
+        if(getDiffSize() < 0) {
+            System.out.println("El proceso de" + (esCompresion?"compresión":"descompresión") + " no ha resultado satisfactorio ya que ocupa " + (esCompresion?"más":"menos") + " que el archivo original. Se guardará igualmente.");
+            throw new Exception("El proceso no ha sido satisfactorio");
         }
     }
 
-    public double diffTamPercent(){
-        long resta_compr = antiguoTamaño - nuevoTamaño;
-        if(resta_compr<0){//es una compresión
-            return Math.floor((antiguoTamaño/(double) nuevoTamaño)*100);
-        }
-        else{ //es una descompresion
-            //long resta_decompr = nuevoTamaño - antiguoTamaño;
-            return Math.floor((nuevoTamaño/(double) antiguoTamaño)*100);
-        }
+    public long getDiffSize() {
+        if(esCompresion) return oldSize - newSize;
+        else return newSize - oldSize;
     }
 
-    // TO - DO
-    /*
-    private void actualizarArchivo(){
-
+    public double getDiffSizePercentage() {
+        if(esCompresion) return Math.floor((newSize /(double) oldSize)*100);
+        else return Math.floor((oldSize /(double) newSize)*100);
     }
-     */
-    //End of TO-DO
 
     public long getTiempo() { return tiempo; }
-    public long getNuevoTamaño() { return nuevoTamaño; }
-    public long getAntiguoTamaño() { return antiguoTamaño; }
-
-
-
-
+    public long getNewSize() { return newSize; }
+    public long getOldSize() { return oldSize; }
 }

@@ -25,36 +25,31 @@ public class LZ78 implements CompresorDecompresor {
     }
 
     @Override
-    public OutputAlgoritmo comprimir(File fileIn) throws IOException {
+    public OutputAlgoritmo comprimir(byte[] datosInput) throws IOException {
         long startTime = System.nanoTime();
 
-        FileInputStream fin = new FileInputStream(fileIn);
-        BufferedInputStream bfin = new BufferedInputStream(fin);
+        List<Byte> output = new ArrayList<>();
 
-        File fileOut = new File(fileIn.getAbsolutePath().replace(".txt", "_out.lz78")); //custom output format
-        FileOutputStream fout = new FileOutputStream(fileOut);
-        BufferedOutputStream bfout = new BufferedOutputStream(fout);
-
-        int i;
-        byte symbol;
         boolean reseted = false;
         Trie dictionary = new Trie();
+        byte symbol;
 
-        while ((i = bfin.read()) != -1) {
+        for (int i=0; i<datosInput.length; ++i) {
             if(dictionary.isFull()) {
                 reseted = true;
                 dictionary = new Trie();
             }
 
-            symbol = (byte) i;
+            symbol = datosInput[i];
 
             List<Byte> word = new ArrayList<>();
             word.add(symbol);
 
             boolean finished = false;
             while (dictionary.search(word) && !finished) {
-                if ((i = bfin.read()) != -1) {
-                    symbol = (byte) i;
+                ++i;
+                if (i < datosInput.length) {
+                    symbol = datosInput[i];
                     word.add(symbol);
                 } else finished = true;
             }
@@ -87,48 +82,46 @@ public class LZ78 implements CompresorDecompresor {
                         }
                     }
                 }
-                bfout.write(ind);
+                output.add((byte) ind);
             }
-
-            bfout.write(word.get(word.size()-1));
+            output.add(word.get(word.size()-1));
         }
 
-        bfout.close();
+        byte[] outputArray = new byte[output.size()];
+        for(int i=0; i<output.size(); ++i) {
+            outputArray[i] = output.get(i);
+        }
+
         long endTime = System.nanoTime();
-        return new OutputAlgoritmo(endTime - startTime, fileOut);
+        return new OutputAlgoritmo(endTime - startTime, outputArray);
     }
 
     @Override
-    public OutputAlgoritmo descomprimir(File fileIn) throws IOException {
+    public OutputAlgoritmo descomprimir(byte[] datosInput) throws IOException {
         long startTime = System.nanoTime();
 
-        FileInputStream fin = new FileInputStream(fileIn);
-        BufferedInputStream bfin = new BufferedInputStream(fin);
+        List<Byte> output = new ArrayList<>();
 
-        File fileOut = new File(fileIn.getAbsolutePath().replace(".lz78", ".txt")); //custom output format
-        FileOutputStream fout = new FileOutputStream(fileOut);
-        BufferedOutputStream bfout = new BufferedOutputStream(fout);
-
-        int i;
         byte symbol;
         List<Pair> dictionary = new ArrayList<>();
         dictionary.add(null);
 
-        while ((i = bfin.read()) != -1) {
-            int flag = i & 0xC0;
-            int index = i & 0x3F;
+        for (int i=0; i<datosInput.length; ++i) {
+            int index = datosInput[i++] & 0xFF;
+            int flag = index & 0xC0;
+            index = index & 0x3F;
             if(flag == 0xC0) {
                 dictionary = new ArrayList<>();
                 dictionary.add(null);
             }
             else if (flag == 0x40) {
-                index += bfin.read() << 6;
+                index += (datosInput[i++] & 0xFF) << 6;
             }
             else if(flag == 0x80) {
-                index += bfin.read() << 6;
-                index += bfin.read() << 14;
+                index += (datosInput[i++] & 0xFF)  << 6;
+                index += (datosInput[i++] & 0xFF)  << 14;
             }
-            symbol = (byte) bfin.read();
+            symbol = datosInput[i];
 
             dictionary.add(new Pair(index, symbol));
             List<Byte> word = new ArrayList<>();
@@ -142,15 +135,18 @@ public class LZ78 implements CompresorDecompresor {
             int wordPos = word.size()-1;
             while(wordPos >= 0) {
                 byte res = word.get(wordPos);
-                bfout.write(res);
+                output.add(res);
                 --wordPos;
             }
         }
 
-        bfout.close();
+        byte[] outputArray = new byte[output.size()];
+        for(int i=0; i<outputArray.length; ++i) {
+            outputArray[i] = output.get(i);
+        }
 
         long endTime = System.nanoTime();
-        return new OutputAlgoritmo(endTime - startTime, fileOut);
+        return new OutputAlgoritmo(endTime - startTime, outputArray);
     }
 
     static class Pair {
