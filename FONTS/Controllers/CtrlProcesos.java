@@ -23,7 +23,7 @@ public class CtrlProcesos {
     }
 
     public File comprimirArchivo(String path, Algoritmos tipoAlgoritmo) throws Exception {
-        ProcesoFichero comp = new ProcesoComprimir(path);
+        ProcesoFichero comp = new ProcesoComprimir(path, tipoAlgoritmo);
         if (tipoAlgoritmo != Algoritmos.PREDETERMINADO)  comp.setTipoAlgoritmo(tipoAlgoritmo);
         comp.ejecutarProceso();
         return comp.getFicheroOut();
