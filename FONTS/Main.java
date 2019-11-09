@@ -46,14 +46,12 @@ public class Main {
                                     throw new EnumConstantNotPresentException(Algoritmos.class, "El tipo de compresor " + algoritmoComp + " no existe o no está disponible para un archivo .txt\n");
                             }
                             ctrlProcesos.comprimirArchivo(s, tipoCompresor);
-                            String[] ss = s.split("/");
-                            System.out.println("El archivo " + ss[ss.length - 1] + " se ha comprimido correctamente!\n");
+                            System.out.println("El archivo " + s + " se ha comprimido correctamente!\n");
                         } else if (s.endsWith(".ppm")) {
                             System.out.println("Indique la calidad de compresión a usar (del 1 al 7)");
                             ctrlProcesos.setCalidadJPEG(scanner.nextInt() * 10);
                             ctrlProcesos.comprimirArchivo(s, Algoritmos.JPEG);
-                            String[] ss = s.split("/");
-                            System.out.println("El archivo " + ss[ss.length - 1] + " se ha comprimido correctamente!\n");
+                            System.out.println("El archivo " + s + " se ha comprimido correctamente!\n");
                         } else System.out.println("El formato del fichero debe de ser .txt o .ppm!");
                         break;
                     case "descomprimir":
@@ -96,8 +94,7 @@ public class Main {
                             ctrlProcesos.setCalidadJPEG(scanner.nextInt() * 10);
                             ctrlProcesos.comprimirDescomprimirArchivo(s, Algoritmos.JPEG);
                         }
-                        String[] ss = s.split("/");
-                        System.out.println("El archivo " + ss[ss.length - 1] + " se ha comprimido y descomprimido correctamente!\n");
+                        System.out.println("El archivo " + s + " se ha comprimido y descomprimido correctamente!\n");
                         break;
                     case "salir":
                     case "4":
