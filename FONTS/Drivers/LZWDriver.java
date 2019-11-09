@@ -23,6 +23,7 @@ public class LZWDriver {
                         s = scanner.nextLine();
                     } else s = args[0];
                     if (s.endsWith(".txt")) {
+                        System.out.println("Se inicia el proceso");
                         ctrlProcesos.comprimirArchivo(s, Algoritmo.LZ78);
                         String[] ss = s.split("/");
                         System.out.println("El archivo " + ss[ss.length - 1] + " se ha comprimido correctamente!\n");
@@ -34,6 +35,7 @@ public class LZWDriver {
                         System.out.println("Escriba el path absoluto del fichero .lzw a descomprimir:");
                         s = scanner.nextLine();
                     } else s = args[0];
+                    
                     ctrlProcesos.descomprimirArchivo(s);
                     System.out.println("El archivo se ha descomprimido correctamente!\n");
                     break;

@@ -21,6 +21,7 @@ public class LZ78Driver {
                     System.out.println("Escriba el path absoluto del fichero .txt a comprimir:");
                     s = scanner.nextLine();
                     if (s.endsWith(".txt")) {
+                        System.out.println("Se inicia el proceso");
                         ctrlProcesos.comprimirArchivo(s, Algoritmo.LZ78);
                         System.out.println("El archivo " + s + " se ha comprimido correctamente!\n");
                     } else System.out.println("El formato del fichero debe de ser .txt o .ppm!");
@@ -29,6 +30,7 @@ public class LZ78Driver {
                 case "2":
                     System.out.println("Escriba el path absoluto del fichero .lz78 a descomprimir:");
                     s = scanner.nextLine();
+                    System.out.println("Se inicia el proceso");
                     ctrlProcesos.descomprimirArchivo(s);
                     System.out.println("El archivo se ha descomprimido correctamente!\n");
                     break;
@@ -38,6 +40,7 @@ public class LZ78Driver {
                     s = scanner.nextLine();
                     if (s.endsWith(".txt")) {
                         ctrlProcesos.comprimirDescomprimirArchivo(s, Algoritmo.LZ78);
+                        System.out.println("Se inicia el proceso");
                         System.out.println("El archivo " + s + " se ha comprimido y descomprimido correctamente!\n");
                     } else System.out.println("El formato del fichero debe de ser .txt");
                     break;
