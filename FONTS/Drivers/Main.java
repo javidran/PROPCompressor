@@ -1,7 +1,7 @@
 package Drivers;// Creado por Joan Gamez Rodriguez
 
 import Controllers.CtrlProcesos;
-import DomainLayer.Algoritmos.Algoritmos;
+import DomainLayer.Algoritmos.Algoritmo;
 import Exceptions.FormatoErroneoException;
 
 import java.util.Scanner;
@@ -13,7 +13,7 @@ public class Main {
         boolean b = true;
         while (b) {
             try {
-                Algoritmos tipoCompresor;
+                Algoritmo tipoCompresor;
                 System.out.print("Introduzca uno de los siguientes comandos disponibles:\n\ncomprimir\ndescomprimir\ncompdesc (PARA TESTING)\nsalir\n");
                 Scanner scanner = new Scanner(System.in);
                 String comando = scanner.nextLine();
@@ -30,26 +30,26 @@ public class Main {
                             String algoritmoComp = scanner.nextLine();
                             switch (algoritmoComp) {
                                 case "lzss":
-                                    tipoCompresor = Algoritmos.LZSS;
+                                    tipoCompresor = Algoritmo.LZSS;
                                     break;
                                 case "lzw":
-                                    tipoCompresor = Algoritmos.LZW;
+                                    tipoCompresor = Algoritmo.LZW;
                                     break;
                                 case "lz78":
-                                    tipoCompresor = Algoritmos.LZ78;
+                                    tipoCompresor = Algoritmo.LZ78;
                                     break;
                                 case "predeterminado":
-                                    tipoCompresor = Algoritmos.PREDETERMINADO;
+                                    tipoCompresor = Algoritmo.PREDETERMINADO;
                                     break;
                                 default:
-                                    throw new EnumConstantNotPresentException(Algoritmos.class, "El tipo de compresor " + algoritmoComp + " no existe o no está disponible para un archivo .txt\n");
+                                    throw new EnumConstantNotPresentException(Algoritmo.class, "El tipo de compresor " + algoritmoComp + " no existe o no está disponible para un archivo .txt\n");
                             }
                             ctrlProcesos.comprimirArchivo(s, tipoCompresor);
                             System.out.println("El archivo " + s + " se ha comprimido correctamente!\n");
                         } else if (s.endsWith(".ppm")) {
                             System.out.println("Indique la calidad de compresión a usar (del 1 al 7)");
                             ctrlProcesos.setCalidadJPEG(scanner.nextInt() * 10);
-                            ctrlProcesos.comprimirArchivo(s, Algoritmos.JPEG);
+                            ctrlProcesos.comprimirArchivo(s, Algoritmo.JPEG);
                             System.out.println("El archivo " + s + " se ha comprimido correctamente!\n");
                         } else System.out.println("El formato del fichero debe de ser .txt o .ppm!");
                         break;
@@ -73,25 +73,25 @@ public class Main {
                             String algoritmoComp = scanner.nextLine();
                             switch (algoritmoComp) {
                                 case "lzss":
-                                    tipoCompresor = Algoritmos.LZSS;
+                                    tipoCompresor = Algoritmo.LZSS;
                                     break;
                                 case "lzw":
-                                    tipoCompresor = Algoritmos.LZW;
+                                    tipoCompresor = Algoritmo.LZW;
                                     break;
                                 case "lz78":
-                                    tipoCompresor = Algoritmos.LZ78;
+                                    tipoCompresor = Algoritmo.LZ78;
                                     break;
                                 case "predeterminado":
-                                    tipoCompresor = Algoritmos.PREDETERMINADO;
+                                    tipoCompresor = Algoritmo.PREDETERMINADO;
                                     break;
                                 default:
-                                    throw new EnumConstantNotPresentException(Algoritmos.class, "El tipo de compresor " + algoritmoComp + " no existe o no está disponible para un archivo .txt\n");
+                                    throw new EnumConstantNotPresentException(Algoritmo.class, "El tipo de compresor " + algoritmoComp + " no existe o no está disponible para un archivo .txt\n");
                             }
                             ctrlProcesos.comprimirDescomprimirArchivo(s, tipoCompresor);
                         } else if (s.endsWith(".ppm")) {
                             System.out.println("Indique la calidad de compresión a usar (del 1 al 7)");
                             ctrlProcesos.setCalidadJPEG(scanner.nextInt() * 10);
-                            ctrlProcesos.comprimirDescomprimirArchivo(s, Algoritmos.JPEG);
+                            ctrlProcesos.comprimirDescomprimirArchivo(s, Algoritmo.JPEG);
                         }
                         System.out.println("El archivo " + s + " se ha comprimido y descomprimido correctamente!\n");
                         break;

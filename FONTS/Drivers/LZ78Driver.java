@@ -1,7 +1,7 @@
 package Drivers;// Creado por Joan Gamez Rodriguez
 
 import Controllers.CtrlProcesos;
-import DomainLayer.Algoritmos.Algoritmos;
+import DomainLayer.Algoritmos.Algoritmo;
 
 import java.util.Scanner;
 
@@ -23,7 +23,7 @@ public class LZ78Driver {
                         s = scanner.nextLine();
                     } else s = args[0];
                     if (s.endsWith(".txt")) {
-                        ctrlProcesos.comprimirArchivo(s, Algoritmos.LZ78);
+                        ctrlProcesos.comprimirArchivo(s, Algoritmo.LZ78);
                         String[] ss = s.split("/");
                         System.out.println("El archivo " + ss[ss.length - 1] + " se ha comprimido correctamente!\n");
                     } else System.out.println("El formato del fichero debe de ser .txt o .ppm!");
@@ -44,7 +44,7 @@ public class LZ78Driver {
                         s = scanner.nextLine();
                     } else s = args[0];
                     if (s.endsWith(".txt")) {
-                        ctrlProcesos.comprimirDescomprimirArchivo(s, Algoritmos.LZ78);
+                        ctrlProcesos.comprimirDescomprimirArchivo(s, Algoritmo.LZ78);
                         String[] ss = s.split("/");
                         System.out.println("El archivo " + ss[ss.length - 1] + " se ha comprimido y descomprimido correctamente!\n");
                     } else System.out.println("El formato del fichero debe de ser .txt");
