@@ -2,6 +2,7 @@
 package Controllers;
 
 import DataLayer.GestorArchivo;
+import DataLayer.GestorEstadisticas;
 import DomainLayer.Algoritmos.Algoritmo;
 import DomainLayer.Proceso.DatosProceso;
 
@@ -44,8 +45,8 @@ public class CtrlDatos {
         GestorArchivo.guardaArchivo(data, path, sobreescribir);
     }
 
-    public void actualizaEstadistica(DatosProceso dp, Algoritmo algoritmo, boolean esCompresion) {
-
+    public void actualizaEstadistica(DatosProceso dp, Algoritmo algoritmo, boolean esCompresion) throws IOException {
+        GestorEstadisticas.actualizarEstadistica(dp,algoritmo,esCompresion);
     }
 
     public void obtenerDatosPrincipales(Algoritmo alg, boolean esCompresion) {}

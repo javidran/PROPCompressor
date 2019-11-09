@@ -7,66 +7,51 @@ import DomainLayer.Proceso.DatosProceso;
 import java.io.*;
 
 public class GestorEstadisticas {
-    private static GestorEstadisticas instance = null;
 
-    public static GestorEstadisticas getInstance()
-    {
-        if (instance == null)
-            instance = new GestorEstadisticas();
-
-        return instance;
-    }
-
-    protected void actualizarEstadistica(DatosProceso dp, Algoritmo alg, boolean esCompresion) throws IOException {
-        File estadistica = new File( System.getProperty("user.dir") +"/resources/estadistica_"+(esCompresion? "1":"0")+"_"+alg+".txt");
-        long a = dp.getTiempo();
-        long b = dp.getOldSize();
-        long c = dp.getNewSize();
-        long d = dp.getDiffSize();
+    public static void actualizarEstadistica(DatosProceso dp, Algoritmo algoritmo, boolean esCompresion) throws IOException {
+        File estadistica = new File( System.getProperty("user.dir") +"/resources/estadistica_"+(esCompresion? "1":"0")+"_"+algoritmo+".txt");
+        long time = dp.getTiempo();
+        long oldSize = dp.getOldSize();
+        long newSize = dp.getNewSize();
+        double diffSizePercentage = dp.getDiffSizePercentage();
         long numDatos = 1;
-        long tiempoMedio = a;
-        long AvgMedio = d;
+
+        StringBuilder newContent = new StringBuilder();
+        String line;
 
         if (estadistica.exists()) {
-            RandomAccessFile archivo = new RandomAccessFile(estadistica, "rw");
-            archivo.seek(0);
-            String buff = archivo.readLine();
-            String[] parts = buff.split(" ");
-            numDatos = (Long.parseLong(parts[0]) + 1);
-            long aux = ((Long.parseLong( parts[1])*(numDatos-1))/numDatos + a/numDatos);
-            tiempoMedio = aux;
-            aux =  ((Long.parseLong(parts[2])*(numDatos-1))/numDatos + d/numDatos);
-            AvgMedio = aux;
-            archivo.seek(0);
-            archivo.writeBytes(numDatos +" "+ tiempoMedio +" "+ AvgMedio);
-            archivo.close();
+            BufferedReader br = new BufferedReader(new FileReader(estadistica));
+            line = br.readLine();
+            String[] parts = line.split(" ");
+            numDatos += Long.parseLong(parts[0]);
+            long avgTime = Long.parseLong(parts[1]);
+            avgTime += (time-avgTime)/numDatos;
+            double avgPercentage = Double.parseDouble(parts[2]);
+            avgPercentage += Math.floor((diffSizePercentage-avgPercentage)/numDatos);
 
-            BufferedWriter bw = new BufferedWriter(new FileWriter(estadistica, true));
-            CharSequence cs = (a + " " + b + " " + c + " " + d);
-            bw.newLine();
-            bw.append(cs);
-            bw.close();
+            newContent.append(numDatos).append(" ").append(avgTime).append(" ").append(avgPercentage).append("\n");
+            while((line = br.readLine()) != null) {
+                newContent.append(line).append("\n");
+            }
+            br.close();
+            newContent.append(time).append(" ").append(oldSize).append(" ").append(newSize).append(" ").append(diffSizePercentage).append("\n");
         } else {
-            estadistica.createNewFile();
-            BufferedWriter bw = new BufferedWriter(new FileWriter(estadistica));
-            bw.write(numDatos + " " + tiempoMedio + " " + AvgMedio);
-            bw.newLine();
-            bw.close();
-
-            BufferedWriter bw2 = new BufferedWriter(new FileWriter(estadistica, true));
-            CharSequence cs = (a + " " + b + " " + c + " " + d);
-            bw2.append(cs);
-            bw2.close();
+            newContent.append(numDatos).append(" ").append(time).append(" ").append(diffSizePercentage).append("\n");
+            newContent.append(time).append(" ").append(oldSize).append(" ").append(newSize).append(" ").append(diffSizePercentage).append("\n");
         }
+
+        BufferedWriter bw = new BufferedWriter(new FileWriter(estadistica));
+        bw.write(newContent.toString());
+        bw.close();
     }
 
-    public void obtenerDatosPrincipales (Algoritmo alg, boolean esCompresion) {}
+    public static void obtenerDatosPrincipales (Algoritmo alg, boolean esCompresion) {}
 
-    public int getNumeroElementos (Algoritmo alg, boolean esCompresion) { return 0;}
+    public static int getNumeroElementos (Algoritmo alg, boolean esCompresion) { return 0;}
 
-    public int getTiempoMedio (Algoritmo alg, boolean esCompresion) {return 0;}
+    public static int getTiempoMedio (Algoritmo alg, boolean esCompresion) {return 0;}
 
-    public int getPorcentajeAhorradoMedio (Algoritmo alg, boolean esCompresion) {return 0;}
+    public static int getPorcentajeAhorradoMedio (Algoritmo alg, boolean esCompresion) {return 0;}
 
     //public HashMap<int, long[3]> getDatosEstadistica (Algoritmos alg, boolean esCompresion) {}
 }
