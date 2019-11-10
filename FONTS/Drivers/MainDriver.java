@@ -2,7 +2,6 @@ package Drivers;// Creado por Joan Gamez Rodriguez
 
 import Controllers.CtrlProcesos;
 import DomainLayer.Algoritmos.Algoritmo;
-import Exceptions.FormatoErroneoException;
 
 import java.util.Scanner;
 
