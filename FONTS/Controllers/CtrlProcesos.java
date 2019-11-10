@@ -10,7 +10,7 @@ import DomainLayer.Proceso.ProcesoFichero;
 import Exceptions.FormatoErroneoException;
 
 /**
- * La clase CtrlProcesos es el Controlador de Dominio del programa, y la encargada de crear procesos de compresión y/o descompresión, además de interactuar con las capas de datos y presentación
+ * La clase Singleton CtrlProcesos es el Controlador de Dominio del programa, y la encargada de crear procesos de compresión y/o descompresión, además de interactuar con las capas de datos y presentación
  */
 public class CtrlProcesos {
     /**
@@ -26,7 +26,7 @@ public class CtrlProcesos {
     private static Algoritmo algoritmoDeTextoPredeterminado = Algoritmo.LZSS;
 
     /**
-     * Constructora y/o getter de la instancia Singleton de CtrlProcesos
+     * Getter de la instancia Singleton de CtrlProcesos
      * @return La instancia Singleton de CtrlProcesos
      */
     public static CtrlProcesos getInstance()
@@ -126,10 +126,7 @@ public class CtrlProcesos {
 
     /**
      * Asigna un valor de calidad de compresión al Singleton de JPEG
-     * <p>
-     *     La calidadJPEG es un valor que oscila entre 1 y 7
-     * </p>
-     * @param calidadJPEG Calidad de compresión de JPEG. A mayor valor, más alta será la calidad de la compresión.
+     * @param calidadJPEG La calidad de compresión de JPEG. A mayor valor, más alta será la calidad de la compresión.
      */
     public void setCalidadJPEG(int calidadJPEG) {
         JPEG.getInstance().setCalidad(calidadJPEG);
