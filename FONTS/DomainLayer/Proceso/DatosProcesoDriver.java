@@ -5,7 +5,7 @@ package DomainLayer.Proceso;// Creado por Jan Escorza Fuertes
 import java.util.Scanner;
 
 public class DatosProcesoDriver {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         try {
             System.out.print("Bienvenido al driver para DatosProceso\n\n");
             Scanner scanner = new Scanner(System.in);
@@ -22,28 +22,28 @@ public class DatosProcesoDriver {
                 esCompresion = false;
             } else esCompresion = true;
 
-            System.out.println("A continuación se creará DatosProceso con time:" + time + " oldsize:" + oldSize + " newSize:" + newSize + " y boolean esCompresion" + esCompresion);
+            System.out.println("A continuación se creará una instancia de DatosProceso con time :" + time + " oldsize: " + oldSize + " newSize: " + newSize + " y boolean esCompresion " + esCompresion);
             DatosProceso DatosProcesonew = new DatosProceso(time, oldSize, newSize, esCompresion);
 
             System.out.println("Ahora se probará el getDiffSize:");
             long resultado = DatosProcesonew.getDiffSize();
-            System.out.println("El resulatdo de DiffSize es:" + resultado);
+            System.out.println("El resulatdo de DiffSize es: " + resultado);
 
             System.out.println("Ahora se probará el getDiffSizePercentage:");
             double resultado2 = DatosProcesonew.getDiffSizePercentage();
-            System.out.println("El resulatdo de getDiffSizePercentage es:" + resultado2);
+            System.out.println("El resulatdo de getDiffSizePercentage es: " + resultado2);
 
             System.out.println("Ahora se probará el getTiempo:");
             long resultado3 = DatosProcesonew.getTiempo();
-            System.out.println("El resulatdo de getTiempo es:" + resultado3);
+            System.out.println("El resulatdo de getTiempo es: " + resultado3);
 
             System.out.println("Ahora se probará el getNewSize:");
             long resultado4 = DatosProcesonew.getNewSize();
-            System.out.println("El resulatdo de getNewSize es:" + resultado4);
+            System.out.println("El resulatdo de getNewSize es: " + resultado4);
 
             System.out.println("Ahora se probará el getOldSize:");
             long resultado5 = DatosProcesonew.getOldSize();
-            System.out.println("El resulatdo de getOldSize es:" + resultado5);
+            System.out.println("El resulatdo de getOldSize es: " + resultado5);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
