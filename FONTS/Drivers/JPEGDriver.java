@@ -1,13 +1,13 @@
-package Drivers;// Creado por Jan Escorza Fuertes
+package Drivers;// Creado por Joan Gamez Rodriguez
 
 import Controllers.CtrlProcesos;
 import DomainLayer.Algoritmos.Algoritmo;
 
 import java.util.Scanner;
 
-public class LZSSDriver {
+public class JPEGDriver {
     public static void main(String[] args) throws Exception {
-        System.out.print("Bienvenido al driver para el algoritmo de LZSS\n\n");
+        System.out.print("Bienvenido al driver para el algoritmo de JPEG\n\n");
         CtrlProcesos ctrlProcesos = CtrlProcesos.getInstance();
         boolean b = true;
         while (b) {
@@ -18,33 +18,33 @@ public class LZSSDriver {
             switch (comando) {
                 case "comprimir":
                 case "1":
-                    System.out.println("Escriba el path absoluto del fichero .txt a comprimir:");
+                    System.out.println("Escriba el path absoluto del fichero .ppm a comprimir:");
                     s = scanner.nextLine();
-                    if (s.endsWith(".txt")) {
+                    if (s.endsWith(".ppm")) {
                         System.out.println("Se inicia el proceso");
-                        ctrlProcesos.comprimirArchivo(s, Algoritmo.LZSS);
+                        ctrlProcesos.comprimirArchivo(s, Algoritmo.JPEG);
                         System.out.println("El archivo " + s + " se ha comprimido correctamente!\n");
-                    } else System.out.println("El formato del fichero debe de ser .txt!");
+                    } else System.out.println("El formato del fichero debe de ser .ppm!");
                     break;
                 case "descomprimir":
                 case "2":
-                    System.out.println("Escriba el path absoluto del fichero .lzss a descomprimir:");
+                    System.out.println("Escriba el path absoluto del fichero .imgc a descomprimir:");
                     s = scanner.nextLine();
-                    if (s.endsWith(".lzss")) {
+                    if (s.endsWith(".imgc")) {
                         System.out.println("Se inicia el proceso");
                         ctrlProcesos.descomprimirArchivo(s);
                         System.out.println("El archivo se ha descomprimido correctamente!\n");
-                    } else System.out.println("El formato del fichero debe de ser .lzss!");
+                    } else System.out.println("El formato del fichero debe de ser .imgc!");
                     break;
                 case "comprimirYdescomprimir":
                 case "3":
-                    System.out.println("Escriba el path absoluto del fichero .txt a comprimir");
+                    System.out.println("Escriba el path absoluto del fichero .ppm a comprimir");
                     s = scanner.nextLine();
-                    if (s.endsWith(".txt")) {
+                    if (s.endsWith(".ppm")) {
+                        ctrlProcesos.comprimirDescomprimirArchivo(s, Algoritmo.JPEG);
                         System.out.println("Se inicia el proceso");
-                        ctrlProcesos.comprimirDescomprimirArchivo(s, Algoritmo.LZSS);
                         System.out.println("El archivo " + s + " se ha comprimido y descomprimido correctamente!\n");
-                    } else System.out.println("El formato del fichero debe de ser .txt!");
+                    } else System.out.println("El formato del fichero debe de ser .ppm!");
                     break;
                 case "salir":
                 case "4":

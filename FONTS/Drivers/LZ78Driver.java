@@ -1,4 +1,4 @@
-package Drivers;// Creado por Joan Gamez Rodriguez
+package Drivers;// Creado por Javier Cabrera Rodriguez
 
 import Controllers.CtrlProcesos;
 import DomainLayer.Algoritmos.Algoritmo;
@@ -24,15 +24,17 @@ public class LZ78Driver {
                         System.out.println("Se inicia el proceso");
                         ctrlProcesos.comprimirArchivo(s, Algoritmo.LZ78);
                         System.out.println("El archivo " + s + " se ha comprimido correctamente!\n");
-                    } else System.out.println("El formato del fichero debe de ser .txt o .ppm!");
+                    } else System.out.println("El formato del fichero debe de ser .txt!");
                     break;
                 case "descomprimir":
                 case "2":
                     System.out.println("Escriba el path absoluto del fichero .lz78 a descomprimir:");
                     s = scanner.nextLine();
-                    System.out.println("Se inicia el proceso");
-                    ctrlProcesos.descomprimirArchivo(s);
-                    System.out.println("El archivo se ha descomprimido correctamente!\n");
+                    if (s.endsWith(".lz78")) {
+                        System.out.println("Se inicia el proceso");
+                        ctrlProcesos.descomprimirArchivo(s);
+                        System.out.println("El archivo se ha descomprimido correctamente!\n");
+                    } else System.out.println("El formato del fichero debe de ser .lz78!");
                     break;
                 case "comprimirYdescomprimir":
                 case "3":
@@ -42,7 +44,7 @@ public class LZ78Driver {
                         ctrlProcesos.comprimirDescomprimirArchivo(s, Algoritmo.LZ78);
                         System.out.println("Se inicia el proceso");
                         System.out.println("El archivo " + s + " se ha comprimido y descomprimido correctamente!\n");
-                    } else System.out.println("El formato del fichero debe de ser .txt");
+                    } else System.out.println("El formato del fichero debe de ser .txt!");
                     break;
                 case "salir":
                 case "4":

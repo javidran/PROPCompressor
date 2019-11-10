@@ -1,4 +1,4 @@
-package Drivers;
+package Drivers; //Creado por Sheida Vanesa Alfaro Taco
 
 import Controllers.CtrlProcesos;
 import DomainLayer.Algoritmos.Algoritmo;
@@ -30,9 +30,11 @@ public class LZWDriver {
                 case "2":
                     System.out.println("Escriba el path absoluto del fichero .lzw a descomprimir:");
                     s = scanner.nextLine();
-                    System.out.println("Se inicia el proceso");
-                    ctrlProcesos.descomprimirArchivo(s);
-                    System.out.println("El archivo se ha descomprimido correctamente!\n");
+                    if (s.endsWith(".lzw")) {
+                        System.out.println("Se inicia el proceso");
+                        ctrlProcesos.descomprimirArchivo(s);
+                        System.out.println("El archivo se ha descomprimido correctamente!\n");
+                    } else System.out.println("El formato del fichero debe de ser .lzw!");
                     break;
                 case "comprimirYdescomprimir":
                 case "3":
@@ -42,7 +44,7 @@ public class LZWDriver {
                         System.out.println("Se inicia el proceso");
                         ctrlProcesos.comprimirDescomprimirArchivo(s, Algoritmo.LZW);
                         System.out.println("El archivo " + s + " se ha comprimido y descomprimido correctamente!\n");
-                    } else System.out.println("El formato del fichero debe de ser .txt");
+                    } else System.out.println("El formato del fichero debe de ser .txt!");
                     break;
                 case "salir":
                 case "4":

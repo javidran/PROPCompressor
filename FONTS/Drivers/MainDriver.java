@@ -44,10 +44,12 @@ public class MainDriver {
                                 default:
                                     throw new EnumConstantNotPresentException(Algoritmo.class, "El tipo de compresor " + algoritmoComp + " no existe o no está disponible para un archivo .txt\n");
                             }
+                            System.out.println("Se inicia el proceso");
                             ctrlProcesos.comprimirArchivo(s, tipoCompresor);
                             System.out.println("El archivo " + s + " se ha comprimido correctamente!\n");
                         } else if (s.endsWith(".ppm")) {
                             System.out.println("Indique la calidad de compresión a usar (del 1 al 7)");
+                            System.out.println("Se inicia el proceso");
                             ctrlProcesos.setCalidadJPEG(scanner.nextInt() * 10);
                             ctrlProcesos.comprimirArchivo(s, Algoritmo.JPEG);
                             System.out.println("El archivo " + s + " se ha comprimido correctamente!\n");
@@ -59,8 +61,11 @@ public class MainDriver {
                             System.out.println("Escriba el path absoluto del fichero a descomprimir (.lzss, .lz78, lzw o .imgc!)");
                             s = scanner.nextLine();
                         } else s = args[0];
-                        ctrlProcesos.descomprimirArchivo(s);
-                        System.out.println("El archivo se ha descomprimido correctamente!\n");
+                        if (s.endsWith(".lz78") || s.endsWith(".lzss") ||  s.endsWith(".lzw") ||  s.endsWith(".imgc")) {
+                            System.out.println("Se inicia el proceso");
+                            ctrlProcesos.descomprimirArchivo(s);
+                            System.out.println("El archivo se ha descomprimido correctamente!\n");
+                        } else System.out.println("El formato del fichero debe de ser .lz78, .lzss, .lzw o .imgc!");
                         break;
                     case "compdesc":
                     case "3":
@@ -87,13 +92,16 @@ public class MainDriver {
                                 default:
                                     throw new EnumConstantNotPresentException(Algoritmo.class, "El tipo de compresor " + algoritmoComp + " no existe o no está disponible para un archivo .txt\n");
                             }
+                            System.out.println("Se inicia el proceso");
                             ctrlProcesos.comprimirDescomprimirArchivo(s, tipoCompresor);
+                            System.out.println("El archivo " + s + " se ha comprimido y descomprimido correctamente!\n");
                         } else if (s.endsWith(".ppm")) {
                             System.out.println("Indique la calidad de compresión a usar (del 1 al 7)");
+                            System.out.println("Se inicia el proceso");
                             ctrlProcesos.setCalidadJPEG(scanner.nextInt() * 10);
                             ctrlProcesos.comprimirDescomprimirArchivo(s, Algoritmo.JPEG);
-                        }
-                        System.out.println("El archivo " + s + " se ha comprimido y descomprimido correctamente!\n");
+                            System.out.println("El archivo " + s + " se ha comprimido y descomprimido correctamente!\n");
+                        } else System.out.println("El formato del fichero debe de ser .txt o .ppm!");
                         break;
                     case "salir":
                     case "4":
