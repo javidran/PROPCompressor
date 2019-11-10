@@ -6,7 +6,7 @@ import Exceptions.FormatoErroneoException;
 
 import java.util.Scanner;
 
-public class Main {
+public class MainDriver {
     public static void main(String[] args) throws Exception {
         System.out.print("Bienvenido a PROPresor!\n\n");
         CtrlProcesos ctrlProcesos = CtrlProcesos.getInstance();
