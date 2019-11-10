@@ -7,14 +7,14 @@ import Exceptions.FormatoErroneoException;
 import java.util.Scanner;
 
 public class MainDriver {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         System.out.print("Bienvenido a PROPresor!\n\n");
         CtrlProcesos ctrlProcesos = CtrlProcesos.getInstance();
         boolean b = true;
         while (b) {
             try {
                 Algoritmo tipoCompresor;
-                System.out.print("Introduzca uno de los siguientes comandos disponibles:\n\ncomprimir\ndescomprimir\ncompdesc (PARA TESTING)\nsalir\n");
+                System.out.print("Introduzca uno de los siguientes comandos disponibles:\n\n1. comprimir\n2. descomprimir\n3. comprimirYdescomprimir\n4. salir\n");
                 Scanner scanner = new Scanner(System.in);
                 String comando = scanner.nextLine();
                 String s;
@@ -49,8 +49,8 @@ public class MainDriver {
                             System.out.println("El archivo " + s + " se ha comprimido correctamente!\n");
                         } else if (s.endsWith(".ppm")) {
                             System.out.println("Indique la calidad de compresión a usar (del 1 al 7)");
-                            System.out.println("Se inicia el proceso");
                             ctrlProcesos.setCalidadJPEG(scanner.nextInt() * 10);
+                            System.out.println("Se inicia el proceso");
                             ctrlProcesos.comprimirArchivo(s, Algoritmo.JPEG);
                             System.out.println("El archivo " + s + " se ha comprimido correctamente!\n");
                         } else System.out.println("El formato del fichero debe de ser .txt o .ppm!");
@@ -97,8 +97,8 @@ public class MainDriver {
                             System.out.println("El archivo " + s + " se ha comprimido y descomprimido correctamente!\n");
                         } else if (s.endsWith(".ppm")) {
                             System.out.println("Indique la calidad de compresión a usar (del 1 al 7)");
-                            System.out.println("Se inicia el proceso");
                             ctrlProcesos.setCalidadJPEG(scanner.nextInt() * 10);
+                            System.out.println("Se inicia el proceso");
                             ctrlProcesos.comprimirDescomprimirArchivo(s, Algoritmo.JPEG);
                             System.out.println("El archivo " + s + " se ha comprimido y descomprimido correctamente!\n");
                         } else System.out.println("El formato del fichero debe de ser .txt o .ppm!");
@@ -110,7 +110,7 @@ public class MainDriver {
                     default:
                         System.out.print("Comando incorrecto!\n");
                 }
-            } catch (FormatoErroneoException e) {
+            } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
         }
