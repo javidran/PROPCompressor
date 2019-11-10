@@ -1,4 +1,4 @@
-package DomainLayer.Proceso;// Creado por Joan Gamez Rodriguez
+package DomainLayer.Proceso;// Creado por Jan Escorza Fuertes
 
 //import Controllers.CtrlProcesos;
 
