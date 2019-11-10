@@ -23,7 +23,7 @@ public class JPEGDriver {
                         s = scanner.nextLine();
                         if (s.endsWith(".ppm")) {
                             System.out.println("Indique la calidad de compresión a usar (del 1 al 7)");
-                            ctrlProcesos.setCalidadJPEG(scanner.nextInt() * 10);
+                            ctrlProcesos.setCalidadJPEG(scanner.nextInt());
                             System.out.println("Se inicia el proceso");
                             ctrlProcesos.comprimirArchivo(s, Algoritmo.JPEG);
                             System.out.println("El archivo " + s + " se ha comprimido correctamente!\n");
@@ -45,7 +45,7 @@ public class JPEGDriver {
                         s = scanner.nextLine();
                         if (s.endsWith(".ppm")) {
                             System.out.println("Indique la calidad de compresión a usar (del 1 al 7)");
-                            ctrlProcesos.setCalidadJPEG(scanner.nextInt() * 10);
+                            ctrlProcesos.setCalidadJPEG(scanner.nextInt());
                             System.out.println("Se inicia el proceso");
                             ctrlProcesos.comprimirDescomprimirArchivo(s, Algoritmo.JPEG);
                             System.out.println("El archivo " + s + " se ha comprimido y descomprimido correctamente!\n");
