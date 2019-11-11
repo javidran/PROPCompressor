@@ -14,7 +14,7 @@ public class GestorEstadisticas {
         long oldSize = dp.getOldSize();
         long newSize = dp.getNewSize();
         double diffSizePercentage = dp.getDiffSizePercentage();
-        long numDatos = 1;
+        int numDatos = 1;
 
         StringBuilder newContent = new StringBuilder();
         String line;
@@ -23,7 +23,7 @@ public class GestorEstadisticas {
             BufferedReader br = new BufferedReader(new FileReader(estadistica));
             line = br.readLine();
             String[] parts = line.split(" ");
-            numDatos += Long.parseLong(parts[0]);
+            numDatos += Integer.parseInt(parts[0]);
             long avgTime = Long.parseLong(parts[1]);
             avgTime += (time-avgTime)/numDatos;
             double avgPercentage = Double.parseDouble(parts[2]);
@@ -45,13 +45,30 @@ public class GestorEstadisticas {
         bw.close();
     }
 
-    public static void obtenerDatosPrincipales (Algoritmo alg, boolean esCompresion) {}
+    public static int getNumeroElementos (Algoritmo algoritmo, boolean esCompresion) throws IOException {
+        File estadistica = new File( System.getProperty("user.dir") +"/resources/estadistica_"+(esCompresion? "1":"0")+"_"+algoritmo+".txt");
+        BufferedReader br = new BufferedReader(new FileReader(estadistica));
+        String line = br.readLine();
+        String[] parts = line.split(" ");
+        br.close();
+        return Integer.parseInt(parts[0]);
+    }
 
-    public static int getNumeroElementos (Algoritmo alg, boolean esCompresion) { return 0;}
+    public static long getTiempoMedio (Algoritmo algoritmo, boolean esCompresion) throws IOException {
+        File estadistica = new File( System.getProperty("user.dir") +"/resources/estadistica_"+(esCompresion? "1":"0")+"_"+algoritmo+".txt");
+        BufferedReader br = new BufferedReader(new FileReader(estadistica));
+        String line = br.readLine();
+        String[] parts = line.split(" ");
+        br.close();
+        return Long.parseLong(parts[1]);
+    }
 
-    public static int getTiempoMedio (Algoritmo alg, boolean esCompresion) {return 0;}
-
-    public static int getPorcentajeAhorradoMedio (Algoritmo alg, boolean esCompresion) {return 0;}
-
-    //public HashMap<int, long[3]> getDatosEstadistica (Algoritmos alg, boolean esCompresion) {}
+    public static double getPorcentajeAhorradoMedio (Algoritmo algoritmo, boolean esCompresion) throws IOException {
+        File estadistica = new File( System.getProperty("user.dir") +"/resources/estadistica_"+(esCompresion? "1":"0")+"_"+algoritmo+".txt");
+        BufferedReader br = new BufferedReader(new FileReader(estadistica));
+        String line = br.readLine();
+        String[] parts = line.split(" ");
+        br.close();
+        return Double.parseDouble(parts[2]);
+    }
 }

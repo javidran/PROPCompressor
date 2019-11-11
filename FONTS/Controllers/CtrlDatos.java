@@ -72,25 +72,15 @@ public class CtrlDatos {
         GestorEstadisticas.actualizarEstadistica(dp,algoritmo,esCompresion);
     }
 
-    public void obtenerDatosPrincipales(Algoritmo alg, boolean esCompresion) {}
-
-    public int getNumeroElementos(Algoritmo alg, boolean esCompresion) {
-        return 0;
+    public int getNumeroElementos(Algoritmo algoritmo, boolean esCompresion) throws IOException {
+        return GestorEstadisticas.getNumeroElementos(algoritmo, esCompresion);
     }
 
-    public int getTiempoMedio(Algoritmo alg, boolean esCompresion) {
-        return 0;
+    public long getTiempoMedio(Algoritmo algoritmo, boolean esCompresion) throws IOException {
+        return GestorEstadisticas.getTiempoMedio(algoritmo, esCompresion);
     }
 
-    public int getPorcentajeAhorradoMedio(Algoritmo alg, boolean esCompresion) {
-        return 0;
-    }
-
-    //public HashMap<int, long[3]> getDatosEstadistica(Algoritmos alg, boolean esCompresion) {  }
-
-    public File estadisticasGlobales(Algoritmo algoritmo, boolean esCompresion) {
-        File file = new File(System.getProperty("user.dir") + "/resources/estadistica_" + (esCompresion? "1":"0") + "_" + algoritmo);
-        //System.out.println(file.getAbsolutePath() + "       " + file.exists());
-        return file;
+    public double getPorcentajeAhorradoMedio(Algoritmo algoritmo, boolean esCompresion) throws IOException {
+        return GestorEstadisticas.getPorcentajeAhorradoMedio(algoritmo,esCompresion);
     }
 }
