@@ -1,13 +1,13 @@
-package Drivers;// Creado por Javier Cabrera Rodriguez
+package Drivers;// Creado por Joan Gamez Rodriguez
 
 import Controllers.CtrlProcesos;
 import DomainLayer.Algoritmos.Algoritmo;
 
 import java.util.Scanner;
 
-public class LZ78Driver {
+public class JPEGDriver {
     public static void main(String[] args) {
-        System.out.print("Bienvenido al driver para el algoritmo de LZ78\n\n");
+        System.out.print("Bienvenido al driver para el algoritmo de JPEG\n\n");
         CtrlProcesos ctrlProcesos = CtrlProcesos.getInstance();
         boolean b = true;
         while (b) {
@@ -19,33 +19,37 @@ public class LZ78Driver {
                 switch (comando) {
                     case "comprimir":
                     case "1":
-                        System.out.println("Escriba el path absoluto del fichero .txt a comprimir:");
+                        System.out.println("Escriba el path absoluto del fichero .ppm a comprimir:");
                         s = scanner.nextLine();
-                        if (s.endsWith(".txt")) {
+                        if (s.endsWith(".ppm")) {
+                            System.out.println("Indique la calidad de compresión a usar (del 1 al 7)");
+                            ctrlProcesos.setCalidadJPEG(scanner.nextInt());
                             System.out.println("Se inicia el proceso");
-                            ctrlProcesos.comprimirArchivo(s, Algoritmo.LZ78);
+                            ctrlProcesos.comprimirArchivo(s, Algoritmo.JPEG);
                             System.out.println("El archivo " + s + " se ha comprimido correctamente!\n");
-                        } else System.out.println("El formato del fichero debe de ser .txt!");
+                        } else System.out.println("El formato del fichero debe de ser .ppm!");
                         break;
                     case "descomprimir":
                     case "2":
-                        System.out.println("Escriba el path absoluto del fichero .lz78 a descomprimir:");
+                        System.out.println("Escriba el path absoluto del fichero .imgc a descomprimir:");
                         s = scanner.nextLine();
-                        if (s.endsWith(".lz78")) {
+                        if (s.endsWith(".imgc")) {
                             System.out.println("Se inicia el proceso");
                             ctrlProcesos.descomprimirArchivo(s);
                             System.out.println("El archivo se ha descomprimido correctamente!\n");
-                        } else System.out.println("El formato del fichero debe de ser .lz78!");
+                        } else System.out.println("El formato del fichero debe de ser .imgc!");
                         break;
                     case "comprimirYdescomprimir":
                     case "3":
-                        System.out.println("Escriba el path absoluto del fichero .txt a comprimir");
+                        System.out.println("Escriba el path absoluto del fichero .ppm a comprimir");
                         s = scanner.nextLine();
-                        if (s.endsWith(".txt")) {
-                            ctrlProcesos.comprimirDescomprimirArchivo(s, Algoritmo.LZ78);
+                        if (s.endsWith(".ppm")) {
+                            System.out.println("Indique la calidad de compresión a usar (del 1 al 7)");
+                            ctrlProcesos.setCalidadJPEG(scanner.nextInt());
                             System.out.println("Se inicia el proceso");
+                            ctrlProcesos.comprimirDescomprimirArchivo(s, Algoritmo.JPEG);
                             System.out.println("El archivo " + s + " se ha comprimido y descomprimido correctamente!\n");
-                        } else System.out.println("El formato del fichero debe de ser .txt!");
+                        } else System.out.println("El formato del fichero debe de ser .ppm!");
                         break;
                     case "salir":
                     case "4":

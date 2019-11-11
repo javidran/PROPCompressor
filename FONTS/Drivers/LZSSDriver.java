@@ -1,13 +1,13 @@
-package Drivers;// Creado por Javier Cabrera Rodriguez
+package Drivers;// Creado por Jan Escorza Fuertes
 
 import Controllers.CtrlProcesos;
 import DomainLayer.Algoritmos.Algoritmo;
 
 import java.util.Scanner;
 
-public class LZ78Driver {
+public class LZSSDriver {
     public static void main(String[] args) {
-        System.out.print("Bienvenido al driver para el algoritmo de LZ78\n\n");
+        System.out.print("Bienvenido al driver para el algoritmo de LZSS\n\n");
         CtrlProcesos ctrlProcesos = CtrlProcesos.getInstance();
         boolean b = true;
         while (b) {
@@ -23,27 +23,27 @@ public class LZ78Driver {
                         s = scanner.nextLine();
                         if (s.endsWith(".txt")) {
                             System.out.println("Se inicia el proceso");
-                            ctrlProcesos.comprimirArchivo(s, Algoritmo.LZ78);
+                            ctrlProcesos.comprimirArchivo(s, Algoritmo.LZSS);
                             System.out.println("El archivo " + s + " se ha comprimido correctamente!\n");
                         } else System.out.println("El formato del fichero debe de ser .txt!");
                         break;
                     case "descomprimir":
                     case "2":
-                        System.out.println("Escriba el path absoluto del fichero .lz78 a descomprimir:");
+                        System.out.println("Escriba el path absoluto del fichero .lzss a descomprimir:");
                         s = scanner.nextLine();
-                        if (s.endsWith(".lz78")) {
+                        if (s.endsWith(".lzss")) {
                             System.out.println("Se inicia el proceso");
                             ctrlProcesos.descomprimirArchivo(s);
                             System.out.println("El archivo se ha descomprimido correctamente!\n");
-                        } else System.out.println("El formato del fichero debe de ser .lz78!");
+                        } else System.out.println("El formato del fichero debe de ser .lzss!");
                         break;
                     case "comprimirYdescomprimir":
                     case "3":
                         System.out.println("Escriba el path absoluto del fichero .txt a comprimir");
                         s = scanner.nextLine();
                         if (s.endsWith(".txt")) {
-                            ctrlProcesos.comprimirDescomprimirArchivo(s, Algoritmo.LZ78);
                             System.out.println("Se inicia el proceso");
+                            ctrlProcesos.comprimirDescomprimirArchivo(s, Algoritmo.LZSS);
                             System.out.println("El archivo " + s + " se ha comprimido y descomprimido correctamente!\n");
                         } else System.out.println("El formato del fichero debe de ser .txt!");
                         break;

@@ -20,6 +20,15 @@ public class LZW implements CompresorDecompresor {
         return instance;
     }
 
+    /**
+     * Comprime el array de bytes que se pasa por parametro aplicando el algoritmo de compresión LZW.
+     * <p>
+     *     El array de bytes debería idealmente ser de una longitud significativa.
+     * </p>
+     * @param datosInput El array de bytes que se ha obtenido del contenido del fichero.
+     * @return Una instancia de la clase OutputAlgoritmo que contiene el tiempo en el que se ha realizado la compresión
+     * y el byte [] de la compresión del byte [] de entrada.
+     */
     @Override
     public OutputAlgoritmo comprimir(byte[] datosInput) {
         long startTime = System.nanoTime();
@@ -99,6 +108,15 @@ public class LZW implements CompresorDecompresor {
         return OutA;
     }
 
+    /**
+     * Desomprime el array de bytes que se pasa por parametro aplicando el algoritmo de descompresión LZW.
+     * <p>
+     *     El array de bytes debe estar comprimido con el algoritmo de compresión LZW.
+     * </p>
+     * @param datosInput El array de bytes que se ha obtenido del contenido del fichero .lzw o de la compresión directamente.
+     * @return Una instancia de la clase OutputAlgoritmo que contiene el tiempo en el que se ha realizado la descompresión
+     * y el byte [] de la compresión del byte [] de entrada.
+     */
     @Override
     public OutputAlgoritmo descomprimir(byte[] datosInput) {
         long startTime = System.nanoTime();

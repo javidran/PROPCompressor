@@ -18,10 +18,33 @@ public class CtrlDatos {
 
         return instance;
     }
+
+    /**
+     * Llama a la clase GestorArchivo para que lea el archivo del path.
+     * <p>
+     *     El path del archivo debe seguir el formato general de cualquier tipo de path de archivo y puede ser relativo o absoluto.
+     * </p>
+     *
+     * @param path El path del archivo que se quiere leer.
+     * @return Un byte[] del contenido del archivo del path.
+     * @throws IOException No hay ningún archivo en el path que se pasa o no se ha leído bien.
+     */
     public byte[] leerArchivo (String path) throws IOException {
         return GestorArchivo.leeArchivo(path);
     }
 
+    /**
+     * Llama a la clase GestorArchivo para que guarde el archivo del path.
+     * <p>
+     *     El path del archivo debe seguir el formato general de cualquier tipo de path de archivo y puede ser relativo o absoluto.
+     * </p>
+     * @param data Los datos que se guardaran en el archivo.
+     * @param path El path del archivo donde se quiere guardar.
+     * @param algoritmo El algoritmo con el qual se ha comprimido o descomprimido el archivo.
+     * @param esCompresion Un boolean que indica si se ha hecho compresión o descompresión.
+     * @param sobreescribir Un boolean que indica si se va a sobreescribir.
+     * @throws IOException No se ha podido escribir en el archivo por el path indicado.
+     */
     public void guardaArchivo (byte[] data, String path, Algoritmo algoritmo, boolean esCompresion, boolean sobreescribir) throws IOException {
         String [] pathSplitted = path.split("\\.");
         switch (algoritmo) {
@@ -70,5 +93,4 @@ public class CtrlDatos {
         //System.out.println(file.getAbsolutePath() + "       " + file.exists());
         return file;
     }
-
 }
