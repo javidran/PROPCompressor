@@ -5,8 +5,8 @@ import DomainLayer.Algoritmos.Algoritmo;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-/**
-     * La clase Singleton CtrlEstadistica es el Controlador del Programa encargado de mostrar los datos estadísticos de cada uno de los Algoritmos del programa.
+    /**
+     * La clase Singleton CtrlEstadistica es el Controlador encargado de comunicar los datos estadísticos de cada uno de los Algoritmos del programa entre las capas de presentación y datos.
      */
 public class CtrlEstadistica {
     /**
@@ -26,6 +26,13 @@ public class CtrlEstadistica {
         return instance;
     }
 
+    /**
+     * Se encarga de construir un mensaje con toda la información relevante de compresión y descompresión del algoritmo solicitado.
+     *
+     * @param algoritmo El tipo del algoritmo del que se desa obtener las estadisticas
+     * @return Devuelve un String con toda la información preparada para ser presentada, de tal manera que se pueda visualizar fácilmente los datos interesantes de la estadística.
+     * @throws IOException En caso de haber algún error de lectura de archivos que impida el correcto funcionamiento del método.
+     */
     public String estadisticas(Algoritmo algoritmo) throws IOException {
         StringBuilder resultado = new StringBuilder();
 
