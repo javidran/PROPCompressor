@@ -120,9 +120,8 @@ public class MainDriver {
                             case "lz78":
                                 tipoCompresor = Algoritmo.LZ78;
                                 break;
-
                             default:
-                                throw new EnumConstantNotPresentException(Algoritmo.class, "El tipo de compresor " + algoritmoComp + " no existe o no está disponible para un archivo .txt\n");
+                                throw new EnumConstantNotPresentException(Algoritmo.class, " El tipo de compresor " + algoritmoComp + " no existe.");
                         }
                         CtrlEstadistica ctrlEstadistica = CtrlEstadistica.getInstance();
                         System.out.print(ctrlEstadistica.estadisticas(tipoCompresor));

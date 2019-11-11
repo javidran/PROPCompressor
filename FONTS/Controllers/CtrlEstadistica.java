@@ -27,32 +27,32 @@ public class CtrlEstadistica {
     }
 
     public String estadisticas(Algoritmo algoritmo) throws IOException {
-        String resultado = "";
+        StringBuilder resultado = new StringBuilder();
 
         CtrlDatos ctrlDatos = CtrlDatos.getInstance();
-        resultado += "------------------------------------------------------------------\n";
-        resultado += "Estadísticas generales del algoritmo " + algoritmo + ":\n";
-        resultado += "------------------------------------------------------------------\n";
+        resultado.append("------------------------------------------------------------------\n");
+        resultado.append("Estadísticas generales del algoritmo ").append(algoritmo).append(":\n");
+        resultado.append("------------------------------------------------------------------\n");
         try {
             int num = ctrlDatos.getNumeroElementos(algoritmo, true);
-            resultado += "Archivos comprimidos: " + num + "\n";
-            resultado += "Tiempo medio de compresión: " + ctrlDatos.getTiempoMedio(algoritmo, true) + " ns\n";
-            resultado += "Porcentaje medio de compresión: " + ctrlDatos.getPorcentajeAhorradoMedio(algoritmo, true) + " %\n";
+            resultado.append("Archivos comprimidos: ").append(num).append("\n");
+            resultado.append("Tiempo medio de compresión: ").append(ctrlDatos.getTiempoMedio(algoritmo, true)).append(" ns\n");
+            resultado.append("Porcentaje medio de compresión: ").append(ctrlDatos.getPorcentajeAhorradoMedio(algoritmo, true)).append(" %\n");
         } catch (FileNotFoundException e) {
-            resultado += "Archivos comprimidos: 0\n";
+            resultado.append("Archivos comprimidos: 0\n");
         }
-        resultado += "\n";
+        resultado.append("\n");
         try {
             int num = ctrlDatos.getNumeroElementos(algoritmo, false);
-            resultado += "Archivos descomprimidos: " + num + "\n";
-            resultado += "Tiempo medio de descompresión: " + ctrlDatos.getTiempoMedio(algoritmo, false) + " ns\n";
-            resultado += "Porcentaje medio de descompresión: " + ctrlDatos.getPorcentajeAhorradoMedio(algoritmo, false) + " %\n";
+            resultado.append("Archivos descomprimidos: ").append(num).append("\n");
+            resultado.append("Tiempo medio de descompresión: ").append(ctrlDatos.getTiempoMedio(algoritmo, false)).append(" ns\n");
+            resultado.append("Porcentaje medio de descompresión: ").append(ctrlDatos.getPorcentajeAhorradoMedio(algoritmo, false)).append(" %\n");
 
         } catch (FileNotFoundException e) {
-            resultado += "Archivos descomprimidos: 0\n";
+            resultado.append("Archivos descomprimidos: 0\n");
         }
-        resultado += "------------------------------------------------------------------\n";
+        resultado.append("------------------------------------------------------------------\n");
 
-        return resultado;
+        return resultado.toString();
     }
 }
