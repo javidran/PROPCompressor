@@ -1,16 +1,29 @@
 // Creado por Jan Escorza Fuertes
 package DomainLayer.Algoritmos;
 
+
+import java.lang.*;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
 
+/**
+ * La clase Singleton LZSS trata con ficheros .txt y es capaz de comprimirlos y descomprimirlos respectivamente
+ */
 public class LZSS implements CompresorDecompresor {
+    /**
+     * Instancia de LZSS para garantizar que es una clase Singleton
+     */
     private static LZSS instance = null;
 
 
 
+
+    /**
+     * Getter de la instancia Singleton de LZSS
+     * @return La instancia Singleton de LZSS
+     */
     // static method to create instance of Singleton class
     public static LZSS getInstance()
     {

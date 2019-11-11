@@ -15,7 +15,7 @@ public class DatosProcesoDriver {
             long oldSize = Long.parseLong(scanner.nextLine());
             System.out.println("Introduzca a continuación un newSize (por ejemplo 500):");
             long newSize = Long.parseLong(scanner.nextLine());
-            System.out.println("Introduzca a continuación esCompresion (1= true, 0=false) Un 1 o un 0:");
+            System.out.println("Introduzca a continuación esCompresion, si es compresión--> '1' y si no lo es--> '0'");
             int esCompresionInteger = Integer.parseInt(scanner.nextLine());
             boolean esCompresion;
             if (esCompresionInteger == 0) {
