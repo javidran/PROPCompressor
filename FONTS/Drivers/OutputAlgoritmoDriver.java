@@ -25,7 +25,7 @@ public class OutputAlgoritmoDriver {
 
             System.out.println("Ahora se probará el valor del output:");
             String resultado2 = new String(outputAlgoritmo.output);
-            System.out.println("El resulatdo de output es: " + resultado2);
+            System.out.println("El resultado de output es: " + resultado2);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

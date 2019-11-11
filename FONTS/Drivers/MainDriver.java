@@ -1,5 +1,6 @@
 package Drivers;// Creado por Joan Gamez Rodriguez
 
+import Controllers.CtrlEstadistica;
 import Controllers.CtrlProcesos;
 import DomainLayer.Algoritmos.Algoritmo;
 
@@ -13,7 +14,7 @@ public class MainDriver {
         while (b) {
             try {
                 Algoritmo tipoCompresor;
-                System.out.print("Introduzca uno de los siguientes comandos disponibles:\n\n1. comprimir\n2. descomprimir\n3. comprimirYdescomprimir\n4. salir\n");
+                System.out.print("Introduzca uno de los siguientes comandos disponibles:\n\n1. comprimir\n2. descomprimir\n3. comprimirYdescomprimir\n4. estadisticas\n5. salir\n");
                 Scanner scanner = new Scanner(System.in);
                 String comando = scanner.nextLine();
                 String s;
@@ -102,8 +103,31 @@ public class MainDriver {
                             System.out.println("El archivo " + s + " se ha comprimido y descomprimido correctamente!\n");
                         } else System.out.println("El formato del fichero debe de ser .txt o .ppm!");
                         break;
-                    case "salir":
+                    case "estadisticas":
                     case "4":
+                        System.out.print("Escriba el algoritmo de compresión que quiera consultar, de entre los siguientes:\njpeg\nlzss\nlz78\nlzw\n");
+                        String algoritmoComp = scanner.nextLine();
+                        switch (algoritmoComp) {
+                            case "jpeg":
+                                tipoCompresor = Algoritmo.JPEG;
+                                break;
+                            case "lzss":
+                                tipoCompresor = Algoritmo.LZSS;
+                                break;
+                            case "lzw":
+                                tipoCompresor = Algoritmo.LZW;
+                                break;
+                            case "lz78":
+                                tipoCompresor = Algoritmo.LZ78;
+                                break;
+                            default:
+                                throw new EnumConstantNotPresentException(Algoritmo.class, " El tipo de compresor " + algoritmoComp + " no existe.");
+                        }
+                        CtrlEstadistica ctrlEstadistica = CtrlEstadistica.getInstance();
+                        System.out.print(ctrlEstadistica.estadisticas(tipoCompresor));
+                        break;
+                    case "salir":
+                    case "5":
                         b = false;
                         break;
                     default:

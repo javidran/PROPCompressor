@@ -4,18 +4,26 @@ package DomainLayer.Algoritmos.LZ78;
 import DomainLayer.Algoritmos.CompresorDecompresor;
 import DomainLayer.Algoritmos.OutputAlgoritmo;
 
-import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Clase que implementa los métodos necesarios para comprimir y descomprimir secuencias de bytes con el algoritmo de compresión LZ78.
+ */
 public class LZ78 implements CompresorDecompresor {
     private static LZ78 instance = null;
 
-    // private constructor restricted to this class itself
-    private LZ78() {
-    }
+    /**
+     * Constructor de la clase LZ78.
+     * <p>Su visibilidad es privada para impedir que se tengan multiples instancias de la clase y satisfacer las propiedades de Singleton.</p>
+     */
+    private LZ78() {}
 
-    // static method to create instance of Singleton class
+
+    /**
+     * Método que devuelve la instancia la instancia de la clase LZ78.
+     * @return Devuelve la instancia de la clase LZ78.
+     */
     public static LZ78 getInstance()
     {
         if (instance == null)
@@ -24,8 +32,13 @@ public class LZ78 implements CompresorDecompresor {
         return instance;
     }
 
+    /**
+     * Comprime la secuencia de bytes aportada según el patrón de compresión LZ78.
+     * @param datosInput Secuencia de bytes a comprimir.
+     * @return Devuelve una instancia de OutputAlgoritmo compuesta del tiempo que ha tardado el método en ejecutarse y la secuencia de bytes comprimida.
+     */
     @Override
-    public OutputAlgoritmo comprimir(byte[] datosInput) throws IOException {
+    public OutputAlgoritmo comprimir(byte[] datosInput) {
         long startTime = System.nanoTime();
 
         List<Byte> output = new ArrayList<>();
@@ -96,8 +109,14 @@ public class LZ78 implements CompresorDecompresor {
         return new OutputAlgoritmo(endTime - startTime, outputArray);
     }
 
+    /**
+     * Descomprime la secuencia de bytes aportada según el patrón de compresión LZ78.
+     * <p>La secuencia debe haber sido comprimida por el método {@link #comprimir(byte[])} para que el proceso de descompresión sea satisfactorio.</p>
+     * @param datosInput Secuencia de bytes a descomprimir.
+     * @return Devuelve una instancia de OutputAlgoritmo compuesta del tiempo que ha tardado el método en ejecutarse y la secuencia de bytes descomprimida.
+     */
     @Override
-    public OutputAlgoritmo descomprimir(byte[] datosInput) throws IOException {
+    public OutputAlgoritmo descomprimir(byte[] datosInput) {
         long startTime = System.nanoTime();
 
         List<Byte> output = new ArrayList<>();
@@ -149,10 +168,19 @@ public class LZ78 implements CompresorDecompresor {
         return new OutputAlgoritmo(endTime - startTime, outputArray);
     }
 
+
+    /**
+     * Clase Pair usada en {@link #descomprimir(byte[])} para procesar todos los indices y bytes de la secuencia de bytes comprimidos.
+     */
     static class Pair {
         int index;
         byte b;
 
+        /**
+         * Constructora.
+         * @param index Índice del carácter predecesor.
+         * @param b Byte que representa un componente de una secuencia de bytes comprimida.
+         */
         Pair(int index, byte b) {
             this.index = index;
             this.b = b;

@@ -1,8 +1,6 @@
 // Creado por Joan Gamez Rodriguez
 package DomainLayer.Algoritmos;
 
-import java.io.File;
-
 /**
  * OutputAlgoritmo es una clase que pretende emular un struct de los lenguajes de la familia de C.
  * <p>
