@@ -19,8 +19,10 @@ public class LZ78Driver {
                 switch (comando) {
                     case "comprimir":
                     case "1":
-                        System.out.println("Escriba el path absoluto del fichero .txt a comprimir:");
-                        s = scanner.nextLine();
+                        System.out.println("Escriba el nombre del fichero .txt a comprimir:");
+                        s = System.getProperty("user.dir");
+                        s += s.contains("/")?"/":"\\";
+                        s += scanner.nextLine();
                         if (s.endsWith(".txt")) {
                             System.out.println("Se inicia el proceso");
                             ctrlProcesos.comprimirArchivo(s, Algoritmo.LZ78);
@@ -29,8 +31,10 @@ public class LZ78Driver {
                         break;
                     case "descomprimir":
                     case "2":
-                        System.out.println("Escriba el path absoluto del fichero .lz78 a descomprimir:");
-                        s = scanner.nextLine();
+                        System.out.println("Escriba el nombre del fichero .lz78 a descomprimir:");
+                        s = System.getProperty("user.dir");
+                        s += s.contains("/")?"/":"\\";
+                        s += scanner.nextLine();
                         if (s.endsWith(".lz78")) {
                             System.out.println("Se inicia el proceso");
                             ctrlProcesos.descomprimirArchivo(s);
@@ -39,8 +43,10 @@ public class LZ78Driver {
                         break;
                     case "comprimirYdescomprimir":
                     case "3":
-                        System.out.println("Escriba el path absoluto del fichero .txt a comprimir");
-                        s = scanner.nextLine();
+                        System.out.println("Escriba el nombre del fichero .txt a comprimir");
+                        s = System.getProperty("user.dir");
+                        s += s.contains("/")?"/":"\\";
+                        s += scanner.nextLine();
                         if (s.endsWith(".txt")) {
                             ctrlProcesos.comprimirDescomprimirArchivo(s, Algoritmo.LZ78);
                             System.out.println("Se inicia el proceso");

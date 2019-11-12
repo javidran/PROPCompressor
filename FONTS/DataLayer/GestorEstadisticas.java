@@ -36,6 +36,7 @@ public class GestorEstadisticas {
             br.close();
             newContent.append(time).append(" ").append(oldSize).append(" ").append(newSize).append(" ").append(diffSizePercentage).append("\n");
         } else {
+            estadistica.createNewFile();
             newContent.append(numDatos).append(" ").append(time).append(" ").append(diffSizePercentage).append("\n");
             newContent.append(time).append(" ").append(oldSize).append(" ").append(newSize).append(" ").append(diffSizePercentage).append("\n");
         }
