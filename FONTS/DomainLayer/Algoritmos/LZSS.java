@@ -8,7 +8,7 @@ import java.util.BitSet;
 import java.util.List;
 
 /**
- * La clase Singleton LZSS trata con ficheros .txt y es capaz de comprimirlos y descomprimirlos respectivamente
+ * La clase Singleton LZSS trata con ficheros .txt y .lzss, es capaz de comprimirlos y descomprimirlos respectivamente
  */
 public class LZSS implements CompresorDecompresor {
     /**
