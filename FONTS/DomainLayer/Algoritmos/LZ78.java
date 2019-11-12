@@ -1,8 +1,5 @@
 // Creado por Javier Cabrera Rodriguez
-package DomainLayer.Algoritmos.LZ78;
-
-import DomainLayer.Algoritmos.CompresorDecompresor;
-import DomainLayer.Algoritmos.OutputAlgoritmo;
+package DomainLayer.Algoritmos;
 
 import java.util.ArrayList;
 import java.util.List;

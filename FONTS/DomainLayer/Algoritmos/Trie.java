@@ -1,4 +1,4 @@
-package DomainLayer.Algoritmos.LZ78;
+package DomainLayer.Algoritmos;
 
 import java.util.HashMap;
 import java.util.List;

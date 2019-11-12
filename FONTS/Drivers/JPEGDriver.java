@@ -1,4 +1,5 @@
-package Drivers;// Creado por Joan Gamez Rodriguez
+// Creado por Joan Gamez Rodriguez
+package Drivers;
 
 import Controllers.CtrlProcesos;
 import DomainLayer.Algoritmos.Algoritmo;
@@ -19,8 +20,10 @@ public class JPEGDriver {
                 switch (comando) {
                     case "comprimir":
                     case "1":
-                        System.out.println("Escriba el path absoluto del fichero .ppm a comprimir:");
-                        s = scanner.nextLine();
+                        System.out.println("Escriba el nombre del fichero .ppm a comprimir:");
+                        s = System.getProperty("user.dir");
+                        s += s.contains("/")?"/":"\\";
+                        s += scanner.nextLine();
                         if (s.endsWith(".ppm")) {
                             System.out.println("Indique la calidad de compresión a usar (del 1 al 7)");
                             ctrlProcesos.setCalidadJPEG(scanner.nextInt());
@@ -31,8 +34,10 @@ public class JPEGDriver {
                         break;
                     case "descomprimir":
                     case "2":
-                        System.out.println("Escriba el path absoluto del fichero .imgc a descomprimir:");
-                        s = scanner.nextLine();
+                        System.out.println("Escriba el nombre del fichero .imgc a descomprimir:");
+                        s = System.getProperty("user.dir");
+                        s += s.contains("/")?"/":"\\";
+                        s += scanner.nextLine();
                         if (s.endsWith(".imgc")) {
                             System.out.println("Se inicia el proceso");
                             ctrlProcesos.descomprimirArchivo(s);
@@ -41,8 +46,10 @@ public class JPEGDriver {
                         break;
                     case "comprimirYdescomprimir":
                     case "3":
-                        System.out.println("Escriba el path absoluto del fichero .ppm a comprimir");
-                        s = scanner.nextLine();
+                        System.out.println("Escriba el nombre del fichero .ppm a comprimir");
+                        s = System.getProperty("user.dir");
+                        s += s.contains("/")?"/":"\\";
+                        s += scanner.nextLine();
                         if (s.endsWith(".ppm")) {
                             System.out.println("Indique la calidad de compresión a usar (del 1 al 7)");
                             ctrlProcesos.setCalidadJPEG(scanner.nextInt());

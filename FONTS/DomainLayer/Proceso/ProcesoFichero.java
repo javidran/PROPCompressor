@@ -2,7 +2,7 @@
 package DomainLayer.Proceso;
 
 import DomainLayer.Algoritmos.*;
-import DomainLayer.Algoritmos.LZ78.LZ78;
+import DomainLayer.Algoritmos.LZ78;
 
 public abstract class ProcesoFichero {
     protected byte[] input;
