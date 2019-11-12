@@ -1,10 +1,7 @@
 package Drivers;// Creado por Jan Escorza Fuertes
 
-import Controllers.CtrlProcesos;
 import DataLayer.GestorArchivo;
-import DomainLayer.Algoritmos.Algoritmo;
 
-import java.sql.SQLOutput;
 import java.util.Scanner;
 
 public class GestorArchivoDriver {
@@ -22,8 +19,10 @@ public class GestorArchivoDriver {
                     case "leeArchivo":
                     case "1":
                         System.out.println("Ahora se probara la capacidad de leer un archivo");
-                        System.out.println("Escriba el path absoluto del fichero a leer (.txt o .ppm!)");
-                        s = scanner.nextLine();
+                        System.out.println("Escriba el nombre del fichero a leer (.txt o .ppm!)");
+                        s = System.getProperty("user.dir");
+                        s += s.contains("/")?"/":"\\";
+                        s += scanner.nextLine();
                         if ((s.endsWith(".txt"))||(s.endsWith(".ppm"))) {
                             System.out.println("Se inicia el proceso");
                             byte[] data = GestorArchivo.leeArchivo(s);

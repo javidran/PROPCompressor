@@ -22,8 +22,10 @@ public class MainDriver {
                     case "comprimir":
                     case "1":
                         if (args.length == 0) {
-                            System.out.println("Escriba el path absoluto del fichero a comprimir (.txt o .ppm!)");
-                            s = scanner.nextLine();
+                            System.out.println("Escriba el nombre del fichero a comprimir (.txt o .ppm!)");
+                            s = System.getProperty("user.dir");
+                            s += s.contains("/")?"/":"\\";
+                            s += scanner.nextLine();
                         } else s = args[0];
                         if (s.endsWith(".txt")) {
                             System.out.print("Escriba el algoritmo de compresión que quiera usar, de entre los siguientes:\npredeterminado\nlzss\nlz78\nlzw\n");
@@ -58,8 +60,10 @@ public class MainDriver {
                     case "descomprimir":
                     case "2":
                         if (args.length == 0) {
-                            System.out.println("Escriba el path absoluto del fichero a descomprimir (.lzss, .lz78, lzw o .imgc!)");
-                            s = scanner.nextLine();
+                            System.out.println("Escriba el nombre del fichero a descomprimir (.lzss, .lz78, lzw o .imgc!)");
+                            s = System.getProperty("user.dir");
+                            s += s.contains("/")?"/":"\\";
+                            s += scanner.nextLine();
                         } else s = args[0];
                         if (s.endsWith(".lz78") || s.endsWith(".lzss") ||  s.endsWith(".lzw") ||  s.endsWith(".imgc")) {
                             System.out.println("Se inicia el proceso");
@@ -70,8 +74,10 @@ public class MainDriver {
                     case "compdesc":
                     case "3":
                         if (args.length == 0) {
-                            System.out.println("Escriba el path absoluto del fichero a comprimir (.txt o .ppm!)");
-                            s = scanner.nextLine();
+                            System.out.println("Escriba el nombre del fichero a comprimir (.txt o .ppm!)");
+                            s = System.getProperty("user.dir");
+                            s += s.contains("/")?"/":"\\";
+                            s += scanner.nextLine();
                         } else s = args[0];
                         if (s.endsWith(".txt")) {
                             System.out.print("Escriba el algoritmo de compresión que quiera usar, de entre los siguientes:\npredeterminado\nlzss\nlz78\nlzw\n");
