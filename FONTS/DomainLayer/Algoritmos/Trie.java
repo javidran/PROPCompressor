@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Estructura de Datos Trie que consiste en un árbol con pesos en las ramas de cada nodo.
+ * Estructura de Datos Trie que consiste en un árbol con pesos en las ramas de cada nodo. Esta estructura es utilizada por LZ78.
  */
 public class Trie {
     private TrieNode root;
