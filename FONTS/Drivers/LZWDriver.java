@@ -1,4 +1,5 @@
-package Drivers; //Creado por Sheida Vanesa Alfaro Taco
+//Creado por Sheida Vanesa Alfaro Taco
+package Drivers;
 
 import Controllers.CtrlProcesos;
 import DomainLayer.Algoritmos.Algoritmo;

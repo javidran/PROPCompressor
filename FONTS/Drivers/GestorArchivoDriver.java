@@ -1,4 +1,5 @@
-package Drivers;// Creado por Jan Escorza Fuertes
+// Creado por Joan Gamez Rodriguez
+package Drivers;
 
 import DataLayer.GestorArchivo;
 
@@ -6,7 +7,7 @@ import java.util.Scanner;
 
 public class GestorArchivoDriver {
     public static void main(String[] args) {
-        System.out.print("Bienvenido al driver para GestorArchivo\n\n");
+        System.out.print("Bienvenido al driver para GestorArchivo.\n\n");
         Scanner scanner = new Scanner(System.in);
         boolean b = true;
         while (b) {
