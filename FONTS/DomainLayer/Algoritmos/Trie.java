@@ -22,7 +22,7 @@ public class Trie {
     /**
      * Añade al árbol la secuencia de bytes aportada por parámetro.
      * @param bytes Conjunto de bytes a añadir al árbol.
-     * @return Devuelve el índice que representa el nuevo nodo añadido.
+     * @return Devuelve el índice que precede al nuevo nodo añadido.
      */
     public int insert(List<Byte> bytes) {
         int lastIndex = root.index;
