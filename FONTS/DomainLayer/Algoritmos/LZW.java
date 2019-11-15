@@ -3,7 +3,6 @@ package DomainLayer.Algoritmos;
 
 import java.nio.ByteBuffer;
 import java.util.*;
-//65536 MAX VALUE DEL DICCIONARIOOOOOOOOOOOOOO
 
 public class LZW implements CompresorDecompresor {
     private static LZW instance = null;
@@ -11,8 +10,7 @@ public class LZW implements CompresorDecompresor {
     private static double MAX_MAP_SIZE;
 
     // private constructor restricted to this class itself
-    private LZW() {
-    }
+    private LZW() { }
 
     // static method to create instance of Singleton class
     public static LZW getInstance()
