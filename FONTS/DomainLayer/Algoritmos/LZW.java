@@ -3,9 +3,12 @@ package DomainLayer.Algoritmos;
 
 import java.nio.ByteBuffer;
 import java.util.*;
+//65536 MAX VALUE DEL DICCIONARIOOOOOOOOOOOOOO
 
 public class LZW implements CompresorDecompresor {
     private static LZW instance = null;
+
+    private static double MAX_MAP_SIZE;
 
     // private constructor restricted to this class itself
     private LZW() {
@@ -33,6 +36,7 @@ public class LZW implements CompresorDecompresor {
     public OutputAlgoritmo comprimir(byte[] datosInput) {
         long startTime = System.nanoTime();
         List<Byte> salida = new ArrayList<>();
+        MAX_MAP_SIZE = Math.pow(2, 31);
 
         Map<ByteBuffer , Integer> mapa = new HashMap<ByteBuffer, Integer>();
         for (int i = 0; i < 256; i++) {
@@ -41,65 +45,55 @@ public class LZW implements CompresorDecompresor {
             mapa.put(ByteBuffer.wrap(y), i);
         }
 
-        byte i = datosInput[0];
         int num = 256;
         List<Byte> w = new ArrayList<Byte>();
-        w.add(i);
-        ByteBuffer wBB = null;
-        ByteBuffer wkBB;
-        for ( int x = 1; x < datosInput.length; x++) {
-            byte k = datosInput[x];
-            byte[] wBBArray = new byte[w.size()];
-            for(int it = 0; it < wBBArray.length; ++it) {
-                wBBArray[it] = w.get(it);
-            }
-            wBB = ByteBuffer.wrap(wBBArray); //Para el else
-
-            w.add((byte)k);
-            byte[] wkBBArray = new byte[w.size()];
-            for(int it = 0; it< wkBBArray.length; ++it) {
-                wkBBArray[it] = w.get(it);
-            }
-            wkBB = ByteBuffer.wrap(wkBBArray); //Para el if
-
-            if (mapa.containsKey(wkBB) && mapa.get(wkBB) != null) {
-                w.clear();
-                for(byte byt : wkBB.array()) {
-                    w.add(byt);
-                } //w = w+k
-            }
-            else {
-                int n = mapa.get(wBB);
-                //System.out.println("En el else\n" +"Salida se añade el int " + n);
-                byte[] array = {(byte)(n >> 24), (byte)(n >> 16), (byte)(n >> 8), (byte)n };
-                for (byte b : array) {
-                    salida.add((byte) b);
-                }
-                mapa.put(wkBB, num++);
-                w.clear();
-                w.add((byte)k);
-            }
-        }
+        w.add(datosInput[0]);
         byte[] wBBArray = new byte[w.size()];
         for(int it = 0; it < wBBArray.length; ++it) {
             wBBArray[it] = w.get(it);
         }
-        wBB = ByteBuffer.wrap(wBBArray);
-        int n = mapa.get(wBB); //PORQUE NO TIENE EL W
-        //System.out.println("En el else\n" +"Salida se añade el int " + n);
-        byte[] array = {(byte)(n >> 24), (byte)(n >> 16), (byte)(n >> 8), (byte)n };
-        for (byte b : array) {
-            salida.add((byte) b);
+
+        ByteBuffer wBB = ByteBuffer.wrap(wBBArray);
+        ByteBuffer wkBB;
+
+        for ( int x = 1; x < datosInput.length; x++) {
+            byte k = datosInput[x];
+            w.add(k);
+
+            byte[] wkBBArray = new byte[w.size()];
+            for(int it = 0; it< wkBBArray.length; ++it) wkBBArray[it] = w.get(it);
+            wkBB = ByteBuffer.wrap(wkBBArray);
+
+            if (mapa.containsKey(wkBB) && mapa.get(wkBB) != null) {
+                wBB = wkBB;
+            }
+            else {
+                int n = mapa.get(wBB);
+                byte[] array = {(byte)(n >> 24), (byte)(n >> 16), (byte)(n >> 8), (byte)n };
+                for (byte b : array) salida.add( b);
+                if ( num < MAX_MAP_SIZE ) mapa.put(wkBB, num++);
+                w.clear();
+                w.add(k);
+
+                byte[] wBBifArray = new byte[w.size()];
+                for(int it = 0; it < wBBifArray.length; ++it) wBBifArray[it] = w.get(it);
+                wBB = ByteBuffer.wrap(wBBifArray);
+            }
         }
+        byte[] wBBfiArray = new byte[w.size()];
+        for(int it = 0; it < wBBfiArray.length; ++it) wBBfiArray[it] = w.get(it);
+        wBB = ByteBuffer.wrap(wBBfiArray);
+
+        int n = mapa.get(wBB);
+        byte[] array = {(byte)(n >> 24), (byte)(n >> 16), (byte)(n >> 8), (byte)n };
+        for (byte b : array) salida.add((byte) b);
+
         byte [] result = new byte[salida.size()];
         int it = 0;
-        for (Byte aByte : salida) {
-            result[it] = aByte;
-            it++;
-        }
+        for (Byte aByte : salida) result[it++] = aByte;
+
         long endTime = System.nanoTime(), totalTime = endTime - startTime;
-        OutputAlgoritmo OutA = new OutputAlgoritmo((int)totalTime, result);;
-        return OutA;
+        return new OutputAlgoritmo((int)totalTime, result);
     }
 
     /**
@@ -116,70 +110,67 @@ public class LZW implements CompresorDecompresor {
         long startTime = System.nanoTime();
 
         Map<Integer, ByteBuffer> mapa = new HashMap<Integer, ByteBuffer>();
-        for (int i = 0; i < 256; i++) { // Inicializar alfabeto ASCII
+        for (int i = 0; i < 256; i++) {
             byte[] y = new byte[1];
             y[0] =  (byte) (i & 0xFF); // Del 0 to 127 and -128 to -1
             mapa.put(i,ByteBuffer.wrap(y));
         }
 
-        List<Integer> entrada = new ArrayList<Integer>();
+        Integer oldC = null, newC;
+        byte caracter = 0;
+        List<Byte> letras = new ArrayList<Byte>();
+        int num = 256;
+        List<Byte> salida = new ArrayList<Byte>();
 
         byte[] c = new byte[4];
         Integer ni;
         int i = 0;
+        boolean first = true;
         for (int x=0; i < datosInput.length; x++) {
             c[x] = datosInput[i++];
             if (x == 3) {
                 ni = ((c[0] & 0xFF) << 24) | ((c[1] & 0xFF) << 16) | ((c[2] & 0xFF) << 8 ) | ((c[3] & 0xFF));
-                entrada.add(ni);
+                if (first) {
+                    oldC = ni;
+                    caracter = (byte)(mapa.get(oldC).array()[0] & 0xFF);
+                    salida.add(caracter);
+                    first = false;
+                }
+                else {
+                    newC = ni;
+                    if (mapa.get(newC) == null) {
+                        letras.clear();
+                        for(byte byt : mapa.get(oldC).array()) letras.add(byt); //cadena=Traducir(cód_viejo)
+                        letras.add(caracter); //concat
+                    }
+                    else {
+                        letras.clear();
+                        for(byte byt : mapa.get(newC).array()) letras.add(byt);
+                    }
+                    salida.addAll(letras);
+                    if(letras.size()>= 1) {
+                        caracter = (byte)(letras.get(0) &0xFF); //carácter=Primer carácter de cadena
+                    }
+
+                    byte[] wArray = new byte[mapa.get(oldC).array().length + 1];
+                    int it=0;
+                    for(int l = 0; l < mapa.get(oldC).array().length; ++l) {
+                        wArray[it] = mapa.get(oldC).array()[l];
+                        it++;
+                    }
+                    wArray[it] = caracter;
+                    mapa.put(num++, ( ByteBuffer.wrap(wArray)));
+                    oldC = newC;
+                }
                 x=-1;
             }
         }
 
-        Iterator<Integer> nombreIterator = entrada.iterator();
-        Integer oldC, newC;
-        byte caracter; //bb
-        List<Byte> letras = new ArrayList<Byte>(); //bb
-        int num = 256;
-        oldC = nombreIterator.next(); //Leer input
-        caracter = (byte)(mapa.get(oldC).array()[0] & 0xFF);
-        List<Byte> salida = new ArrayList<Byte>();
-        salida.add(caracter);
-
-        while(nombreIterator.hasNext()){
-            newC = nombreIterator.next(); //System.out.println("CodNuevo: " + oldC + " y CodViejo:" +newC);
-            if (mapa.get(newC) == null) { //NO esta en el dic
-                letras.clear();
-                for(byte byt : mapa.get(oldC).array()) letras.add(byt); //cadena=Traducir(cód_viejo)
-                letras.add(caracter); //concat
-            }
-            else {
-                letras.clear();
-                for(byte byt : mapa.get(newC).array()) letras.add(byt);
-            }
-            salida.addAll(letras);
-            if(letras.size()>= 1) {
-                caracter = (byte)(letras.get(0) &0xFF); //carácter=Primer carácter de cadena
-            }
-
-            byte[] wArray = new byte[mapa.get(oldC).array().length + 1];
-            int it=0;
-            for(int l = 0; l < mapa.get(oldC).array().length; ++l) {
-                wArray[it] = mapa.get(oldC).array()[l];
-                it++;
-            }
-            wArray[it] = caracter;
-            mapa.put(num++, ( ByteBuffer.wrap(wArray)));
-            oldC = newC;
-        }
         byte[] salid = new byte[salida.size()];
         int j = 0;
-        for (byte x : salida) {
-            salid[j] = x;
-            j++;
-        }
+        for (byte x : salida) salid[j++] = x;
+
         long endTime = System.nanoTime(), totalTime = endTime - startTime;
-        OutputAlgoritmo OutA = new OutputAlgoritmo((int)totalTime, salid);
-        return OutA;
+        return new OutputAlgoritmo((int)totalTime, salid);
     }
 }
