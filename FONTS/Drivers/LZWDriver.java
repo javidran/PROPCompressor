@@ -4,9 +4,7 @@ package Drivers;
 import DomainLayer.Algoritmos.LZW;
 import DomainLayer.Algoritmos.OutputAlgoritmo;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.*;
 import java.util.Scanner;
 
 public class LZWDriver {
@@ -27,20 +25,23 @@ public class LZWDriver {
                         s += s.contains("/")?"/":"\\";
                         s += scanner.nextLine();
                         if (s.endsWith(".txt")) {
-                            File fileIn = new File(s); // custom output format
-                            FileInputStream entrada = new FileInputStream(fileIn);
-                            byte[] data = new byte[(int)fileIn.length()];
-                            int readb = entrada.read(data);
-                            entrada.close();
                             System.out.println("Se inicia el proceso");
+                            File fileIn = new File(s);
+                            FileInputStream in = new FileInputStream(fileIn);
+                            BufferedInputStream entrada = new BufferedInputStream(in);
+                            byte[] data = new byte[(int)fileIn.length()];
+                            entrada.read(data);
+                            entrada.close();
                             OutputAlgoritmo oa = LZW.getInstance().comprimir(data);
                             String newpath = s.replace(".txt", ".lzw");
-                            File fileOut = new File(newpath); // custom output format
+                            File fileOut = new File(newpath);
                             if (!fileOut.exists()) fileOut.createNewFile();
-                            FileOutputStream salida = new FileOutputStream(fileOut);
+                            FileOutputStream out = new FileOutputStream(fileOut);
+                            BufferedOutputStream salida = new BufferedOutputStream(out);
                             salida.write(oa.output);
+                            double timeSeconds = (double)oa.tiempo / 1000000000;
                             System.out.println("El archivo " + s + " se ha comprimido correctamente!\n" +
-                                    "Ha tardado "+oa.tiempo+" nanosegundos y se ha guardado en " + newpath);
+                                    "Ha tardado "+timeSeconds+" segundos y se ha guardado en " + newpath);
                         } else System.out.println("El formato del fichero debe de ser .txt!");
                         break;
                     case "descomprimir":
@@ -50,21 +51,24 @@ public class LZWDriver {
                         s += s.contains("/")?"/":"\\";
                         s += scanner.nextLine();
                         if (s.endsWith(".lzw")) {
-                            File fileIn = new File(s); // custom output format
-                            FileInputStream entrada = new FileInputStream(fileIn);
-                            byte[] data = new byte[(int)fileIn.length()];
-                            int readb = entrada.read(data);
-                            entrada.close();
                             System.out.println("Se inicia el proceso");
+                            File fileIn = new File(s);
+                            FileInputStream in = new FileInputStream(fileIn);
+                            BufferedInputStream entrada = new BufferedInputStream(in);
+                            byte[] data = new byte[(int)fileIn.length()];
+                            entrada.read(data);
+                            entrada.close();
                             OutputAlgoritmo oa = LZW.getInstance().descomprimir(data);
                             String [] pathSplit = s.split("\\.");
                             String newpath = s.replace("."+pathSplit[pathSplit.length - 1], "_out.txt");
                             File fileOut = new File(newpath);
                             if (!fileOut.exists()) fileOut.createNewFile();
-                            FileOutputStream salida = new FileOutputStream(fileOut);
+                            FileOutputStream out = new FileOutputStream(fileOut);
+                            BufferedOutputStream salida = new BufferedOutputStream(out);
                             salida.write(oa.output);
+                            double timeSeconds = (double)oa.tiempo / 1000000000;
                             System.out.println("El archivo se ha descomprimido correctamente!\n" +
-                                    "Ha tardado "+oa.tiempo+" nanosegundos y se ha guardado en " + newpath);
+                                    "Ha tardado "+timeSeconds+" segundos y se ha guardado en " + newpath);
                         } else System.out.println("El formato del fichero debe de ser .lzw!");
                         break;
                     case "salir":
