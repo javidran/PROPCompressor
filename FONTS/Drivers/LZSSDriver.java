@@ -9,7 +9,6 @@ import java.util.Scanner;
 public class LZSSDriver {
     public static void main(String[] args) {
         System.out.print("Bienvenido al driver para el algoritmo de LZSS\n\n");
-        CtrlProcesos ctrlProcesos = CtrlProcesos.getInstance();
         boolean b = true;
         while (b) {
             try {
