@@ -63,7 +63,7 @@ public class JPEGDriver {
                             entrada.close();
                             OutputAlgoritmo oa = JPEG.getInstance().descomprimir(data);
                             String [] pathSplit = s.split("\\.");
-                            String newpath = s.replace("."+pathSplit[pathSplit.length - 1], "_out.txt");
+                            String newpath = s.replace("."+pathSplit[pathSplit.length - 1], "_out.ppm");
                             File fileOut = new File(newpath);
                             if (!fileOut.exists()) fileOut.createNewFile();
                             FileOutputStream out = new FileOutputStream(fileOut);
