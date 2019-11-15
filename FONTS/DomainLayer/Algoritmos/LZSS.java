@@ -1,7 +1,6 @@
 // Creado por Jan Escorza Fuertes
 package DomainLayer.Algoritmos;
 
-
 import java.lang.*;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -9,16 +8,13 @@ import java.util.BitSet;
 import java.util.List;
 
 /**
- * La clase Singleton LZSS trata con ficheros .txt y es capaz de comprimirlos y descomprimirlos respectivamente
+ * La clase Singleton LZSS trata con ficheros .txt y .lzss, es capaz de comprimirlos y descomprimirlos respectivamente
  */
 public class LZSS implements CompresorDecompresor {
     /**
      * Instancia de LZSS para garantizar que es una clase Singleton
      */
     private static LZSS instance = null;
-
-
-
 
     /**
      * Getter de la instancia Singleton de LZSS
@@ -41,13 +37,12 @@ public class LZSS implements CompresorDecompresor {
      * @param bytes El array de bytes que se quiere pasar a Integer
      * @return Un Integer con el valor que se obtiene al pasar los 4 bytes del array a un Integer propiamente
      */
-    public static int fromByteArray(byte[] bytes) {
+    private static int fromByteArray(byte[] bytes) {
         return ByteBuffer.wrap(bytes).getInt();
     }
 
     // private constructor restricted to this class itself
-    public LZSS() {
-
+    private LZSS() {
     }
 
     /**
