@@ -8,7 +8,7 @@ import java.util.BitSet;
 import java.util.List;
 
 /**
- * La clase Singleton LZSS trata con ficheros .txt y .lzss, es capaz de comprimirlos y descomprimirlos respectivamente
+ * Clase que implementa los métodos necesarios para comprimir y descomprimir secuencias de bytes con el algoritmo de compresión LZSS.
  */
 public class LZSS implements CompresorDecompresor {
     /**
@@ -41,7 +41,10 @@ public class LZSS implements CompresorDecompresor {
         return ByteBuffer.wrap(bytes).getInt();
     }
 
-    // private constructor restricted to this class itself
+    /**
+     * Constructor de la clase LZSS.
+     * <p>Su visibilidad es privada para impedir que se tengan multiples instancias de la clase y satisfacer las propiedades de Singleton.</p>
+     */
     private LZSS() {
     }
 
@@ -220,9 +223,6 @@ public class LZSS implements CompresorDecompresor {
                 }
             }
             ++pos_bitset;//me muevo una en el bitset
-            if(pos_bitset>match.size()){//Si nos salimos de la medida *64 del bitset
-                System.out.print("Out of the bitset " + i + "\n");
-            }
         }
 
 
