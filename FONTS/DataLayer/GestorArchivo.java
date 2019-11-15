@@ -25,27 +25,17 @@ public class GestorArchivo {
      * @throws IOException se ha producido un error en la lectura del fichero
      */
     public static byte[] leeArchivo(String path) throws IOException {
-        List<Byte> srclist = new ArrayList<>();// List to store bytes
+        List<Byte> srclist = new ArrayList<>();
 
-        File fileIn = new File(path); // custom output format
+        File fileIn = new File(path);
+        int length = (int) fileIn.length();
         FileInputStream fis = new FileInputStream(fileIn);
         BufferedInputStream entrada = new BufferedInputStream(fis);
-        int b;
-        while ((b = entrada.read()) != -1) {
-            byte d= (byte) b;
-            srclist.add(d);
-        }
-        entrada.close();
 
-        byte[] data = new byte[srclist.size()];
-        int i = 0;
-        for (byte d : srclist) {
-            data[i] = d;
-            ++i;
-        }
+        byte[] data = new byte[length];
+        if(entrada.read(data) < 0) throw new IOException("El tamaño máximo operable del fichero ha sido alcanzado");
 
         return data;
-
     }
 
     /**
@@ -60,17 +50,13 @@ public class GestorArchivo {
      * @throws IOException se ha producido un error en la escritura del fichero
      */
     public static void guardaArchivo(byte[] data, String path, boolean sobrescribir) throws IOException {
-        //Miramos si existe el path
         File tempFile = new File(path);
         if (tempFile.exists() && !sobrescribir) throw new ArchivoYaExisteException("No se desea sobrescribir pero el fichero a escribir ya existe");
 
-        File fileOut = new File(path); //custom output format
-        FileOutputStream fout = null;
-        fout = new FileOutputStream(fileOut);
+        File fileOut = new File(path);
+        FileOutputStream fout = new FileOutputStream(fileOut);
         BufferedOutputStream bfout = new BufferedOutputStream(fout);
-        for (byte b : data) {
-            bfout.write(b);
-        }
+        bfout.write(data);
         bfout.close();
     }
 
