@@ -12,7 +12,6 @@ public class GestorArchivoDriver {
         boolean b = true;
         while (b) {
             try {
-
                 System.out.print("Introduzca uno de los siguientes comandos disponibles:\n\n1. leeArchivo\n2. guardaArchivo\n3. salir\n");
                 String comando = scanner.nextLine();
                 String s;
@@ -27,9 +26,6 @@ public class GestorArchivoDriver {
                         if ((s.endsWith(".txt"))||(s.endsWith(".ppm"))) {
                             System.out.println("Se inicia el proceso");
                             byte[] data = GestorArchivo.leeArchivo(s);
-                            /*for(byte a : data){
-                                System.out.print(a);
-                            }*/
                             System.out.println("El archivo " + s + " se ha leido correctamente!\n");
                         } else System.out.println("El formato del fichero debe de ser .txt o .ppm!");
                         break;
