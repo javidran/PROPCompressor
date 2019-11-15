@@ -40,9 +40,13 @@ public class DatosProceso {
         this.esCompresion = esCompresion;
         System.out.println("El proceso ha tardado " + time/1000000000.0 + "s. El cambio de tamaño pasa de " + oldSize + "B a " + newSize + "B con diferencia de " + getDiffSize() + "B / " + getDiffSizePercentage() + "%");
         if(getDiffSize() < 0) {
-            System.out.println("El proceso de" + (esCompresion?"compresión":"descompresión") + " no ha resultado satisfactorio ya que ocupa " + (esCompresion?"más":"menos") + " que el archivo original. Se guardará igualmente.");
+            System.out.println("El proceso de " + (esCompresion?"compresión":"descompresión") + " no ha resultado satisfactorio ya que el archivo "+ (esCompresion?"comprimido":"descomprimido") +" ocupa " + (esCompresion?"más":"menos") + " que el archivo "+ (esCompresion?"original":"comprimido")+". Se guardará igualmente.");
             throw new Exception("El proceso no ha sido satisfactorio");
         }
+        /*if(getDiffSize() < 0 && esCompresion) {
+            System.out.println("El proceso de compresión no ha resultado satisfactorio ya que el resultado de la compresión ocupa más que el archivo original. Se guardará igualmente.");
+            throw new Exception("El proceso no ha sido satisfactorio");
+        }*/
     }
 
     /**
