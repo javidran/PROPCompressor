@@ -1,11 +1,11 @@
-package DomainLayer.Algoritmos.LZ78;
+package DomainLayer.Algoritmos;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * Estructura de Datos Trie que consiste en un árbol con pesos en las ramas de cada nodo.
+ * Estructura de Datos Trie que consiste en un árbol con pesos en las ramas de cada nodo. Esta estructura es utilizada por LZ78.
  */
 public class Trie {
     private TrieNode root;
@@ -22,7 +22,7 @@ public class Trie {
     /**
      * Añade al árbol la secuencia de bytes aportada por parámetro.
      * @param bytes Conjunto de bytes a añadir al árbol.
-     * @return Devuelve el índice que representa el nuevo nodo añadido.
+     * @return Devuelve el índice que precede al nuevo nodo añadido.
      */
     public int insert(List<Byte> bytes) {
         int lastIndex = root.index;

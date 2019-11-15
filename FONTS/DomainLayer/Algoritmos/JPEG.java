@@ -126,7 +126,7 @@ public class JPEG implements CompresorDecompresor {
         result.add((byte)'\n');
         ++pos;
         String[] widthHeight = buff.split(" ");  //read and split dimensions into two (one for each value)
-        if (widthHeight.length > 2 || Integer.parseInt(widthHeight[0]) < 16 || Integer.parseInt(widthHeight[1]) < 16) throw new FormatoErroneoException("El formato de .ppm no es correcto!");
+        if (widthHeight.length > 2 || Integer.parseInt(widthHeight[0]) < 1 || Integer.parseInt(widthHeight[1]) < 1) throw new FormatoErroneoException("El formato de .ppm no es correcto!");
         while ((char)datosInput[pos] == '#') {
             while ((char)datosInput[pos] != '\n') { //avoiding comments between parameters...
                 ++pos;
@@ -407,7 +407,7 @@ public class JPEG implements CompresorDecompresor {
         result.add((byte)'\n');
         ++pos;
         String[] widthHeight = buff.split(" ");  //read and split dimensions into two (one for each value)
-        if (widthHeight.length > 2 || Integer.parseInt(widthHeight[0]) < 16 || Integer.parseInt(widthHeight[1]) < 16) throw new FormatoErroneoException("El formato de .ppm no es correcto!");
+        if (widthHeight.length > 2 || Integer.parseInt(widthHeight[0]) < 1 || Integer.parseInt(widthHeight[1]) < 1) throw new FormatoErroneoException("El formato de .ppm no es correcto!");
         buff = "";
         while ((char)datosInput[pos] != '\n') {
             buff += (char)datosInput[pos];
