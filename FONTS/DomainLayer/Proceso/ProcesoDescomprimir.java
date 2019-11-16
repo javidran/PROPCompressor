@@ -19,7 +19,7 @@ public class ProcesoDescomprimir extends ProcesoFichero {
     }
 
     /**
-     * Método abstracto que define la ejeccón del proceso de descompresión.
+     * Método que ejecuta el proceso de descompresión y genera la instancia para estadística.
      * @throws Exception El algoritmo no se ha ejecutado correctamente y no ha podido terminar.
      */
     @Override
