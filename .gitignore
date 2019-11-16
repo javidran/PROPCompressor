@@ -14,10 +14,10 @@ gen
 *.tar.gz
 *.rar
 hs_err_pid*
-*.lzss
-*.lzw
-*.lz78
-*.imgc
+resources/texts/*.lzss
+resources/texts/*.lzw
+resources/texts/*.lz78
+resources/texts/*.imgc
 *_out.txt
 *_out.ppm
 META-INF/
