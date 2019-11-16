@@ -1,11 +1,11 @@
 // Creado por Jan Escorza Fuertes
 package Drivers;
 
-        import DomainLayer.Algoritmos.LZ78;
-        import DomainLayer.Algoritmos.OutputAlgoritmo;
+import DomainLayer.Algoritmos.LZ78;
+import DomainLayer.Algoritmos.OutputAlgoritmo;
 
-        import java.io.*;
-        import java.util.Scanner;
+import java.io.*;
+import java.util.Scanner;
 
 public class LZ78Driver {
 
