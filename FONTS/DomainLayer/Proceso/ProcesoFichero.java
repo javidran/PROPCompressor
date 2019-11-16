@@ -88,7 +88,7 @@ public abstract class ProcesoFichero {
 
 
     /**
-     * Método abstracto que define la ejeccón del proceso de compresión o descompresión.
+     * Método abstracto que ejecuta el proceso de compresión o descompresión del input y genera la instancia para estadística.
      * @throws Exception El algoritmo no se ha ejecutado correctamente y no ha podido terminar.
      */
     public abstract void ejecutarProceso() throws Exception;
