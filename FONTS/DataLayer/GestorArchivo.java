@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * GestorArchivo es una clase utilizada por todos los algortimos tanto al comprimir como al descomir, se encarga de leer los ficheros.
+ * GestorArchivo es una clase utilizada por todos los algoritmos tanto al comprimir como al descomir, se encarga de leer los ficheros.
  * <p>
  *     Esta clase permite que los algoritmos de compresión y descompresión puedan leer arrays de bytes evitando que tengan acceso a la capa de datos. La salida de los algoritmos tambien es en este formato por la misma razón.
  * </p>

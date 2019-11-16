@@ -5,6 +5,9 @@ import DomainLayer.Proceso.DatosProceso;
 
 import java.io.*;
 
+/**
+ * Clase utilizada por todos los algoritmos tanto al comprimir como al descomprimir que guarda los diferentes datos estadísiticos que generan los procesos.
+ */
 public class GestorEstadisticas {
 
     /**
