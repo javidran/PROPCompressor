@@ -67,7 +67,16 @@ public class CtrlDatos {
         GestorArchivo.guardaArchivo(data, path, sobreescribir);
     }
 
-    public void actualizaEstadistica(DatosProceso dp, Algoritmo algoritmo, boolean esCompresion) throws IOException {
+    /**
+     * Llama a la clase GestorArchivo para que guarde el archivo del path.
+     * <p>
+     *     El path del archivo debe seguir el formato general de cualquier tipo de path de archivo y puede ser relativo o absoluto.
+     * </p>
+     * @param dp DatosProceso para conseguir la información de estadística
+     * @param algoritmo Algoritmo del que actualizamos el fichero estadística
+     * @param esCompresion Indica si el fichero estadística es de compresión o descompresión
+     */
+    public void actualizaEstadistica(DatosProceso dp, Algoritmo algoritmo, boolean esCompresion) {
         GestorEstadisticas.actualizarEstadistica(dp,algoritmo,esCompresion);
     }
 
