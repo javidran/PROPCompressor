@@ -1,4 +1,4 @@
-// Creado por Joan Gamez Rodriguez
+// Creado por Jan Escorza Fuertes
 package Drivers;
 
 import DataLayer.GestorArchivo;
