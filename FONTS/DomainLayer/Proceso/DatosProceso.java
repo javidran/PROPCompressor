@@ -3,7 +3,7 @@ package DomainLayer.Proceso;
 /**
  * DatosProceso es una clase que contiene los datos relevantes para la generación de estadísticas de un proceso fichero
  * <p>
- *     Esta clase permite generar estadísticas a partir de los datos que almanecena, tanto a nivel de proceso individual como al poder ser usado por el generador de estadísticas globales
+ *     Esta clase permite generar estadísticas a partir de los datos que almacena, tanto a nivel de proceso individual como al poder ser usado por el generador de estadísticas globales
  * </p>
  */
 public class DatosProceso {
