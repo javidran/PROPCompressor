@@ -51,6 +51,10 @@ public class CtrlProcesos {
      */
     public void comprimirArchivo(String path, Algoritmo tipoAlgoritmo) throws Exception {
         CtrlDatos ctrlDatos = CtrlDatos.getInstance();
+        if(tipoAlgoritmo == Algoritmo.PREDETERMINADO) {
+            Algoritmo[] algoritmos = algoritmosPosibles(path);
+            tipoAlgoritmo = algoritmos[0];
+        }
         ProcesoFichero comp = new ProcesoComprimir(ctrlDatos.leerArchivo(path), tipoAlgoritmo);
         comp.ejecutarProceso();
         ctrlDatos.guardaArchivo(comp.getOutput(), path, tipoAlgoritmo, true, true);
@@ -100,6 +104,10 @@ public class CtrlProcesos {
      */
     public void comprimirDescomprimirArchivo(String path, Algoritmo tipoAlgoritmo) throws Exception {
         CtrlDatos ctrlDatos = CtrlDatos.getInstance();
+        if(tipoAlgoritmo == Algoritmo.PREDETERMINADO) {
+            Algoritmo[] algoritmos = algoritmosPosibles(path);
+            tipoAlgoritmo = algoritmos[0];
+        }
         ProcesoFichero comp = new ProcesoComprimir(ctrlDatos.leerArchivo(path), tipoAlgoritmo);
         comp.ejecutarProceso();
         DatosProceso dp = comp.getDatosProceso();
