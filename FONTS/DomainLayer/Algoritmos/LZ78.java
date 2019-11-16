@@ -174,7 +174,7 @@ public class LZ78 implements CompresorDecompresor {
 
         /**
          * Constructora.
-         * @param index Índice del carácter predecesor.
+         * @param index Indice del caracter predecesor.
          * @param b Byte que representa un componente de una secuencia de bytes comprimida.
          */
         Pair(int index, byte b) {
