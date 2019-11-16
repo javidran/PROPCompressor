@@ -68,26 +68,44 @@ public class CtrlDatos {
     }
 
     /**
-     * Llama a la clase GestorArchivo para que guarde el archivo del path.
-     * <p>
-     *     El path del archivo debe seguir el formato general de cualquier tipo de path de archivo y puede ser relativo o absoluto.
-     * </p>
-     * @param dp DatosProceso para conseguir la información de estadística
-     * @param algoritmo Algoritmo del que actualizamos el fichero estadística
-     * @param esCompresion Indica si el fichero estadística es de compresión o descompresión
+     * Actualiza el fichero de estadística de compresión o descompresión del algoritmo correspondiente con los datos del nuevo archivo procesado.
+     * @param dp DatosProceso para conseguir la información estadística del proceso.
+     * @param algoritmo Algoritmo del que actualizamos el fichero estadística.
+     * @param esCompresion Indica si el fichero estadística es de compresión o descompresión.
      */
     public void actualizaEstadistica(DatosProceso dp, Algoritmo algoritmo, boolean esCompresion) {
         GestorEstadisticas.actualizarEstadistica(dp,algoritmo,esCompresion);
     }
 
+    /**
+     * Obtiene el número de elementos que contiene la estadística para compresión o descompresión del algoritmo seleccionado.
+     * @param algoritmo El algoritmo que se quiere consultar.
+     * @param esCompresion El tipo de proceso que se quiere, consultar, si de compresión o descompresión.
+     * @return El número de elementos que contiene la estadística indicada.
+     * @throws IOException Ha existido algún tipo de problema accediendo al archivo o no existe.
+     */
     public int getNumeroElementos(Algoritmo algoritmo, boolean esCompresion) throws IOException {
         return GestorEstadisticas.getNumeroElementos(algoritmo, esCompresion);
     }
 
+    /**
+     * Obtiene el tiempo medio de la estadística para compresión o descompresión del algoritmo seleccionado.
+     * @param algoritmo El algoritmo que se quiere consultar.
+     * @param esCompresion El tipo de proceso que se quiere, consultar, si de compresión o descompresión.
+     * @return El tiempo medio de todos los procesos de la estadística indicada.
+     * @throws IOException Ha existido algún tipo de problema accediendo al archivo o no existe.
+     */
     public long getTiempoMedio(Algoritmo algoritmo, boolean esCompresion) throws IOException {
         return GestorEstadisticas.getTiempoMedio(algoritmo, esCompresion);
     }
 
+    /**
+     * Obtiene el porcentaje medio que representan los archivos procesados respecto al original de la estadística para compresión o descompresión del algoritmo seleccionado.
+     * @param algoritmo El algoritmo que se quiere consultar.
+     * @param esCompresion El tipo de proceso que se quiere, consultar, si de compresión o descompresión.
+     * @return El porcentaje medio que representan los archivos procesados respecto al original.
+     * @throws IOException Ha existido algún tipo de problema accediendo al archivo o no existe.
+     */
     public double getPorcentajeAhorradoMedio(Algoritmo algoritmo, boolean esCompresion) throws IOException {
         return GestorEstadisticas.getPorcentajeAhorradoMedio(algoritmo,esCompresion);
     }
