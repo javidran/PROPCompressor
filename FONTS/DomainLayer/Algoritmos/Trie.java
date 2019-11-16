@@ -1,4 +1,4 @@
-package DomainLayer.Algoritmos; //Creado por Javier Cabrera Rodríguez
+package DomainLayer.Algoritmos;
 
 import java.util.HashMap;
 import java.util.List;

@@ -1,4 +1,4 @@
-package Controllers; //Creado por Javier Cabrera Rodriguez
+package Controllers;
 
 import DomainLayer.Algoritmos.Algoritmo;
 

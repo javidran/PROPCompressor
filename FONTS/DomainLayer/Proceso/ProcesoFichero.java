@@ -1,4 +1,3 @@
-// Creado por Javier Cabrera Rodriguez
 package DomainLayer.Proceso;
 
 import DomainLayer.Algoritmos.*;

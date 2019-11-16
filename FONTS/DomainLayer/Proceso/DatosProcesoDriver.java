@@ -1,4 +1,4 @@
-package DomainLayer.Proceso;// Creado por Jan Escorza Fuertes
+package DomainLayer.Proceso;
 
 import java.util.Scanner;
 
