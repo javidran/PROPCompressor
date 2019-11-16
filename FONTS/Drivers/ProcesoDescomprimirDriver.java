@@ -63,7 +63,7 @@ public class ProcesoDescomprimirDriver {
                             BufferedOutputStream salida = new BufferedOutputStream(out);
                             salida.write(procesoDescomprimir.getOutput());
                             DatosProceso datosProceso = procesoDescomprimir.getDatosProceso();
-                            long oldSize = data.length, newSize = datosProceso.getOldSize();
+                            long oldSize = data.length, newSize = datosProceso.getNewSize();
                             double timeSeconds = (double)datosProceso.getTiempo() / 1000000000;
                             System.out.println("El archivo " + s + " se ha descomprimido correctamente!\n" +
                                     "Ha tardado "+timeSeconds+"s y se ha guardado en " + newpath +".\n"+
@@ -87,7 +87,7 @@ public class ProcesoDescomprimirDriver {
                             BufferedOutputStream salida = new BufferedOutputStream(out);
                             salida.write(procesoDescomprimir.getOutput());
                             DatosProceso datosProceso = procesoDescomprimir.getDatosProceso();
-                            long oldSize = data.length, newSize = datosProceso.getOldSize();
+                            long oldSize = data.length, newSize = datosProceso.getNewSize();
                             double timeSeconds = (double)datosProceso.getTiempo() / 1000000000;
                             System.out.println("El archivo " + s + " se ha descomprimido correctamente!\n" +
                                     "Ha tardado "+timeSeconds+"s y se ha guardado en " + newpath +".\n"+
