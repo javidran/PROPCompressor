@@ -8,7 +8,13 @@ import java.util.Map;
  * Estructura de Datos Trie que consiste en un árbol con pesos en las ramas de cada nodo. Esta estructura es utilizada por LZ78.
  */
 public class Trie {
+    /**
+     * Nodo raíz desde el que empiezan todas las ramas.
+     */
     private TrieNode root;
+    /**
+     * Contador del tamaño del diccionario. Su rango es entre 0 y 4194303.
+     */
     private int indexCount;
 
     /**
@@ -91,9 +97,21 @@ public class Trie {
      * Clase que representa cada nodo dentro del árbol Trie.
      */
     static class TrieNode {
+        /**
+         * Byte que forma parte de un conjunto de secuencias de bytes. Siempre es el último byte de una y solo una secuencia.
+         */
         byte c;
+        /**
+         * Indica el número de la secuencia que acaba en este nodo.
+         */
         int index;
+        /**
+         * Ramas que surgen del nodo con pesos que indican el byte del nodo correspondiente.
+         */
         HashMap<Byte, TrieNode> edges = new HashMap<>();
+        /**
+         * Indica si el nodo no tiene hijos.
+         */
         boolean isLeaf;
 
         /**
