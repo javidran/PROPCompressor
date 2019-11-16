@@ -1,9 +1,9 @@
 package DomainLayer.Proceso;
 
 /**
- * DatosProceso es una clase que contiene los datos relevantes para la generación de estadísticas de un proceso fichero
+ * DatosProceso es una clase que contiene los datos relevantes para la generación de estadísticas de un proceso fichero.
  * <p>
- *     Esta clase permite generar estadísticas a partir de los datos que almacena, tanto a nivel de proceso individual como al poder ser usado por el generador de estadísticas globales
+ *     Esta clase permite generar estadísticas a partir de los datos que almacena, tanto a nivel de proceso individual como al poder ser usado por el generador de estadísticas globales.
  * </p>
  */
 public class DatosProceso {
@@ -52,8 +52,8 @@ public class DatosProceso {
         else return newSize - oldSize;
     }
     /**
-     * Devuelve la diferencia entre el original size y el new size en forma de porcentaje.
-     * @return  La diferencia entre el antiguo tamaño y el nuevo en forma de porcentaje.
+     * Devuelve el porcentaje de tamaño que representad el nuevo archivo respecto al original.
+     * @return  El porcentaje de tamaño que representad el nuevo archivo respecto al original.
      */
     public double getDiffSizePercentage() {
         if(esCompresion) return Math.floor((newSize /(double) oldSize)*100);
