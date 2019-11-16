@@ -6,8 +6,6 @@ import java.util.*;
 public class LZW implements CompresorDecompresor {
     private static LZW instance = null;
 
-    private static double MAX_MAP_SIZE;
-
     // private constructor restricted to this class itself
     private LZW() { }
 
@@ -33,7 +31,7 @@ public class LZW implements CompresorDecompresor {
     public OutputAlgoritmo comprimir(byte[] entrada) {
         long startTime = System.nanoTime();
         List<Byte> salida = new ArrayList<>();
-        MAX_MAP_SIZE = Math.pow(2, 31);
+        double MAX_MAP_SIZE = Math.pow(2, 31);
 
         Map<ByteBuffer , Integer> mapa = new HashMap<ByteBuffer, Integer>();
         for (int i = 0; i < 256; i++) {
@@ -72,7 +70,7 @@ public class LZW implements CompresorDecompresor {
                 int n = mapa.get(wBB);
                 byte[] array = {(byte)(n >> 24), (byte)(n >> 16), (byte)(n >> 8), (byte)n };
                 for (byte b : array) salida.add( b);
-                if ( num < MAX_MAP_SIZE ) mapa.put(wkBB, num++);
+                if ( num < MAX_MAP_SIZE) mapa.put(wkBB, num++);
                 w.clear();
                 w.add(k);
 

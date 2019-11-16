@@ -48,7 +48,7 @@ public class LZSS implements CompresorDecompresor {
     }
 
     /**
-     * Comprime el array de bytes que se pas por parametro aplicando el algoritmo de compersión LZSS
+     * Comprime el array de bytes que se pasa por parametro aplicando el algoritmo de compersión LZSS
      * <p>
      *     El array de bytes debería idealmente ser de una longitud significativa
      * </p>
