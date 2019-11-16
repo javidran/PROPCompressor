@@ -52,7 +52,6 @@ public class LZWDriver {
                             salida.close();
                             long oldSize = data.length, newSize = oa.output.length;
                             double timeSeconds = (double)oa.tiempo / 1000000000;
-                            System.out.println(oa.output);
                             System.out.println("El archivo " + s + " se ha comprimido correctamente!\n" +
                                     "Ha tardado "+timeSeconds+"s y se ha guardado en " + newpath +".\n"+
                                     "El cambio de tamaño pasa de " + oldSize + "B a " + newSize + "B con diferencia de " +

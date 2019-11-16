@@ -8,8 +8,14 @@ import DomainLayer.Proceso.DatosProceso;
 import java.io.*;
 
 public class CtrlDatos {
+    /**
+     * Instancia de CtrlDatos para garantizar que es una clase Singleton
+     */
     private static CtrlDatos instance = null;
-
+    /**
+     * Getter de la instancia Singleton de CtrlDatoos
+     * @return La instancia Singleton de CtrlDatos
+     */
     public static CtrlDatos getInstance()
     {
         if (instance == null)
