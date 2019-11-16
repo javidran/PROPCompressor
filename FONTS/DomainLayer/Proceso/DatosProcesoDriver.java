@@ -25,7 +25,7 @@ public class DatosProcesoDriver {
 
                         System.out.println("A continuación se creará una instancia de DatosProceso con time :" + time + " oldsize: " + oldSize + " newSize: " + newSize + " y boolean esCompresion " + esCompresion);
                         DatosProceso datosProcesoNew = new DatosProceso(time, oldSize, newSize, esCompresion);
-                        System.out.println("El proceso ha tardado " + datosProcesoNew.getTiempo() / 1000000000.0 + "s. El cambio de tamaño pasa de " + datosProcesoNew.getOldSize() + "B a " + datosProcesoNew.getNewSize() + "B con diferencia de " + datosProcesoNew.getDiffSize() + "B / " + datosProcesoNew.getDiffSizePercentage() + "%");
+                        System.out.println("El proceso ha tardado " + datosProcesoNew.getTiempo() / 1000000000.0 + "s. El cambio de tamaño pasa de " + datosProcesoNew.getOldSize() + "B a " + datosProcesoNew.getNewSize() + "B con diferencia de " + datosProcesoNew.getDiffSize() + "B  que resulta en un  " + datosProcesoNew.getDiffSizePercentage() + "% del tamaño original");
                         if (!datosProcesoNew.isSatisfactorio())
                             System.out.println("Se considera que el proceso no ha resultado satisfactorio, ya que el archivo " + (esCompresion ? "comprimido" : "descomprimido") + " ocupa igual o " + (esCompresion ? "más" : "menos") + " que el archivo " + (esCompresion ? "original" : "comprimido") + ".");
 
