@@ -68,8 +68,8 @@ public class ProcesoDescomprimirDriver {
                             System.out.println("El archivo " + s + " se ha descomprimido correctamente!\n" +
                                     "Ha tardado "+timeSeconds+"s y se ha guardado en " + newpath +".\n"+
                                     "El cambio de tamaño pasa de " + oldSize + "B a " + newSize + "B con diferencia de " +
-                                    datosProceso.getDiffSize() + "B / " +
-                                    datosProceso.getDiffSizePercentage() + "%");
+                                    datosProceso.getDiffSize() + "B que resulta en un " +
+                                    datosProceso.getDiffSizePercentage() + "% del archivo original.");
                         } else if (s.endsWith(".imgc")) {
                             System.out.println("Se inicia el proceso");
                             File fileIn = new File(s);

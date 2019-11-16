@@ -69,8 +69,8 @@ public class ProcesoComprimirDriver {
                             System.out.println("El archivo " + s + " se ha comprimido correctamente!\n" +
                                     "Ha tardado "+timeSeconds+"s y se ha guardado en " + newpath +".\n"+
                                     "El cambio de tamaño pasa de " + oldSize + "B a " + newSize + "B con diferencia de " +
-                                    datosProceso.getDiffSize() + "B / " +
-                                    datosProceso.getDiffSizePercentage() + "%");
+                                    datosProceso.getDiffSize() + "B que resulta en un " +
+                                    datosProceso.getDiffSizePercentage() + "% del archivo original.");
                         } else if (s.endsWith(".ppm")) {
                             System.out.println("Indique la calidad de compresión a usar (del 1 al 7)");
                             JPEG.getInstance().setCalidad(scanner.nextInt());
@@ -95,8 +95,8 @@ public class ProcesoComprimirDriver {
                             System.out.println("El archivo " + s + " se ha comprimido correctamente!\n" +
                                     "Ha tardado "+timeSeconds+"s y se ha guardado en " + newpath +".\n"+
                                     "El cambio de tamaño pasa de " + oldSize + "B a " + newSize + "B con diferencia de " +
-                                    datosProceso.getDiffSize() + "B / " +
-                                    datosProceso.getDiffSizePercentage() + "%");
+                                    datosProceso.getDiffSize() + "B que resulta en un " +
+                                    datosProceso.getDiffSizePercentage() + "% del archivo original.");
                         } else System.out.println("El formato del fichero debe de ser .txt o .ppm!");
                         break;
                     case "salir":
