@@ -1,4 +1,3 @@
-// Creado por Joan Gamez Rodriguez
 package Drivers;
 
 import DomainLayer.Algoritmos.JPEG;
@@ -83,6 +82,7 @@ public class JPEGDriver {
                             FileOutputStream out = new FileOutputStream(fileOut);
                             BufferedOutputStream salida = new BufferedOutputStream(out);
                             salida.write(oa.output);
+                            salida.close();
                             long oldSize = data.length, newSize = oa.output.length;
                             double timeSeconds = (double)oa.tiempo / 1000000000;
                             System.out.println("El archivo " + s + " se ha comprimido correctamente!\n" +

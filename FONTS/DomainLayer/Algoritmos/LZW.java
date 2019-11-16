@@ -1,4 +1,3 @@
-// Creado por Sheida Vanesa Alfaro Taco
 package DomainLayer.Algoritmos;
 
 import java.nio.ByteBuffer;
@@ -45,7 +44,11 @@ public class LZW implements CompresorDecompresor {
 
         int num = 256;
         List<Byte> w = new ArrayList<Byte>();
-        w.add(entrada[0]);
+        if (entrada.length > 0) w.add(entrada[0]);
+        else {
+            long endTime = System.nanoTime(), totalTime = endTime - startTime;
+            return new OutputAlgoritmo((int)totalTime, entrada);
+        }
         byte[] wBBArray = new byte[w.size()];
         for(int it = 0; it < wBBArray.length; ++it) {
             wBBArray[it] = w.get(it);

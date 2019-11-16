@@ -1,4 +1,3 @@
-// Creado por Sheida Vanesa Alfaro Taco
 package Controllers;
 
 import DataLayer.GestorArchivo;
