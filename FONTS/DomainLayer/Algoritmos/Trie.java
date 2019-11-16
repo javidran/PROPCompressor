@@ -7,7 +7,7 @@ import java.util.Map;
 /**
  * Estructura de Datos Trie que consiste en un árbol con pesos en las ramas de cada nodo. Esta estructura es utilizada por LZ78.
  */
-public class Trie {
+class Trie {
     /**
      * Nodo raíz desde el que empiezan todas las ramas.
      */
@@ -20,7 +20,7 @@ public class Trie {
     /**
      * Constructora.
      */
-    public Trie() {
+    Trie() {
         root = new TrieNode();
         indexCount = 0;
     }
@@ -30,7 +30,7 @@ public class Trie {
      * @param bytes Conjunto de bytes a añadir al árbol.
      * @return Devuelve el índice que precede al nuevo nodo añadido.
      */
-    public int insert(List<Byte> bytes) {
+    int insert(List<Byte> bytes) {
         int lastIndex = root.index;
         HashMap<Byte, TrieNode> edges = root.edges;
 
@@ -61,7 +61,7 @@ public class Trie {
      * @param bytes Secuencia de bytes a localizar en el árbol.
      * @return Devuelve un booleano indicando si la secuencia de bytes se encuentra dentro del árbol o no.
      */
-    public boolean search(List<Byte> bytes) {
+    boolean search(List<Byte> bytes) {
         TrieNode t = searchNode(bytes);
         return t != null && t.isLeaf;
     }
@@ -71,7 +71,7 @@ public class Trie {
      * @param bytes Secuencia de bytes a localizar en el árbol.
      * @return Devuelve el último nodo de la secuencia de bytes solicitada. Si no existe el valor es null.
      */
-    public TrieNode searchNode(List<Byte> bytes){
+    private TrieNode searchNode(List<Byte> bytes){
         Map<Byte, TrieNode> edges = root.edges;
         TrieNode t = null;
         for (byte c : bytes) {
@@ -89,7 +89,7 @@ public class Trie {
      * Indica si el árbol ha alcanzado su límite de tamaño.
      * @return Devuelve un booleano indicando si el árbol se ha llenado.
      */
-    public boolean isFull() {
+    boolean isFull() {
         return 0x3FFFFF == indexCount;
     }
 
