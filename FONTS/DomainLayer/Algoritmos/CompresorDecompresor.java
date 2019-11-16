@@ -3,7 +3,7 @@ package DomainLayer.Algoritmos;
 import Exceptions.FormatoErroneoException;
 
 /**
- * Interfaz que define los métodos básicos de un algoritmo de compresiión.
+ * Interfaz que define los métodos básicos de un algoritmo de compresión.
  */
 public interface CompresorDecompresor {
 

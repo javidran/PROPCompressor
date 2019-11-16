@@ -7,6 +7,9 @@ import java.util.List;
  * Clase que implementa los métodos necesarios para comprimir y descomprimir secuencias de bytes con el algoritmo de compresión LZ78.
  */
 public class LZ78 implements CompresorDecompresor {
+    /**
+     * Instancia de LZ78 para garantizar que es una clase Singleton
+     */
     private static LZ78 instance = null;
 
     /**
@@ -169,13 +172,19 @@ public class LZ78 implements CompresorDecompresor {
      * Clase Pair usada en {@link #descomprimir(byte[])} para procesar todos los indices y bytes de la secuencia de bytes comprimidos.
      */
     static class Pair {
+        /**
+         * Indice del byte predecesor.
+         */
         int index;
+        /**
+         * Byte que representa el componente final de una secuencia de bytes comprimida.
+         */
         byte b;
 
         /**
          * Constructora.
-         * @param index Indice del caracter predecesor.
-         * @param b Byte que representa un componente de una secuencia de bytes comprimida.
+         * @param index Indice del byte predecesor.
+         * @param b Byte que representa el componente final de una secuencia de bytes comprimida.
          */
         Pair(int index, byte b) {
             this.index = index;
