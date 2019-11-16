@@ -60,8 +60,8 @@ public class CtrlProcesos {
         comp.ejecutarProceso();
         ctrlDatos.guardaArchivo(comp.getOutput(), path, tipoAlgoritmo, true, true);
         DatosProceso dp = comp.getDatosProceso();
+        System.out.println("El proceso ha tardado " + dp.getTiempo()/1000000000.0 + "s. El cambio de tamaño pasa de " + dp.getOldSize() + "B a " + dp.getNewSize() + "B con diferencia de " + dp.getDiffSize() + "B / " + dp.getDiffSizePercentage() + "%");
         if(dp.isSatisfactorio()) {
-            System.out.println("El proceso ha tardado " + dp.getTiempo()/1000000000.0 + "s. El cambio de tamaño pasa de " + dp.getOldSize() + "B a " + dp.getNewSize() + "B con diferencia de " + dp.getDiffSize() + "B / " + dp.getDiffSizePercentage() + "%");
             ctrlDatos.actualizaEstadistica(dp, tipoAlgoritmo, true);
         } else {
             System.out.println("El proceso de compresión no ha resultado satisfactorio ya que el archivo comprimido ocupa igual o más que el archivo original. Se guardará igualmente.");
@@ -83,8 +83,8 @@ public class CtrlProcesos {
         desc.ejecutarProceso();
         ctrlDatos.guardaArchivo(desc.getOutput(), path, algoritmos[0], false, true);
         DatosProceso dp = desc.getDatosProceso();
+        System.out.println("El proceso ha tardado " + dp.getTiempo()/1000000000.0 + "s. El cambio de tamaño pasa de " + dp.getOldSize() + "B a " + dp.getNewSize() + "B con diferencia de " + dp.getDiffSize() + "B / " + dp.getDiffSizePercentage() + "%");
         if(dp.isSatisfactorio()) {
-            System.out.println("El proceso ha tardado " + dp.getTiempo()/1000000000.0 + "s. El cambio de tamaño pasa de " + dp.getOldSize() + "B a " + dp.getNewSize() + "B con diferencia de " + dp.getDiffSize() + "B / " + dp.getDiffSizePercentage() + "%");
             ctrlDatos.actualizaEstadistica(dp, algoritmos[0], false);
         } else {
             System.out.println("El proceso de descompresión no ha resultado satisfactorio ya que el archivo descomprimido ocupa igual o menos que el archivo original. Se guardará igualmente.");
@@ -113,8 +113,8 @@ public class CtrlProcesos {
         ProcesoFichero comp = new ProcesoComprimir(ctrlDatos.leerArchivo(path), tipoAlgoritmo);
         comp.ejecutarProceso();
         DatosProceso dp = comp.getDatosProceso();
+        System.out.println("El proceso ha tardado " + dp.getTiempo() / 1000000000.0 + "s. El cambio de tamaño pasa de " + dp.getOldSize() + "B a " + dp.getNewSize() + "B con diferencia de " + dp.getDiffSize() + "B / " + dp.getDiffSizePercentage() + "%");
         if (dp.isSatisfactorio()) {
-            System.out.println("El proceso ha tardado " + dp.getTiempo() / 1000000000.0 + "s. El cambio de tamaño pasa de " + dp.getOldSize() + "B a " + dp.getNewSize() + "B con diferencia de " + dp.getDiffSize() + "B / " + dp.getDiffSizePercentage() + "%");
             ctrlDatos.actualizaEstadistica(dp, tipoAlgoritmo, true);
         } else {
             System.out.println("El proceso de compresión no ha resultado satisfactorio ya que el archivo comprimido ocupa igual o más que el archivo original. Se guardará igualmente.");
@@ -123,11 +123,9 @@ public class CtrlProcesos {
         desc.ejecutarProceso();
         ctrlDatos.guardaArchivo(desc.getOutput(), path, tipoAlgoritmo, false, true);
         dp = desc.getDatosProceso();
+        System.out.println("El proceso ha tardado " + dp.getTiempo() / 1000000000.0 + "s. El cambio de tamaño pasa de " + dp.getOldSize() + "B a " + dp.getNewSize() + "B con diferencia de " + dp.getDiffSize() + "B / " + dp.getDiffSizePercentage() + "%");
         if (dp.isSatisfactorio()) {
-            System.out.println("El proceso ha tardado " + dp.getTiempo() / 1000000000.0 + "s. El cambio de tamaño pasa de " + dp.getOldSize() + "B a " + dp.getNewSize() + "B con diferencia de " + dp.getDiffSize() + "B / " + dp.getDiffSizePercentage() + "%");
             ctrlDatos.actualizaEstadistica(dp, tipoAlgoritmo, false);
-        } else {
-            System.out.println("El proceso de descompresión no ha resultado satisfactorio ya que el archivo descomprimido ocupa igual o menos que el archivo original. Se guardará igualmente.");
         }
     }
 
