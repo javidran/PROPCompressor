@@ -1,5 +1,5 @@
 //Creado por Joan Gamez Rodriguez
-package Drivers;
+package DomainLayer.Algoritmos;
 
 import DomainLayer.Algoritmos.OutputAlgoritmo;
 
