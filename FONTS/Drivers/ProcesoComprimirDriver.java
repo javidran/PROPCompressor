@@ -64,7 +64,7 @@ public class ProcesoComprimirDriver {
                             BufferedOutputStream salida = new BufferedOutputStream(out);
                             salida.write(procesoComprimir.getOutput());
                             DatosProceso datosProceso = procesoComprimir.getDatosProceso();
-                            long oldSize = data.length, newSize = datosProceso.getOldSize();
+                            long oldSize = data.length, newSize = datosProceso.getNewSize();
                             double timeSeconds = (double)datosProceso.getTiempo() / 1000000000;
                             System.out.println("El archivo " + s + " se ha comprimido correctamente!\n" +
                                     "Ha tardado "+timeSeconds+"s y se ha guardado en " + newpath +".\n"+
@@ -90,7 +90,7 @@ public class ProcesoComprimirDriver {
                             BufferedOutputStream salida = new BufferedOutputStream(out);
                             salida.write(procesoComprimir.getOutput());
                             DatosProceso datosProceso = procesoComprimir.getDatosProceso();
-                            long oldSize = data.length, newSize = datosProceso.getOldSize();
+                            long oldSize = data.length, newSize = datosProceso.getNewSize();
                             double timeSeconds = (double)datosProceso.getTiempo() / 1000000000;
                             System.out.println("El archivo " + s + " se ha comprimido correctamente!\n" +
                                     "Ha tardado "+timeSeconds+"s y se ha guardado en " + newpath +".\n"+
