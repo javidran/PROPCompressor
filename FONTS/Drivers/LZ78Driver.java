@@ -55,8 +55,8 @@ public class LZ78Driver {
                             System.out.println("El archivo " + s + " se ha comprimido correctamente!\n" +
                                     "Ha tardado "+timeSeconds+"s y se ha guardado en " + newpath +".\n"+
                                     "El cambio de tamaño pasa de " + oldSize + "B a " + newSize + "B con diferencia de " +
-                                    getDiffSize(true, oldSize, newSize) + "B / " +
-                                    getDiffSizePercentage(true, oldSize, newSize) + "%");
+                                    getDiffSize(true, oldSize, newSize) + "B que resulta en un " +
+                                    getDiffSizePercentage(true, oldSize, newSize) + "% del archivo original.");
                         } else System.out.println("El formato del fichero debe de ser .txt!");
 
                         break;
@@ -88,8 +88,8 @@ public class LZ78Driver {
                             System.out.println("El archivo " + s + " se ha comprimido correctamente!\n" +
                                     "Ha tardado "+timeSeconds+"s y se ha guardado en " + newpath +".\n"+
                                     "El cambio de tamaño pasa de " + oldSize + "B a " + newSize + "B con diferencia de " +
-                                    getDiffSize(false, oldSize, newSize) + "B / " +
-                                    getDiffSizePercentage(false, oldSize, newSize) + "%");
+                                    getDiffSize(false, oldSize, newSize) + "B que resulta en un " +
+                                    getDiffSizePercentage(false, oldSize, newSize) + "% del archivo original.");
                         } else System.out.println("El formato del fichero debe de ser .lz78!");
                         break;
                     case "salir":
