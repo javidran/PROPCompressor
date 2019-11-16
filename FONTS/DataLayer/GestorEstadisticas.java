@@ -7,7 +7,7 @@ import java.io.*;
 
 public class GestorEstadisticas {
 
-    public static void actualizarEstadistica(DatosProceso dp, Algoritmo algoritmo, boolean esCompresion) throws IOException {
+    public static void actualizarEstadistica(DatosProceso dp, Algoritmo algoritmo, boolean esCompresion) {
         File estadistica = new File( System.getProperty("user.dir") +"/resources/estadistica_"+(esCompresion? "1":"0")+"_"+algoritmo+".txt");
         long time = dp.getTiempo();
         long oldSize = dp.getOldSize();
@@ -17,32 +17,35 @@ public class GestorEstadisticas {
 
         StringBuilder newContent = new StringBuilder();
         String line;
+        try {
+            if (estadistica.exists()) {
+                BufferedReader br = new BufferedReader(new FileReader(estadistica));
+                line = br.readLine();
+                String[] parts = line.split(" ");
+                numDatos += Integer.parseInt(parts[0]);
+                long avgTime = Long.parseLong(parts[1]);
+                avgTime += (time-avgTime)/numDatos;
+                double avgPercentage = Double.parseDouble(parts[2]);
+                avgPercentage += Math.floor((diffSizePercentage-avgPercentage)/numDatos);
 
-        if (estadistica.exists()) {
-            BufferedReader br = new BufferedReader(new FileReader(estadistica));
-            line = br.readLine();
-            String[] parts = line.split(" ");
-            numDatos += Integer.parseInt(parts[0]);
-            long avgTime = Long.parseLong(parts[1]);
-            avgTime += (time-avgTime)/numDatos;
-            double avgPercentage = Double.parseDouble(parts[2]);
-            avgPercentage += Math.floor((diffSizePercentage-avgPercentage)/numDatos);
-
-            newContent.append(numDatos).append(" ").append(avgTime).append(" ").append(avgPercentage).append("\n");
-            while((line = br.readLine()) != null) {
-                newContent.append(line).append("\n");
+                newContent.append(numDatos).append(" ").append(avgTime).append(" ").append(avgPercentage).append("\n");
+                while((line = br.readLine()) != null) {
+                    newContent.append(line).append("\n");
+                }
+                br.close();
+                newContent.append(time).append(" ").append(oldSize).append(" ").append(newSize).append(" ").append(diffSizePercentage).append("\n");
+            } else {
+                estadistica.createNewFile();
+                newContent.append(numDatos).append(" ").append(time).append(" ").append(diffSizePercentage).append("\n");
+                newContent.append(time).append(" ").append(oldSize).append(" ").append(newSize).append(" ").append(diffSizePercentage).append("\n");
             }
-            br.close();
-            newContent.append(time).append(" ").append(oldSize).append(" ").append(newSize).append(" ").append(diffSizePercentage).append("\n");
-        } else {
-            estadistica.createNewFile();
-            newContent.append(numDatos).append(" ").append(time).append(" ").append(diffSizePercentage).append("\n");
-            newContent.append(time).append(" ").append(oldSize).append(" ").append(newSize).append(" ").append(diffSizePercentage).append("\n");
-        }
 
-        BufferedWriter bw = new BufferedWriter(new FileWriter(estadistica));
-        bw.write(newContent.toString());
-        bw.close();
+            BufferedWriter bw = new BufferedWriter(new FileWriter(estadistica));
+            bw.write(newContent.toString());
+            bw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static int getNumeroElementos (Algoritmo algoritmo, boolean esCompresion) throws IOException {
