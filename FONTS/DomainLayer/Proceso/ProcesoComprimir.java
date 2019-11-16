@@ -20,7 +20,7 @@ public class ProcesoComprimir extends ProcesoFichero {
 
 
     /**
-     * Método abstracto que define la ejeccón del proceso de compresión.
+     * Método que ejecuta el proceso de compresión y genera la instancia para estadística.
      * @throws Exception El algoritmo no se ha ejecutado correctamente y no ha podido terminar.
      */
     @Override
@@ -38,7 +38,7 @@ public class ProcesoComprimir extends ProcesoFichero {
     }
 
     /**
-     * Indica si el proceso está creado para comprimir o no.
+     * Indica si el proceso está creado para comprimir o no el input.
      * @return True.
      */
     @Override
