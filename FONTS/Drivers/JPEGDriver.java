@@ -8,6 +8,16 @@ import java.io.*;
 import java.util.Scanner;
 
 public class JPEGDriver {
+    private static long getDiffSize(boolean esCompresion, long oldSize, long newSize) {
+        if(esCompresion) return oldSize - newSize;
+        else return newSize - oldSize;
+    }
+
+    private static double getDiffSizePercentage(boolean esCompresion, long oldSize, long newSize) {
+        if(esCompresion) return Math.floor((newSize /(double) oldSize)*100);
+        else return Math.floor((oldSize /(double) newSize)*100);
+    }
+
     public static void main(String[] args) {
         System.out.print("Bienvenido al driver para el algoritmo de JPEG\n\n");
         boolean b = true;
@@ -42,9 +52,13 @@ public class JPEGDriver {
                             FileOutputStream out = new FileOutputStream(fileOut);
                             BufferedOutputStream salida = new BufferedOutputStream(out);
                             salida.write(oa.output);
+                            long oldSize = data.length, newSize = oa.output.length;
                             double timeSeconds = (double)oa.tiempo / 1000000000;
                             System.out.println("El archivo " + s + " se ha comprimido correctamente!\n" +
-                                    "Ha tardado "+timeSeconds+" segundos y se ha guardado en " + newpath);
+                                    "Ha tardado "+timeSeconds+"s y se ha guardado en " + newpath +".\n"+
+                                    "El cambio de tamaño pasa de " + oldSize + "B a " + newSize + "B con diferencia de " +
+                                    getDiffSize(true, oldSize, newSize) + "B / " +
+                                    getDiffSizePercentage(true, oldSize, newSize) + "%");
                         } else System.out.println("El formato del fichero debe de ser .ppm!");
                         break;
                     case "descomprimir":
@@ -69,9 +83,13 @@ public class JPEGDriver {
                             FileOutputStream out = new FileOutputStream(fileOut);
                             BufferedOutputStream salida = new BufferedOutputStream(out);
                             salida.write(oa.output);
+                            long oldSize = data.length, newSize = oa.output.length;
                             double timeSeconds = (double)oa.tiempo / 1000000000;
-                            System.out.println("El archivo se ha descomprimido correctamente!\n" +
-                                    "Ha tardado "+timeSeconds+" segundos y se ha guardado en " + newpath);
+                            System.out.println("El archivo " + s + " se ha comprimido correctamente!\n" +
+                                    "Ha tardado "+timeSeconds+"s y se ha guardado en " + newpath +".\n"+
+                                    "El cambio de tamaño pasa de " + oldSize + "B a " + newSize + "B con diferencia de " +
+                                    getDiffSize(false, oldSize, newSize) + "B / " +
+                                    getDiffSizePercentage(false, oldSize, newSize) + "%");
                         } else System.out.println("El formato del fichero debe de ser .imgc!");
                         break;
                     case "salir":
