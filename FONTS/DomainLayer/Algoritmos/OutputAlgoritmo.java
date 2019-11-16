@@ -12,7 +12,7 @@ public class OutputAlgoritmo {
      */
     public long tiempo;
     /**
-     * Byte array conteniente de la información comprimida o descomprimida tras haber sido sometida a la ejecución del proceso
+     * Byte array continente de la información comprimida o descomprimida tras haber sido sometida a la ejecución del proceso
      */
     public byte[] output;
 
