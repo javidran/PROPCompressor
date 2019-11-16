@@ -1,29 +1,32 @@
-// Creado por Jan Escorza Fuertes
 package DomainLayer.Proceso;
 
 /**
  * DatosProceso es una clase que contiene los datos relevantes para la generación de estadísticas de un proceso fichero
  * <p>
- *     Esta clase permite generar estadísticas a partir de los datos que almanecena, tanto a nivel de proceso individual como al poder ser usado por el generador de estadísticas globales
+ *     Esta clase permite generar estadísticas a partir de los datos que almacena, tanto a nivel de proceso individual como al poder ser usado por el generador de estadísticas globales
  * </p>
  */
 public class DatosProceso {
     /**
-     * Tiempo de ejecución del proceso de compresión o descompresión de un fichero
+     * Tiempo de ejecución del proceso de compresión o descompresión de un fichero.
      */
     private long tiempo;
     /**
-     * Tamaño del fichero tratado antes del proceso de compresión o descompresión
+     * Tamaño del fichero tratado antes del proceso de compresión o descompresión.
      */
     private long oldSize;
     /**
-     * Tamaño del fichero tratado tras la ejecución del proceso de compresión o descompresión
+     * Tamaño del fichero tratado tras la ejecución del proceso de compresión o descompresión.
      */
     private long newSize;
     /**
-     * Indicación para saber si es un proceso de compresión o descompresión
+     * Indicación para saber si es un proceso de compresión o descompresión.
      */
-    boolean esCompresion;
+    private boolean esCompresion;
+    /**
+     * Indicación para saber si el proceso ha resultado satisfactorio o no según los datos del proceso.
+     */
+    private boolean satisfactorio;
 
     /**
      * Constructora de la clase, la cual crea una instancia de DatosProceso con un tiempo, oldSize, newSize y esCompresion asignados
@@ -38,15 +41,7 @@ public class DatosProceso {
         this.oldSize = oldSize;
         this.newSize = newSize;
         this.esCompresion = esCompresion;
-        System.out.println("El proceso ha tardado " + time/1000000000.0 + "s. El cambio de tamaño pasa de " + oldSize + "B a " + newSize + "B con diferencia de " + getDiffSize() + "B / " + getDiffSizePercentage() + "%");
-        if(getDiffSize() < 0) {
-            System.out.println("El proceso de " + (esCompresion?"compresión":"descompresión") + " no ha resultado satisfactorio ya que el archivo "+ (esCompresion?"comprimido":"descomprimido") +" ocupa " + (esCompresion?"más":"menos") + " que el archivo "+ (esCompresion?"original":"comprimido")+". Se guardará igualmente.");
-            throw new Exception("El proceso no ha sido satisfactorio");
-        }
-        /*if(getDiffSize() < 0 && esCompresion) {
-            System.out.println("El proceso de compresión no ha resultado satisfactorio ya que el resultado de la compresión ocupa más que el archivo original. Se guardará igualmente.");
-            throw new Exception("El proceso no ha sido satisfactorio");
-        }*/
+        satisfactorio = getDiffSize() > 0;
     }
 
     /**
@@ -71,6 +66,11 @@ public class DatosProceso {
      * @return El tamaño que tiene el archivo una vez se ha realizado el proceso
      */
     public long getTiempo() { return tiempo; }
+
+    /**
+     * Obtiene el nuevo tamaño del fichero sobre el que trabaja el proceso
+     * @return El tamaño que tenía el archivo después de que se realizara el proceso
+     */
     public long getNewSize() { return newSize; }
 
     /**
@@ -78,4 +78,10 @@ public class DatosProceso {
      * @return El tamaño que tenía el archivo antes de que se realizara el proceso
      */
     public long getOldSize() { return oldSize; }
+
+    /**
+     * Obtiene una indicación de si el proceso ha resultado satisfactorio o no.
+     * @return Si el proceso ha resultado satisfactorio o no.
+     */
+    public boolean isSatisfactorio() { return satisfactorio; }
 }

@@ -1,4 +1,3 @@
-// Creado por Joan Gamez Rodriguez
 package Drivers;
 
 import Controllers.CtrlEstadistica;
@@ -15,7 +14,7 @@ public class MainDriver {
         while (b) {
             try {
                 Algoritmo tipoCompresor;
-                System.out.print("Introduzca uno de los siguientes comandos disponibles:\n\n1. comprimir\n2. descomprimir\n3. comprimirYdescomprimir\n4. estadisticas\n5. salir\n");
+                System.out.print("Introduzca uno de los siguientes comandos disponibles:\n\n1. comprimir\n2. descomprimir\n3. comprimirYdescomprimir\n4. estadisticas\n5. cambiarAlgoritmoTextoPredeterminado\n6. salir\n");
                 Scanner scanner = new Scanner(System.in);
                 String comando = scanner.nextLine();
                 String s;
@@ -23,7 +22,7 @@ public class MainDriver {
                     case "comprimir":
                     case "1":
                         if (args.length == 0) {
-                            System.out.println("Escriba el nombre del fichero a comprimir (.txt o .ppm!)");
+                            System.out.println("Escriba el path relativo del fichero a comprimir (.txt o .ppm!)");
                             s = System.getProperty("user.dir");
                             s += s.contains("/")?"/":"\\";
                             s += scanner.nextLine();
@@ -61,7 +60,7 @@ public class MainDriver {
                     case "descomprimir":
                     case "2":
                         if (args.length == 0) {
-                            System.out.println("Escriba el nombre del fichero a descomprimir (.lzss, .lz78, lzw o .imgc!)");
+                            System.out.println("Escriba el path relativo del fichero a descomprimir (.lzss, .lz78, lzw o .imgc!)");
                             s = System.getProperty("user.dir");
                             s += s.contains("/")?"/":"\\";
                             s += scanner.nextLine();
@@ -72,10 +71,10 @@ public class MainDriver {
                             System.out.println("El archivo se ha descomprimido correctamente!\n");
                         } else System.out.println("El formato del fichero debe de ser .lz78, .lzss, .lzw o .imgc!");
                         break;
-                    case "compdesc":
+                    case "comprimirYdescomprimir":
                     case "3":
                         if (args.length == 0) {
-                            System.out.println("Escriba el nombre del fichero a comprimir (.txt o .ppm!)");
+                            System.out.println("Escriba el path relativo del fichero a comprimir (.txt o .ppm!)");
                             s = System.getProperty("user.dir");
                             s += s.contains("/")?"/":"\\";
                             s += scanner.nextLine();
@@ -133,8 +132,30 @@ public class MainDriver {
                         CtrlEstadistica ctrlEstadistica = CtrlEstadistica.getInstance();
                         System.out.print(ctrlEstadistica.estadisticas(tipoCompresor));
                         break;
-                    case "salir":
+                    case "cambiarAlgoritmoTextoPredeterminado":
                     case "5":
+                        System.out.println("El algoritmo de compresión de texto predeterminado es " + CtrlProcesos.getAlgoritmoDeTextoPredeterminado() + ".");
+                        System.out.print("Escriba el algoritmo de compresión que quiera usar de manera predeterminada, de entre los siguientes:\nlzss\nlz78\nlzw\n");
+                        String algoritmoCompresion = scanner.nextLine();
+                        Algoritmo tipoAlgoritmo;
+                        switch (algoritmoCompresion) {
+                            case "lzss":
+                                tipoAlgoritmo = Algoritmo.LZSS;
+                                break;
+                            case "lzw":
+                                tipoAlgoritmo = Algoritmo.LZW;
+                                break;
+                            case "lz78":
+                                tipoAlgoritmo = Algoritmo.LZ78;
+                                break;
+                            default:
+                                throw new EnumConstantNotPresentException(Algoritmo.class, "El tipo de compresor " + algoritmoCompresion + " no existe o no está disponible para tratar un archivo .txt\n");
+                        }
+                        CtrlProcesos.setAlgoritmoDeTextoPredeterminado(tipoAlgoritmo);
+                        System.out.println("Algoritmo de texto predeterminado cambiado a " + tipoAlgoritmo + ".");
+                        break;
+                    case "salir":
+                    case "6":
                         b = false;
                         break;
                     default:

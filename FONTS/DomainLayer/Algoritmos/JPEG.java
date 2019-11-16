@@ -1,4 +1,3 @@
-// Creado por Joan Gamez Rodriguez
 package DomainLayer.Algoritmos;
 
 import Exceptions.FormatoErroneoException;
@@ -99,10 +98,11 @@ public class JPEG implements CompresorDecompresor {
     public OutputAlgoritmo comprimir(byte[] datosInput) throws FormatoErroneoException {
         long startTime = System.nanoTime(); //starting time
         List<Byte> result = new ArrayList<>(); //data will be written here before passing it into output byte array
+        if(datosInput.length < 14) throw new FormatoErroneoException("El formato de .ppm no es correcto!");
         int pos = 0;
         String buff = "";
         //start of header reading
-        while ((char)datosInput[pos] != '\n') {
+        while (pos < datosInput.length - 1 && (char)datosInput[pos] != '\n') {
             buff += (char)datosInput[pos];
             result.add(datosInput[pos]);
             ++pos;
@@ -111,14 +111,14 @@ public class JPEG implements CompresorDecompresor {
         ++pos;
         String magicNumber = buff; //read .ppm magicNumber, which is P6 (pixels are codified in binary)
         if(!magicNumber.equals("P6")) throw new FormatoErroneoException("El formato de .ppm no es correcto!");
-        while ((char)datosInput[pos] == '#') {
+        while (pos < datosInput.length - 1 && (char)datosInput[pos] == '#') {
             while ((char)datosInput[pos] != '\n') { //avoiding comments between parameters...
                 ++pos;
             }
             ++pos;
         }
         buff = "";
-        while ((char)datosInput[pos] != '\n') {
+        while (pos < datosInput.length - 1 && (char)datosInput[pos] != '\n') {
             buff += (char)datosInput[pos];
             result.add(datosInput[pos]);
             ++pos;
@@ -127,14 +127,14 @@ public class JPEG implements CompresorDecompresor {
         ++pos;
         String[] widthHeight = buff.split(" ");  //read and split dimensions into two (one for each value)
         if (widthHeight.length > 2 || Integer.parseInt(widthHeight[0]) < 1 || Integer.parseInt(widthHeight[1]) < 1) throw new FormatoErroneoException("El formato de .ppm no es correcto!");
-        while ((char)datosInput[pos] == '#') {
+        while (pos < datosInput.length - 1 && (char)datosInput[pos] == '#') {
             while ((char)datosInput[pos] != '\n') { //avoiding comments between parameters...
                 ++pos;
             }
             ++pos;
         }
         buff = "";
-        while ((char)datosInput[pos] != '\n') {
+        while (pos < datosInput.length - 1 && (char)datosInput[pos] != '\n') {
             buff += (char)datosInput[pos];
             result.add(datosInput[pos]);
             ++pos;
@@ -148,6 +148,7 @@ public class JPEG implements CompresorDecompresor {
         //start of pixelmap reading
         int width = Integer.parseInt(widthHeight[0]);  //string to int of image width
         int height = Integer.parseInt(widthHeight[1]); //string to int of image height
+        if (width * height > (datosInput.length - pos) / 3 || width * height < (datosInput.length - pos) / 3) throw new FormatoErroneoException("El formato de .ppm no es correcto!");
         int paddedWidth, paddedHeight;
         if (width % 8 != 0) paddedWidth = width + (8 - width % 8);
         else paddedWidth = width;

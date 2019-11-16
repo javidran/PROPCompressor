@@ -1,4 +1,3 @@
-// Creado por Joan Gamez Rodriguez
 package DomainLayer.Algoritmos;
 
 /**
@@ -22,7 +21,7 @@ public class OutputAlgoritmo {
      * @param tiempo El tiempo de ejecución de la compresión o descompresión de un fichero
      * @param output El byte array conteniente de la información comprimida o descomprimida tras haber sido sometida a la ejecución del proceso
      */
-    public OutputAlgoritmo(long tiempo, byte[] output) {
+    protected OutputAlgoritmo(long tiempo, byte[] output) {
         this.tiempo = tiempo;
         this.output = output;
     }

@@ -1,4 +1,3 @@
-// Creado por Javier Cabrera Rodriguez
 package DomainLayer.Algoritmos;
 
 import Exceptions.FormatoErroneoException;
