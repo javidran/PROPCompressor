@@ -3,12 +3,26 @@ package DomainLayer.Proceso;
 import DomainLayer.Algoritmos.Algoritmo;
 import DomainLayer.Algoritmos.OutputAlgoritmo;
 
+/**
+ *  Clase que recoge todos los datos necesarios para poder comprimir con cualquier tipo de algoritmo.
+ *  También se encarga de recoger todos los datos posteriores a la ejecución del proceso como medidas para estadística.
+ */
 public class ProcesoComprimir extends ProcesoFichero {
 
+    /**
+     * Constructora de proceso de compresión de un fichero.
+     * @param input Secuencia de bytes a procesar.
+     * @param algoritmo Algoritmo de compresión a utilizar para procesar el {@link #input}.
+     */
     public ProcesoComprimir(byte[] input, Algoritmo algoritmo) throws Exception {
         super(input, algoritmo);
     }
 
+
+    /**
+     * Método abstracto que define la ejeccón del proceso de compresión.
+     * @throws Exception El algoritmo no se ha ejecutado correctamente y no ha podido terminar.
+     */
     @Override
     public void ejecutarProceso() throws Exception {
         if(!procesado) {
@@ -23,6 +37,10 @@ public class ProcesoComprimir extends ProcesoFichero {
         } else throw new Exception("El fichero ya había sido comprimido!");
     }
 
+    /**
+     * Indica si el proceso está creado para comprimir o no.
+     * @return True.
+     */
     @Override
     public boolean esComprimir() {
         return true;
