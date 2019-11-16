@@ -1,10 +1,7 @@
 // Creado por Jan Escorza Fuertes
 package Drivers;
 
-import Controllers.CtrlProcesos;
-import DomainLayer.Algoritmos.Algoritmo;
 import DomainLayer.Algoritmos.LZSS;
-import DomainLayer.Algoritmos.LZW;
 import DomainLayer.Algoritmos.OutputAlgoritmo;
 
 import java.io.*;
