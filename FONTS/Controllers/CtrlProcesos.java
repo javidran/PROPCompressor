@@ -38,9 +38,9 @@ public class CtrlProcesos {
     }
 
     /**
-     * Crea y ejecuta un proceso de compresión para un fichero, el cual se comprimirá con un algoritmo, ambos pasados por parámetro
+     * Crea y ejecuta un proceso de compresión para un fichero, el cual se comprimirá con un algoritmo, ambos pasados por parámetro.
      * <p>
-     *     El path sigue del archivo debe seguir el formato general de cualquier tipo de path de archivo, y puede ser absoluto o relativo
+     *     El path del archivo debe seguir el formato general de cualquier tipo de path de archivo, y debe ser relativo.
      * </p>
      * <p>
      *     El algoritmo es capaz de comprimir el formato del fichero
@@ -55,15 +55,18 @@ public class CtrlProcesos {
         comp.ejecutarProceso();
         ctrlDatos.guardaArchivo(comp.getOutput(), path, tipoAlgoritmo, true, true);
         DatosProceso dp = comp.getDatosProceso();
-        if(dp != null) {
+        if(dp.isSatisfactorio()) {
+            System.out.println("El proceso ha tardado " + dp.getTiempo()/1000000000.0 + "s. El cambio de tamaño pasa de " + dp.getOldSize() + "B a " + dp.getNewSize() + "B con diferencia de " + dp.getDiffSize() + "B / " + dp.getDiffSizePercentage() + "%");
             ctrlDatos.actualizaEstadistica(dp, tipoAlgoritmo, true);
+        } else {
+            System.out.println("El proceso de compresión no ha resultado satisfactorio ya que el archivo comprimido ocupa igual o más que el archivo original. Se guardará igualmente.");
         }
     }
 
     /**
-     * Crea y ejecuta un proceso de descompresión para un fichero pasado por parámetro, el cual se descomprimirá con su algoritmo, seleccionado automáticamente en función de su extensión
+     * Crea y ejecuta un proceso de descompresión para un fichero pasado por parámetro, el cual se descomprimirá con su algoritmo, seleccionado automáticamente en función de su extensión.
      * <p>
-     *     El path sigue del archivo debe seguir el formato general de cualquier tipo de path de archivo, y puede ser absoluto o relativo
+     *     El path sigue del archivo debe seguir el formato general de cualquier tipo de path de archivo, y debe ser relativo.
      * </p>
      * @param path El path donde se encuentra el fichero a descomprimir
      * @throws Exception El proceso de descompresión no se ha podido llevar a cabo
@@ -75,15 +78,18 @@ public class CtrlProcesos {
         desc.ejecutarProceso();
         ctrlDatos.guardaArchivo(desc.getOutput(), path, algoritmos[0], false, true);
         DatosProceso dp = desc.getDatosProceso();
-        if(dp != null) {
+        if(dp.isSatisfactorio()) {
+            System.out.println("El proceso ha tardado " + dp.getTiempo()/1000000000.0 + "s. El cambio de tamaño pasa de " + dp.getOldSize() + "B a " + dp.getNewSize() + "B con diferencia de " + dp.getDiffSize() + "B / " + dp.getDiffSizePercentage() + "%");
             ctrlDatos.actualizaEstadistica(dp, algoritmos[0], false);
+        } else {
+            System.out.println("El proceso de descompresión no ha resultado satisfactorio ya que el archivo descomprimido ocupa igual o menos que el archivo original. Se guardará igualmente.");
         }
     }
 
     /**
-     * Crea y ejecuta un proceso de compresión y descompresión para un fichero, el cual se comprimirá con un algoritmo, ambos pasados por parámetro, y el cual se descomprimirá con su algoritmo, seleccionado automáticamente en función de su extensión
+     * Crea y ejecuta un proceso de compresión y descompresión para un fichero, el cual se comprimirá con un algoritmo, ambos pasados por parámetro, y el cual se descomprimirá con su algoritmo, seleccionado automáticamente en función de su extensión.
      * <p>
-     *     El path sigue del archivo debe seguir el formato general de cualquier tipo de path de archivo, y puede ser absoluto o relativo
+     *     El path sigue del archivo debe seguir el formato general de cualquier tipo de path de archivo, y debe ser relativo.
      * </p>
      * <p>
      *     El algoritmo es capaz de comprimir el formato del fichero
@@ -97,14 +103,17 @@ public class CtrlProcesos {
         ProcesoFichero comp = new ProcesoComprimir(ctrlDatos.leerArchivo(path), tipoAlgoritmo);
         comp.ejecutarProceso();
         DatosProceso dp = comp.getDatosProceso();
-        if(dp != null) {
+        if(dp.isSatisfactorio()) {
+            System.out.println("El proceso ha tardado " + dp.getTiempo()/1000000000.0 + "s. El cambio de tamaño pasa de " + dp.getOldSize() + "B a " + dp.getNewSize() + "B con diferencia de " + dp.getDiffSize() + "B / " + dp.getDiffSizePercentage() + "%");
             ctrlDatos.actualizaEstadistica(dp, tipoAlgoritmo, true);
+        } else {
+            System.out.println("El proceso de compresión no ha resultado satisfactorio ya que el archivo comprimido ocupa igual o más que el archivo original. Se guardará igualmente.");
         }
         ProcesoFichero desc = new ProcesoDescomprimir(comp.getOutput(), tipoAlgoritmo);
         desc.ejecutarProceso();
         ctrlDatos.guardaArchivo(desc.getOutput(), path, tipoAlgoritmo, false, true);
         dp = desc.getDatosProceso();
-        if(dp != null) {
+        if(dp.isSatisfactorio()) {
             ctrlDatos.actualizaEstadistica(dp, tipoAlgoritmo, false);
         }
     }
@@ -137,9 +146,9 @@ public class CtrlProcesos {
     }
 
     /**
-     * Comprueba qué algoritmos se pueden usar para comprimir o descomprimir un fichero, el cual se pasa por parámetro
+     * Comprueba qué algoritmos se pueden usar para comprimir o descomprimir un fichero, el cual se pasa por parámetro.
      * <p>
-     *     El path del archivo debe seguir el formato general de cualquier tipo de path de archivo y puede ser relativo o absoluto
+     *     El path del archivo debe seguir el formato general de cualquier tipo de path de archivo y puede ser relativo o absoluto.
      * </p>
      * @param path El path del archivo a comprobar
      * @return Un vector de algoritmos posibles a ejecutar para comprimir o descomprimir el fichero
@@ -167,9 +176,9 @@ public class CtrlProcesos {
     }
 
     /**
-     * Comprueba si el archivo es capaz de ser comprimido según la extensión del mismo
+     * Comprueba si el archivo es capaz de ser comprimido según la extensión del mismo.
      * <p>
-     *     El path del archivo debe seguir el formato general de cualquier tipo de path de archivo y puede ser relativo o absoluto
+     *     El path del archivo debe seguir el formato general de cualquier tipo de path de archivo y puede ser relativo o absoluto.
      * </p>
      * @param path El path del archivo que se quiere comprobar
      * @return Un booleano que indica si el archivo es comprimible
@@ -194,9 +203,9 @@ public class CtrlProcesos {
     }
 
     /**
-     * Comprueba si el archivo es capaz de ser descomprimido según la extensión del mismo
+     * Comprueba si el archivo es capaz de ser descomprimido según la extensión del mismo.
      * <p>
-     *     El path del archivo debe seguir el formato general de cualquier tipo de path de archivo y puede ser relativo o absoluto
+     *     El path del archivo debe seguir el formato general de cualquier tipo de path de archivo y puede ser relativo o absoluto.
      * </p>
      * @param path El path del archivo que se quiere comprobar
      * @return Un booleano que indica si el archivo es descomprimible
