@@ -26,12 +26,12 @@ public class LZW implements CompresorDecompresor {
      * <p>
      *     El array de bytes debería idealmente ser de una longitud significativa.
      * </p>
-     * @param datosInput El array de bytes que se ha obtenido del contenido del fichero.
+     * @param entrada El array de bytes que se ha obtenido del contenido del fichero.
      * @return Una instancia de la clase OutputAlgoritmo que contiene el tiempo en el que se ha realizado la compresión
      * y el byte [] de la compresión del byte [] de entrada.
      */
     @Override
-    public OutputAlgoritmo comprimir(byte[] datosInput) {
+    public OutputAlgoritmo comprimir(byte[] entrada) {
         long startTime = System.nanoTime();
         List<Byte> salida = new ArrayList<>();
         MAX_MAP_SIZE = Math.pow(2, 31);
@@ -45,7 +45,7 @@ public class LZW implements CompresorDecompresor {
 
         int num = 256;
         List<Byte> w = new ArrayList<Byte>();
-        w.add(datosInput[0]);
+        w.add(entrada[0]);
         byte[] wBBArray = new byte[w.size()];
         for(int it = 0; it < wBBArray.length; ++it) {
             wBBArray[it] = w.get(it);
@@ -54,8 +54,8 @@ public class LZW implements CompresorDecompresor {
         ByteBuffer wBB = ByteBuffer.wrap(wBBArray);
         ByteBuffer wkBB;
 
-        for ( int x = 1; x < datosInput.length; x++) {
-            byte k = datosInput[x];
+        for ( int x = 1; x < entrada.length; x++) {
+            byte k = entrada[x];
             w.add(k);
 
             byte[] wkBBArray = new byte[w.size()];
@@ -99,12 +99,12 @@ public class LZW implements CompresorDecompresor {
      * <p>
      *     El array de bytes debe estar comprimido con el algoritmo de compresión LZW.
      * </p>
-     * @param datosInput El array de bytes que se ha obtenido del contenido del fichero .lzw o de la compresión directamente.
+     * @param entrada El array de bytes que se ha obtenido del contenido del fichero .lzw o de la compresión directamente.
      * @return Una instancia de la clase OutputAlgoritmo que contiene el tiempo en el que se ha realizado la descompresión
      * y el byte [] de la compresión del byte [] de entrada.
      */
     @Override
-    public OutputAlgoritmo descomprimir(byte[] datosInput) {
+    public OutputAlgoritmo descomprimir(byte[] entrada) {
         long startTime = System.nanoTime();
 
         Map<Integer, ByteBuffer> mapa = new HashMap<Integer, ByteBuffer>();
@@ -124,8 +124,8 @@ public class LZW implements CompresorDecompresor {
         Integer ni;
         int i = 0;
         boolean first = true;
-        for (int x=0; i < datosInput.length; x++) {
-            c[x] = datosInput[i++];
+        for (int x=0; i < entrada.length; x++) {
+            c[x] = entrada[i++];
             if (x == 3) {
                 ni = ((c[0] & 0xFF) << 24) | ((c[1] & 0xFF) << 16) | ((c[2] & 0xFF) << 8 ) | ((c[3] & 0xFF));
                 if (first) {
