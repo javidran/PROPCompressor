@@ -22,7 +22,7 @@ public class CtrlProcesosDriver {
                     case "comprimir":
                     case "1":
                         if (args.length == 0) {
-                            System.out.println("Escriba el nombre del fichero a comprimir (.txt o .ppm!)");
+                            System.out.println("Escriba el path relativo del fichero a comprimir (.txt o .ppm!)");
                             s = System.getProperty("user.dir");
                             s += s.contains("/")?"/":"\\";
                             s += scanner.nextLine();
@@ -60,7 +60,7 @@ public class CtrlProcesosDriver {
                     case "descomprimir":
                     case "2":
                         if (args.length == 0) {
-                            System.out.println("Escriba el nombre del fichero a descomprimir (.lzss, .lz78, lzw o .imgc!)");
+                            System.out.println("Escriba el path relativo del fichero a descomprimir (.lzss, .lz78, lzw o .imgc!)");
                             s = System.getProperty("user.dir");
                             s += s.contains("/")?"/":"\\";
                             s += scanner.nextLine();
@@ -71,10 +71,10 @@ public class CtrlProcesosDriver {
                             System.out.println("El archivo se ha descomprimido correctamente!\n");
                         } else System.out.println("El formato del fichero debe de ser .lz78, .lzss, .lzw o .imgc!");
                         break;
-                    case "compdesc":
+                    case "comprimirYdescomprimir":
                     case "3":
                         if (args.length == 0) {
-                            System.out.println("Escriba el nombre del fichero a comprimir (.txt o .ppm!)");
+                            System.out.println("Escriba el path relativo del fichero a comprimir (.txt o .ppm!)");
                             s = System.getProperty("user.dir");
                             s += s.contains("/")?"/":"\\";
                             s += scanner.nextLine();
