@@ -1,4 +1,3 @@
-// Creado por Javier Cabrera Rodriguez
 package Drivers;
 
 import DomainLayer.Algoritmos.LZ78;

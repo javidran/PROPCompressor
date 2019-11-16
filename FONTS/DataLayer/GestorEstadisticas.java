@@ -1,4 +1,3 @@
-// Creado por Sheida Vanesa Alfaro Taco
 package DataLayer;
 
 import DomainLayer.Algoritmos.Algoritmo;

@@ -1,4 +1,3 @@
-// Creado por Javier Cabrera Rodríguez
 package Drivers;
 
 import Controllers.CtrlEstadistica;

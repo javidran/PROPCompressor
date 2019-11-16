@@ -1,4 +1,4 @@
-package Drivers; //Creado por Javier Cabrera Rodríguez
+package Drivers;
 
 import DomainLayer.Algoritmos.Algoritmo;
 import DomainLayer.Algoritmos.JPEG;

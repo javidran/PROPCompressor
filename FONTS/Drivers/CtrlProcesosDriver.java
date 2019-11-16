@@ -1,4 +1,3 @@
-// Creado por Joan Gamez Rodriguez
 package Drivers;
 
 import Controllers.CtrlEstadistica;

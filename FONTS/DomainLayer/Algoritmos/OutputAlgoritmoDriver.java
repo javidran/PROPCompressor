@@ -1,4 +1,3 @@
-//Creado por Joan Gamez Rodriguez
 package DomainLayer.Algoritmos;
 
 import DomainLayer.Algoritmos.OutputAlgoritmo;

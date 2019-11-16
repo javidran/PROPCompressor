@@ -1,4 +1,3 @@
-// Creado por Jan Escorza Fuertes
 package DataLayer;
 
 import Exceptions.ArchivoYaExisteException;

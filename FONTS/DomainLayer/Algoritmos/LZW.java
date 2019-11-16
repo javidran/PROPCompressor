@@ -1,4 +1,3 @@
-// Creado por Sheida Vanesa Alfaro Taco
 package DomainLayer.Algoritmos;
 
 import java.nio.ByteBuffer;
