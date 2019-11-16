@@ -53,7 +53,8 @@ public class CtrlProcesos {
         CtrlDatos ctrlDatos = CtrlDatos.getInstance();
         if(tipoAlgoritmo == Algoritmo.PREDETERMINADO) {
             Algoritmo[] algoritmos = algoritmosPosibles(path);
-            tipoAlgoritmo = algoritmos[0];
+            if(algoritmos[0] == Algoritmo.JPEG) tipoAlgoritmo = Algoritmo.JPEG;
+            else tipoAlgoritmo = algoritmoDeTextoPredeterminado;
         }
         ProcesoFichero comp = new ProcesoComprimir(ctrlDatos.leerArchivo(path), tipoAlgoritmo);
         comp.ejecutarProceso();
@@ -106,7 +107,8 @@ public class CtrlProcesos {
         CtrlDatos ctrlDatos = CtrlDatos.getInstance();
         if(tipoAlgoritmo == Algoritmo.PREDETERMINADO) {
             Algoritmo[] algoritmos = algoritmosPosibles(path);
-            tipoAlgoritmo = algoritmos[0];
+            if(algoritmos[0] == Algoritmo.JPEG) tipoAlgoritmo = Algoritmo.JPEG;
+            else tipoAlgoritmo = algoritmoDeTextoPredeterminado;
         }
         ProcesoFichero comp = new ProcesoComprimir(ctrlDatos.leerArchivo(path), tipoAlgoritmo);
         comp.ejecutarProceso();
@@ -133,7 +135,7 @@ public class CtrlProcesos {
      * </p>
      * @param algoritmoDeTextoPredeterminado El algoritmo de texto que se usará por defecto para comprimir ficheros de texto
      */
-    public void setAlgoritmoDeTextoPredeterminado(Algoritmo algoritmoDeTextoPredeterminado) {
+    public static void setAlgoritmoDeTextoPredeterminado(Algoritmo algoritmoDeTextoPredeterminado) {
         CtrlProcesos.algoritmoDeTextoPredeterminado = algoritmoDeTextoPredeterminado;
     }
 
@@ -141,7 +143,7 @@ public class CtrlProcesos {
      * Obtiene el algoritmo de texto predeterminado del Singleton de CtrlProcesos
      * @return El algoritmoDeTextoPredeterminado que se usa por defecto para comprimir ficheros de texto
      */
-    public Algoritmo getAlgoritmoDeTextoPredeterminado() {
+    public static Algoritmo getAlgoritmoDeTextoPredeterminado() {
         return algoritmoDeTextoPredeterminado;
     }
 
