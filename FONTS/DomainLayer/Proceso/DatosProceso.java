@@ -57,8 +57,7 @@ public class DatosProceso {
      */
     public double getDiffSizePercentage() {
         if(newSize==oldSize) return 100;
-        else if(esCompresion) return Math.floor((newSize /(double) oldSize)*100);
-        else return Math.floor((oldSize /(double) newSize)*100);
+        else return Math.floor((newSize /(double) oldSize)*100);
     }
 
     /**
