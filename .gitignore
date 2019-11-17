@@ -6,7 +6,7 @@ gen
 *.log
 *.ctxt
 .mtj.tmp/
-*.jar
+lib
 *.war
 *.nar
 *.ear
