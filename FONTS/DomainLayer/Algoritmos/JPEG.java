@@ -387,7 +387,7 @@ public class JPEG implements CompresorDecompresor {
     public OutputAlgoritmo descomprimir(byte[] datosInput) throws FormatoErroneoException {
         long startTime = System.nanoTime(); //starting time
         List<Byte> result = new ArrayList<>(); //data will be written here before passing it into output byte array
-        if (datosInput.length < 16) throw new FormatoErroneoException("El formato de .ppm no es correcto!");
+        if (datosInput.length < 16) throw new FormatoErroneoException("El formato de .imgc no es correcto!");
         int pos = 0;
         String buff = "";
         //start of header reading
@@ -399,7 +399,7 @@ public class JPEG implements CompresorDecompresor {
         result.add((byte)'\n');
         ++pos;
         String magicNumber = buff; //read .ppm magicNumber, which is P6 (pixels are codified in binary)
-        if(!magicNumber.equals("P6")) throw new FormatoErroneoException("El formato de .ppm no es correcto!");
+        if(!magicNumber.equals("P6")) throw new FormatoErroneoException("El formato de .imgc no es correcto!");
         buff = "";
         while (pos < datosInput.length - 1 && (char)datosInput[pos] != '\n') {
             buff += (char)datosInput[pos];
@@ -409,7 +409,7 @@ public class JPEG implements CompresorDecompresor {
         result.add((byte)'\n');
         ++pos;
         String[] widthHeight = buff.split(" ");  //read and split dimensions into two (one for each value)
-        if (widthHeight.length > 2 || Integer.parseInt(widthHeight[0]) < 1 || Integer.parseInt(widthHeight[1]) < 1) throw new FormatoErroneoException("El formato de .ppm no es correcto!");
+        if (widthHeight.length > 2 || Integer.parseInt(widthHeight[0]) < 1 || Integer.parseInt(widthHeight[1]) < 1) throw new FormatoErroneoException("El formato de .imgc no es correcto!");
         buff = "";
         while (pos < datosInput.length - 1 && (char)datosInput[pos] != '\n') {
             buff += (char)datosInput[pos];
@@ -419,7 +419,7 @@ public class JPEG implements CompresorDecompresor {
         result.add((byte)'\n');
         ++pos;
         String rgbMVal = buff; //string of rgb maximum value per pixel (8 bits)
-        if (!rgbMVal.equals("255")) throw new FormatoErroneoException("El formato de .ppm no es correcto!");
+        if (!rgbMVal.equals("255")) throw new FormatoErroneoException("El formato de .imgc no es correcto!");
         buff = "";
         while (pos < datosInput.length - 1 && (char)datosInput[pos] != '\n') {
             buff += (char)datosInput[pos];
@@ -427,7 +427,7 @@ public class JPEG implements CompresorDecompresor {
         }
         ++pos;
         String quality = buff;
-        if(quality.length() > 1) throw new FormatoErroneoException("El formato de .ppm no es correcto!");
+        if(quality.length() > 1) throw new FormatoErroneoException("El formato de .imgc no es correcto!");
         //end of header reading
 
         int width = Integer.parseInt(widthHeight[0]);  //string to int
