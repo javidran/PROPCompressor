@@ -13,6 +13,7 @@ lib
 *.zip
 *.tar.gz
 *.rar
+*.jar
 hs_err_pid*
 resources/texts/*.lzss
 resources/texts/*.lzw
