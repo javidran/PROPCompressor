@@ -56,7 +56,8 @@ public class DatosProceso {
      * @return  El porcentaje de tamaño que representad el nuevo archivo respecto al original.
      */
     public double getDiffSizePercentage() {
-        if(esCompresion) return Math.floor((newSize /(double) oldSize)*100);
+        if(newSize==oldSize) return 100;
+        else if(esCompresion) return Math.floor((newSize /(double) oldSize)*100);
         else return Math.floor((oldSize /(double) newSize)*100);
     }
 

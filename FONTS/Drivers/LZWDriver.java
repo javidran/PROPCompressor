@@ -14,6 +14,7 @@ public class LZWDriver {
     }
 
     private static double getDiffSizePercentage(boolean esCompresion, long oldSize, long newSize) {
+        if(newSize==oldSize) return 100;
         if(esCompresion) return Math.floor((newSize /(double) oldSize)*100);
         else return Math.floor((oldSize /(double) newSize)*100);
     }
