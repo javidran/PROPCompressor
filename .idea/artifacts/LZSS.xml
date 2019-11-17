@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="LZSS">
+    <output-path>$PROJECT_DIR$/EXE/LZSS</output-path>
+    <root id="archive" name="LZSSDriver.jar">
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/resources/manifests/LZSS/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="module-output" name="PROPCompressor" />
+    </root>
+  </artifact>
+</component>
