@@ -48,6 +48,13 @@ public class DatosProcesoDriver {
                         System.out.println("Ahora se probará el getOldSize:");
                         long resultado5 = datosProcesoNew.getOldSize();
                         System.out.println("El resulatdo de getOldSize es: " + resultado5);
+
+                        System.out.println("Ahora se probará el isSatisfactorio:");
+                        boolean isSatisfactorio = datosProcesoNew.isSatisfactorio();
+                        String s;
+                        if (isSatisfactorio) s = "satisfactorio";
+                        else s = "no satisfactorio";
+                        System.out.println("El resulatdo de isSatisfactorio es: " + s);
                         break;
                     case "2":
                         bucle = false;
