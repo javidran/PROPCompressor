@@ -105,7 +105,7 @@ public class LZW implements CompresorDecompresor {
      * @param entrada El array de bytes que se ha obtenido del contenido del fichero .lzw o de la compresión directamente.
      * @return Una instancia de la clase OutputAlgoritmo que contiene el tiempo en el que se ha realizado la descompresión
      * y el byte [] de la compresión del byte [] de entrada.
-     * @throws FormatoErroneoException El formato en el que está codificada el texto no es correcto.
+     * @throws FormatoErroneoException El formato en el que está codificado el texto no es correcto.
      */
     @Override
     public OutputAlgoritmo descomprimir(byte[] entrada) throws FormatoErroneoException {

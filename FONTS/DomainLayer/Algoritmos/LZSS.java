@@ -164,7 +164,7 @@ public class LZSS implements CompresorDecompresor {
      * @param data El array de bytes que se ha obtenido del contenido del fichero .lzss o de la compresión directamente
      * @return Una instancia de la clase OutputAlgoritmo que contiene el tiempo en el que se ha realizado la descompresión
      * y también el byte[] con el resultado de la descompresión del byte[] data.
-     * @throws FormatoErroneoException El formato en el que está codificada el texto no es correcto.
+     * @throws FormatoErroneoException El formato en el que está codificado el texto no es correcto.
      */
     @Override
     public OutputAlgoritmo descomprimir(byte[] data) throws FormatoErroneoException {

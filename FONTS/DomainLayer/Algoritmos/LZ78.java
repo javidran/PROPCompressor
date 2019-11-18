@@ -115,7 +115,7 @@ public class LZ78 implements CompresorDecompresor {
      * <p>La secuencia debe haber sido comprimida por el método {@link #comprimir(byte[])} para que el proceso de descompresión sea satisfactorio.</p>
      * @param datosInput Secuencia de bytes a descomprimir.
      * @return Devuelve una instancia de OutputAlgoritmo compuesta del tiempo que ha tardado el método en ejecutarse y la secuencia de bytes descomprimida.
-     * @throws FormatoErroneoException El formato en el que está codificada el texto no es correcto.
+     * @throws FormatoErroneoException El formato en el que está codificado el texto no es correcto.
      */
     @Override
     public OutputAlgoritmo descomprimir(byte[] datosInput) throws FormatoErroneoException {
