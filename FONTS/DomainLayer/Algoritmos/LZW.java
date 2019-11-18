@@ -1,5 +1,7 @@
 package DomainLayer.Algoritmos;
 
+import Exceptions.FormatoErroneoException;
+
 import java.nio.ByteBuffer;
 import java.util.*;
 
@@ -103,73 +105,76 @@ public class LZW implements CompresorDecompresor {
      * @param entrada El array de bytes que se ha obtenido del contenido del fichero .lzw o de la compresión directamente.
      * @return Una instancia de la clase OutputAlgoritmo que contiene el tiempo en el que se ha realizado la descompresión
      * y el byte [] de la compresión del byte [] de entrada.
+     * @throws FormatoErroneoException El formato en el que está codificada el texto no es correcto.
      */
     @Override
-    public OutputAlgoritmo descomprimir(byte[] entrada) {
-        long startTime = System.nanoTime();
+    public OutputAlgoritmo descomprimir(byte[] entrada) throws FormatoErroneoException {
+        try {
+            long startTime = System.nanoTime();
 
-        Map<Integer, ByteBuffer> mapa = new HashMap<Integer, ByteBuffer>();
-        for (int i = 0; i < 256; i++) {
-            byte[] y = new byte[1];
-            y[0] =  (byte) (i & 0xFF); // Del 0 to 127 and -128 to -1
-            mapa.put(i,ByteBuffer.wrap(y));
-        }
-
-        Integer oldC = null, newC;
-        byte caracter = 0;
-        List<Byte> letras = new ArrayList<Byte>();
-        int num = 256;
-        List<Byte> salida = new ArrayList<Byte>();
-
-        byte[] c = new byte[4];
-        Integer ni;
-        int i = 0;
-        boolean first = true;
-        for (int x=0; i < entrada.length; x++) {
-            c[x] = entrada[i++];
-            if (x == 3) {
-                ni = ((c[0] & 0xFF) << 24) | ((c[1] & 0xFF) << 16) | ((c[2] & 0xFF) << 8 ) | ((c[3] & 0xFF));
-                if (first) {
-                    oldC = ni;
-                    caracter = (byte)(mapa.get(oldC).array()[0] & 0xFF);
-                    salida.add(caracter);
-                    first = false;
-                }
-                else {
-                    newC = ni;
-                    if (mapa.get(newC) == null) {
-                        letras.clear();
-                        for(byte byt : mapa.get(oldC).array()) letras.add(byt); //cadena=Traducir(cód_viejo)
-                        letras.add(caracter); //concat
-                    }
-                    else {
-                        letras.clear();
-                        for(byte byt : mapa.get(newC).array()) letras.add(byt);
-                    }
-                    salida.addAll(letras);
-                    if(letras.size()>= 1) {
-                        caracter = (byte)(letras.get(0) &0xFF); //carácter=Primer carácter de cadena
-                    }
-
-                    byte[] wArray = new byte[mapa.get(oldC).array().length + 1];
-                    int it=0;
-                    for(int l = 0; l < mapa.get(oldC).array().length; ++l) {
-                        wArray[it] = mapa.get(oldC).array()[l];
-                        it++;
-                    }
-                    wArray[it] = caracter;
-                    mapa.put(num++, ( ByteBuffer.wrap(wArray)));
-                    oldC = newC;
-                }
-                x=-1;
+            Map<Integer, ByteBuffer> mapa = new HashMap<Integer, ByteBuffer>();
+            for (int i = 0; i < 256; i++) {
+                byte[] y = new byte[1];
+                y[0] = (byte) (i & 0xFF); // Del 0 to 127 and -128 to -1
+                mapa.put(i, ByteBuffer.wrap(y));
             }
+
+            Integer oldC = null, newC;
+            byte caracter = 0;
+            List<Byte> letras = new ArrayList<Byte>();
+            int num = 256;
+            List<Byte> salida = new ArrayList<Byte>();
+
+            byte[] c = new byte[4];
+            Integer ni;
+            int i = 0;
+            boolean first = true;
+            for (int x = 0; i < entrada.length; x++) {
+                c[x] = entrada[i++];
+                if (x == 3) {
+                    ni = ((c[0] & 0xFF) << 24) | ((c[1] & 0xFF) << 16) | ((c[2] & 0xFF) << 8) | ((c[3] & 0xFF));
+                    if (first) {
+                        oldC = ni;
+                        caracter = (byte) (mapa.get(oldC).array()[0] & 0xFF);
+                        salida.add(caracter);
+                        first = false;
+                    } else {
+                        newC = ni;
+                        if (mapa.get(newC) == null) {
+                            letras.clear();
+                            for (byte byt : mapa.get(oldC).array()) letras.add(byt); //cadena=Traducir(cód_viejo)
+                            letras.add(caracter); //concat
+                        } else {
+                            letras.clear();
+                            for (byte byt : mapa.get(newC).array()) letras.add(byt);
+                        }
+                        salida.addAll(letras);
+                        if (letras.size() >= 1) {
+                            caracter = (byte) (letras.get(0) & 0xFF); //carácter=Primer carácter de cadena
+                        }
+
+                        byte[] wArray = new byte[mapa.get(oldC).array().length + 1];
+                        int it = 0;
+                        for (int l = 0; l < mapa.get(oldC).array().length; ++l) {
+                            wArray[it] = mapa.get(oldC).array()[l];
+                            it++;
+                        }
+                        wArray[it] = caracter;
+                        mapa.put(num++, (ByteBuffer.wrap(wArray)));
+                        oldC = newC;
+                    }
+                    x = -1;
+                }
+            }
+
+            byte[] salid = new byte[salida.size()];
+            int j = 0;
+            for (byte x : salida) salid[j++] = x;
+
+            long endTime = System.nanoTime(), totalTime = endTime - startTime;
+            return new OutputAlgoritmo((int) totalTime, salid);
+        } catch (Exception e) {
+            throw new FormatoErroneoException("El archivo a descomprimir está corrupto o no se ha generado adecuadamente.");
         }
-
-        byte[] salid = new byte[salida.size()];
-        int j = 0;
-        for (byte x : salida) salid[j++] = x;
-
-        long endTime = System.nanoTime(), totalTime = endTime - startTime;
-        return new OutputAlgoritmo((int)totalTime, salid);
     }
 }
