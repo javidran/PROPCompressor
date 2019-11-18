@@ -1,8 +1,5 @@
 package DomainLayer.Algoritmos;
 
-import DomainLayer.Algoritmos.OutputAlgoritmo;
-
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class OutputAlgoritmoDriver {

@@ -1,7 +1,5 @@
 package DomainLayer.Algoritmos;
 
-import DomainLayer.Algoritmos.Trie;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;

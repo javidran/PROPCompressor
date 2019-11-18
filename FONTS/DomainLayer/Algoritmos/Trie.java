@@ -40,7 +40,7 @@ class Trie {
             TrieNode t;
             if(edges.containsKey(b)){
                 t = edges.get(b);
-                lastIndex = t.index;
+                if(i!=bytes.size()-1) lastIndex = t.index;
             } else {
                 t = new TrieNode(b, ++indexCount);
                 edges.put(b, t);

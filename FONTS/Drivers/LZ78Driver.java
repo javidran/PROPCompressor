@@ -13,10 +13,9 @@ public class LZ78Driver {
         else return newSize - oldSize;
     }
 
-    private static double getDiffSizePercentage(boolean esCompresion, long oldSize, long newSize) {
+    private static double getDiffSizePercentage(long oldSize, long newSize) {
         if(newSize==oldSize) return 100;
-        if(esCompresion) return Math.floor((newSize /(double) oldSize)*100);
-        else return Math.floor((oldSize /(double) newSize)*100);
+        else return Math.floor((newSize /(double) oldSize)*100);
     }
 
     public static void main(String[] args) {
@@ -57,7 +56,7 @@ public class LZ78Driver {
                                     "Ha tardado "+timeSeconds+"s y se ha guardado en " + newpath +".\n"+
                                     "El cambio de tamaño pasa de " + oldSize + "B a " + newSize + "B con diferencia de " +
                                     getDiffSize(true, oldSize, newSize) + "B que resulta en un " +
-                                    getDiffSizePercentage(true, oldSize, newSize) + "% del archivo original.");
+                                    getDiffSizePercentage(oldSize, newSize) + "% del archivo original.");
                         } else System.out.println("El formato del fichero debe de ser .txt!");
 
                         break;
@@ -84,13 +83,14 @@ public class LZ78Driver {
                             FileOutputStream out = new FileOutputStream(fileOut);
                             BufferedOutputStream salida = new BufferedOutputStream(out);
                             salida.write(oa.output);
+                            salida.close();
                             long oldSize = data.length, newSize = oa.output.length;
                             double timeSeconds = (double)oa.tiempo / 1000000000;
-                            System.out.println("El archivo " + s + " se ha comprimido correctamente!\n" +
+                            System.out.println("El archivo " + s + " se ha descomprimido correctamente!\n" +
                                     "Ha tardado "+timeSeconds+"s y se ha guardado en " + newpath +".\n"+
                                     "El cambio de tamaño pasa de " + oldSize + "B a " + newSize + "B con diferencia de " +
                                     getDiffSize(false, oldSize, newSize) + "B que resulta en un " +
-                                    getDiffSizePercentage(false, oldSize, newSize) + "% del archivo original.");
+                                    getDiffSizePercentage(oldSize, newSize) + "% del archivo original.");
                         } else System.out.println("El formato del fichero debe de ser .lz78!");
                         break;
                     case "salir":
