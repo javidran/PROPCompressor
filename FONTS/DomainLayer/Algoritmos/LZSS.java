@@ -1,5 +1,7 @@
 package DomainLayer.Algoritmos;
 
+import Exceptions.FormatoErroneoException;
+
 import java.lang.*;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -162,79 +164,84 @@ public class LZSS implements CompresorDecompresor {
      * @param data El array de bytes que se ha obtenido del contenido del fichero .lzss o de la compresión directamente
      * @return Una instancia de la clase OutputAlgoritmo que contiene el tiempo en el que se ha realizado la descompresión
      * y también el byte[] con el resultado de la descompresión del byte[] data.
+     * @throws FormatoErroneoException El formato en el que está codificado el texto no es correcto.
      */
     @Override
-    public OutputAlgoritmo descomprimir(byte[] data) {
-        long startTime = System.nanoTime();
-        //BITSET
-        //cojo los bytes que hacen el integer
-        byte[] sizeofbitset_inarray = new byte[4];
-        //coloco byte a byte
-        for(int i=0; i<4; ++i) sizeofbitset_inarray[i] = data[i];
-        //Tengo el array listo
-        int sizeofbitset = 0;
-        sizeofbitset = fromByteArray(sizeofbitset_inarray);
-        //System.out.println("\nel numero de bytes que ocupa el bitset es:"+sizeofbitset);
-        //Voy a leer los "sizeofbitset" bytes y dejarlos en un array para pasarlo a un bitset de nuevo
-        byte[] bitsetinbytes = new byte[sizeofbitset];
-        //leo desde el 4o byte el numero de bytes que ocupa el bitset
-        int z = 0;
-        for(int i=4; i<(sizeofbitset+4); ++i){//la i és del data i la k del nou array
-            bitsetinbytes[z] = data[i];
-            ++z;
-        }
-        BitSet match = new BitSet();//No defino tamaño :o
-
-        match = BitSet.valueOf(bitsetinbytes); //de aqui sale un bitset estupendo
-        //BITSET END
-
-        //ByteArrayOutputStream result = new ByteArrayOutputStream();
-        List<Byte> result = new ArrayList<>();
-
-        int n = data.length;//int tamaño bitse + bytes del bitset + bytes que van al resultado + pares de offset y length
-        int inicio_real_data = 4 + sizeofbitset;
-        int pos_bitset = 0;//empiezo al inicio del bitset donde tendre los flags
-        //empiezo a recorrer donde empiezan mis datos (bytes que van al resultado + pares de offset y length)
-        for (int i = inicio_real_data; i < n; i++) {// for every compressed data
-
-            if (! match.get(pos_bitset)) {// if it's not compressed
-                //result.write(data[i]);// just add the following char to the output
-                result.add(data[i]);
-                //No hago ++ porque ya se hace a la siguiente vuelta del loop
-            } else /*if (match.get(pos_bitset))*/ {// if there is a mcatch, get the length and offset
-                byte mega_left = data[i];
-                ++i;
-                byte mega_right = data[i];
-                int matchlength = mega_right & 0xF;
-                int parcial1_off = (mega_right >> 4) & 0xF;
-                int parcial2_off = (mega_left << 4) & 0xFF0;
-                int offset = parcial1_off + parcial2_off;
-                // Now I will append the match that i get from the result itself
-                //int sizeofbufnow = result.size();
-                int sizeofbufnow = result.size();
-                int start = sizeofbufnow - offset; // start of the chars I have to copy for the match
-                int length = start + matchlength; // The size of the part to copy
-
-                for (; start < length; start++) { // for every spot
-                    //byte[] dataprevious = result.toByteArray(); //THE MAIN CAUSE OF BOTTLENECK
-                    //result.write(dataprevious[start]);
-                    result.add(result.get(start));
-                }
+    public OutputAlgoritmo descomprimir(byte[] data) throws FormatoErroneoException {
+        try {
+            long startTime = System.nanoTime();
+            //BITSET
+            //cojo los bytes que hacen el integer
+            byte[] sizeofbitset_inarray = new byte[4];
+            //coloco byte a byte
+            for (int i = 0; i < 4; ++i) sizeofbitset_inarray[i] = data[i];
+            //Tengo el array listo
+            int sizeofbitset = 0;
+            sizeofbitset = fromByteArray(sizeofbitset_inarray);
+            //System.out.println("\nel numero de bytes que ocupa el bitset es:"+sizeofbitset);
+            //Voy a leer los "sizeofbitset" bytes y dejarlos en un array para pasarlo a un bitset de nuevo
+            byte[] bitsetinbytes = new byte[sizeofbitset];
+            //leo desde el 4o byte el numero de bytes que ocupa el bitset
+            int z = 0;
+            for (int i = 4; i < (sizeofbitset + 4); ++i) {//la i és del data i la k del nou array
+                bitsetinbytes[z] = data[i];
+                ++z;
             }
-            ++pos_bitset;//me muevo una en el bitset
-        }
+            BitSet match = new BitSet();//No defino tamaño :o
+
+            match = BitSet.valueOf(bitsetinbytes); //de aqui sale un bitset estupendo
+            //BITSET END
+
+            //ByteArrayOutputStream result = new ByteArrayOutputStream();
+            List<Byte> result = new ArrayList<>();
+
+            int n = data.length;//int tamaño bitse + bytes del bitset + bytes que van al resultado + pares de offset y length
+            int inicio_real_data = 4 + sizeofbitset;
+            int pos_bitset = 0;//empiezo al inicio del bitset donde tendre los flags
+            //empiezo a recorrer donde empiezan mis datos (bytes que van al resultado + pares de offset y length)
+            for (int i = inicio_real_data; i < n; i++) {// for every compressed data
+
+                if (!match.get(pos_bitset)) {// if it's not compressed
+                    //result.write(data[i]);// just add the following char to the output
+                    result.add(data[i]);
+                    //No hago ++ porque ya se hace a la siguiente vuelta del loop
+                } else /*if (match.get(pos_bitset))*/ {// if there is a mcatch, get the length and offset
+                    byte mega_left = data[i];
+                    ++i;
+                    byte mega_right = data[i];
+                    int matchlength = mega_right & 0xF;
+                    int parcial1_off = (mega_right >> 4) & 0xF;
+                    int parcial2_off = (mega_left << 4) & 0xFF0;
+                    int offset = parcial1_off + parcial2_off;
+                    // Now I will append the match that i get from the result itself
+                    //int sizeofbufnow = result.size();
+                    int sizeofbufnow = result.size();
+                    int start = sizeofbufnow - offset; // start of the chars I have to copy for the match
+                    int length = start + matchlength; // The size of the part to copy
+
+                    for (; start < length; start++) { // for every spot
+                        //byte[] dataprevious = result.toByteArray(); //THE MAIN CAUSE OF BOTTLENECK
+                        //result.write(dataprevious[start]);
+                        result.add(result.get(start));
+                    }
+                }
+                ++pos_bitset;//me muevo una en el bitset
+            }
 
 
-        byte[] result_final = new byte[result.size()];
-        int i=0;
-        for(byte x : result){
-            result_final[i] = x;
-            i++;
+            byte[] result_final = new byte[result.size()];
+            int i = 0;
+            for (byte x : result) {
+                result_final[i] = x;
+                i++;
+            }
+            long endTime = System.nanoTime();
+            long total_time = endTime - startTime;
+            OutputAlgoritmo outAlg = new OutputAlgoritmo(total_time, result_final);
+            return outAlg;
+        } catch (Exception e) {
+            throw new FormatoErroneoException("El archivo a descomprimir está corrupto o no se ha generado adecuadamente.");
         }
-        long endTime = System.nanoTime();
-        long total_time = endTime -startTime;
-        OutputAlgoritmo outAlg = new OutputAlgoritmo(total_time, result_final);
-        return outAlg;
     }
 
 
