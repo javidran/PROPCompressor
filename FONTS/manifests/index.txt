@@ -1,0 +1,1 @@
+Los manifests son necesarios para la generacion del proyecto, no se deben modificar.
