@@ -26,11 +26,11 @@ public class CtrlEstadisticaDriver {
                         break;
                     case "lzw":
                     case "3":
-                        System.out.print(ctrlEstadistica.estadisticas(Algoritmo.LZW));
+                        System.out.print(ctrlEstadistica.estadisticas(Algoritmo.LZ78));
                         break;
                     case "lz78":
                     case "4":
-                        System.out.print(ctrlEstadistica.estadisticas(Algoritmo.LZ78));
+                        System.out.print(ctrlEstadistica.estadisticas(Algoritmo.LZW));
                         break;
                     case "salir":
                     case "5":
