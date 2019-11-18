@@ -3,7 +3,7 @@
     <output-path>$PROJECT_DIR$/EXE/Main</output-path>
     <root id="archive" name="MainDriver.jar">
       <element id="directory" name="META-INF">
-        <element id="file-copy" path="$PROJECT_DIR$/resources/manifests/Main/META-INF/MANIFEST.MF" />
+        <element id="file-copy" path="$PROJECT_DIR$/FONTS/manifests/Main/META-INF/MANIFEST.MF" />
       </element>
       <element id="module-output" name="PROPCompressor" />
       <element id="extracted-dir" path="$PROJECT_DIR$/lib/junit-4.12.jar" path-in-jar="/" />

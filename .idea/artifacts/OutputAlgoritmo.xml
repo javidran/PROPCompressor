@@ -3,7 +3,7 @@
     <output-path>$PROJECT_DIR$/EXE/OutputAlgoritmo</output-path>
     <root id="archive" name="OutputAlgoritmoDriver.jar">
       <element id="directory" name="META-INF">
-        <element id="file-copy" path="$PROJECT_DIR$/resources/manifests/OutputAlgoritmo/META-INF/MANIFEST.MF" />
+        <element id="file-copy" path="$PROJECT_DIR$/FONTS/manifests/OutputAlgoritmo/META-INF/MANIFEST.MF" />
       </element>
       <element id="module-output" name="PROPCompressor" />
     </root>

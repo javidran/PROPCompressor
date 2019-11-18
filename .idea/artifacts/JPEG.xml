@@ -3,7 +3,7 @@
     <output-path>$PROJECT_DIR$/EXE/JPEG</output-path>
     <root id="archive" name="JPEGDriver.jar">
       <element id="directory" name="META-INF">
-        <element id="file-copy" path="$PROJECT_DIR$/resources/manifests/JPEG/META-INF/MANIFEST.MF" />
+        <element id="file-copy" path="$PROJECT_DIR$/FONTS/manifests/JPEG/META-INF/MANIFEST.MF" />
       </element>
       <element id="module-output" name="PROPCompressor" />
     </root>
