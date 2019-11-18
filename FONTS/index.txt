@@ -1,6 +1,6 @@
 Esta carpeta contiene:
-- Careptas con el codigo de todas las clases.
-- Drivers: el codigo de la mayoria de drivers esta en la carepta Drivers pero hay otros junto al codigo de las clases para manetener la arquitectura en tres capas.
+- Carpetas con el codigo fuente de todas las clases.
+- Drivers: el codigo de la mayoria de drivers esta en la carepta Drivers pero hay otros junto al codigo de las clases ya que la visibilidad de las mismas obliga a ubicar los drivers en el mismo paquete.
 - El makefile: con tan solo hacer "make" se generan todos los drivers en las carpetas correspondientes de la  carpeta EXE. Tambien se puede generar un driver individual haciendo "make nombredeldriver".
 - manifests: archivos para poder generar el .jar de cada driver
-- Exceptions: codigo de las excepciones
+- Junit: En FONTS/DomainLayer/Proceso/DatosProcesoTest.java esta el codigo con los tests unitarios para la clase DatosProceso.
