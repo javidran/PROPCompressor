@@ -3,8 +3,8 @@ Aqui puede encontrar lo siguiente:
 1. Carpetas individuales para cada driver de las clases de la capa de dominio, dentro de estas carpetas encontrara:
 	1.1 Ejecutable .jar del driver en cuestion
 			Para ejecutarlo solo debe abrir el terminal y escribir "java -jar NombreDelDriver.jar", entonces ya podra interactuar con el driver.
-	1.2 Carpeta con todos los archivos necesarios para ejecutar los casos de prueba que se encuentran explicados en el documento *****.pdf
-			Para probar los casos de prueba solo hay que seguir la guia del documento *****.pdf, los paths relativos a introducir son los mismo que aparecen en las imagenes del documento.
+	1.2 Carpeta con todos los archivos necesarios para ejecutar los juegos de prueba que se encuentran explicados en el documento *****.pdf
+			Para probar los juegos de prueba solo hay que seguir la guia del documento *****.pdf, los paths relativos a introducir son los mismo que aparecen en las imagenes del documento.
 
 2.Documentacion del proyecto
 	2.1 index.html
