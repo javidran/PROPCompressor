@@ -1,5 +1,7 @@
 package DomainLayer.Algoritmos;
 
+import Exceptions.FormatoErroneoException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -113,58 +115,61 @@ public class LZ78 implements CompresorDecompresor {
      * <p>La secuencia debe haber sido comprimida por el método {@link #comprimir(byte[])} para que el proceso de descompresión sea satisfactorio.</p>
      * @param datosInput Secuencia de bytes a descomprimir.
      * @return Devuelve una instancia de OutputAlgoritmo compuesta del tiempo que ha tardado el método en ejecutarse y la secuencia de bytes descomprimida.
+     * @throws FormatoErroneoException El formato en el que está codificada el texto no es correcto.
      */
     @Override
-    public OutputAlgoritmo descomprimir(byte[] datosInput) {
-        long startTime = System.nanoTime();
+    public OutputAlgoritmo descomprimir(byte[] datosInput) throws FormatoErroneoException {
+        try {
+            long startTime = System.nanoTime();
 
-        List<Byte> output = new ArrayList<>();
+            List<Byte> output = new ArrayList<>();
 
-        byte symbol;
-        List<Pair> dictionary = new ArrayList<>();
-        dictionary.add(null);
+            byte symbol;
+            List<Pair> dictionary = new ArrayList<>();
+            dictionary.add(null);
 
-        for (int i=0; i<datosInput.length; ++i) {
-            int index = datosInput[i++] & 0xFF;
-            int flag = index & 0xC0;
-            index = index & 0x3F;
-            if(flag == 0xC0) {
-                dictionary = new ArrayList<>();
-                dictionary.add(null);
-            }
-            else if (flag == 0x40) {
-                index += (datosInput[i++] & 0xFF) << 6;
-            }
-            else if(flag == 0x80) {
-                index += (datosInput[i++] & 0xFF)  << 6;
-                index += (datosInput[i++] & 0xFF)  << 14;
-            }
-            symbol = datosInput[i];
+            for (int i = 0; i < datosInput.length; ++i) {
+                int index = datosInput[i++] & 0xFF;
+                int flag = index & 0xC0;
+                index = index & 0x3F;
+                if (flag == 0xC0) {
+                    dictionary = new ArrayList<>();
+                    dictionary.add(null);
+                } else if (flag == 0x40) {
+                    index += (datosInput[i++] & 0xFF) << 6;
+                } else if (flag == 0x80) {
+                    index += (datosInput[i++] & 0xFF) << 6;
+                    index += (datosInput[i++] & 0xFF) << 14;
+                }
+                symbol = datosInput[i];
 
-            dictionary.add(new Pair(index, symbol));
-            List<Byte> word = new ArrayList<>();
-            word.add(symbol);
-            while(index != 0) {
-                Pair pair = dictionary.get(index);
-                index = pair.index;
-                word.add(pair.b);
+                dictionary.add(new Pair(index, symbol));
+                List<Byte> word = new ArrayList<>();
+                word.add(symbol);
+                while (index != 0) {
+                    Pair pair = dictionary.get(index);
+                    index = pair.index;
+                    word.add(pair.b);
+                }
+
+                int wordPos = word.size() - 1;
+                while (wordPos >= 0) {
+                    byte res = word.get(wordPos);
+                    output.add(res);
+                    --wordPos;
+                }
             }
 
-            int wordPos = word.size()-1;
-            while(wordPos >= 0) {
-                byte res = word.get(wordPos);
-                output.add(res);
-                --wordPos;
+            byte[] outputArray = new byte[output.size()];
+            for (int i = 0; i < outputArray.length; ++i) {
+                outputArray[i] = output.get(i);
             }
+
+            long endTime = System.nanoTime();
+            return new OutputAlgoritmo(endTime - startTime, outputArray);
+        } catch (Exception e) {
+            throw new FormatoErroneoException("El archivo a descomprimir está corrupto o no se ha generado adecuadamente.");
         }
-
-        byte[] outputArray = new byte[output.size()];
-        for(int i=0; i<outputArray.length; ++i) {
-            outputArray[i] = output.get(i);
-        }
-
-        long endTime = System.nanoTime();
-        return new OutputAlgoritmo(endTime - startTime, outputArray);
     }
 
 
