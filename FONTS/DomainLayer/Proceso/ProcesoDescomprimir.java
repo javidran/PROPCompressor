@@ -14,7 +14,7 @@ public class ProcesoDescomprimir extends ProcesoFichero {
      * @param input Secuencia de bytes a procesar.
      * @param algoritmo Algoritmo de compresión a utilizar para procesar el {@link #input}.
      */
-    public ProcesoDescomprimir(byte[] input, Algoritmo algoritmo) throws Exception {
+    public ProcesoDescomprimir(byte[] input, Algoritmo algoritmo) {
         super(input, algoritmo);
     }
 
