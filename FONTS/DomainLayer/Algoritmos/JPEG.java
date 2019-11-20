@@ -267,9 +267,11 @@ public class JPEG implements CompresorDecompresor {
                     }
                 }
                 boolean up = true;
-                int i = x, j = y;
+                int i = x, j = y, it = 0;
+                byte[] lineY = new byte[64]; //linear vector for zigzagged elements of Y before RLE
                 while (i < topu && j < topv) { //zig-zag writting Luminance 8x8 square (RLE and Huffman yet to be applied)
-                    result.add((byte)Math.round(buffY[i%8][j%8])); //.imgc extension determines that the pixelmap will contain first the luminance pixelmap and then the chrominance one
+                    lineY[it] = (byte)Math.round(buffY[i%8][j%8]); //.imgc extension determines that the pixelmap will contain first the luminance pixelmap and then the chrominance one
+                    it++;
                     if (i == x && j != topv - 1 && up) {
                         ++j;
                         up = false;
@@ -298,6 +300,24 @@ public class JPEG implements CompresorDecompresor {
                         ++i;
                         --j;
                     }
+                }
+                List<Byte> rleY = new ArrayList<>(); //losless compression of 8x8 block values
+                int howManyZeroes = 0; //how many zeroes have been ignored until a non zero value found in 8x8 block
+                for (int k = 0; k < 64; ++k) {
+                    if (lineY[k] == 0) {
+                        howManyZeroes++;
+                    }
+                    else {
+                        rleY.add((byte)howManyZeroes); //rle refines that each time a non zero value is found, is written how many zeroes have been ignored before
+                        rleY.add(lineY[k]); //then the non zero value is written
+                        howManyZeroes = 0;
+                    }
+                }
+                rleY.add((byte)0);
+                rleY.add((byte)0);
+                result.add((byte)rleY.size());
+                for (int k = 0; k < rleY.size(); ++k) {
+                    result.add(rleY.get(k));
                 }
             }
         }
@@ -457,8 +477,24 @@ public class JPEG implements CompresorDecompresor {
                 topj = y + 8;
                 boolean up = true;
                 int k = x, l = y;
+                int rleSize = datosInput[pos++];
+                byte[] lineY = new byte[64];
+                int lineYit = 0;
+                for (int it = 0; it < rleSize; ++it) {
+                    int howManyZeroes = datosInput[pos++];
+                    byte value = datosInput[pos++];
+                    if (howManyZeroes != 0 || value != 0) {
+                        for (int z = 0; z < howManyZeroes; ++z) lineY[lineYit++] = 0;
+                        lineY[lineYit++] = value;
+                    }
+                    else {
+                        while (lineYit < 64) lineY[lineYit++] = 0;
+                        it = rleSize;
+                    }
+                }
+                lineYit = 0;
                 while (k < topi && l < topj) { //zig-zag reading Luminance and inverse downsampling values (RLE and Huffman yet to be applied)
-                    buffY[k%8][l%8] = (datosInput[pos++]) * (LuminanceQuantizationTable[k%8][l%8] * calidad); //(byte) because reads [0,255] but it's been stored as [-128,127]
+                    buffY[k%8][l%8] = (lineY[lineYit++]) * (LuminanceQuantizationTable[k%8][l%8] * calidad); //(byte) because reads [0,255] but it's been stored as [-128,127]
                     Y[k][l] = (int)Math.round(buffY[k%8][l%8]);
                     if (k == x && l != topj - 1 && up) {
                         ++l;
