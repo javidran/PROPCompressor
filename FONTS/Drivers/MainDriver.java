@@ -3,11 +3,21 @@ package Drivers;
 import Controllers.CtrlEstadistica;
 import Controllers.CtrlProcesos;
 import DomainLayer.Algoritmos.Algoritmo;
+import PresentationLayer.MyInterface;
 
+import javax.swing.*;
 import java.util.Scanner;
 
 public class MainDriver {
     public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                JFrame frame = new MyInterface();
+                frame.setSize(400,400);
+                frame.setVisible(true);
+            }
+        });
         System.out.print("Bienvenido a PROPresor!\n\n");
         CtrlProcesos ctrlProcesos = CtrlProcesos.getInstance();
         boolean b = true;
