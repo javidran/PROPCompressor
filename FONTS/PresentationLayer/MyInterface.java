@@ -13,15 +13,17 @@ public class MyInterface extends JFrame {
     private JPanel panel;
     private JButton salirButton;
     private JButton comprimirYDescomprimirButton;
-    private JTextField textField1;
+    private JTextField pathEntrada;
     private JButton comprimirButton;
     private JButton estadísticasButton;
     private JButton explorarButton;
     private JButton descomprimirButton;
     private boolean invocarSelectorCalidad = false;
+    private JFrame myself;
 
     public MyInterface () {
         super ("PROPresor");
+        myself = this;
         setContentPane(panel);
         explorarButton.addActionListener(new ActionListener() {
             @Override
@@ -36,7 +38,7 @@ public class MyInterface extends JFrame {
             }
         });
 
-        textField1.getDocument().addDocumentListener(new DocumentListener() {
+        pathEntrada.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent documentEvent) {
                 actualizarBotones();
@@ -55,8 +57,7 @@ public class MyInterface extends JFrame {
         comprimirButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                JFrame frame;
-                frame = new SelectorAlgoritmo(textField1.getText(), invocarSelectorCalidad, true);
+                JDialog frame = new SelectorAlgoritmo(myself, pathEntrada.getText(), invocarSelectorCalidad);
                 Dimension dimension = new Dimension(650, 300);
                 frame.setSize(dimension);
                 dimension = new Dimension(500, 200);
@@ -69,8 +70,7 @@ public class MyInterface extends JFrame {
         descomprimirButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                JFrame frame;
-                frame = new SelectorAlgoritmo(textField1.getText(),invocarSelectorCalidad, true);
+                JDialog frame = new SelectorAlgoritmo(myself, pathEntrada.getText(),invocarSelectorCalidad);
                 Dimension dimension = new Dimension(650, 300);
                 frame.setSize(dimension);
                 dimension = new Dimension(500, 200);
@@ -83,14 +83,13 @@ public class MyInterface extends JFrame {
         comprimirYDescomprimirButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                JFrame frame = new SelectorAlgoritmo(textField1.getText(),invocarSelectorCalidad, false);
+                JDialog frame = new SelectorAlgoritmo(myself,null,invocarSelectorCalidad);
                 Dimension dimension = new Dimension(650, 300);
                 frame.setSize(dimension);
                 dimension = new Dimension(500, 200);
                 frame.setMinimumSize(dimension);
                 frame.setResizable(true);
                 frame.setVisible(true);
-                //frame.f
             }
         });
     }
@@ -131,11 +130,11 @@ public class MyInterface extends JFrame {
         chooser.setFileFilter(fileFilter);
         int result = chooser.showOpenDialog(null);
         if(result == JFileChooser.APPROVE_OPTION)
-            textField1.setText(chooser.getSelectedFile().getAbsolutePath());
+            pathEntrada.setText(chooser.getSelectedFile().getAbsolutePath());
     }
 
     private void actualizarBotones() {
-        String[] splitP = textField1.getText().split("\\.");
+        String[] splitP = pathEntrada.getText().split("\\.");
         String type = splitP[splitP.length-1];
 
         switch (type) {
@@ -160,6 +159,7 @@ public class MyInterface extends JFrame {
                 comprimirButton.setEnabled(true);
                 descomprimirButton.setEnabled(false);
                 invocarSelectorCalidad = true;
+
                 break;
             default:
                 comprimirYDescomprimirButton.setEnabled(false);
