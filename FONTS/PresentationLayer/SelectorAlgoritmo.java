@@ -11,13 +11,21 @@ public class SelectorAlgoritmo extends JFrame {
     private JPanel procesar;
     private JPanel algoritmo;
 
-    public SelectorAlgoritmo() {
+    public SelectorAlgoritmo(Boolean MostrarSlider, Boolean MostrarPath) {
         super ("PROPresor");
         setContentPane(panel);
+        algoritmo.setVisible(!MostrarSlider);
+        calidad.setVisible(MostrarSlider);
+        //procesar.setVisible(true);
+
     }
 
-    public SelectorAlgoritmo(String path) {
+    public SelectorAlgoritmo(String path, Boolean MostrarSlider, Boolean MostrarPath) {
         super ("PROPresor");
         setContentPane(panel);
+        algoritmo.setVisible(!MostrarSlider);
+        calidad.setVisible(MostrarSlider);
+        //procesar.setVisible(true);
+
     }
 }

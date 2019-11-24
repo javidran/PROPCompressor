@@ -56,7 +56,7 @@ public class MyInterface extends JFrame {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 JFrame frame;
-                frame = new SelectorAlgoritmo(textField1.getText());
+                frame = new SelectorAlgoritmo(textField1.getText(), invocarSelectorCalidad, true);
                 Dimension dimension = new Dimension(650, 300);
                 frame.setSize(dimension);
                 dimension = new Dimension(500, 200);
@@ -70,7 +70,7 @@ public class MyInterface extends JFrame {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 JFrame frame;
-                frame = new SelectorAlgoritmo(textField1.getText());
+                frame = new SelectorAlgoritmo(textField1.getText(),invocarSelectorCalidad, true);
                 Dimension dimension = new Dimension(650, 300);
                 frame.setSize(dimension);
                 dimension = new Dimension(500, 200);
@@ -83,13 +83,14 @@ public class MyInterface extends JFrame {
         comprimirYDescomprimirButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                JFrame frame = new SelectorAlgoritmo(textField1.getText());
+                JFrame frame = new SelectorAlgoritmo(textField1.getText(),invocarSelectorCalidad, false);
                 Dimension dimension = new Dimension(650, 300);
                 frame.setSize(dimension);
                 dimension = new Dimension(500, 200);
                 frame.setMinimumSize(dimension);
                 frame.setResizable(true);
                 frame.setVisible(true);
+                //frame.f
             }
         });
     }
