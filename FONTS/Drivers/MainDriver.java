@@ -15,9 +15,11 @@ public class MainDriver {
             @Override
             public void run() {
                 JFrame frame = new MyInterface();
-                Dimension dimension = new Dimension(600, 400);
+                Dimension dimension = new Dimension(650, 300);
                 frame.setSize(dimension);
-                frame.setResizable(false);
+                dimension = new Dimension(400, 300);
+                frame.setMinimumSize(dimension);
+                frame.setResizable(true);
                 frame.setVisible(true);
             }
         });
