@@ -17,7 +17,7 @@ public class MainDriver {
                 JFrame frame = new MyInterface();
                 Dimension dimension = new Dimension(650, 300);
                 frame.setSize(dimension);
-                dimension = new Dimension(400, 300);
+                dimension = new Dimension(500, 200);
                 frame.setMinimumSize(dimension);
                 frame.setResizable(true);
                 frame.setVisible(true);
