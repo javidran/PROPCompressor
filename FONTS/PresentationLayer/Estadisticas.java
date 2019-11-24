@@ -12,19 +12,26 @@ public class Estadisticas extends JFrame {
     private JPanel Options;
     private JPanel Estats;
     private JButton procesarButton;
+    private JLabel statuslabel;
 
-    public Estadisticas(Boolean MostrarAlgoritmo) {
+    Estadisticas() {
         super ("PROPresor");
         setContentPane(Estadisticas);
-        Algoritmo.setVisible(true);
-        Estats.setVisible(!MostrarAlgoritmo);
+        Estats.setVisible(false);
         procesarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Algoritmo.setVisible(!MostrarAlgoritmo);
-                Estats.setVisible(MostrarAlgoritmo);
+                Estats.setVisible(true);
+                String data = "";
+                if (comboBox1.getSelectedIndex() != -1) {
+                    data = "Selected: "
+                            + comboBox1.getItemAt(comboBox1.getSelectedIndex());
+                }
+                statuslabel.setText(data);
+                Algoritmo.setVisible(false);
                 procesarButton.setVisible(false);
             }
         });
     }
+
 }

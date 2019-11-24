@@ -97,7 +97,7 @@ public class MyInterface extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JFrame frame;
-                frame = new Estadisticas(true);
+                frame = new Estadisticas();
                 Dimension dimension = new Dimension(650, 300);
                 frame.setSize(dimension);
                 dimension = new Dimension(500, 200);
