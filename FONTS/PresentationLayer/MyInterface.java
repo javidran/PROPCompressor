@@ -15,7 +15,7 @@ public class MyInterface extends JFrame {
     private JButton comprimirYDescomprimirButton;
     private JTextField textField1;
     private JButton comprimirButton;
-    private JButton estadísticasButton;
+    private JButton estadisticasButton;
     private JButton explorarButton;
     private JButton descomprimirButton;
     private boolean invocarSelectorCalidad = false;
@@ -91,6 +91,19 @@ public class MyInterface extends JFrame {
                 frame.setResizable(true);
                 frame.setVisible(true);
                 //frame.f
+            }
+        });
+        estadisticasButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFrame frame;
+                frame = new Estadisticas(true);
+                Dimension dimension = new Dimension(650, 300);
+                frame.setSize(dimension);
+                dimension = new Dimension(500, 200);
+                frame.setMinimumSize(dimension);
+                frame.setResizable(true);
+                frame.setVisible(true);
             }
         });
     }
@@ -170,5 +183,6 @@ public class MyInterface extends JFrame {
 
         }
     }
+
 }
 
