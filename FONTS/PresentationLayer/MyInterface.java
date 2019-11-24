@@ -1,12 +1,10 @@
 package PresentationLayer;
 
-import Controllers.CtrlProcesos;
-import Exceptions.FormatoErroneoException;
-
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileFilter;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -20,6 +18,7 @@ public class MyInterface extends JFrame {
     private JButton estadísticasButton;
     private JButton explorarButton;
     private JButton descomprimirButton;
+    private boolean invocarSelectorCalidad = false;
 
     public MyInterface () {
         super ("PROPresor");
@@ -51,6 +50,46 @@ public class MyInterface extends JFrame {
             @Override
             public void changedUpdate(DocumentEvent documentEvent) {
                 actualizarBotones();
+            }
+        });
+        comprimirButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                JFrame frame;
+                frame = new SelectorAlgoritmo(textField1.getText());
+                Dimension dimension = new Dimension(650, 300);
+                frame.setSize(dimension);
+                dimension = new Dimension(500, 200);
+                frame.setMinimumSize(dimension);
+                frame.setResizable(true);
+                frame.setVisible(true);
+            }
+        });
+
+        descomprimirButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                JFrame frame;
+                frame = new SelectorAlgoritmo(textField1.getText());
+                Dimension dimension = new Dimension(650, 300);
+                frame.setSize(dimension);
+                dimension = new Dimension(500, 200);
+                frame.setMinimumSize(dimension);
+                frame.setResizable(true);
+                frame.setVisible(true);
+            }
+        });
+
+        comprimirYDescomprimirButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                JFrame frame = new SelectorAlgoritmo(textField1.getText());
+                Dimension dimension = new Dimension(650, 300);
+                frame.setSize(dimension);
+                dimension = new Dimension(500, 200);
+                frame.setMinimumSize(dimension);
+                frame.setResizable(true);
+                frame.setVisible(true);
             }
         });
     }
@@ -107,17 +146,25 @@ public class MyInterface extends JFrame {
                 comprimirYDescomprimirButton.setEnabled(false);
                 comprimirButton.setEnabled(false);
                 descomprimirButton.setEnabled(true);
+                invocarSelectorCalidad = false;
                 break;
             case "txt":
+                comprimirYDescomprimirButton.setEnabled(true);
+                comprimirButton.setEnabled(true);
+                descomprimirButton.setEnabled(false);
+                invocarSelectorCalidad = false;
+                break;
             case "ppm":
                 comprimirYDescomprimirButton.setEnabled(true);
                 comprimirButton.setEnabled(true);
                 descomprimirButton.setEnabled(false);
+                invocarSelectorCalidad = true;
                 break;
             default:
                 comprimirYDescomprimirButton.setEnabled(false);
                 comprimirButton.setEnabled(true);
                 descomprimirButton.setEnabled(false);
+                invocarSelectorCalidad = false;
                 break;
 
         }
