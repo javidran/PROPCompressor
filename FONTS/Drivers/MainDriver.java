@@ -6,6 +6,7 @@ import DomainLayer.Algoritmos.Algoritmo;
 import PresentationLayer.MyInterface;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.Scanner;
 
 public class MainDriver {
@@ -14,7 +15,9 @@ public class MainDriver {
             @Override
             public void run() {
                 JFrame frame = new MyInterface();
-                frame.setSize(400,400);
+                Dimension dimension = new Dimension(600, 400);
+                frame.setSize(dimension);
+                frame.setResizable(false);
                 frame.setVisible(true);
             }
         });
