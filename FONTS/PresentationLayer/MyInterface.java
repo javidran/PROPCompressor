@@ -8,12 +8,6 @@ import javax.swing.filechooser.FileFilter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.*;
-import java.awt.event.*;
 
 public class MyInterface extends JFrame {
     private JPanel panel;
@@ -25,13 +19,12 @@ public class MyInterface extends JFrame {
     private JButton explorarButton;
 
     public MyInterface () {
-        super ("Ejemplo interfaz.");
+        super ("PROPresor");
         setContentPane(panel);
         explorarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-
-                textField1.setText(seleccionDeArchivo());
+                seleccionDeArchivo();
             }
         });
 
@@ -42,7 +35,7 @@ public class MyInterface extends JFrame {
         });
     }
 
-    private String seleccionDeArchivo() {
+    private void seleccionDeArchivo() {
         JFileChooser chooser = new JFileChooser();
         chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 
@@ -76,8 +69,9 @@ public class MyInterface extends JFrame {
         };
 
         chooser.setFileFilter(fileFilter);
-        chooser.showOpenDialog(null);
-        return chooser.getSelectedFile().getAbsolutePath();
+        int result = chooser.showOpenDialog(null);
+        if(result == JFileChooser.APPROVE_OPTION)
+            textField1.setText(chooser.getSelectedFile().getAbsolutePath());
     }
 }
 
