@@ -38,17 +38,13 @@ public class SelectorAlgoritmo extends JDialog {
                 if (existe) {
                     int respuesta = JOptionPane.showConfirmDialog(null, "El fichero resultante del proceso sobrescribirá uno ya existente, ¿desea sobrescribirlo?", "Sobrescribir",
                             JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-                    if (respuesta == JOptionPane.NO_OPTION) {
-                        //Se cierra el cuadro de dialogo y se le da al usuario la posibilidad de escoger un nuevo path
-                    } else if (respuesta == JOptionPane.YES_OPTION) {
+                    if (respuesta == JOptionPane.YES_OPTION) {
                         //PROCESAR EL FICHERO
-//LLAMADA A PROCESAR EL FICHERO --> AQUI
-                    } else if (respuesta == JOptionPane.CLOSED_OPTION) {
-                        //Si se cierra con la cruz, se procede igual que si ha dicho que no quiere sobrescribir
+                        System.exit(0);//Temporal
                     }
                 } else {
                     // File or directory does not exist
-                    System.exit(0);
+                    System.exit(0);//temporal
                 }
             }
         });
