@@ -15,7 +15,7 @@ public class Estadisticas extends JFrame {
     private JButton salirButton;
     private JPanel Estats;
     private JButton procesarButton;
-    private JTextPane status;
+    private JTextArea status;
 
     Estadisticas() {
         super ("PROPresor");
