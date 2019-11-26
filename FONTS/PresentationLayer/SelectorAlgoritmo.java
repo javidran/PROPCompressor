@@ -22,7 +22,7 @@ public class SelectorAlgoritmo extends JDialog {
     private JDialog myself;
 
 
-    public SelectorAlgoritmo(Frame owner, String path, Boolean mostrarSlider) {
+    SelectorAlgoritmo(Frame owner, String path, Boolean mostrarSlider) {
         super (owner, true);
         myself = this;
         setContentPane(panel);

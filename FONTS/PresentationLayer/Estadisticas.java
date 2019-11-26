@@ -8,17 +8,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 
-public class Estadisticas extends JFrame {
+public class Estadisticas extends JDialog {
     private JPanel Estadisticas;
     private JPanel Algoritmo;
     private JComboBox comboBox1;
-    private JButton salirButton;
+    private JButton cancelarButton;
     private JPanel Estats;
     private JButton procesarButton;
     private JTextArea status;
+    private JDialog myself = this;
 
-    Estadisticas() {
-        super ("PROPresor");
+    Estadisticas(Frame owner) {
+        super (owner, true);
         setContentPane(Estadisticas);
         Estats.setVisible(false);
         procesarButton.addActionListener(new ActionListener() {
@@ -40,10 +41,10 @@ public class Estadisticas extends JFrame {
                 procesarButton.setVisible(false);
             }
         });
-        salirButton.addActionListener(new ActionListener() {
+        cancelarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.exit(0);
+                myself.setVisible(false);
             }
         });
     }

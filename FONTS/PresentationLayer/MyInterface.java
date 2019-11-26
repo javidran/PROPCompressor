@@ -57,53 +57,56 @@ public class MyInterface extends JFrame {
         comprimirButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                JDialog frame = new SelectorAlgoritmo(myself, pathEntrada.getText(), invocarSelectorCalidad);
+                JDialog dialog = new SelectorAlgoritmo(myself, pathEntrada.getText(), invocarSelectorCalidad);
                 Dimension dimension = new Dimension(650, 300);
-                frame.setSize(dimension);
+                dialog.setSize(dimension);
                 dimension = new Dimension(500, 200);
-                frame.setMinimumSize(dimension);
-                frame.setResizable(true);
-                frame.setVisible(true);
+                dialog.setMinimumSize(dimension);
+                dialog.setLocationRelativeTo(myself);
+                dialog.setResizable(true);
+                dialog.setVisible(true);
             }
         });
 
         descomprimirButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                JDialog frame = new SelectorAlgoritmo(myself, pathEntrada.getText(),invocarSelectorCalidad);
+                JDialog dialog = new SelectorAlgoritmo(myself, pathEntrada.getText(),invocarSelectorCalidad);
                 Dimension dimension = new Dimension(650, 300);
-                frame.setSize(dimension);
+                dialog.setSize(dimension);
                 dimension = new Dimension(500, 200);
-                frame.setMinimumSize(dimension);
-                frame.setResizable(true);
-                frame.setVisible(true);
+                dialog.setMinimumSize(dimension);
+                dialog.setLocationRelativeTo(myself);
+                dialog.setResizable(true);
+                dialog.setVisible(true);
             }
         });
 
         comprimirYDescomprimirButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                JDialog frame = new SelectorAlgoritmo(myself,null,invocarSelectorCalidad);
+                JDialog dialog = new SelectorAlgoritmo(myself,null,invocarSelectorCalidad);
                 Dimension dimension = new Dimension(650, 300);
-                frame.setSize(dimension);
+                dialog.setSize(dimension);
                 dimension = new Dimension(500, 200);
-                frame.setMinimumSize(dimension);
-                frame.setResizable(true);
-                frame.setVisible(true);
+                dialog.setMinimumSize(dimension);
+                dialog.setLocationRelativeTo(myself);
+                dialog.setResizable(true);
+                dialog.setVisible(true);
             }
         });
         estadisticasButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JFrame frame;
-                frame = new Estadisticas();
+                JDialog dialog;
+                dialog = new Estadisticas(myself);
                 Dimension dimension = new Dimension(600, 300);
-                frame.setSize(dimension);
+                dialog.setSize(dimension);
                 dimension = new Dimension(600, 300);
-                frame.setMinimumSize(dimension);
-                frame.setResizable(true);
-                frame.setVisible(true);
-                frame.setLocationRelativeTo(null);
+                dialog.setMinimumSize(dimension);
+                dialog.setLocationRelativeTo(myself);
+                dialog.setResizable(true);
+                dialog.setVisible(true);
             }
         });
     }
