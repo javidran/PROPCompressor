@@ -18,6 +18,8 @@ public class MyInterface extends JFrame {
     private JButton estadisticasButton;
     private JButton explorarButton;
     private JButton descomprimirButton;
+    private JButton escogerPrederterminadoButton;
+    private JTextField ponerElPredeterminadoAquiTextField;
     private boolean invocarSelectorCalidad = false;
     private JFrame myself;
 
@@ -103,6 +105,21 @@ public class MyInterface extends JFrame {
                 Dimension dimension = new Dimension(600, 300);
                 dialog.setSize(dimension);
                 dimension = new Dimension(600, 300);
+                dialog.setMinimumSize(dimension);
+                dialog.setLocationRelativeTo(myself);
+                dialog.setResizable(true);
+                dialog.setVisible(true);
+            }
+        });
+
+        escogerPrederterminadoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JDialog dialog;
+                dialog = new SelectorAlgortimoPredeterminado(myself);
+                Dimension dimension = new Dimension(600, 200);
+                dialog.setSize(dimension);
+                dimension = new Dimension(600, 200);
                 dialog.setMinimumSize(dimension);
                 dialog.setLocationRelativeTo(myself);
                 dialog.setResizable(true);
