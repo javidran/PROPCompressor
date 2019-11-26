@@ -97,9 +97,7 @@ public class SelectorAlgoritmo extends JDialog {
             } else {
                 path = path.replace(type, "extensionchunga"); // ALTERNATIVELY: remove the extension (if any) and replace it with ".xml"
             }
-
             pathSalida.setText(path);
-
         }
     }
 }

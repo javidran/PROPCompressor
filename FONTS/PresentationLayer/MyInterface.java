@@ -150,8 +150,15 @@ public class MyInterface extends JFrame {
     private void actualizarBotones() {
         String[] splitP = pathEntrada.getText().split("\\.");
         String type = splitP[splitP.length-1];
-
-        switch (type) {
+        File f = new File(pathEntrada.getText());
+        f.getName();
+        if(splitP.length == 1 && !pathEntrada.getText().endsWith(".")) {
+            comprimirYDescomprimirButton.setEnabled(false);
+            comprimirButton.setEnabled(true);
+            descomprimirButton.setEnabled(false);
+            invocarSelectorCalidad = false;
+        }
+        else switch (type) {
             case "lzss":
             case "lzw":
             case "lz78":
@@ -177,11 +184,9 @@ public class MyInterface extends JFrame {
                 break;
             default:
                 comprimirYDescomprimirButton.setEnabled(false);
-                comprimirButton.setEnabled(true);
+                comprimirButton.setEnabled(false);
                 descomprimirButton.setEnabled(false);
-                invocarSelectorCalidad = false;
                 break;
-
         }
     }
 
