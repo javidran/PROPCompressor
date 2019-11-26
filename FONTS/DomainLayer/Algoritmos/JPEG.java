@@ -535,8 +535,8 @@ public class JPEG implements CompresorDecompresor {
                 for (int it = 0; it < rleSize; ++it) {
                     int howManyZeroes = datosInput[pos++];
                     int size = datosInput[pos++];
-                    byte value = datosInput[pos++];
                     if (howManyZeroes != 0 || size != 0) {
+                        byte value = datosInput[pos++];
                         for (int z = 0; z < howManyZeroes; ++z) lineY[lineYit++] = 0;
                         lineY[lineYit++] = value;
                     }
@@ -616,8 +616,8 @@ public class JPEG implements CompresorDecompresor {
                 for (int it = 0; it < rleSize; ++it) {
                     int howManyZeroes = datosInput[pos++];
                     int size = datosInput[pos++];
-                    byte value = datosInput[pos++];
                     if (howManyZeroes != 0 || size != 0) {
+                        byte value = datosInput[pos++];
                         for (int z = 0; z < howManyZeroes; ++z) lineCb[lineCbit++] = 0;
                         lineCb[lineCbit++] = value;
                     }
@@ -633,8 +633,8 @@ public class JPEG implements CompresorDecompresor {
                 for (int it = 0; it < rleSize; ++it) {
                     int howManyZeroes = datosInput[pos++];
                     int size = datosInput[pos++];
-                    byte value = datosInput[pos++];
                     if (howManyZeroes != 0 || size != 0) {
+                        byte value = datosInput[pos++];
                         for (int z = 0; z < howManyZeroes; ++z) lineCr[lineCrit++] = 0;
                         lineCr[lineCrit++] = value;
                     }
