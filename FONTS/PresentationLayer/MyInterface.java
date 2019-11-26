@@ -103,6 +103,7 @@ public class MyInterface extends JFrame {
                 frame.setMinimumSize(dimension);
                 frame.setResizable(true);
                 frame.setVisible(true);
+                frame.setLocationRelativeTo(null);
             }
         });
     }
