@@ -57,6 +57,7 @@ public class CtrlPresentacion {
                 frame.setMinimumSize(dimension);
                 frame.setResizable(true);
                 frame.setVisible(true);
+                frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
                 frame.setLocationRelativeTo(null);
             }
         });
