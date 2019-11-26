@@ -1,12 +1,10 @@
 package PresentationLayer;
 
-import Controllers.CtrlProcesos;
-import Exceptions.FormatoErroneoException;
-
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileFilter;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -15,14 +13,17 @@ public class MyInterface extends JFrame {
     private JPanel panel;
     private JButton salirButton;
     private JButton comprimirYDescomprimirButton;
-    private JTextField textField1;
+    private JTextField pathEntrada;
     private JButton comprimirButton;
-    private JButton estadísticasButton;
+    private JButton estadisticasButton;
     private JButton explorarButton;
     private JButton descomprimirButton;
+    private boolean invocarSelectorCalidad = false;
+    private JFrame myself;
 
     public MyInterface () {
         super ("PROPresor");
+        myself = this;
         setContentPane(panel);
         explorarButton.addActionListener(new ActionListener() {
             @Override
@@ -37,7 +38,7 @@ public class MyInterface extends JFrame {
             }
         });
 
-        textField1.getDocument().addDocumentListener(new DocumentListener() {
+        pathEntrada.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent documentEvent) {
                 actualizarBotones();
@@ -51,6 +52,58 @@ public class MyInterface extends JFrame {
             @Override
             public void changedUpdate(DocumentEvent documentEvent) {
                 actualizarBotones();
+            }
+        });
+        comprimirButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                JDialog frame = new SelectorAlgoritmo(myself, pathEntrada.getText(), invocarSelectorCalidad);
+                Dimension dimension = new Dimension(650, 300);
+                frame.setSize(dimension);
+                dimension = new Dimension(500, 200);
+                frame.setMinimumSize(dimension);
+                frame.setResizable(true);
+                frame.setVisible(true);
+            }
+        });
+
+        descomprimirButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                JDialog frame = new SelectorAlgoritmo(myself, pathEntrada.getText(),invocarSelectorCalidad);
+                Dimension dimension = new Dimension(650, 300);
+                frame.setSize(dimension);
+                dimension = new Dimension(500, 200);
+                frame.setMinimumSize(dimension);
+                frame.setResizable(true);
+                frame.setVisible(true);
+            }
+        });
+
+        comprimirYDescomprimirButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                JDialog frame = new SelectorAlgoritmo(myself,null,invocarSelectorCalidad);
+                Dimension dimension = new Dimension(650, 300);
+                frame.setSize(dimension);
+                dimension = new Dimension(500, 200);
+                frame.setMinimumSize(dimension);
+                frame.setResizable(true);
+                frame.setVisible(true);
+            }
+        });
+        estadisticasButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFrame frame;
+                frame = new Estadisticas();
+                Dimension dimension = new Dimension(600, 300);
+                frame.setSize(dimension);
+                dimension = new Dimension(600, 300);
+                frame.setMinimumSize(dimension);
+                frame.setResizable(true);
+                frame.setVisible(true);
+                frame.setLocationRelativeTo(null);
             }
         });
     }
@@ -91,14 +144,21 @@ public class MyInterface extends JFrame {
         chooser.setFileFilter(fileFilter);
         int result = chooser.showOpenDialog(null);
         if(result == JFileChooser.APPROVE_OPTION)
-            textField1.setText(chooser.getSelectedFile().getAbsolutePath());
+            pathEntrada.setText(chooser.getSelectedFile().getAbsolutePath());
     }
 
     private void actualizarBotones() {
-        String[] splitP = textField1.getText().split("\\.");
+        String[] splitP = pathEntrada.getText().split("\\.");
         String type = splitP[splitP.length-1];
-
-        switch (type) {
+        File f = new File(pathEntrada.getText());
+        f.getName();
+        if(splitP.length == 1 && !pathEntrada.getText().endsWith(".")) {
+            comprimirYDescomprimirButton.setEnabled(false);
+            comprimirButton.setEnabled(true);
+            descomprimirButton.setEnabled(false);
+            invocarSelectorCalidad = false;
+        }
+        else switch (type) {
             case "lzss":
             case "lzw":
             case "lz78":
@@ -107,20 +167,28 @@ public class MyInterface extends JFrame {
                 comprimirYDescomprimirButton.setEnabled(false);
                 comprimirButton.setEnabled(false);
                 descomprimirButton.setEnabled(true);
+                invocarSelectorCalidad = false;
                 break;
             case "txt":
+                comprimirYDescomprimirButton.setEnabled(true);
+                comprimirButton.setEnabled(true);
+                descomprimirButton.setEnabled(false);
+                invocarSelectorCalidad = false;
+                break;
             case "ppm":
                 comprimirYDescomprimirButton.setEnabled(true);
                 comprimirButton.setEnabled(true);
                 descomprimirButton.setEnabled(false);
+                invocarSelectorCalidad = true;
+
                 break;
             default:
                 comprimirYDescomprimirButton.setEnabled(false);
-                comprimirButton.setEnabled(true);
+                comprimirButton.setEnabled(false);
                 descomprimirButton.setEnabled(false);
                 break;
-
         }
     }
+
 }
 

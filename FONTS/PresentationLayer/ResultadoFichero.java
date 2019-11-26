@@ -2,8 +2,14 @@ package PresentationLayer;
 
 import javax.swing.*;
 
-public class ResultadoFichero {
-    private JButton volverALaPantallaButton;
-    private JTextArea textArea1;
-    private JTextArea textArea2;
+public class ResultadoFichero extends JDialog {
+    private JTextArea original;
+    private JTextArea resultante;
+    private JButton finalizarButton;
+    private JScrollPane scrollPanel;
+
+    public ResultadoFichero(){
+        scrollPanel.getVerticalScrollBar().setUnitIncrement(16);
+    }
+
 }
