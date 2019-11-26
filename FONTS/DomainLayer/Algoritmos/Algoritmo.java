@@ -7,5 +7,5 @@ package DomainLayer.Algoritmos;
  * </p>
  */
 public enum Algoritmo {
-    JPEG, LZW, LZ78, LZSS, PREDETERMINADO
+    JPEG, LZW, LZ78, LZSS, CARPETA, PREDETERMINADO;
 }

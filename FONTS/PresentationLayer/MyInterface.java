@@ -10,18 +10,23 @@ import java.awt.event.ActionListener;
 import java.io.File;
 
 public class MyInterface extends JFrame {
+    private JFrame myself;
     private JPanel panel;
     private JButton salirButton;
-    private JButton comprimirYDescomprimirButton;
+
     private JTextField pathEntrada;
-    private JButton comprimirButton;
-    private JButton estadisticasButton;
     private JButton explorarButton;
+
+    private JButton comprimirButton;
     private JButton descomprimirButton;
+    private JButton comprimirYDescomprimirButton;
+
+    private JButton estadisticasButton;
     private JButton escogerPrederterminadoButton;
     private JTextField ponerElPredeterminadoAquiTextField;
+
     private boolean invocarSelectorCalidad = false;
-    private JFrame myself;
+    private boolean esCarpeta = false;
 
     public MyInterface () {
         super ("PROPresor");
@@ -59,7 +64,7 @@ public class MyInterface extends JFrame {
         comprimirButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                JDialog dialog = new SelectorAlgoritmo(myself, pathEntrada.getText(), invocarSelectorCalidad);
+                JDialog dialog = new SelectorAlgoritmo(myself, pathEntrada.getText(), invocarSelectorCalidad, true, esCarpeta);
                 Dimension dimension = new Dimension(650, 300);
                 dialog.setSize(dimension);
                 dimension = new Dimension(500, 200);
@@ -73,7 +78,7 @@ public class MyInterface extends JFrame {
         descomprimirButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                JDialog dialog = new SelectorAlgoritmo(myself, pathEntrada.getText(),invocarSelectorCalidad);
+                JDialog dialog = new SelectorAlgoritmo(myself, pathEntrada.getText(),invocarSelectorCalidad, false, esCarpeta);
                 Dimension dimension = new Dimension(650, 300);
                 dialog.setSize(dimension);
                 dimension = new Dimension(500, 200);
@@ -87,7 +92,7 @@ public class MyInterface extends JFrame {
         comprimirYDescomprimirButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                JDialog dialog = new SelectorAlgoritmo(myself,null,invocarSelectorCalidad);
+                JDialog dialog = new SelectorAlgoritmo(myself,null,invocarSelectorCalidad, true, esCarpeta);
                 Dimension dimension = new Dimension(650, 300);
                 dialog.setSize(dimension);
                 dimension = new Dimension(500, 200);
@@ -170,13 +175,15 @@ public class MyInterface extends JFrame {
     private void actualizarBotones() {
         String[] splitP = pathEntrada.getText().split("\\.");
         String type = splitP[splitP.length-1];
-        File f = new File(pathEntrada.getText());
-        f.getName();
+
+        //TODO Detectar correctamente carpetas aunque estas tengan puntos
+
         if(splitP.length == 1 && !pathEntrada.getText().endsWith(".")) {
             comprimirYDescomprimirButton.setEnabled(false);
             comprimirButton.setEnabled(true);
             descomprimirButton.setEnabled(false);
             invocarSelectorCalidad = false;
+            esCarpeta = true;
         }
         else switch (type) {
             case "lzss":
