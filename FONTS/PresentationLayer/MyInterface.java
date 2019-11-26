@@ -97,9 +97,9 @@ public class MyInterface extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 JFrame frame;
                 frame = new Estadisticas();
-                Dimension dimension = new Dimension(650, 300);
+                Dimension dimension = new Dimension(600, 300);
                 frame.setSize(dimension);
-                dimension = new Dimension(500, 200);
+                dimension = new Dimension(600, 300);
                 frame.setMinimumSize(dimension);
                 frame.setResizable(true);
                 frame.setVisible(true);
