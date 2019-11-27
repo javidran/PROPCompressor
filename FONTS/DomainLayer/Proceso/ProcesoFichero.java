@@ -1,7 +1,8 @@
 package DomainLayer.Proceso;
 
+import DomainLayer.Algoritmos.CompresorDecompresor;
 import DomainLayer.Algoritmos.*;
-import DomainLayer.Algoritmos.LZ78;
+import Enumeration.Algoritmo;
 
 
 /**
