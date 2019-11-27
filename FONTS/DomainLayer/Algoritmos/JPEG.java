@@ -147,7 +147,7 @@ public class JPEG implements CompresorDecompresor {
                 n = 0;
             }
         }
-        if (n != 0) {
+        if (rleY.length() % 8 != 0) {
             n >>>= 1;
             l.add(n);
         }
