@@ -2,7 +2,7 @@ package Controllers;
 
 import DataLayer.GestorArchivo;
 import DataLayer.GestorEstadisticas;
-import DomainLayer.Algoritmos.Algoritmo;
+import Enumeration.Algoritmo;
 import DomainLayer.Proceso.DatosProceso;
 
 import java.io.*;
@@ -76,7 +76,7 @@ public class CtrlDatos {
     /**
      * Actualiza el fichero de estadística de compresión o descompresión del algoritmo correspondiente con los datos del nuevo archivo procesado.
      * @param dp DatosProceso para conseguir la información estadística del proceso.
-     * @param algoritmo Algoritmo del que actualizamos el fichero estadística.
+     * @param algoritmo Enumeration.Algoritmo del que actualizamos el fichero estadística.
      * @param esCompresion Indica si el fichero estadística es de compresión o descompresión.
      */
     public void actualizaEstadistica(DatosProceso dp, Algoritmo algoritmo, boolean esCompresion) {

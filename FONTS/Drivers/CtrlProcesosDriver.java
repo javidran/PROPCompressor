@@ -1,8 +1,7 @@
 package Drivers;
 
-import Controllers.CtrlEstadistica;
 import Controllers.CtrlProcesos;
-import DomainLayer.Algoritmos.Algoritmo;
+import Enumeration.Algoritmo;
 
 import java.util.Scanner;
 
@@ -129,7 +128,7 @@ public class CtrlProcesosDriver {
                                 throw new EnumConstantNotPresentException(Algoritmo.class, "El tipo de compresor " + algoritmoComp + " no existe o no está disponible para tratar un archivo .txt\n");
                         }
                         CtrlProcesos.setAlgoritmoDeTextoPredeterminado(tipoAlgoritmo);
-                        System.out.println("Algoritmo de texto predeterminado cambiado a " + tipoAlgoritmo + ".");
+                        System.out.println("Enumeration.Algoritmo de texto predeterminado cambiado a " + tipoAlgoritmo + ".");
                         break;
                     case "salir":
                     case "5":

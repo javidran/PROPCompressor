@@ -1,6 +1,6 @@
 package Controllers;
 
-import DomainLayer.Algoritmos.Algoritmo;
+import Enumeration.Algoritmo;
 import PresentationLayer.MyInterface;
 
 import javax.swing.*;
@@ -9,7 +9,7 @@ import java.io.IOException;
 
 public class CtrlPresentacion {
     /**
-     * Instancia de CtrlDatos para garantizar que es una clase Singleton
+     * Instancia de CtrlPresentacion para garantizar que es una clase Singleton
      */
     private static CtrlPresentacion instance = null;
 

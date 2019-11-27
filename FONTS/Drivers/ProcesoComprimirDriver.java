@@ -1,6 +1,6 @@
 package Drivers;
 
-import DomainLayer.Algoritmos.Algoritmo;
+import Enumeration.Algoritmo;
 import DomainLayer.Algoritmos.JPEG;
 import DomainLayer.Proceso.DatosProceso;
 import DomainLayer.Proceso.ProcesoComprimir;

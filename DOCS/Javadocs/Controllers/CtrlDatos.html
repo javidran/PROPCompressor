@@ -147,8 +147,8 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../Controllers/CtrlDatos.html#actualizaEstadistica-DomainLayer.Proceso.DatosProceso-DomainLayer.Algoritmos.Algoritmo-boolean-">actualizaEstadistica</a></span>(<a href="../DomainLayer/Proceso/DatosProceso.html" title="class in DomainLayer.Proceso">DatosProceso</a>&nbsp;dp,
-                    <a href="../DomainLayer/Algoritmos/Algoritmo.html" title="enum in DomainLayer.Algoritmos">Algoritmo</a>&nbsp;algoritmo,
+<td class="colLast"><code><span class="memberNameLink"><a href="../Controllers/CtrlDatos.html#actualizaEstadistica-DomainLayer.Proceso.DatosProceso-Enumeration.Algoritmo-boolean-">actualizaEstadistica</a></span>(<a href="../DomainLayer/Proceso/DatosProceso.html" title="class in DomainLayer.Proceso">DatosProceso</a>&nbsp;dp,
+                    <a href="../DomainLayer/Algoritmos/Enumeration.Algoritmo.html" title="enum in DomainLayer.Algoritmos">Enumeration.Algoritmo</a>&nbsp;algoritmo,
                     boolean&nbsp;esCompresion)</code>
 <div class="block">Actualiza el fichero de estadística de compresión o descompresión del algoritmo correspondiente con los datos del nuevo archivo procesado.</div>
 </td>
@@ -161,30 +161,30 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>int</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../Controllers/CtrlDatos.html#getNumeroElementos-DomainLayer.Algoritmos.Algoritmo-boolean-">getNumeroElementos</a></span>(<a href="../DomainLayer/Algoritmos/Algoritmo.html" title="enum in DomainLayer.Algoritmos">Algoritmo</a>&nbsp;algoritmo,
+<td class="colLast"><code><span class="memberNameLink"><a href="../Controllers/CtrlDatos.html#getNumeroElementos-Enumeration.Algoritmo-boolean-">getNumeroElementos</a></span>(<a href="../DomainLayer/Algoritmos/Enumeration.Algoritmo.html" title="enum in DomainLayer.Algoritmos">Enumeration.Algoritmo</a>&nbsp;algoritmo,
                   boolean&nbsp;esCompresion)</code>
 <div class="block">Obtiene el número de elementos que contiene la estadística para compresión o descompresión del algoritmo seleccionado.</div>
 </td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>double</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../Controllers/CtrlDatos.html#getPorcentajeAhorradoMedio-DomainLayer.Algoritmos.Algoritmo-boolean-">getPorcentajeAhorradoMedio</a></span>(<a href="../DomainLayer/Algoritmos/Algoritmo.html" title="enum in DomainLayer.Algoritmos">Algoritmo</a>&nbsp;algoritmo,
+<td class="colLast"><code><span class="memberNameLink"><a href="../Controllers/CtrlDatos.html#getPorcentajeAhorradoMedio-Enumeration.Algoritmo-boolean-">getPorcentajeAhorradoMedio</a></span>(<a href="../DomainLayer/Algoritmos/Enumeration.Algoritmo.html" title="enum in DomainLayer.Algoritmos">Enumeration.Algoritmo</a>&nbsp;algoritmo,
                           boolean&nbsp;esCompresion)</code>
 <div class="block">Obtiene el porcentaje medio que representan los archivos procesados respecto al original de la estadística para compresión o descompresión del algoritmo seleccionado.</div>
 </td>
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>long</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../Controllers/CtrlDatos.html#getTiempoMedio-DomainLayer.Algoritmos.Algoritmo-boolean-">getTiempoMedio</a></span>(<a href="../DomainLayer/Algoritmos/Algoritmo.html" title="enum in DomainLayer.Algoritmos">Algoritmo</a>&nbsp;algoritmo,
+<td class="colLast"><code><span class="memberNameLink"><a href="../Controllers/CtrlDatos.html#getTiempoMedio-Enumeration.Algoritmo-boolean-">getTiempoMedio</a></span>(<a href="../DomainLayer/Algoritmos/Enumeration.Algoritmo.html" title="enum in DomainLayer.Algoritmos">Enumeration.Algoritmo</a>&nbsp;algoritmo,
               boolean&nbsp;esCompresion)</code>
 <div class="block">Obtiene el tiempo medio de la estadística para compresión o descompresión del algoritmo seleccionado.</div>
 </td>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../Controllers/CtrlDatos.html#guardaArchivo-byte:A-java.lang.String-DomainLayer.Algoritmos.Algoritmo-boolean-boolean-">guardaArchivo</a></span>(byte[]&nbsp;data,
+<td class="colLast"><code><span class="memberNameLink"><a href="../Controllers/CtrlDatos.html#guardaArchivo-byte:A-java.lang.String-Enumeration.Algoritmo-boolean-boolean-">guardaArchivo</a></span>(byte[]&nbsp;data,
              java.lang.String&nbsp;path,
-             <a href="../DomainLayer/Algoritmos/Algoritmo.html" title="enum in DomainLayer.Algoritmos">Algoritmo</a>&nbsp;algoritmo,
+             <a href="../DomainLayer/Algoritmos/Enumeration.Algoritmo.html" title="enum in DomainLayer.Algoritmos">Enumeration.Algoritmo</a>&nbsp;algoritmo,
              boolean&nbsp;esCompresion,
              boolean&nbsp;sobreescribir)</code>
 <div class="block">Llama a la clase GestorArchivo para que guarde el archivo del path.</div>
@@ -279,7 +279,7 @@ extends java.lang.Object</pre>
 <h4>guardaArchivo</h4>
 <pre>public&nbsp;void&nbsp;guardaArchivo(byte[]&nbsp;data,
                           java.lang.String&nbsp;path,
-                          <a href="../DomainLayer/Algoritmos/Algoritmo.html" title="enum in DomainLayer.Algoritmos">Algoritmo</a>&nbsp;algoritmo,
+                          <a href="../DomainLayer/Algoritmos/Enumeration.Algoritmo.html" title="enum in DomainLayer.Algoritmos">Enumeration.Algoritmo</a>&nbsp;algoritmo,
                           boolean&nbsp;esCompresion,
                           boolean&nbsp;sobreescribir)
                    throws java.io.IOException</pre>
@@ -306,13 +306,13 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>actualizaEstadistica</h4>
 <pre>public&nbsp;void&nbsp;actualizaEstadistica(<a href="../DomainLayer/Proceso/DatosProceso.html" title="class in DomainLayer.Proceso">DatosProceso</a>&nbsp;dp,
-                                 <a href="../DomainLayer/Algoritmos/Algoritmo.html" title="enum in DomainLayer.Algoritmos">Algoritmo</a>&nbsp;algoritmo,
+                                 <a href="../DomainLayer/Algoritmos/Enumeration.Algoritmo.html" title="enum in DomainLayer.Algoritmos">Enumeration.Algoritmo</a>&nbsp;algoritmo,
                                  boolean&nbsp;esCompresion)</pre>
 <div class="block">Actualiza el fichero de estadística de compresión o descompresión del algoritmo correspondiente con los datos del nuevo archivo procesado.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>dp</code> - DatosProceso para conseguir la información estadística del proceso.</dd>
-<dd><code>algoritmo</code> - Algoritmo del que actualizamos el fichero estadística.</dd>
+<dd><code>algoritmo</code> - Enumeration.Algoritmo del que actualizamos el fichero estadística.</dd>
 <dd><code>esCompresion</code> - Indica si el fichero estadística es de compresión o descompresión.</dd>
 </dl>
 </li>
@@ -323,7 +323,7 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>getNumeroElementos</h4>
-<pre>public&nbsp;int&nbsp;getNumeroElementos(<a href="../DomainLayer/Algoritmos/Algoritmo.html" title="enum in DomainLayer.Algoritmos">Algoritmo</a>&nbsp;algoritmo,
+<pre>public&nbsp;int&nbsp;getNumeroElementos(<a href="../DomainLayer/Algoritmos/Enumeration.Algoritmo.html" title="enum in DomainLayer.Algoritmos">Enumeration.Algoritmo</a>&nbsp;algoritmo,
                               boolean&nbsp;esCompresion)
                        throws java.io.IOException</pre>
 <div class="block">Obtiene el número de elementos que contiene la estadística para compresión o descompresión del algoritmo seleccionado.</div>
@@ -344,7 +344,7 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>getTiempoMedio</h4>
-<pre>public&nbsp;long&nbsp;getTiempoMedio(<a href="../DomainLayer/Algoritmos/Algoritmo.html" title="enum in DomainLayer.Algoritmos">Algoritmo</a>&nbsp;algoritmo,
+<pre>public&nbsp;long&nbsp;getTiempoMedio(<a href="../DomainLayer/Algoritmos/Enumeration.Algoritmo.html" title="enum in DomainLayer.Algoritmos">Enumeration.Algoritmo</a>&nbsp;algoritmo,
                            boolean&nbsp;esCompresion)
                     throws java.io.IOException</pre>
 <div class="block">Obtiene el tiempo medio de la estadística para compresión o descompresión del algoritmo seleccionado.</div>
@@ -365,7 +365,7 @@ extends java.lang.Object</pre>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>getPorcentajeAhorradoMedio</h4>
-<pre>public&nbsp;double&nbsp;getPorcentajeAhorradoMedio(<a href="../DomainLayer/Algoritmos/Algoritmo.html" title="enum in DomainLayer.Algoritmos">Algoritmo</a>&nbsp;algoritmo,
+<pre>public&nbsp;double&nbsp;getPorcentajeAhorradoMedio(<a href="../DomainLayer/Algoritmos/Enumeration.Algoritmo.html" title="enum in DomainLayer.Algoritmos">Enumeration.Algoritmo</a>&nbsp;algoritmo,
                                          boolean&nbsp;esCompresion)
                                   throws java.io.IOException</pre>
 <div class="block">Obtiene el porcentaje medio que representan los archivos procesados respecto al original de la estadística para compresión o descompresión del algoritmo seleccionado.</div>

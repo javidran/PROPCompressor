@@ -1,10 +1,9 @@
 package PresentationLayer;
 
 import Controllers.CtrlProcesos;
-import DomainLayer.Algoritmos.Algoritmo;
+import Enumeration.Algoritmo;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

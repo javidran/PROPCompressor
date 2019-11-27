@@ -1,7 +1,7 @@
 package Drivers;
 
 import Controllers.CtrlEstadistica;
-import DomainLayer.Algoritmos.Algoritmo;
+import Enumeration.Algoritmo;
 
 import java.util.Scanner;
 

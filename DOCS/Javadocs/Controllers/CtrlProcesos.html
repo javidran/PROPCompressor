@@ -147,22 +147,22 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>static <a href="../DomainLayer/Algoritmos/Algoritmo.html" title="enum in DomainLayer.Algoritmos">Algoritmo</a>[]</code></td>
+<td class="colFirst"><code>static <a href="../DomainLayer/Algoritmos/Enumeration.Algoritmo.html" title="enum in DomainLayer.Algoritmos">Enumeration.Algoritmo</a>[]</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../Controllers/CtrlProcesos.html#algoritmosPosibles-java.lang.String-">algoritmosPosibles</a></span>(java.lang.String&nbsp;path)</code>
 <div class="block">Comprueba qué algoritmos se pueden usar para comprimir o descomprimir un fichero, el cual se pasa por parámetro.</div>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../Controllers/CtrlProcesos.html#comprimirArchivo-java.lang.String-DomainLayer.Algoritmos.Algoritmo-">comprimirArchivo</a></span>(java.lang.String&nbsp;path,
-                <a href="../DomainLayer/Algoritmos/Algoritmo.html" title="enum in DomainLayer.Algoritmos">Algoritmo</a>&nbsp;tipoAlgoritmo)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../Controllers/CtrlProcesos.html#comprimirArchivo-java.lang.String-Enumeration.Algoritmo-">comprimirArchivo</a></span>(java.lang.String&nbsp;path,
+                <a href="../DomainLayer/Algoritmos/Enumeration.Algoritmo.html" title="enum in DomainLayer.Algoritmos">Enumeration.Algoritmo</a>&nbsp;tipoAlgoritmo)</code>
 <div class="block">Crea y ejecuta un proceso de compresión para un fichero, el cual se comprimirá con un algoritmo, ambos pasados por parámetro.</div>
 </td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../Controllers/CtrlProcesos.html#comprimirDescomprimirArchivo-java.lang.String-DomainLayer.Algoritmos.Algoritmo-">comprimirDescomprimirArchivo</a></span>(java.lang.String&nbsp;path,
-                            <a href="../DomainLayer/Algoritmos/Algoritmo.html" title="enum in DomainLayer.Algoritmos">Algoritmo</a>&nbsp;tipoAlgoritmo)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../Controllers/CtrlProcesos.html#comprimirDescomprimirArchivo-java.lang.String-Enumeration.Algoritmo-">comprimirDescomprimirArchivo</a></span>(java.lang.String&nbsp;path,
+                            <a href="../DomainLayer/Algoritmos/Enumeration.Algoritmo.html" title="enum in DomainLayer.Algoritmos">Enumeration.Algoritmo</a>&nbsp;tipoAlgoritmo)</code>
 <div class="block">Crea y ejecuta un proceso de compresión y descompresión para un fichero, el cual se comprimirá con un algoritmo, ambos pasados por parámetro, y el cual se descomprimirá con su algoritmo, seleccionado automáticamente en función de su extensión.</div>
 </td>
 </tr>
@@ -185,7 +185,7 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr id="i6" class="altColor">
-<td class="colFirst"><code>static <a href="../DomainLayer/Algoritmos/Algoritmo.html" title="enum in DomainLayer.Algoritmos">Algoritmo</a></code></td>
+<td class="colFirst"><code>static <a href="../DomainLayer/Algoritmos/Enumeration.Algoritmo.html" title="enum in DomainLayer.Algoritmos">Enumeration.Algoritmo</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../Controllers/CtrlProcesos.html#getAlgoritmoDeTextoPredeterminado--">getAlgoritmoDeTextoPredeterminado</a></span>()</code>
 <div class="block">Obtiene el algoritmo de texto predeterminado del Singleton de CtrlProcesos</div>
 </td>
@@ -198,7 +198,7 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i8" class="altColor">
 <td class="colFirst"><code>static void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../Controllers/CtrlProcesos.html#setAlgoritmoDeTextoPredeterminado-DomainLayer.Algoritmos.Algoritmo-">setAlgoritmoDeTextoPredeterminado</a></span>(<a href="../DomainLayer/Algoritmos/Algoritmo.html" title="enum in DomainLayer.Algoritmos">Algoritmo</a>&nbsp;algoritmoDeTextoPredeterminado)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../Controllers/CtrlProcesos.html#setAlgoritmoDeTextoPredeterminado-Enumeration.Algoritmo-">setAlgoritmoDeTextoPredeterminado</a></span>(<a href="../DomainLayer/Algoritmos/Enumeration.Algoritmo.html" title="enum in DomainLayer.Algoritmos">Enumeration.Algoritmo</a>&nbsp;algoritmoDeTextoPredeterminado)</code>
 <div class="block">Asigna un algoritmo de texto predeterminado al Singleton de CtrlProcesos
  
      El algoritmoDeTextoPredeterminado es uno de los tres algoritmos de compresión de texto posibles
@@ -271,7 +271,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>comprimirArchivo</h4>
 <pre>public&nbsp;void&nbsp;comprimirArchivo(java.lang.String&nbsp;path,
-                             <a href="../DomainLayer/Algoritmos/Algoritmo.html" title="enum in DomainLayer.Algoritmos">Algoritmo</a>&nbsp;tipoAlgoritmo)
+                             <a href="../DomainLayer/Algoritmos/Enumeration.Algoritmo.html" title="enum in DomainLayer.Algoritmos">Enumeration.Algoritmo</a>&nbsp;tipoAlgoritmo)
                       throws java.lang.Exception</pre>
 <div class="block">Crea y ejecuta un proceso de compresión para un fichero, el cual se comprimirá con un algoritmo, ambos pasados por parámetro.
  <p>
@@ -316,7 +316,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>comprimirDescomprimirArchivo</h4>
 <pre>public&nbsp;void&nbsp;comprimirDescomprimirArchivo(java.lang.String&nbsp;path,
-                                         <a href="../DomainLayer/Algoritmos/Algoritmo.html" title="enum in DomainLayer.Algoritmos">Algoritmo</a>&nbsp;tipoAlgoritmo)
+                                         <a href="../DomainLayer/Algoritmos/Enumeration.Algoritmo.html" title="enum in DomainLayer.Algoritmos">Enumeration.Algoritmo</a>&nbsp;tipoAlgoritmo)
                                   throws java.lang.Exception</pre>
 <div class="block">Crea y ejecuta un proceso de compresión y descompresión para un fichero, el cual se comprimirá con un algoritmo, ambos pasados por parámetro, y el cual se descomprimirá con su algoritmo, seleccionado automáticamente en función de su extensión.
  <p>
@@ -340,7 +340,7 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>setAlgoritmoDeTextoPredeterminado</h4>
-<pre>public static&nbsp;void&nbsp;setAlgoritmoDeTextoPredeterminado(<a href="../DomainLayer/Algoritmos/Algoritmo.html" title="enum in DomainLayer.Algoritmos">Algoritmo</a>&nbsp;algoritmoDeTextoPredeterminado)</pre>
+<pre>public static&nbsp;void&nbsp;setAlgoritmoDeTextoPredeterminado(<a href="../DomainLayer/Algoritmos/Enumeration.Algoritmo.html" title="enum in DomainLayer.Algoritmos">Enumeration.Algoritmo</a>&nbsp;algoritmoDeTextoPredeterminado)</pre>
 <div class="block">Asigna un algoritmo de texto predeterminado al Singleton de CtrlProcesos
  <p>
      El algoritmoDeTextoPredeterminado es uno de los tres algoritmos de compresión de texto posibles
@@ -357,7 +357,7 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>getAlgoritmoDeTextoPredeterminado</h4>
-<pre>public static&nbsp;<a href="../DomainLayer/Algoritmos/Algoritmo.html" title="enum in DomainLayer.Algoritmos">Algoritmo</a>&nbsp;getAlgoritmoDeTextoPredeterminado()</pre>
+<pre>public static&nbsp;<a href="../DomainLayer/Algoritmos/Enumeration.Algoritmo.html" title="enum in DomainLayer.Algoritmos">Enumeration.Algoritmo</a>&nbsp;getAlgoritmoDeTextoPredeterminado()</pre>
 <div class="block">Obtiene el algoritmo de texto predeterminado del Singleton de CtrlProcesos</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -385,7 +385,7 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>algoritmosPosibles</h4>
-<pre>public static&nbsp;<a href="../DomainLayer/Algoritmos/Algoritmo.html" title="enum in DomainLayer.Algoritmos">Algoritmo</a>[]&nbsp;algoritmosPosibles(java.lang.String&nbsp;path)
+<pre>public static&nbsp;<a href="../DomainLayer/Algoritmos/Enumeration.Algoritmo.html" title="enum in DomainLayer.Algoritmos">Enumeration.Algoritmo</a>[]&nbsp;algoritmosPosibles(java.lang.String&nbsp;path)
                                       throws <a href="../Exceptions/FormatoErroneoException.html" title="class in Exceptions">FormatoErroneoException</a></pre>
 <div class="block">Comprueba qué algoritmos se pueden usar para comprimir o descomprimir un fichero, el cual se pasa por parámetro.
  <p>
