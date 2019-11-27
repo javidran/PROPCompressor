@@ -148,7 +148,7 @@ public class JPEG implements CompresorDecompresor {
             }
         }
         if (rleY.length() % 8 != 0) {
-            n >>>= 1;
+            for (int i = 1; i < (8 - rleY.length() % 8); ++i) n <<= 1;
             l.add(n);
         }
         return l;
@@ -399,8 +399,10 @@ public class JPEG implements CompresorDecompresor {
                 }
                 rleY = rleY.concat(ACHuffmanTable[0][0]); //end of block: (0,0)
                 int sizeOfBlock = rleY.length() / 8;
+                int offsetOfBlock = rleY.length() % 8;
                 if (rleY.length() % 8 != 0) sizeOfBlock++;
                 result.add((byte)sizeOfBlock); //size in bits of block defined before reading each block in order to know how many bytes have to be read
+                result.add((byte)offsetOfBlock);
                 //addition of block to result
                 result.addAll(toByteList(rleY));
             }
@@ -600,12 +602,16 @@ public class JPEG implements CompresorDecompresor {
                 boolean up = true;
                 int k = x, l = y;
                 int rleSize = datosInput[pos++];
-                String huffmanString = "";
-                for (int it = 0; it < rleSize; ++it) huffmanString = huffmanString.concat(Integer.toBinaryString(datosInput[pos++]));
+                int offsetSize = datosInput[pos++];
+                StringBuilder huffmanStringBuilder = new StringBuilder();
+                for (int it = 0; it < rleSize; ++it) huffmanStringBuilder = huffmanStringBuilder.append(Integer.toBinaryString(datosInput[pos++]));
+                if (rleSize % 8 != 0) {
+                    for (int it = 0; it < (8 - offsetSize); ++it) huffmanStringBuilder.deleteCharAt(huffmanStringBuilder.length() - 1);
+                }
                 List<Byte> huffmanList = new ArrayList<>();
                 String huffmanBuff = "";
-                for (int it = 0; it < huffmanString.length(); ++it) {
-                    huffmanBuff += huffmanString.charAt(it);
+                for (int it = 0; it < huffmanStringBuilder.length(); ++it) {
+                    huffmanBuff += huffmanStringBuilder.charAt(it);
                     Pair<Byte, Byte> pair = ACInverseHuffmanTable.get(huffmanBuff);
                     if (pair != null) {
                         huffmanList.add(pair.getKey());
@@ -613,7 +619,7 @@ public class JPEG implements CompresorDecompresor {
                         huffmanList.add(value);
                         StringBuilder runlength = new StringBuilder();
                         for (int n = 0; n < value; ++n) {
-                            runlength.append(huffmanString.charAt(++it));
+                            runlength.append(huffmanStringBuilder.charAt(++it));
                         }
                         huffmanList.add(Byte.parseByte(runlength.toString(), 2));
                         huffmanBuff = "";
