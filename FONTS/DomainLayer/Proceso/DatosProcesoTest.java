@@ -65,13 +65,13 @@ public class DatosProcesoTest {
     @Test
     public void testGetDiffSizePercentageDecompress() {
         datosProceso = new DatosProceso(time, newSize, oldSize, false);
-        assertEquals(54.0, datosProceso.getDiffSizePercentage(), 0.0);
+        assertEquals(184.0, datosProceso.getDiffSizePercentage(), 0.0);
     }
 
     @Test
     public void testGetDiffSizePercentageDecompressFailure() {
         datosProceso = new DatosProceso(time, oldSize, newSize, false);
-        assertEquals(184.0, datosProceso.getDiffSizePercentage(), 0.0);
+        assertEquals(54.0, datosProceso.getDiffSizePercentage(), 0.0);
     }
 
     @Test
