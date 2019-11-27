@@ -129,11 +129,6 @@
               <text value="Salir"/>
             </properties>
           </component>
-          <hspacer id="f9de3">
-            <constraints>
-              <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-            </constraints>
-          </hspacer>
           <component id="15db7" class="javax.swing.JButton" binding="escogerPrederterminadoButton" default-binding="true">
             <constraints>
               <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
@@ -150,17 +145,22 @@
               <text value="Enumeration.Algoritmo Predetermiando actual:"/>
             </properties>
           </component>
-          <component id="e3803" class="javax.swing.JTextField" binding="ponerElPredeterminadoAquiTextField" default-binding="true">
+          <component id="e3803" class="javax.swing.JTextField" binding="MostrarPredeterminado">
             <constraints>
-              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-                <preferred-size width="150" height="-1"/>
+              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="7" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                <preferred-size width="50" height="-1"/>
               </grid>
             </constraints>
             <properties>
               <editable value="false"/>
-              <text value="PonerElPredeterminadoAqui"/>
+              <text value="AlgortimoPredeterminado"/>
             </properties>
           </component>
+          <hspacer id="965ba">
+            <constraints>
+              <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+          </hspacer>
         </children>
       </grid>
       <vspacer id="ca2bc">

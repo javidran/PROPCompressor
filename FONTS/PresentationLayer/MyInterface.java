@@ -1,5 +1,9 @@
 package PresentationLayer;
 
+import Controllers.CtrlProcesos;
+import DomainLayer.Algoritmos.Algoritmo;
+import Exceptions.FormatoErroneoException;
+
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -7,7 +11,9 @@ import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputMethodListener;
 import java.io.File;
+
 
 public class MyInterface extends JFrame {
     private JFrame myself;
@@ -23,7 +29,7 @@ public class MyInterface extends JFrame {
 
     private JButton estadisticasButton;
     private JButton escogerPrederterminadoButton;
-    private JTextField ponerElPredeterminadoAquiTextField;
+    private JTextField MostrarPredeterminado;
 
     private boolean invocarSelectorCalidad = false;
     private boolean esCarpeta = false;
@@ -32,6 +38,20 @@ public class MyInterface extends JFrame {
         super ("PROPresor");
         myself = this;
         setContentPane(panel);
+
+        Algoritmo PredetActual = CtrlProcesos.getAlgoritmoDeTextoPredeterminado();
+        switch (PredetActual) {
+            case LZSS:
+                MostrarPredeterminado.setText("LZSS");
+                break;
+            case LZW:
+                MostrarPredeterminado.setText("LZW");
+                break;
+            case LZ78:
+                MostrarPredeterminado.setText("LZ78");
+                break;
+        }
+
         explorarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -129,8 +149,21 @@ public class MyInterface extends JFrame {
                 dialog.setLocationRelativeTo(myself);
                 dialog.setResizable(true);
                 dialog.setVisible(true);
+                Algoritmo PredetActual = CtrlProcesos.getAlgoritmoDeTextoPredeterminado();
+                switch (PredetActual) {
+                    case LZSS:
+                        MostrarPredeterminado.setText("LZSS");
+                        break;
+                    case LZW:
+                        MostrarPredeterminado.setText("LZW");
+                        break;
+                    case LZ78:
+                        MostrarPredeterminado.setText("LZ78");
+                        break;
+                }
             }
         });
+
     }
 
     private void seleccionDeArchivo() {
