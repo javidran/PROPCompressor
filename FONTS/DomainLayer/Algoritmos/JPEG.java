@@ -315,7 +315,7 @@ public class JPEG implements CompresorDecompresor {
                         --j;
                     }
                 }
-                List<Byte> rleY = new ArrayList<>(); //losless compression of 8x8 block values
+                List<Byte> rleY = new ArrayList<>(); //RLE: lossless compression of 8x8 block values
                 byte howManyZeroes = 0; //how many zeroes have been ignored until a non zero value found in 8x8 block
                 for (int k = 0; k < 64; ++k) {
                     if (lineY[k] == 0) {
@@ -399,7 +399,7 @@ public class JPEG implements CompresorDecompresor {
                         --j;
                     }
                 }
-                List<Byte> rleCb = new ArrayList<>(); //losless compression of 8x8 block values
+                List<Byte> rleCb = new ArrayList<>(); //RLE: lossless compression of 8x8 block values
                 byte howManyZeroes = 0; //how many zeroes have been ignored until a non zero value found in 8x8 block
                 for (int k = 0; k < 64; ++k) {
                     if (lineCb[k] == 0) {
@@ -418,7 +418,7 @@ public class JPEG implements CompresorDecompresor {
                 //addition of block to result
                 result.addAll(rleCb);
                 howManyZeroes = 0;
-                List<Byte> rleCr = new ArrayList<>(); //losless compression of 8x8 block values
+                List<Byte> rleCr = new ArrayList<>(); //RLE: lossless compression of 8x8 block values
                 for (int k = 0; k < 64; ++k) {
                     if (lineCr[k] == 0) {
                         howManyZeroes++;
@@ -532,7 +532,7 @@ public class JPEG implements CompresorDecompresor {
                 int rleSize = datosInput[pos++];
                 byte[] lineY = new byte[64];
                 int lineYit = 0;
-                for (int it = 0; it < rleSize; ++it) {
+                for (int it = 0; it < rleSize; ++it) { //RLE lossless decompression for Luminance
                     int howManyZeroes = datosInput[pos++];
                     int size = datosInput[pos++];
                     if (howManyZeroes != 0 || size != 0) {
@@ -613,7 +613,7 @@ public class JPEG implements CompresorDecompresor {
                 int rleSize = datosInput[pos++];
                 byte[] lineCb = new byte[64];
                 int lineCbit = 0;
-                for (int it = 0; it < rleSize; ++it) {
+                for (int it = 0; it < rleSize; ++it) { //RLE lossless decompression for Luminance
                     int howManyZeroes = datosInput[pos++];
                     int size = datosInput[pos++];
                     if (howManyZeroes != 0 || size != 0) {
@@ -630,7 +630,7 @@ public class JPEG implements CompresorDecompresor {
                 rleSize = datosInput[pos++];
                 byte[] lineCr = new byte[64];
                 int lineCrit = 0;
-                for (int it = 0; it < rleSize; ++it) {
+                for (int it = 0; it < rleSize; ++it) { //RLE lossless decompression for Luminance
                     int howManyZeroes = datosInput[pos++];
                     int size = datosInput[pos++];
                     if (howManyZeroes != 0 || size != 0) {
