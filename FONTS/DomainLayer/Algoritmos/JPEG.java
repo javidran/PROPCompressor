@@ -71,6 +71,21 @@ public class JPEG implements CompresorDecompresor {
     }
 
     /**
+     * Cuenta el número de bits mínimos con los que representar un número
+     * @param num El número del cual queremos saber su tamaño en bits
+     * @return El número de bits mínimos con los que representar un número
+     */
+    private static byte bitsNumero(byte num) {
+        byte bits = 0;
+        int numero = 0xFF & num;
+        while (numero != 0) {
+            bits++;
+            numero >>>= 1;
+        }
+        return bits;
+    }
+
+    /**
      * Asigna un valor de calidad de compresión al Singleton de JPEG
      * <p>
      *     Su valor se sitúa entre 1 y 7. En caso contrario de corrige al valor extremo más cercano
@@ -100,16 +115,16 @@ public class JPEG implements CompresorDecompresor {
         List<Byte> result = new ArrayList<>(); //data will be written here before passing it into output byte array
         if (datosInput.length < 14) throw new FormatoErroneoException("El formato de .ppm no es correcto!");
         int pos = 0;
-        String buff = "";
+        StringBuilder buff = new StringBuilder();
         //start of header reading
         while (pos < datosInput.length - 1 && (char)datosInput[pos] != '\n') {
-            buff += (char)datosInput[pos];
+            buff.append((char) datosInput[pos]);
             result.add(datosInput[pos]);
             ++pos;
         }
         result.add((byte)'\n');
         ++pos;
-        String magicNumber = buff; //read .ppm magicNumber, which is P6 (pixels are codified in binary)
+        String magicNumber = buff.toString(); //read .ppm magicNumber, which is P6 (pixels are codified in binary)
         if(!magicNumber.equals("P6")) throw new FormatoErroneoException("El formato de .ppm no es correcto!");
         while (pos < datosInput.length - 1 && (char)datosInput[pos] == '#') {
             while ((char)datosInput[pos] != '\n') { //avoiding comments between parameters...
@@ -117,15 +132,15 @@ public class JPEG implements CompresorDecompresor {
             }
             ++pos;
         }
-        buff = "";
+        buff = new StringBuilder();
         while (pos < datosInput.length - 1 && (char)datosInput[pos] != '\n') {
-            buff += (char)datosInput[pos];
+            buff.append((char) datosInput[pos]);
             result.add(datosInput[pos]);
             ++pos;
         }
         result.add((byte)'\n');
         ++pos;
-        String[] widthHeight = buff.split(" ");  //read and split dimensions into two (one for each value)
+        String[] widthHeight = buff.toString().split(" ");  //read and split dimensions into two (one for each value)
         if (widthHeight.length > 2 || Integer.parseInt(widthHeight[0]) < 1 || Integer.parseInt(widthHeight[1]) < 1) throw new FormatoErroneoException("El formato de .ppm no es correcto!");
         while (pos < datosInput.length - 1 && (char)datosInput[pos] == '#') {
             while ((char)datosInput[pos] != '\n') { //avoiding comments between parameters...
@@ -133,15 +148,15 @@ public class JPEG implements CompresorDecompresor {
             }
             ++pos;
         }
-        buff = "";
+        buff = new StringBuilder();
         while (pos < datosInput.length - 1 && (char)datosInput[pos] != '\n') {
-            buff += (char)datosInput[pos];
+            buff.append((char) datosInput[pos]);
             result.add(datosInput[pos]);
             ++pos;
         }
         result.add((byte)'\n');
         ++pos;
-        String rgbMVal = buff; //string of rgb maximum value per pixel (8 bits)
+        String rgbMVal = buff.toString(); //string of rgb maximum value per pixel (8 bits)
         if (!rgbMVal.equals("255")) throw new FormatoErroneoException("El formato de .ppm no es correcto!");
         //end of header reading
 
@@ -300,24 +315,24 @@ public class JPEG implements CompresorDecompresor {
                         --j;
                     }
                 }
-                List<Byte> rleY = new ArrayList<>(); //losless compression of 8x8 block values
-                int howManyZeroes = 0; //how many zeroes have been ignored until a non zero value found in 8x8 block
+                List<Byte> rleY = new ArrayList<>(); //RLE: lossless compression of 8x8 block values
+                byte howManyZeroes = 0; //how many zeroes have been ignored until a non zero value found in 8x8 block
                 for (int k = 0; k < 64; ++k) {
                     if (lineY[k] == 0) {
                         howManyZeroes++;
                     }
                     else {
-                        rleY.add((byte)howManyZeroes); //rle refines that each time a non zero value is found, is written how many zeroes have been ignored before
+                        rleY.add(howManyZeroes); //rle refines that each time a non zero value is found, is written how many zeroes have been ignored before
+                        rleY.add(bitsNumero(lineY[k])); //size in bits of non zero value
                         rleY.add(lineY[k]); //then the non zero value is written
                         howManyZeroes = 0;
                     }
                 }
+                rleY.add((byte)0); //end of block: (0,0)
                 rleY.add((byte)0);
-                rleY.add((byte)0);
-                result.add((byte)rleY.size());
-                for (int k = 0; k < rleY.size(); ++k) {
-                    result.add(rleY.get(k));
-                }
+                result.add((byte)rleY.size()); //size of block defined before reading each block in order to know how many bytes have to be read
+                //addition of block to result
+                result.addAll(rleY);
             }
         }
         double[][] buffCb = new double[8][8];
@@ -384,42 +399,42 @@ public class JPEG implements CompresorDecompresor {
                         --j;
                     }
                 }
-                List<Byte> rleCb = new ArrayList<>(); //losless compression of 8x8 block values
-                int howManyZeroes = 0; //how many zeroes have been ignored until a non zero value found in 8x8 block
+                List<Byte> rleCb = new ArrayList<>(); //RLE: lossless compression of 8x8 block values
+                byte howManyZeroes = 0; //how many zeroes have been ignored until a non zero value found in 8x8 block
                 for (int k = 0; k < 64; ++k) {
                     if (lineCb[k] == 0) {
                         howManyZeroes++;
                     }
                     else {
-                        rleCb.add((byte)howManyZeroes); //rle refines that each time a non zero value is found, is written how many zeroes have been ignored before
+                        rleCb.add(howManyZeroes); //rle refines that each time a non zero value is found, is written how many zeroes have been ignored before
+                        rleCb.add(bitsNumero(lineCb[k])); //size in bits of non zero value
                         rleCb.add(lineCb[k]); //then the non zero value is written
                         howManyZeroes = 0;
                     }
                 }
+                rleCb.add((byte)0); //end of block: (0,0)
                 rleCb.add((byte)0);
-                rleCb.add((byte)0);
-                result.add((byte)rleCb.size());
-                for (int k = 0; k < rleCb.size(); ++k) {
-                    result.add(rleCb.get(k));
-                }
+                result.add((byte)rleCb.size()); //size of block defined before reading each block in order to know how many bytes have to be read
+                //addition of block to result
+                result.addAll(rleCb);
                 howManyZeroes = 0;
-                List<Byte> rleCr = new ArrayList<>(); //losless compression of 8x8 block values
+                List<Byte> rleCr = new ArrayList<>(); //RLE: lossless compression of 8x8 block values
                 for (int k = 0; k < 64; ++k) {
                     if (lineCr[k] == 0) {
                         howManyZeroes++;
                     }
                     else {
-                        rleCr.add((byte)howManyZeroes); //rle refines that each time a non zero value is found, is written how many zeroes have been ignored before
+                        rleCr.add(howManyZeroes); //rle refines that each time a non zero value is found, is written how many zeroes have been ignored before
+                        rleCr.add(bitsNumero(lineCr[k])); //size in bits of non zero value
                         rleCr.add(lineCr[k]); //then the non zero value is written
                         howManyZeroes = 0;
                     }
                 }
+                rleCr.add((byte)0); //end of block: (0,0)
                 rleCr.add((byte)0);
-                rleCr.add((byte)0);
-                result.add((byte)rleCr.size());
-                for (int k = 0; k < rleCr.size(); ++k) {
-                    result.add(rleCr.get(k));
-                }
+                result.add((byte)rleCr.size()); //size of block defined before reading each block in order to know how many bytes have to be read
+                //addition of block to result
+                result.addAll(rleCr);
             }
         }
         //end of image compression
@@ -446,44 +461,44 @@ public class JPEG implements CompresorDecompresor {
         List<Byte> result = new ArrayList<>(); //data will be written here before passing it into output byte array
         if (datosInput.length < 16) throw new FormatoErroneoException("El formato de .imgc no es correcto!");
         int pos = 0;
-        String buff = "";
+        StringBuilder buff = new StringBuilder();
         //start of header reading
         while (pos < datosInput.length - 1 && (char)datosInput[pos] != '\n') {
-            buff += (char)datosInput[pos];
+            buff.append((char) datosInput[pos]);
             result.add(datosInput[pos]);
             ++pos;
         }
         result.add((byte)'\n');
         ++pos;
-        String magicNumber = buff; //read .ppm magicNumber, which is P6 (pixels are codified in binary)
+        String magicNumber = buff.toString(); //read .ppm magicNumber, which is P6 (pixels are codified in binary)
         if(!magicNumber.equals("P6")) throw new FormatoErroneoException("El formato de .imgc no es correcto!");
-        buff = "";
+        buff = new StringBuilder();
         while (pos < datosInput.length - 1 && (char)datosInput[pos] != '\n') {
-            buff += (char)datosInput[pos];
+            buff.append((char) datosInput[pos]);
             result.add(datosInput[pos]);
             ++pos;
         }
         result.add((byte)'\n');
         ++pos;
-        String[] widthHeight = buff.split(" ");  //read and split dimensions into two (one for each value)
+        String[] widthHeight = buff.toString().split(" ");  //read and split dimensions into two (one for each value)
         if (widthHeight.length > 2 || Integer.parseInt(widthHeight[0]) < 1 || Integer.parseInt(widthHeight[1]) < 1) throw new FormatoErroneoException("El formato de .imgc no es correcto!");
-        buff = "";
+        buff = new StringBuilder();
         while (pos < datosInput.length - 1 && (char)datosInput[pos] != '\n') {
-            buff += (char)datosInput[pos];
+            buff.append((char) datosInput[pos]);
             result.add(datosInput[pos]);
             ++pos;
         }
         result.add((byte)'\n');
         ++pos;
-        String rgbMVal = buff; //string of rgb maximum value per pixel (8 bits)
+        String rgbMVal = buff.toString(); //string of rgb maximum value per pixel (8 bits)
         if (!rgbMVal.equals("255")) throw new FormatoErroneoException("El formato de .imgc no es correcto!");
-        buff = "";
+        buff = new StringBuilder();
         while (pos < datosInput.length - 1 && (char)datosInput[pos] != '\n') {
-            buff += (char)datosInput[pos];
+            buff.append((char) datosInput[pos]);
             ++pos;
         }
         ++pos;
-        String quality = buff;
+        String quality = buff.toString();
         if(quality.length() > 1) throw new FormatoErroneoException("El formato de .imgc no es correcto!");
         //end of header reading
 
@@ -517,10 +532,11 @@ public class JPEG implements CompresorDecompresor {
                 int rleSize = datosInput[pos++];
                 byte[] lineY = new byte[64];
                 int lineYit = 0;
-                for (int it = 0; it < rleSize; ++it) {
+                for (int it = 0; it < rleSize; ++it) { //RLE lossless decompression for Luminance
                     int howManyZeroes = datosInput[pos++];
-                    byte value = datosInput[pos++];
-                    if (howManyZeroes != 0 || value != 0) {
+                    int size = datosInput[pos++];
+                    if (howManyZeroes != 0 || size != 0) {
+                        byte value = datosInput[pos++];
                         for (int z = 0; z < howManyZeroes; ++z) lineY[lineYit++] = 0;
                         lineY[lineYit++] = value;
                     }
@@ -597,10 +613,11 @@ public class JPEG implements CompresorDecompresor {
                 int rleSize = datosInput[pos++];
                 byte[] lineCb = new byte[64];
                 int lineCbit = 0;
-                for (int it = 0; it < rleSize; ++it) {
+                for (int it = 0; it < rleSize; ++it) { //RLE lossless decompression for Luminance
                     int howManyZeroes = datosInput[pos++];
-                    byte value = datosInput[pos++];
-                    if (howManyZeroes != 0 || value != 0) {
+                    int size = datosInput[pos++];
+                    if (howManyZeroes != 0 || size != 0) {
+                        byte value = datosInput[pos++];
                         for (int z = 0; z < howManyZeroes; ++z) lineCb[lineCbit++] = 0;
                         lineCb[lineCbit++] = value;
                     }
@@ -613,10 +630,11 @@ public class JPEG implements CompresorDecompresor {
                 rleSize = datosInput[pos++];
                 byte[] lineCr = new byte[64];
                 int lineCrit = 0;
-                for (int it = 0; it < rleSize; ++it) {
+                for (int it = 0; it < rleSize; ++it) { //RLE lossless decompression for Luminance
                     int howManyZeroes = datosInput[pos++];
-                    byte value = datosInput[pos++];
-                    if (howManyZeroes != 0 || value != 0) {
+                    int size = datosInput[pos++];
+                    if (howManyZeroes != 0 || size != 0) {
+                        byte value = datosInput[pos++];
                         for (int z = 0; z < howManyZeroes; ++z) lineCr[lineCrit++] = 0;
                         lineCr[lineCrit++] = value;
                     }
