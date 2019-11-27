@@ -2,10 +2,10 @@ package Controllers;
 
 import DataLayer.GestorArchivo;
 import DataLayer.GestorEstadisticas;
-import Enumeration.Algoritmo;
 import DomainLayer.Proceso.DatosProceso;
+import Enumeration.Algoritmo;
 
-import java.io.*;
+import java.io.IOException;
 
 public class CtrlDatos {
     /**

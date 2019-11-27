@@ -1,7 +1,7 @@
 package DataLayer;
 
-import Enumeration.Algoritmo;
 import DomainLayer.Proceso.DatosProceso;
+import Enumeration.Algoritmo;
 
 import java.io.*;
 

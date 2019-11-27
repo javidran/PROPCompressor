@@ -1,6 +1,5 @@
 package DomainLayer.Proceso;
 
-import DomainLayer.Algoritmos.CompresorDecompresor;
 import DomainLayer.Algoritmos.*;
 import Enumeration.Algoritmo;
 

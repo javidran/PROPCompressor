@@ -1,7 +1,7 @@
 package DomainLayer.Proceso;
 
-import Enumeration.Algoritmo;
 import DomainLayer.Algoritmos.OutputAlgoritmo;
+import Enumeration.Algoritmo;
 
 /**
  *  Clase que recoge todos los datos necesarios para poder comprimir con cualquier tipo de algoritmo.

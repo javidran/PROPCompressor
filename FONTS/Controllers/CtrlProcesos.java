@@ -1,11 +1,11 @@
 package Controllers;
 
-import Enumeration.Algoritmo;
 import DomainLayer.Algoritmos.JPEG;
 import DomainLayer.Proceso.DatosProceso;
 import DomainLayer.Proceso.ProcesoComprimir;
 import DomainLayer.Proceso.ProcesoDescomprimir;
 import DomainLayer.Proceso.ProcesoFichero;
+import Enumeration.Algoritmo;
 import Exceptions.FormatoErroneoException;
 
 /**
