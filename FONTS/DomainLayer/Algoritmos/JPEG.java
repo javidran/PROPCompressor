@@ -425,7 +425,7 @@ public class JPEG implements CompresorDecompresor {
                     }
                     else {
                         rleCr.add(howManyZeroes); //rle refines that each time a non zero value is found, is written how many zeroes have been ignored before
-                        rleCb.add(bitsNumero(lineCr[k])); //size in bits of non zero value
+                        rleCr.add(bitsNumero(lineCr[k])); //size in bits of non zero value
                         rleCr.add(lineCr[k]); //then the non zero value is written
                         howManyZeroes = 0;
                     }
