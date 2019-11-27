@@ -4,48 +4,39 @@ import Controllers.CtrlPresentacion;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 
-public class Estadisticas extends JFrame {
+public class Estadisticas extends JDialog {
     private JPanel Estadisticas;
     private JPanel Algoritmo;
     private JComboBox comboBox1;
-    private JButton salirButton;
+    private JButton cancelarButton;
     private JPanel Estats;
     private JButton procesarButton;
     private JTextArea status;
+    private JDialog myself = this;
 
-    Estadisticas() {
-        super ("PROPresor");
+    Estadisticas(Frame owner) {
+        super (owner, true);
         setContentPane(Estadisticas);
         Estats.setVisible(false);
-        procesarButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Estats.setVisible(true);
-                String data = "";
-                if (comboBox1.getSelectedIndex() != -1) {
-                    data += comboBox1.getItemAt(comboBox1.getSelectedIndex());
-                }
-                CtrlPresentacion cp = CtrlPresentacion.getInstance();
-                try {
-                    String mensaje = cp.getEstadisticas(data);
-                    status.setText(mensaje);
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-                Algoritmo.setVisible(false);
-                procesarButton.setVisible(false);
+        procesarButton.addActionListener(e -> {
+            Estats.setVisible(true);
+            String data = "";
+            if (comboBox1.getSelectedIndex() != -1) {
+                data += comboBox1.getItemAt(comboBox1.getSelectedIndex());
             }
-        });
-        salirButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.exit(0);
+            CtrlPresentacion cp = CtrlPresentacion.getInstance();
+            try {
+                String mensaje = cp.getEstadisticas(data);
+                status.setText(mensaje);
+            } catch (IOException ex) {
+                ex.printStackTrace();
             }
+            Algoritmo.setVisible(false);
+            procesarButton.setVisible(false);
         });
+        cancelarButton.addActionListener(e -> myself.setVisible(false));
     }
 
 }

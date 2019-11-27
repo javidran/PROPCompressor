@@ -1,7 +1,7 @@
 package DomainLayer.Proceso;
 
-import DomainLayer.Algoritmos.Algoritmo;
 import DomainLayer.Algoritmos.OutputAlgoritmo;
+import Enumeration.Algoritmo;
 
 /**
  *  Clase que recoge todos los datos necesarios para poder descomprimir con cualquier tipo de algoritmo.
@@ -12,7 +12,7 @@ public class ProcesoDescomprimir extends ProcesoFichero {
     /**
      * Constructora de proceso de descompresión de un fichero.
      * @param input Secuencia de bytes a procesar.
-     * @param algoritmo Algoritmo de compresión a utilizar para procesar el {@link #input}.
+     * @param algoritmo Enumeration.Algoritmo de compresión a utilizar para procesar el {@link #input}.
      */
     public ProcesoDescomprimir(byte[] input, Algoritmo algoritmo) {
         super(input, algoritmo);

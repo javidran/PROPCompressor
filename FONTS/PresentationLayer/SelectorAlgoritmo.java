@@ -1,7 +1,9 @@
 package PresentationLayer;
 
+import Controllers.CtrlProcesos;
+import Enumeration.Algoritmo;
+
 import javax.swing.*;
-import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,19 +23,44 @@ public class SelectorAlgoritmo extends JDialog {
     private JButton explorarButton;
     private JDialog myself;
 
+    private Algoritmo tipoAlgoritmo;
+    private boolean esCompresion;
+    private boolean esCarpeta;
 
-    public SelectorAlgoritmo(Frame owner, String path, Boolean mostrarSlider) {
+    SelectorAlgoritmo(Frame owner, String path, Boolean mostrarSlider, boolean esCompresion, boolean esCarpeta) {
         super (owner, true);
         myself = this;
         setContentPane(panel);
-        algoritmo.setVisible(!mostrarSlider);
+        algoritmo.setVisible(!mostrarSlider && !esCarpeta);
         calidad.setVisible(mostrarSlider);
-        selectorSalida.setVisible(path != null);
-        //procesar.setVisible(true);
+
+        this.esCompresion = esCompresion;
+        this.esCarpeta = esCarpeta;
+        if(esCarpeta) tipoAlgoritmo = Algoritmo.CARPETA;
+        else if(mostrarSlider) tipoAlgoritmo = Algoritmo.JPEG;
+        else tipoAlgoritmo = CtrlProcesos.getAlgoritmoDeTextoPredeterminado();
+
+        if(path != null) {
+            selectorSalida.setVisible(true);
+            actualizarPathSalida(path);
+        }
+
         procesarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                System.exit(0);
+                //System.exit(0);
+                boolean existe = (new File(pathSalida.getText())).exists();
+                if (existe) {
+                    int respuesta = JOptionPane.showConfirmDialog(null, "El fichero resultante del proceso sobrescribirá uno ya existente, ¿desea sobrescribirlo?", "Sobrescribir",
+                            JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+                    if (respuesta == JOptionPane.YES_OPTION) {
+                        //PROCESAR EL FICHERO
+                        System.exit(0);//Temporal
+                    }
+                } else {
+                    // File or directory does not exist
+                    System.exit(0);//temporal
+                }
             }
         });
         cancelarButton.addActionListener(new ActionListener() {
@@ -49,55 +76,92 @@ public class SelectorAlgoritmo extends JDialog {
                     seleccionDeArchivo();
             }
         });
+        comboBox1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                String alg = comboBox1.getSelectedItem().toString();
+                switch (alg) {
+                    case "PREDETERMINADO":
+                        tipoAlgoritmo = CtrlProcesos.getAlgoritmoDeTextoPredeterminado();
+                        break;
+                    case "LZSS":
+                        tipoAlgoritmo = Algoritmo.LZSS;
+                        break;
+                    case "LZW":
+                        tipoAlgoritmo = Algoritmo.LZW;
+                        break;
+                    case "LZ78":
+                        tipoAlgoritmo = Algoritmo.LZ78;
+                        break;
+                }
+                actualizarPathSalida(pathSalida.getText());
+            }
+        });
+        cancelarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                myself.setVisible(false);
+            }
+        });
     }
 
     private void seleccionDeArchivo() {
         JFileChooser chooser = new JFileChooser();
         chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-
-        FileFilter fileFilter = new FileFilter() {
-            @Override
-            public boolean accept(File file) {
-                if(file.isDirectory()) return true;
-
-                String path = file.getName();
-                String[] splitP = path.split("\\.");
-                String type = splitP[splitP.length-1];
-
-                switch (type) {
-                    case "txt":
-                    case "ppm":
-                    case "imgc":
-                    case "lzss":
-                    case "lz78":
-                    case "lzw":
-                    case "comp":
-                        return true;
-                    default:
-                        return false;
-                }
-            }
-
-            @Override
-            public String getDescription() {
-                return "*.txt,*.ppm,*.imgc,*.lzss,*.lz78,*.lzw,*.comp";
-            }
-        };
-
-        chooser.setFileFilter(fileFilter);
         int result = chooser.showSaveDialog(null);
         if(result == JFileChooser.APPROVE_OPTION) {
             File file = chooser.getSelectedFile();
-
-            String path = file.getAbsolutePath();
-            String[] splitP = path.split("\\.");
-            String type = splitP[splitP.length-1];
-            if (type.equalsIgnoreCase("extensionchunga")) {
-                // filename is OK as-is
-            } else {
-                path = path.replace(type, "extensionchunga"); // ALTERNATIVELY: remove the extension (if any) and replace it with ".xml"
-            }
-            pathSalida.setText(path);
+            actualizarPathSalida(file.getAbsolutePath());
         }
+    }
+
+    private String extension() {
+        String extension = null;
+        if(tipoAlgoritmo == Algoritmo.PREDETERMINADO) tipoAlgoritmo = CtrlProcesos.getAlgoritmoDeTextoPredeterminado();
+        if(esCompresion) {
+            switch (tipoAlgoritmo) {
+                case LZW:
+                    extension = "lzw";
+                    break;
+                case LZSS:
+                    extension = "lzss";
+                    break;
+                case LZ78:
+                    extension = "lz78";
+                    break;
+                case JPEG:
+                    extension = "imgc";
+                    break;
+                case CARPETA:
+                    extension = "comp";
+            }
+        } else {
+            switch (tipoAlgoritmo) {
+                case LZW:
+                case LZSS:
+                case LZ78:
+                    extension = "txt";
+                    break;
+                case JPEG:
+                    extension = "ppm";
+                    break;
+                case CARPETA:
+                    extension = "";
+            }
+        }
+        return extension;
+    }
+
+    private void actualizarPathSalida(String path) {
+        String[] splitP = path.split("\\.");
+        String type = splitP[splitP.length-1];
+        String ext = extension();
+        if(!path.contains(".")) path = path + "." + ext;
+        else if(splitP.length==1) path = path + ext;
+        else if (!type.equalsIgnoreCase(ext)) {
+            if(esCarpeta && !esCompresion) path = path.replace("." + type, ext);
+            else path = path.replace(type, ext);
+        }
+        pathSalida.setText(path);
     }
 }

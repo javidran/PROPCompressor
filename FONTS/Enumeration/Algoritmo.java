@@ -1,4 +1,4 @@
-package DomainLayer.Algoritmos;
+package Enumeration;
 
 /**
  * Algortimo es un Enumeration que permite delimitar los tipos de algoritmos que manejan las clases de la capa de dominio
@@ -7,5 +7,5 @@ package DomainLayer.Algoritmos;
  * </p>
  */
 public enum Algoritmo {
-    JPEG, LZW, LZ78, LZSS, PREDETERMINADO
+    JPEG, LZW, LZ78, LZSS, CARPETA, PREDETERMINADO;
 }

@@ -1,5 +1,8 @@
 package PresentationLayer;
 
+import Controllers.CtrlProcesos;
+import Enumeration.Algoritmo;
+
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -9,22 +12,44 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
+
 public class MyInterface extends JFrame {
+    private JFrame myself;
     private JPanel panel;
     private JButton salirButton;
-    private JButton comprimirYDescomprimirButton;
+
     private JTextField pathEntrada;
-    private JButton comprimirButton;
-    private JButton estadisticasButton;
     private JButton explorarButton;
+
+    private JButton comprimirButton;
     private JButton descomprimirButton;
+    private JButton comprimirYDescomprimirButton;
+
+    private JButton estadisticasButton;
+    private JButton escogerPrederterminadoButton;
+    private JTextField MostrarPredeterminado;
+
     private boolean invocarSelectorCalidad = false;
-    private JFrame myself;
+    private boolean esCarpeta = false;
 
     public MyInterface () {
         super ("PROPresor");
         myself = this;
         setContentPane(panel);
+
+        Algoritmo PredetActual = CtrlProcesos.getAlgoritmoDeTextoPredeterminado();
+        switch (PredetActual) {
+            case LZSS:
+                MostrarPredeterminado.setText("LZSS");
+                break;
+            case LZW:
+                MostrarPredeterminado.setText("LZW");
+                break;
+            case LZ78:
+                MostrarPredeterminado.setText("LZ78");
+                break;
+        }
+
         explorarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -57,55 +82,86 @@ public class MyInterface extends JFrame {
         comprimirButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                JDialog frame = new SelectorAlgoritmo(myself, pathEntrada.getText(), invocarSelectorCalidad);
+                JDialog dialog = new SelectorAlgoritmo(myself, pathEntrada.getText(), invocarSelectorCalidad, true, esCarpeta);
                 Dimension dimension = new Dimension(650, 300);
-                frame.setSize(dimension);
+                dialog.setSize(dimension);
                 dimension = new Dimension(500, 200);
-                frame.setMinimumSize(dimension);
-                frame.setResizable(true);
-                frame.setVisible(true);
+                dialog.setMinimumSize(dimension);
+                dialog.setLocationRelativeTo(myself);
+                dialog.setResizable(true);
+                dialog.setVisible(true);
             }
         });
 
         descomprimirButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                JDialog frame = new SelectorAlgoritmo(myself, pathEntrada.getText(),invocarSelectorCalidad);
+                JDialog dialog = new SelectorAlgoritmo(myself, pathEntrada.getText(),invocarSelectorCalidad, false, esCarpeta);
                 Dimension dimension = new Dimension(650, 300);
-                frame.setSize(dimension);
+                dialog.setSize(dimension);
                 dimension = new Dimension(500, 200);
-                frame.setMinimumSize(dimension);
-                frame.setResizable(true);
-                frame.setVisible(true);
+                dialog.setMinimumSize(dimension);
+                dialog.setLocationRelativeTo(myself);
+                dialog.setResizable(true);
+                dialog.setVisible(true);
             }
         });
 
         comprimirYDescomprimirButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                JDialog frame = new SelectorAlgoritmo(myself,null,invocarSelectorCalidad);
+                JDialog dialog = new SelectorAlgoritmo(myself,null,invocarSelectorCalidad, true, esCarpeta);
                 Dimension dimension = new Dimension(650, 300);
-                frame.setSize(dimension);
+                dialog.setSize(dimension);
                 dimension = new Dimension(500, 200);
-                frame.setMinimumSize(dimension);
-                frame.setResizable(true);
-                frame.setVisible(true);
+                dialog.setMinimumSize(dimension);
+                dialog.setLocationRelativeTo(myself);
+                dialog.setResizable(true);
+                dialog.setVisible(true);
             }
         });
         estadisticasButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JFrame frame;
-                frame = new Estadisticas();
+                JDialog dialog;
+                dialog = new Estadisticas(myself);
                 Dimension dimension = new Dimension(600, 300);
-                frame.setSize(dimension);
+                dialog.setSize(dimension);
                 dimension = new Dimension(600, 300);
-                frame.setMinimumSize(dimension);
-                frame.setResizable(true);
-                frame.setVisible(true);
-                frame.setLocationRelativeTo(null);
+                dialog.setMinimumSize(dimension);
+                dialog.setLocationRelativeTo(myself);
+                dialog.setResizable(true);
+                dialog.setVisible(true);
             }
         });
+
+        escogerPrederterminadoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JDialog dialog;
+                dialog = new SelectorAlgortimoPredeterminado(myself);
+                Dimension dimension = new Dimension(600, 200);
+                dialog.setSize(dimension);
+                dimension = new Dimension(600, 200);
+                dialog.setMinimumSize(dimension);
+                dialog.setLocationRelativeTo(myself);
+                dialog.setResizable(true);
+                dialog.setVisible(true);
+                Algoritmo PredetActual = CtrlProcesos.getAlgoritmoDeTextoPredeterminado();
+                switch (PredetActual) {
+                    case LZSS:
+                        MostrarPredeterminado.setText("LZSS");
+                        break;
+                    case LZW:
+                        MostrarPredeterminado.setText("LZW");
+                        break;
+                    case LZ78:
+                        MostrarPredeterminado.setText("LZ78");
+                        break;
+                }
+            }
+        });
+
     }
 
     private void seleccionDeArchivo() {
@@ -150,13 +206,15 @@ public class MyInterface extends JFrame {
     private void actualizarBotones() {
         String[] splitP = pathEntrada.getText().split("\\.");
         String type = splitP[splitP.length-1];
-        File f = new File(pathEntrada.getText());
-        f.getName();
+
+        //TODO Detectar correctamente carpetas aunque estas tengan puntos
+
         if(splitP.length == 1 && !pathEntrada.getText().endsWith(".")) {
             comprimirYDescomprimirButton.setEnabled(false);
             comprimirButton.setEnabled(true);
             descomprimirButton.setEnabled(false);
             invocarSelectorCalidad = false;
+            esCarpeta = true;
         }
         else switch (type) {
             case "lzss":

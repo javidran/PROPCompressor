@@ -1,7 +1,7 @@
 package DataLayer;
 
-import DomainLayer.Algoritmos.Algoritmo;
 import DomainLayer.Proceso.DatosProceso;
+import Enumeration.Algoritmo;
 
 import java.io.*;
 
@@ -13,7 +13,7 @@ public class GestorEstadisticas {
     /**
      * Actualiza el fichero de estadística de compresión o descompresión del algoritmo correspondiente con los datos del nuevo archivo procesado.
      * @param dp DatosProceso para conseguir la información estadística del proceso.
-     * @param algoritmo Algoritmo del que actualizamos el fichero estadística.
+     * @param algoritmo Enumeration.Algoritmo del que actualizamos el fichero estadística.
      * @param esCompresion Indica si el fichero es de compresión o descompresión.
      */
     public static void actualizarEstadistica(DatosProceso dp, Algoritmo algoritmo, boolean esCompresion) {

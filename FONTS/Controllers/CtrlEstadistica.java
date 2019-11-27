@@ -1,6 +1,6 @@
 package Controllers;
 
-import DomainLayer.Algoritmos.Algoritmo;
+import Enumeration.Algoritmo;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

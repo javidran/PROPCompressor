@@ -1,7 +1,7 @@
 package DomainLayer.Proceso;
 
 import DomainLayer.Algoritmos.*;
-import DomainLayer.Algoritmos.LZ78;
+import Enumeration.Algoritmo;
 
 
 /**
@@ -20,7 +20,7 @@ public abstract class ProcesoFichero {
      */
     protected byte[] output = null;
     /**
-     * Algoritmo que utilizará el proceso a comprimir.
+     * Enumeration.Algoritmo que utilizará el proceso a comprimir.
      */
     protected Algoritmo tipoAlgoritmo;
     /**
@@ -44,7 +44,7 @@ public abstract class ProcesoFichero {
      * Dado que es una clase abstracta no se puede llamar directamente, solo a través de las clases que extienden de ProcesoFichero.
      * </p>
      * @param input Secuencia de bytes a procesar.
-     * @param algoritmo Algoritmo de compresión a utilizar para procesar el {@link #input}.
+     * @param algoritmo Enumeration.Algoritmo de compresión a utilizar para procesar el {@link #input}.
      */
     protected ProcesoFichero(byte[] input, Algoritmo algoritmo) {
         procesado = false;

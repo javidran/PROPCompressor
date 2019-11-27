@@ -1,11 +1,11 @@
 package Controllers;
 
-import DomainLayer.Algoritmos.Algoritmo;
 import DomainLayer.Algoritmos.JPEG;
 import DomainLayer.Proceso.DatosProceso;
 import DomainLayer.Proceso.ProcesoComprimir;
 import DomainLayer.Proceso.ProcesoDescomprimir;
 import DomainLayer.Proceso.ProcesoFichero;
+import Enumeration.Algoritmo;
 import Exceptions.FormatoErroneoException;
 
 /**
@@ -19,7 +19,7 @@ public class CtrlProcesos {
     /**
      * Algortimo de texto predeterminado de entre los tres posibles.
      * <p>
-     *     Por defecto es LZSS, pero se puede modificar llamando a setAlgoritmoDeTextoPredeterminado(Algoritmo).
+     *     Por defecto es LZSS, pero se puede modificar llamando a setAlgoritmoDeTextoPredeterminado(Enumeration.Algoritmo).
      * </p>
      */
     private static Algoritmo algoritmoDeTextoPredeterminado = Algoritmo.LZSS;
