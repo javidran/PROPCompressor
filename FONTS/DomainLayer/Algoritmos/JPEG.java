@@ -29,7 +29,10 @@ public class JPEG implements CompresorDecompresor {
      * Tabla de cuantización usada para comprimir y descomprimir los valores de crominancia (Cb y Cr) de los cuadrados de píxeles de dimensiones 8x8. Este atributo es estático
      */
     private static int[][] ChrominanceQuantizationTable = new int[8][8]; //50% compression
-
+    /**
+     * Tabla de cuantización usada para comprimir y descomprimir los valores de crominancia (Cb y Cr) de los cuadrados de píxeles de dimensiones 8x8. Este atributo es estático
+     */
+    private static String[][] ACHuffmanTable = new String[15][11];
     /**
      * Getter de la instancia Singleton de JPEG
      * @return La instancia Singleton de JPEG
@@ -68,6 +71,23 @@ public class JPEG implements CompresorDecompresor {
                 {99, 99, 99, 99, 99, 99, 99, 99},
                 {99, 99, 99, 99, 99, 99, 99, 99}
         };
+        ACHuffmanTable = new String[][] {
+                {"1010", "00", "01", "100", "1011", "11010", "1111000", "11111000", "1111110110", "1111111110000010", "1111111110000011"},
+                {"", "1100", "11011", "1111001", "111110110", "11111110110", "1111111110000100", "1111111110000101", "1111111110000110", "1111111110000111", "1111111110001000"},
+                {"", "", "", "", "", "", "", "", "", "", ""},
+                {"", "", "", "", "", "", "", "", "", "", ""},
+                {"", "", "", "", "", "", "", "", "", "", ""},
+                {"", "", "", "", "", "", "", "", "", "", ""},
+                {"", "", "", "", "", "", "", "", "", "", ""},
+                {"", "", "", "", "", "", "", "", "", "", ""},
+                {"", "", "", "", "", "", "", "", "", "", ""},
+                {"", "", "", "", "", "", "", "", "", "", ""},
+                {"", "", "", "", "", "", "", "", "", "", ""},
+                {"", "", "", "", "", "", "", "", "", "", ""},
+                {"", "", "", "", "", "", "", "", "", "", ""},
+                {"", "", "", "", "", "", "", "", "", "", ""},
+                {"", "", "", "", "", "", "", "", "", "", ""}
+        };
     }
 
     /**
@@ -83,6 +103,29 @@ public class JPEG implements CompresorDecompresor {
             numero >>>= 1;
         }
         return bits;
+    }
+
+    /**
+     * Convierte un binary string en un byte array
+     * @param rleY El binary string en cuestión
+     * @return El byte array deseado
+     */
+    private List<Byte> toByteList(String rleY) {
+        List<Byte> l = new ArrayList<>();
+        byte n = 0;
+        for (int i = 0; i < rleY.length(); ++i) {
+            if (rleY.charAt(i) == '1') n++;
+            if (i % 8 != 7) n<<=1;
+            else {
+                l.add(n);
+                n = 0;
+            }
+        }
+        if (n != 0) {
+            n >>>= 1;
+            l.add(n);
+        }
+        return l;
     }
 
     /**
@@ -315,24 +358,24 @@ public class JPEG implements CompresorDecompresor {
                         --j;
                     }
                 }
-                List<Byte> rleY = new ArrayList<>(); //RLE: lossless compression of 8x8 block values
+                String rleY = ""; //RLE: lossless compression of 8x8 block values
                 byte howManyZeroes = 0; //how many zeroes have been ignored until a non zero value found in 8x8 block
                 for (int k = 0; k < 64; ++k) {
                     if (lineY[k] == 0) {
                         howManyZeroes++;
                     }
                     else {
-                        rleY.add(howManyZeroes); //rle refines that each time a non zero value is found, is written how many zeroes have been ignored before
-                        rleY.add(bitsNumero(lineY[k])); //size in bits of non zero value
-                        rleY.add(lineY[k]); //then the non zero value is written
+                        //rle refines that each time a non zero value is found, is written how many zeroes have been ignored before and the size of the value in bits
+                        rleY = rleY.concat(ACHuffmanTable[howManyZeroes][bitsNumero(lineY[k])]); //substitution of those 2 values for Huffman value
+                        rleY = rleY.concat(Integer.toBinaryString(lineY[k])); //then the non zero value is written
                         howManyZeroes = 0;
                     }
                 }
-                rleY.add((byte)0); //end of block: (0,0)
-                rleY.add((byte)0);
-                result.add((byte)rleY.size()); //size of block defined before reading each block in order to know how many bytes have to be read
+                rleY = rleY.concat(ACHuffmanTable[0][0]); //end of block: (0,0)
+                result.add((byte)(rleY.length() / 8)); //size in bits of block defined before reading each block in order to know how many bytes have to be read
+                result.add((byte)(rleY.length() % 8)); //??????size of bit offset defined before reading each block in order to know how many bits have to be read as offset of last byte
                 //addition of block to result
-                result.addAll(rleY);
+                result.addAll(toByteList(rleY));
             }
         }
         double[][] buffCb = new double[8][8];
