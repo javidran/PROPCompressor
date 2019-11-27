@@ -22,31 +22,23 @@ public class Estadisticas extends JDialog {
         super (owner, true);
         setContentPane(Estadisticas);
         Estats.setVisible(false);
-        procesarButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Estats.setVisible(true);
-                String data = "";
-                if (comboBox1.getSelectedIndex() != -1) {
-                    data += comboBox1.getItemAt(comboBox1.getSelectedIndex());
-                }
-                CtrlPresentacion cp = CtrlPresentacion.getInstance();
-                try {
-                    String mensaje = cp.getEstadisticas(data);
-                    status.setText(mensaje);
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-                Algoritmo.setVisible(false);
-                procesarButton.setVisible(false);
+        procesarButton.addActionListener(e -> {
+            Estats.setVisible(true);
+            String data = "";
+            if (comboBox1.getSelectedIndex() != -1) {
+                data += comboBox1.getItemAt(comboBox1.getSelectedIndex());
             }
-        });
-        cancelarButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                myself.setVisible(false);
+            CtrlPresentacion cp = CtrlPresentacion.getInstance();
+            try {
+                String mensaje = cp.getEstadisticas(data);
+                status.setText(mensaje);
+            } catch (IOException ex) {
+                ex.printStackTrace();
             }
+            Algoritmo.setVisible(false);
+            procesarButton.setVisible(false);
         });
+        cancelarButton.addActionListener(e -> myself.setVisible(false));
     }
 
 }

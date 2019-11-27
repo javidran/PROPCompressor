@@ -98,6 +98,12 @@ public class SelectorAlgoritmo extends JDialog {
                 actualizarPathSalida(pathSalida.getText());
             }
         });
+        cancelarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                myself.setVisible(false);
+            }
+        });
     }
 
     private void seleccionDeArchivo() {
