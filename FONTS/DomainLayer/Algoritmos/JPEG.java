@@ -608,24 +608,24 @@ public class JPEG implements CompresorDecompresor {
                 for (int it = 0; it < rleSize; ++it) {
                     huffmanStringBuilder.append(String.format("%8s",Integer.toBinaryString((datosInput[pos++] & 0xFF))).replace(' ', '0')); //converting input bytes into binary string
                 }
-                if (rleSize % 8 != 0) {
+                if (offsetSize != 0) {
                     for (int it = 0; it < (8 - offsetSize); ++it) huffmanStringBuilder.deleteCharAt(huffmanStringBuilder.length() - 1); //deleting extra final bits of last byte of block till offset is fulfilled
                 }
                 List<Byte> huffmanList = new ArrayList<>();
                 String huffmanBuff = "";
                 for (int it = 0; it < rleSize * 8 - offsetSize; ++it) { //getting RLE values from Huffman block after offset applied
                     huffmanBuff += huffmanStringBuilder.charAt(it);
-                    Pair<Byte, Byte> pair = ACInverseHuffmanTable.get(huffmanBuff);
-                    if (pair != null) {
-                        Byte key = pair.getKey();
-                        huffmanList.add(key);
-                        Byte value = pair.getValue();
-                        huffmanList.add(value);
-                        StringBuilder runlength = new StringBuilder();
-                        for (int n = 0; n < value; ++n) {
-                            runlength.append(huffmanStringBuilder.charAt(++it));
+                    Pair<Byte, Byte> pair = ACInverseHuffmanTable.get(huffmanBuff); //check if Huffman code exists
+                    if (pair != null) { //if exists, get RLE value and store it in zigzag line of block
+                        Byte runlength = pair.getKey(); //getting runlength and size of RLE value
+                        huffmanList.add(runlength);
+                        Byte size = pair.getValue();
+                        huffmanList.add(size);
+                        StringBuilder amplitude = new StringBuilder();
+                        for (int n = 0; n < size; ++n) {
+                            amplitude.append(huffmanStringBuilder.charAt(++it)); //binary string of non-zero value
                         }
-                        if (key != 0 && value != 0) huffmanList.add((byte)Integer.parseInt(runlength.toString(), 2)); //binary string (8 bits long) to byte
+                        if (runlength != 0 || size != 0) huffmanList.add((byte)Integer.parseInt(amplitude.toString(), 2)); //binary string (8 bits long) to byte
                         huffmanBuff = "";
                     }
                 }
@@ -635,13 +635,13 @@ public class JPEG implements CompresorDecompresor {
                     int howManyZeroes = huffmanList.get(it++);
                     int size = huffmanList.get(it++);
                     if (howManyZeroes != 0 || size != 0) {
-                        byte value = huffmanList.get(it++);
+                        byte value = huffmanList.get(it);
                         for (int z = 0; z < howManyZeroes; ++z) lineY[lineYit++] = 0;
                         lineY[lineYit++] = value;
                     }
                     else {
                         while (lineYit < 64) lineY[lineYit++] = 0;
-                        it = rleSize;
+                        it = huffmanList.size();
                     }
                 }
                 lineYit = 0;
