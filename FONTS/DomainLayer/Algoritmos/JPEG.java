@@ -389,22 +389,23 @@ public class JPEG implements CompresorDecompresor {
                 for (int k = 0; k < 64; ++k) {
                     if (lineY[k] == 0) {
                         howManyZeroes++;
+                        if (howManyZeroes > 15) k = 64;
                     }
                     else {
                         //rle refines that each time a non zero value is found, is written how many zeroes have been ignored before and the size of the value in bits
                         rleY = rleY.concat(ACHuffmanTable[howManyZeroes][bitsNumero(lineY[k])]); //substitution of those 2 values for Huffman value
-                        rleY = rleY.concat(Integer.toBinaryString(lineY[k])); //then the non zero value is written
+                        rleY = rleY.concat(Integer.toBinaryString(lineY[k] & 0xFF)); //then the non zero value is written (only 8 bits or less, the minimum possible to represent its value)
                         howManyZeroes = 0;
                     }
                 }
                 rleY = rleY.concat(ACHuffmanTable[0][0]); //end of block: (0,0)
-                int sizeOfBlock = rleY.length() / 8;
+                int sizeOfBlock = rleY.length() / 8; //header of 8x8 Huffman block
                 int offsetOfBlock = rleY.length() % 8;
-                if (rleY.length() % 8 != 0) sizeOfBlock++;
+                if (rleY.length() % 8 != 0) sizeOfBlock++; //if there is offset, then there is another byte to be added
                 result.add((byte)sizeOfBlock); //size in bits of block defined before reading each block in order to know how many bytes have to be read
                 result.add((byte)offsetOfBlock);
                 //addition of block to result
-                result.addAll(toByteList(rleY));
+                result.addAll(toByteList(rleY)); //dumping the Huffman block into result
             }
         }
         double[][] buffCb = new double[8][8];
@@ -601,27 +602,30 @@ public class JPEG implements CompresorDecompresor {
                 topj = y + 8;
                 boolean up = true;
                 int k = x, l = y;
-                int rleSize = datosInput[pos++];
+                int rleSize = datosInput[pos++]; //reading Huffman block header
                 int offsetSize = datosInput[pos++];
                 StringBuilder huffmanStringBuilder = new StringBuilder();
-                for (int it = 0; it < rleSize; ++it) huffmanStringBuilder = huffmanStringBuilder.append(Integer.toBinaryString(datosInput[pos++]));
+                for (int it = 0; it < rleSize; ++it) {
+                    huffmanStringBuilder.append(String.format("%8s",Integer.toBinaryString((datosInput[pos++] & 0xFF))).replace(' ', '0')); //converting input bytes into binary string
+                }
                 if (rleSize % 8 != 0) {
-                    for (int it = 0; it < (8 - offsetSize); ++it) huffmanStringBuilder.deleteCharAt(huffmanStringBuilder.length() - 1);
+                    for (int it = 0; it < (8 - offsetSize); ++it) huffmanStringBuilder.deleteCharAt(huffmanStringBuilder.length() - 1); //deleting extra final bits of last byte of block till offset is fulfilled
                 }
                 List<Byte> huffmanList = new ArrayList<>();
                 String huffmanBuff = "";
-                for (int it = 0; it < huffmanStringBuilder.length(); ++it) {
+                for (int it = 0; it < rleSize * 8 - offsetSize; ++it) { //getting RLE values from Huffman block after offset applied
                     huffmanBuff += huffmanStringBuilder.charAt(it);
                     Pair<Byte, Byte> pair = ACInverseHuffmanTable.get(huffmanBuff);
                     if (pair != null) {
-                        huffmanList.add(pair.getKey());
+                        Byte key = pair.getKey();
+                        huffmanList.add(key);
                         Byte value = pair.getValue();
                         huffmanList.add(value);
                         StringBuilder runlength = new StringBuilder();
                         for (int n = 0; n < value; ++n) {
                             runlength.append(huffmanStringBuilder.charAt(++it));
                         }
-                        huffmanList.add(Byte.parseByte(runlength.toString(), 2));
+                        if (key != 0 && value != 0) huffmanList.add((byte)Integer.parseInt(runlength.toString(), 2)); //binary string (8 bits long) to byte
                         huffmanBuff = "";
                     }
                 }
