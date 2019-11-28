@@ -626,6 +626,7 @@ public class JPEG implements CompresorDecompresor {
                             amplitude.append(huffmanStringBuilder.charAt(++it)); //binary string of non-zero value
                         }
                         if (runlength != 0 || size != 0) huffmanList.add((byte)Integer.parseInt(amplitude.toString(), 2)); //binary string (8 bits long) to byte
+                        else it = rleSize * 8 - offsetSize;
                         huffmanBuff = "";
                     }
                 }
