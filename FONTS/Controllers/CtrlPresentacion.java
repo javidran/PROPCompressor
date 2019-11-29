@@ -146,6 +146,7 @@ public class CtrlPresentacion {
                     break;
                 case CARPETA:
                     extension = "comp";
+                    break;
             }
         } else {
             switch (tipoAlgoritmo) {
@@ -159,6 +160,7 @@ public class CtrlPresentacion {
                     break;
                 case CARPETA:
                     extension = "";
+                    break;
             }
         }
         return extension;
