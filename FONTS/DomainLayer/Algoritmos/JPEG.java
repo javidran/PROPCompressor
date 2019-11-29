@@ -353,7 +353,7 @@ public class JPEG implements CompresorDecompresor {
                 boolean up = true;
                 int i = x, j = y, it = 0;
                 byte[] lineY = new byte[64]; //linear vector for zigzagged elements of Y before RLE
-                while (i < topu && j < topv) { //zig-zag and RLE of Luminance 8x8 square (Huffman yet to be applied)
+                while (i < topu && j < topv) { //zig-zag and RLE of Luminance 8x8 square
                     lineY[it++] = (byte)Math.round(buffY[i%8][j%8]); //.imgc extension determines that the pixelmap will contain first the luminance pixelmap and then the chrominance one
                     if (i == x && j != topv - 1 && up) {
                         ++j;
@@ -440,7 +440,7 @@ public class JPEG implements CompresorDecompresor {
                 int i = x, j = y, it = 0;
                 byte[] lineCb = new byte[64]; //linear vector for zigzagged elements of Cb before RLE
                 byte[] lineCr = new byte[64]; //linear vector for zigzagged elements of Cr before RLE
-                while (i < topu && j < topv) { //zig-zag and RLE of Chrominance 8x8 square (Huffman yet to be applied)
+                while (i < topu && j < topv) { //zig-zag and RLE of Chrominance 8x8 square
                     lineCb[it] = (byte)Math.round(buffCb[i%8][j%8]);
                     lineCr[it++] = (byte)Math.round(buffCr[i%8][j%8]);
                     if (i == x && j != topv - 1 && up) {
@@ -472,42 +472,51 @@ public class JPEG implements CompresorDecompresor {
                         --j;
                     }
                 }
-                List<Byte> rleCb = new ArrayList<>(); //RLE: lossless compression of 8x8 block values
+                String rleCb = ""; //RLE: lossless compression of 8x8 block values
                 byte howManyZeroes = 0; //how many zeroes have been ignored until a non zero value found in 8x8 block
                 for (int k = 0; k < 64; ++k) {
                     if (lineCb[k] == 0) {
                         howManyZeroes++;
+                        if (howManyZeroes > 15) k = 64;
                     }
                     else {
-                        rleCb.add(howManyZeroes); //rle refines that each time a non zero value is found, is written how many zeroes have been ignored before
-                        rleCb.add(bitsNumero(lineCb[k])); //size in bits of non zero value
-                        rleCb.add(lineCb[k]); //then the non zero value is written
+                        //rle refines that each time a non zero value is found, is written how many zeroes have been ignored before and the size of the value in bits
+                        rleCb = rleCb.concat(ACHuffmanTable[howManyZeroes][bitsNumero(lineCb[k])]); //substitution of those 2 values for Huffman value
+                        rleCb = rleCb.concat(Integer.toBinaryString(lineCb[k] & 0xFF)); //then the non zero value is written (only 8 bits or less, the minimum possible to represent its value)
                         howManyZeroes = 0;
                     }
                 }
-                rleCb.add((byte)0); //end of block: (0,0)
-                rleCb.add((byte)0);
-                result.add((byte)rleCb.size()); //size of block defined before reading each block in order to know how many bytes have to be read
+                rleCb = rleCb.concat(ACHuffmanTable[0][0]); //end of block: (0,0)
+                int sizeOfBlock = rleCb.length() / 8; //header of 8x8 Huffman block
+                int offsetOfBlock = rleCb.length() % 8;
+                if (rleCb.length() % 8 != 0) sizeOfBlock++; //if there is offset, then there is another byte to be added
+                result.add((byte)sizeOfBlock); //size in bits of block defined before reading each block in order to know how many bytes have to be read
+                result.add((byte)offsetOfBlock);
                 //addition of block to result
-                result.addAll(rleCb);
-                howManyZeroes = 0;
-                List<Byte> rleCr = new ArrayList<>(); //RLE: lossless compression of 8x8 block values
+                result.addAll(toByteList(rleCb)); //dumping the Huffman block into result
+                String rleCr = ""; //RLE: lossless compression of 8x8 block values
+                howManyZeroes = 0; //how many zeroes have been ignored until a non zero value found in 8x8 block
                 for (int k = 0; k < 64; ++k) {
                     if (lineCr[k] == 0) {
                         howManyZeroes++;
+                        if (howManyZeroes > 15) k = 64;
                     }
                     else {
-                        rleCr.add(howManyZeroes); //rle refines that each time a non zero value is found, is written how many zeroes have been ignored before
-                        rleCr.add(bitsNumero(lineCr[k])); //size in bits of non zero value
-                        rleCr.add(lineCr[k]); //then the non zero value is written
+                        //rle refines that each time a non zero value is found, is written how many zeroes have been ignored before and the size of the value in bits
+                        rleCr = rleCr.concat(ACHuffmanTable[howManyZeroes][bitsNumero(lineCr[k])]); //substitution of those 2 values for Huffman value
+                        rleCr = rleCr.concat(Integer.toBinaryString(lineCr[k] & 0xFF)); //then the non zero value is written (only 8 bits or less, the minimum possible to represent its value)
                         howManyZeroes = 0;
                     }
                 }
-                rleCr.add((byte)0); //end of block: (0,0)
-                rleCr.add((byte)0);
-                result.add((byte)rleCr.size()); //size of block defined before reading each block in order to know how many bytes have to be read
+                rleCr = rleCr.concat(ACHuffmanTable[0][0]); //end of block: (0,0)
+                sizeOfBlock = rleCr.length() / 8; //header of 8x8 Huffman block
+                offsetOfBlock = rleCr.length() % 8;
+                if (rleCr.length() % 8 != 0) sizeOfBlock++; //if there is offset, then there is another byte to be added
+                result.add((byte)sizeOfBlock); //size in bits of block defined before reading each block in order to know how many bytes have to be read
+                result.add((byte)offsetOfBlock);
                 //addition of block to result
-                result.addAll(rleCr);
+                result.addAll(toByteList(rleCr)); //dumping the Huffman block into result
+                howManyZeroes = 0;
             }
         }
         //end of image compression
@@ -646,7 +655,7 @@ public class JPEG implements CompresorDecompresor {
                     }
                 }
                 lineYit = 0;
-                while (k < topi && l < topj) { //zig-zag reading Luminance and inverse downsampling values (Huffman yet to be applied)
+                while (k < topi && l < topj) { //zig-zag reading Luminance and inverse downsampling values
                     buffY[k%8][l%8] = (lineY[lineYit++]) * (LuminanceQuantizationTable[k%8][l%8] * calidad); //(byte) because reads [0,255] but it's been stored as [-128,127]
                     Y[k][l] = (int)Math.round(buffY[k%8][l%8]);
                     if (k == x && l != topj - 1 && up) {
@@ -710,41 +719,95 @@ public class JPEG implements CompresorDecompresor {
                 topj = y + 8;
                 boolean up = true;
                 int k = x, l = y;
-                int rleSize = datosInput[pos++];
+                int rleSize = datosInput[pos++]; //reading Huffman block header
+                int offsetSize = datosInput[pos++];
+                StringBuilder huffmanStringBuilder = new StringBuilder();
+                for (int it = 0; it < rleSize; ++it) {
+                    huffmanStringBuilder.append(String.format("%8s",Integer.toBinaryString((datosInput[pos++] & 0xFF))).replace(' ', '0')); //converting input bytes into binary string
+                }
+                if (offsetSize != 0) {
+                    for (int it = 0; it < (8 - offsetSize); ++it) huffmanStringBuilder.deleteCharAt(huffmanStringBuilder.length() - 1); //deleting extra final bits of last byte of block till offset is fulfilled
+                }
+                List<Byte> huffmanList = new ArrayList<>();
+                String huffmanBuff = "";
+                for (int it = 0; it < rleSize * 8 - offsetSize; ++it) { //getting RLE values from Huffman block after offset applied
+                    huffmanBuff += huffmanStringBuilder.charAt(it);
+                    Pair<Byte, Byte> pair = ACInverseHuffmanTable.get(huffmanBuff); //check if Huffman code exists
+                    if (pair != null) { //if exists, get RLE value and store it in zigzag line of block
+                        Byte runlength = pair.getKey(); //getting runlength and size of RLE value
+                        huffmanList.add(runlength);
+                        Byte size = pair.getValue();
+                        huffmanList.add(size);
+                        StringBuilder amplitude = new StringBuilder();
+                        for (int n = 0; n < size; ++n) {
+                            amplitude.append(huffmanStringBuilder.charAt(++it)); //binary string of non-zero value
+                        }
+                        if (runlength != 0 || size != 0) huffmanList.add((byte)Integer.parseInt(amplitude.toString(), 2)); //binary string (8 bits long) to byte
+                        else it = rleSize * 8 - offsetSize;
+                        huffmanBuff = "";
+                    }
+                }
                 byte[] lineCb = new byte[64];
                 int lineCbit = 0;
-                for (int it = 0; it < rleSize; ++it) { //RLE lossless decompression for Luminance
-                    int howManyZeroes = datosInput[pos++];
-                    int size = datosInput[pos++];
+                for (int it = 0; it < huffmanList.size(); ++it) { //RLE lossless decompression for Chrominance
+                    int howManyZeroes = huffmanList.get(it++);
+                    int size = huffmanList.get(it++);
                     if (howManyZeroes != 0 || size != 0) {
-                        byte value = datosInput[pos++];
+                        byte value = huffmanList.get(it);
                         for (int z = 0; z < howManyZeroes; ++z) lineCb[lineCbit++] = 0;
                         lineCb[lineCbit++] = value;
                     }
                     else {
                         while (lineCbit < 64) lineCb[lineCbit++] = 0;
-                        it = rleSize;
+                        it = huffmanList.size();
                     }
                 }
                 lineCbit = 0;
-                rleSize = datosInput[pos++];
+                rleSize = datosInput[pos++]; //reading Huffman block header
+                offsetSize = datosInput[pos++];
+                StringBuilder huffmanCrStringBuilder = new StringBuilder();
+                for (int it = 0; it < rleSize; ++it) {
+                    huffmanCrStringBuilder.append(String.format("%8s",Integer.toBinaryString((datosInput[pos++] & 0xFF))).replace(' ', '0')); //converting input bytes into binary string
+                }
+                if (offsetSize != 0) {
+                    for (int it = 0; it < (8 - offsetSize); ++it) huffmanCrStringBuilder.deleteCharAt(huffmanCrStringBuilder.length() - 1); //deleting extra final bits of last byte of block till offset is fulfilled
+                }
+                List<Byte> huffmanCrList = new ArrayList<>();
+                huffmanBuff = "";
+                for (int it = 0; it < rleSize * 8 - offsetSize; ++it) { //getting RLE values from Huffman block after offset applied
+                    huffmanBuff += huffmanCrStringBuilder.charAt(it);
+                    Pair<Byte, Byte> pair = ACInverseHuffmanTable.get(huffmanBuff); //check if Huffman code exists
+                    if (pair != null) { //if exists, get RLE value and store it in zigzag line of block
+                        Byte runlength = pair.getKey(); //getting runlength and size of RLE value
+                        huffmanCrList.add(runlength);
+                        Byte size = pair.getValue();
+                        huffmanCrList.add(size);
+                        StringBuilder amplitude = new StringBuilder();
+                        for (int n = 0; n < size; ++n) {
+                            amplitude.append(huffmanCrStringBuilder.charAt(++it)); //binary string of non-zero value
+                        }
+                        if (runlength != 0 || size != 0) huffmanCrList.add((byte)Integer.parseInt(amplitude.toString(), 2)); //binary string (8 bits long) to byte
+                        else it = rleSize * 8 - offsetSize;
+                        huffmanBuff = "";
+                    }
+                }
                 byte[] lineCr = new byte[64];
                 int lineCrit = 0;
-                for (int it = 0; it < rleSize; ++it) { //RLE lossless decompression for Luminance
-                    int howManyZeroes = datosInput[pos++];
-                    int size = datosInput[pos++];
+                for (int it = 0; it < huffmanCrList.size(); ++it) { //RLE lossless decompression for Chrominance
+                    int howManyZeroes = huffmanCrList.get(it++);
+                    int size = huffmanCrList.get(it++);
                     if (howManyZeroes != 0 || size != 0) {
-                        byte value = datosInput[pos++];
+                        byte value = huffmanCrList.get(it);
                         for (int z = 0; z < howManyZeroes; ++z) lineCr[lineCrit++] = 0;
                         lineCr[lineCrit++] = value;
                     }
                     else {
                         while (lineCrit < 64) lineCr[lineCrit++] = 0;
-                        it = rleSize;
+                        it = huffmanCrList.size();
                     }
                 }
                 lineCrit = 0;
-                while (k < topi && l < topj) { //zig-zag reading Chrominance and inverse downsampling values (Huffman yet to be applied)
+                while (k < topi && l < topj) { //zig-zag reading Chrominance and inverse downsampling values
                     buffCb[k%8][l%8] = (lineCb[lineCbit++]) * (ChrominanceQuantizationTable[k%8][l%8] * calidad); //(byte) because reads [0,255] but it's been stored as [-128,127]
                     buffCr[k%8][l%8] = (lineCr[lineCrit++]) * (ChrominanceQuantizationTable[k%8][l%8] * calidad); //(byte) because reads [0,255] but it's been stored as [-128,127]
                     Cb[k][l] = (int)Math.round(buffCb[k%8][l%8]);
