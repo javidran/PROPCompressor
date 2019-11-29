@@ -3,7 +3,7 @@ package Drivers;
 import Controllers.CtrlEstadistica;
 import Controllers.CtrlProcesos;
 import Enumeration.Algoritmo;
-import PresentationLayer.MyInterface;
+import PresentationLayer.VistaInicio;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,7 +14,7 @@ public class MainDriver {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                JFrame frame = new MyInterface();
+                JFrame frame = new VistaInicio();
                 Dimension dimension = new Dimension(650, 300);
                 frame.setSize(dimension);
                 dimension = new Dimension(500, 200);

@@ -6,7 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 
-public class Estadisticas extends JDialog {
+public class VistaEstadisticas extends JDialog {
     private JPanel Estadisticas;
     private JPanel Algoritmo;
     private JComboBox comboBox1;
@@ -14,9 +14,8 @@ public class Estadisticas extends JDialog {
     private JPanel Estats;
     private JButton procesarButton;
     private JTextArea status;
-    private JDialog myself = this;
 
-    Estadisticas(Frame owner) {
+    VistaEstadisticas(Frame owner) {
         super (owner, true);
         setContentPane(Estadisticas);
         Estats.setVisible(false);
@@ -36,7 +35,7 @@ public class Estadisticas extends JDialog {
             Algoritmo.setVisible(false);
             procesarButton.setVisible(false);
         });
-        cancelarButton.addActionListener(e -> myself.setVisible(false));
+        cancelarButton.addActionListener(e -> dispose());
     }
 
 }
