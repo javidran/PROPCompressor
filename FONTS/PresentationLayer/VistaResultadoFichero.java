@@ -13,12 +13,7 @@ public class VistaResultadoFichero extends JDialog {
 
     public VistaResultadoFichero(){
         scrollPanel.getVerticalScrollBar().setUnitIncrement(16);
-        finalizarButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                myself.setVisible(false);
-            }
-        });
+        finalizarButton.addActionListener(e -> dispose());
     }
 
 }

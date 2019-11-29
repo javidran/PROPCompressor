@@ -14,7 +14,6 @@ public class VistaEstadisticas extends JDialog {
     private JPanel Estats;
     private JButton procesarButton;
     private JTextArea status;
-    private JDialog myself = this;
 
     VistaEstadisticas(Frame owner) {
         super (owner, true);
@@ -36,7 +35,7 @@ public class VistaEstadisticas extends JDialog {
             Algoritmo.setVisible(false);
             procesarButton.setVisible(false);
         });
-        cancelarButton.addActionListener(e -> myself.setVisible(false));
+        cancelarButton.addActionListener(e -> dispose());
     }
 
 }

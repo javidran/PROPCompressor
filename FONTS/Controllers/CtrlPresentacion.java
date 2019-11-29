@@ -180,7 +180,7 @@ public class CtrlPresentacion {
     public void algoritmoSeleccionado(String algoritmo) {
         Algoritmo tipoAlgoritmo;
         switch (algoritmo) {
-            case "PREDETERMINADO":
+            case "Predeterminado":
                 tipoAlgoritmo = CtrlProcesos.getAlgoritmoDeTextoPredeterminado();
                 break;
             case "LZSS":
@@ -196,6 +196,7 @@ public class CtrlPresentacion {
                 throw new IllegalStateException("Unexpected value: " + algoritmo);
         }
         modeloParametros.setAlgoritmo(tipoAlgoritmo);
+        actualizarPathSalida(modeloParametros.getPathResultado());
     }
 
     public void iniciarProceso() {
