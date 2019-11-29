@@ -516,7 +516,6 @@ public class JPEG implements CompresorDecompresor {
                 result.add((byte)offsetOfBlock);
                 //addition of block to result
                 result.addAll(toByteList(rleCr)); //dumping the Huffman block into result
-                howManyZeroes = 0;
             }
         }
         //end of image compression
