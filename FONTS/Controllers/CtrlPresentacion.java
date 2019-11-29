@@ -1,10 +1,14 @@
 package Controllers;
 
 import Enumeration.Algoritmo;
-import PresentationLayer.MyInterface;
+import PresentationLayer.ModeloParametros;
+import PresentationLayer.VistaInicio;
+import PresentationLayer.VistaSelectorAlgoritmo;
+import PresentationLayer.VistaSelectorAlgortimoPredeterminado;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 
 public class CtrlPresentacion {
@@ -12,6 +16,9 @@ public class CtrlPresentacion {
      * Instancia de CtrlPresentacion para garantizar que es una clase Singleton
      */
     private static CtrlPresentacion instance = null;
+    private ModeloParametros modeloParametros;
+    private VistaInicio vistaInicio;
+    private VistaSelectorAlgoritmo vistaSelectorAlgoritmo;
 
     /**
      * Getter de la instancia Singleton de CtrlPresentacion
@@ -23,6 +30,188 @@ public class CtrlPresentacion {
             instance = new CtrlPresentacion();
         return instance;
     }
+
+    public void crearModeloParametros() {
+        modeloParametros = new ModeloParametros();
+    }
+
+    public void crearVistaInicio() {
+        SwingUtilities.invokeLater(() -> {
+            vistaInicio = new VistaInicio();
+            modeloParametros.setVistaInicio(vistaInicio);
+            vistaInicio.algoritmoPredeterminado(CtrlProcesos.getAlgoritmoDeTextoPredeterminado());
+            vistaInicio.setSize(new Dimension(650, 300));
+            vistaInicio.setMinimumSize(new Dimension(500, 200));
+            vistaInicio.setResizable(true);
+            vistaInicio.setVisible(true);
+            vistaInicio.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+            vistaInicio.setLocationRelativeTo(null);
+        });
+    }
+
+    public void cerrarVistaInicio() {
+        vistaInicio = null;
+    }
+
+    public void pathCambiado(String path) {
+        //TODO Mover comprobaciones a capa de Datos
+        modeloParametros.setPathOriginal(path);
+        String[] splitP = path.split("\\.");
+        String type = splitP[splitP.length-1];
+
+        //TODO Detectar correctamente carpetas aunque estas tengan puntos
+
+        if(splitP.length == 1 && !path.endsWith(".")) {
+            modeloParametros.setCompresion(true);
+            modeloParametros.setAlgoritmo(Algoritmo.CARPETA);
+        }
+        else switch (type) {
+            case "imgc":
+                modeloParametros.setCompresion(false);
+                modeloParametros.setAlgoritmo(Algoritmo.JPEG);
+                break;
+            case "comp":
+                modeloParametros.setCompresion(false);
+                modeloParametros.setAlgoritmo(Algoritmo.CARPETA);
+                break;
+            case "lzss":
+            case "lzw":
+            case "lz78":
+                modeloParametros.setCompresion(false);
+                modeloParametros.setAlgoritmo(CtrlProcesos.getAlgoritmoDeTextoPredeterminado());
+                break;
+            case "txt":
+                modeloParametros.setCompresion(true);
+                modeloParametros.setAlgoritmo(CtrlProcesos.getAlgoritmoDeTextoPredeterminado());
+                break;
+            case "ppm":
+                modeloParametros.setCompresion(true);
+                modeloParametros.setAlgoritmo(Algoritmo.JPEG);
+                break;
+            default:
+                vistaInicio.deshabilitarBotones();
+                break;
+        }
+        actualizarPathSalida(path);
+    }
+
+    public void estadisticasPulsado() {
+
+    }
+
+    public void escogerPredeterminadoPulsado() {
+        JDialog dialog = new VistaSelectorAlgortimoPredeterminado(vistaInicio);
+        dialog.setSize(new Dimension(600, 200));
+        dialog.setMinimumSize(new Dimension(600, 200));
+        dialog.setLocationRelativeTo(vistaInicio);
+        dialog.setResizable(true);
+        dialog.setVisible(true);
+    }
+
+    public void algoritmoPredeterminadoEscogido(Algoritmo algoritmo) {
+        CtrlProcesos.setAlgoritmoDeTextoPredeterminado(algoritmo);
+        if(vistaInicio != null) vistaInicio.algoritmoPredeterminado(CtrlProcesos.getAlgoritmoDeTextoPredeterminado());
+    }
+
+    public void crearVistaSeleccionAlgoritmo(boolean conGuardado) {
+        VistaSelectorAlgoritmo vistaSelectorAlgoritmo = new VistaSelectorAlgoritmo(vistaInicio);
+        modeloParametros.setVistaSelectorAlgoritmo(vistaSelectorAlgoritmo, conGuardado);
+        vistaSelectorAlgoritmo.setSize(new Dimension(650, 300));
+        vistaSelectorAlgoritmo.setMinimumSize(new Dimension(500, 200));
+        vistaSelectorAlgoritmo.setLocationRelativeTo(vistaInicio);
+        vistaSelectorAlgoritmo.setResizable(true);
+        vistaSelectorAlgoritmo.setVisible(true);
+    }
+
+    public void cerrarVistaSeleccionAlgoritmo() {
+        vistaSelectorAlgoritmo = null;
+    }
+
+    private String extension() {
+        String extension = null;
+        Algoritmo tipoAlgoritmo = modeloParametros.getAlgoritmo();
+        if(modeloParametros.isCompresion()) {
+            switch (tipoAlgoritmo) {
+                case LZW:
+                    extension = "lzw";
+                    break;
+                case LZSS:
+                    extension = "lzss";
+                    break;
+                case LZ78:
+                    extension = "lz78";
+                    break;
+                case JPEG:
+                    extension = "imgc";
+                    break;
+                case CARPETA:
+                    extension = "comp";
+            }
+        } else {
+            switch (tipoAlgoritmo) {
+                case LZW:
+                case LZSS:
+                case LZ78:
+                    extension = "txt";
+                    break;
+                case JPEG:
+                    extension = "ppm";
+                    break;
+                case CARPETA:
+                    extension = "";
+            }
+        }
+        return extension;
+    }
+
+    public void actualizarPathSalida(String path) {
+        String[] splitP = path.split("\\.");
+        String type = splitP[splitP.length-1];
+        String ext = extension();
+        if(!path.contains(".")) path = path + "." + ext;
+        else if(splitP.length==1) path = path + ext;
+        else if (!type.equalsIgnoreCase(ext)) {
+            if(modeloParametros.getAlgoritmo().equals(Algoritmo.CARPETA) && !modeloParametros.isCompresion()) path = path.replace("." + type, ext);
+            else path = path.replace(type, ext);
+        }
+        modeloParametros.setPathResultado(path);
+    }
+
+    public void algoritmoSeleccionado(String algoritmo) {
+        Algoritmo tipoAlgoritmo;
+        switch (algoritmo) {
+            case "PREDETERMINADO":
+                tipoAlgoritmo = CtrlProcesos.getAlgoritmoDeTextoPredeterminado();
+                break;
+            case "LZSS":
+                tipoAlgoritmo = Algoritmo.LZSS;
+                break;
+            case "LZW":
+                tipoAlgoritmo = Algoritmo.LZW;
+                break;
+            case "LZ78":
+                tipoAlgoritmo = Algoritmo.LZ78;
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + algoritmo);
+        }
+        modeloParametros.setAlgoritmo(tipoAlgoritmo);
+    }
+
+    public void iniciarProceso() {
+        boolean existe = (new File(modeloParametros.getPathResultado())).exists();
+        if (existe) {
+            int respuesta = JOptionPane.showConfirmDialog(null, "El fichero resultante del proceso sobrescribirá uno ya existente, ¿desea sobrescribirlo?", "Sobrescribir",
+                    JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+            cerrarVistaSeleccionAlgoritmo();
+            if (respuesta == JOptionPane.NO_OPTION) {
+                crearVistaSeleccionAlgoritmo(modeloParametros.isConGuardado());
+            }
+        }
+        else cerrarVistaSeleccionAlgoritmo();
+        //TODO Procesar El Fichero
+    }
+
 
     public String getEstadisticas(String data) throws IOException {
         CtrlEstadistica ce = CtrlEstadistica.getInstance();
@@ -44,22 +233,5 @@ public class CtrlPresentacion {
                 throw new EnumConstantNotPresentException(Algoritmo.class, " El tipo de compresor " + data + " no existe.");
         }
         return ce.estadisticas(alg);
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                JFrame frame = new MyInterface();
-                Dimension dimension = new Dimension(650, 300);
-                frame.setSize(dimension);
-                dimension = new Dimension(500, 200);
-                frame.setMinimumSize(dimension);
-                frame.setResizable(true);
-                frame.setVisible(true);
-                frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-                frame.setLocationRelativeTo(null);
-            }
-        });
     }
 }
