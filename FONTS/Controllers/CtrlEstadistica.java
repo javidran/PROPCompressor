@@ -44,7 +44,7 @@ public class CtrlEstadistica {
             int num = ctrlDatos.getNumeroElementos(algoritmo, true);
             resultado.append("Archivos comprimidos: ").append(num).append("\n");
             resultado.append("Tiempo medio de compresión: ").append(ctrlDatos.getTiempoMedio(algoritmo, true)).append(" ns\n");
-            resultado.append("Porcentaje medio de tamaño respecto al original: ").append(ctrlDatos.getPorcentajeAhorradoMedio(algoritmo, true)).append(" %\n");
+            resultado.append("Ratio de compresión: ").append(ctrlDatos.getPorcentajeAhorradoMedio(algoritmo, true)).append(" %\n");
         } catch (FileNotFoundException e) {
             resultado.append("Archivos comprimidos: 0\n");
         }
@@ -53,7 +53,7 @@ public class CtrlEstadistica {
             int num = ctrlDatos.getNumeroElementos(algoritmo, false);
             resultado.append("Archivos descomprimidos: ").append(num).append("\n");
             resultado.append("Tiempo medio de descompresión: ").append(ctrlDatos.getTiempoMedio(algoritmo, false)).append(" ns\n");
-            resultado.append("Porcentaje medio de tamaño respecto al original: ").append(ctrlDatos.getPorcentajeAhorradoMedio(algoritmo, false)).append(" %\n");
+            resultado.append("Ratio de descompresión: ").append(ctrlDatos.getPorcentajeAhorradoMedio(algoritmo, false)).append(" %\n");
 
         } catch (FileNotFoundException e) {
             resultado.append("Archivos descomprimidos: 0\n");
