@@ -13,9 +13,9 @@ public abstract class GestorCarpeta {
         carpeta = new File(path);
     }
 
-    public abstract Algoritmo algoritmoProximoArchivo() throws FormatoErroneoException;
+    public abstract Algoritmo algoritmoProximoArchivo() throws IOException;
 
     public abstract byte[] leerProximoArchivo() throws IOException;
 
-    public abstract void guardaProximoArchivo(byte[] data);
+    public abstract void guardaProximoArchivo(byte[] data) throws IOException;
 }
