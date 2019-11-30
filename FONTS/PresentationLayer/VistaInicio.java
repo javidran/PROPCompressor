@@ -68,17 +68,7 @@ public class VistaInicio extends JFrame {
 
         comprimirYDescomprimirButton.addActionListener(actionEvent -> ctrlPresentacion.crearVistaSeleccionAlgoritmo(false));
 
-        estadisticasButton.addActionListener(e -> {
-            JDialog dialog;
-            dialog = new VistaEstadisticas(myself);
-            Dimension dimension = new Dimension(600, 300);
-            dialog.setSize(dimension);
-            dimension = new Dimension(600, 300);
-            dialog.setMinimumSize(dimension);
-            dialog.setLocationRelativeTo(myself);
-            dialog.setResizable(true);
-            dialog.setVisible(true);
-        });
+        estadisticasButton.addActionListener(e -> ctrlPresentacion.crearVistaEstadisticas());
 
         escogerPrederterminadoButton.addActionListener(e -> ctrlPresentacion.escogerPredeterminadoPulsado());
 

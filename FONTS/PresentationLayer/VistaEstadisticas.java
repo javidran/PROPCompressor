@@ -5,8 +5,11 @@ import Controllers.CtrlPresentacion;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+import java.util.Objects;
 
 public class VistaEstadisticas extends JDialog {
+    private CtrlPresentacion ctrlPresentacion;
+
     private JPanel Estadisticas;
     private JPanel Algoritmo;
     private JComboBox comboBox1;
@@ -15,27 +18,31 @@ public class VistaEstadisticas extends JDialog {
     private JButton procesarButton;
     private JTextArea status;
 
-    VistaEstadisticas(Frame owner) {
+    public VistaEstadisticas(Frame owner) {
         super (owner, true);
+        ctrlPresentacion = CtrlPresentacion.getInstance();
         setContentPane(Estadisticas);
+
         Estats.setVisible(false);
+
         procesarButton.addActionListener(e -> {
-            Estats.setVisible(true);
-            String data = "";
-            if (comboBox1.getSelectedIndex() != -1) {
-                data += comboBox1.getItemAt(comboBox1.getSelectedIndex());
-            }
-            CtrlPresentacion cp = CtrlPresentacion.getInstance();
+            String data =  Objects.requireNonNull(comboBox1.getSelectedItem()).toString();
             try {
-                String mensaje = cp.getEstadisticas(data);
-                status.setText(mensaje);
+                ctrlPresentacion.mostrarEstadisticas(data);
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
-            Algoritmo.setVisible(false);
-            procesarButton.setVisible(false);
         });
         cancelarButton.addActionListener(e -> dispose());
+    }
+
+    public void mostrarEstadisticasSelecionadas(String mensaje) {
+        status.setText(mensaje);
+        Estats.setVisible(true);
+        status.setOpaque(false);
+        Algoritmo.setVisible(false);
+        status.setBackground(new Color(0,0,0,0));
+        procesarButton.setVisible(false);
     }
 
 }

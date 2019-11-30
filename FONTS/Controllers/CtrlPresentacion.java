@@ -1,10 +1,7 @@
 package Controllers;
 
 import Enumeration.Algoritmo;
-import PresentationLayer.ModeloParametros;
-import PresentationLayer.VistaInicio;
-import PresentationLayer.VistaSelectorAlgoritmo;
-import PresentationLayer.VistaSelectorAlgortimoPredeterminado;
+import PresentationLayer.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,6 +16,7 @@ public class CtrlPresentacion {
     private ModeloParametros modeloParametros;
     private VistaInicio vistaInicio;
     private VistaSelectorAlgoritmo vistaSelectorAlgoritmo;
+    private VistaEstadisticas vistaEstadisticas;
 
     /**
      * Getter de la instancia Singleton de CtrlPresentacion
@@ -111,17 +109,6 @@ public class CtrlPresentacion {
     public void algoritmoPredeterminadoEscogido(Algoritmo algoritmo) {
         CtrlProcesos.setAlgoritmoDeTextoPredeterminado(algoritmo);
         if(vistaInicio != null) vistaInicio.algoritmoPredeterminado(CtrlProcesos.getAlgoritmoDeTextoPredeterminado());
-    }
-
-    public void crearVistaSeleccionAlgoritmo(boolean conGuardado) {
-        VistaSelectorAlgoritmo vistaSelectorAlgoritmo = new VistaSelectorAlgoritmo(vistaInicio);
-        modeloParametros.setVistaSelectorAlgoritmo(vistaSelectorAlgoritmo, conGuardado);
-
-        vistaSelectorAlgoritmo.setSize(new Dimension(650, 300));
-        vistaSelectorAlgoritmo.setMinimumSize(new Dimension(500, 200));
-        vistaSelectorAlgoritmo.setLocationRelativeTo(vistaInicio);
-        vistaSelectorAlgoritmo.setResizable(true);
-        vistaSelectorAlgoritmo.setVisible(true);
     }
 
     public void cerrarVistaSeleccionAlgoritmo() {
@@ -217,7 +204,6 @@ public class CtrlPresentacion {
         //TODO Procesar El Fichero
     }
 
-
     public String getEstadisticas(String data) throws IOException {
         CtrlEstadistica ce = CtrlEstadistica.getInstance();
         Algoritmo alg;
@@ -238,5 +224,29 @@ public class CtrlPresentacion {
                 throw new EnumConstantNotPresentException(Algoritmo.class, " El tipo de compresor " + data + " no existe.");
         }
         return ce.estadisticas(alg);
+    }
+
+    public void crearVistaEstadisticas() {
+        vistaEstadisticas = new VistaEstadisticas(vistaInicio);
+        vistaEstadisticas.setSize(new Dimension(600, 300));
+        vistaEstadisticas.setMinimumSize(new Dimension(500, 200)); //600 300
+        vistaEstadisticas.setLocationRelativeTo(vistaInicio);
+        vistaEstadisticas.setResizable(true);
+        vistaEstadisticas.setVisible(true);
+    }
+
+    public void crearVistaSeleccionAlgoritmo(boolean conGuardado) {
+        vistaSelectorAlgoritmo = new VistaSelectorAlgoritmo(vistaInicio);
+        modeloParametros.setVistaSelectorAlgoritmo(vistaSelectorAlgoritmo, conGuardado);
+        vistaSelectorAlgoritmo.setSize(new Dimension(650, 300));
+        vistaSelectorAlgoritmo.setMinimumSize(new Dimension(500, 200));
+        vistaSelectorAlgoritmo.setLocationRelativeTo(vistaInicio);
+        vistaSelectorAlgoritmo.setResizable(true);
+        vistaSelectorAlgoritmo.setVisible(true);
+    }
+
+    public void mostrarEstadisticas(String data) throws IOException {
+        String mensaje = getEstadisticas(data);
+        vistaEstadisticas.mostrarEstadisticasSelecionadas(mensaje);
     }
 }
