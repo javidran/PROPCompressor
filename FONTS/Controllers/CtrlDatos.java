@@ -4,6 +4,7 @@ import DataLayer.GestorArchivo;
 import DataLayer.GestorEstadisticas;
 import DomainLayer.Algoritmos.Algoritmo;
 import DomainLayer.Proceso.DatosProceso;
+import Exceptions.FormatoErroneoException;
 
 import java.io.*;
 
@@ -22,6 +23,90 @@ public class CtrlDatos {
             instance = new CtrlDatos();
 
         return instance;
+    }
+
+    /**
+     * Comprueba qué algoritmos se pueden usar para comprimir o descomprimir un fichero, el cual se pasa por parámetro.
+     * <p>
+     *     El path del archivo debe seguir el formato general de cualquier tipo de path de archivo y puede ser relativo o absoluto.
+     * </p>
+     * @param path El path del archivo a comprobar
+     * @return Un vector de algoritmos posibles a ejecutar para comprimir o descomprimir el fichero
+     * @throws FormatoErroneoException No hay ningún algoritmo compatible con la extensión del archivo
+     */
+    public static Algoritmo[] algoritmosPosibles(String path) throws FormatoErroneoException {
+        String[] splittedPath = path.split("\\.");
+        String type = splittedPath[splittedPath.length-1];
+
+        switch (type) {
+            case "txt":
+                return new Algoritmo[] {Algoritmo.LZSS, Algoritmo.LZW, Algoritmo.LZ78};
+            case "ppm":
+            case "imgc":
+                return new Algoritmo[] {Algoritmo.JPEG};
+            case "lzss":
+                return new Algoritmo[] {Algoritmo.LZSS};
+            case "lz78":
+                return new Algoritmo[] {Algoritmo.LZ78};
+            case "lzw":
+                return new Algoritmo[] {Algoritmo.LZW};
+            default:
+                throw new FormatoErroneoException("No hay ningun tipo de algoritmo compatible");
+        }
+    }
+
+    /**
+     * Comprueba si el archivo es capaz de ser comprimido según la extensión del mismo.
+     * <p>
+     *     El path del archivo debe seguir el formato general de cualquier tipo de path de archivo y puede ser relativo o absoluto.
+     * </p>
+     * @param path El path del archivo que se quiere comprobar
+     * @return Un booleano que indica si el archivo es comprimible
+     * @throws FormatoErroneoException No hay ningún algoritmo compatible con la extensión del archivo
+     */
+    public static boolean esComprimible(String path) throws FormatoErroneoException {
+        String[] splitP = path.split("\\.");
+        String type = splitP[splitP.length-1];
+
+        switch (type) {
+            case "txt":
+            case "ppm":
+                return true;
+            case "imgc":
+            case "lzss":
+            case "lz78":
+            case "lzw":
+                return false;
+            default:
+                throw new FormatoErroneoException("No hay ningun tipo de algoritmo compatible");
+        }
+    }
+
+    /**
+     * Comprueba si el archivo es capaz de ser descomprimido según la extensión del mismo.
+     * <p>
+     *     El path del archivo debe seguir el formato general de cualquier tipo de path de archivo y puede ser relativo o absoluto.
+     * </p>
+     * @param path El path del archivo que se quiere comprobar
+     * @return Un booleano que indica si el archivo es descomprimible
+     * @throws FormatoErroneoException No hay ningún algoritmo compatible con la extensión del archivo
+     */
+    public static boolean esDescomprimible(String path) throws FormatoErroneoException {
+        String[] splitP = path.split("\\.");
+        String type = splitP[splitP.length-1];
+
+        switch (type) {
+            case "txt":
+            case "ppm":
+                return false;
+            case "imgc":
+            case "lzss":
+            case "lz78":
+            case "lzw":
+                return true;
+            default:
+                throw new FormatoErroneoException("No hay ningun tipo de algoritmo compatible");
+        }
     }
 
     /**
@@ -51,6 +136,18 @@ public class CtrlDatos {
      * @throws IOException No se ha podido escribir en el archivo por el path indicado.
      */
     public void guardaArchivo (byte[] data, String path, Algoritmo algoritmo, boolean esCompresion, boolean sobreescribir) throws IOException {
+        path = actualizarPathSalida(path, algoritmo, esCompresion);
+        GestorArchivo.guardaArchivo(data, path, sobreescribir);
+    }
+
+    /**
+     * Actualiza el path pasado por parámetro para que sea el path de salida del fichero procesado.
+     * @param path El path del archivo antes de ser procesado.
+     * @param algoritmo El algorimo usado en el proceso.
+     * @param esCompresion Indicador de si el proceso ha sido de compresión o no (y por tanto de descompresión).
+     * @return Path del archivo procesado, con su correspondiente extensión.
+     */
+    private String actualizarPathSalida(String path, Algoritmo algoritmo, boolean esCompresion) {
         String [] pathSplitted = path.split("\\.");
         switch (algoritmo) {
             case LZW:
@@ -70,7 +167,7 @@ public class CtrlDatos {
                 else path = path.replace("."+pathSplitted[pathSplitted.length - 1], "_out.ppm");
                 break;
         }
-        GestorArchivo.guardaArchivo(data, path, sobreescribir);
+        return path;
     }
 
     /**
