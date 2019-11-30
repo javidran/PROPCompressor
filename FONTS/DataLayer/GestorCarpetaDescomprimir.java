@@ -1,26 +1,45 @@
 package DataLayer;
 
+import Controllers.CtrlDatos;
 import DomainLayer.Algoritmos.Algoritmo;
 
-import java.io.File;
+import java.io.*;
 
 public class GestorCarpetaDescomprimir extends GestorCarpeta {
-    public GestorCarpetaDescomprimir(String path) {
+    private BufferedInputStream lector;
+    private String path;
+    private Algoritmo algoritmo;
+
+    public GestorCarpetaDescomprimir(String path) throws FileNotFoundException {
         super(path);
+        lector = new BufferedInputStream(new FileInputStream(carpeta));
     }
 
     @Override
-    public Algoritmo algoritmoProximoArchivo() {
-        return null;
+    public Algoritmo algoritmoProximoArchivo() throws IOException {
+        BufferedReader r = new BufferedReader(new InputStreamReader(lector));
+        path = r.readLine();
+        Algoritmo[] algoritmosPosibles = CtrlDatos.algoritmosPosibles(path);
+        algoritmo = algoritmosPosibles[0];
+        return algoritmo;
     }
 
     @Override
-    public byte[] leerProximoArchivo() {
-        return new byte[0];
+    public byte[] leerProximoArchivo() throws IOException {
+        BufferedReader r = new BufferedReader(new InputStreamReader(lector));
+        int size = Integer.parseInt(r.readLine());
+
+        byte[] data = new byte[size];
+        lector.read(data);
+
+        return data;
     }
 
     @Override
-    public void guardaProximoArchivo(byte[] data) {
-
+    public void guardaProximoArchivo(byte[] data) throws IOException {
+        String pathCarpeta = carpeta.getAbsolutePath();
+        String pathResultado = CtrlDatos.actualizarPathSalida(path,algoritmo,false);
+        String pathCompleto = pathCarpeta + (pathCarpeta.contains("/")?"/":"\\") + pathResultado;
+        GestorArchivo.guardaArchivo(data,pathCompleto, true);
     }
 }
