@@ -23,7 +23,7 @@ public class ModeloParametros {
         if(conGuardado) this.vistaSelectorAlgoritmo.mostrarSelectorDePath(pathResultado);
 
         if(algoritmo.equals(Algoritmo.JPEG)) this.vistaSelectorAlgoritmo.mostrarSliderDeCalidad();
-        else if(!algoritmo.equals(Algoritmo.CARPETA)) this.vistaSelectorAlgoritmo.mostrarSelectorAlgoritmo();
+        else if(!algoritmo.equals(Algoritmo.CARPETA) && (this.isCompresion())) this.vistaSelectorAlgoritmo.mostrarSelectorAlgoritmo();
     }
 
     public boolean isCompresion() {

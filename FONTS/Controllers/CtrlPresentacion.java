@@ -116,6 +116,7 @@ public class CtrlPresentacion {
     public void crearVistaSeleccionAlgoritmo(boolean conGuardado) {
         VistaSelectorAlgoritmo vistaSelectorAlgoritmo = new VistaSelectorAlgoritmo(vistaInicio);
         modeloParametros.setVistaSelectorAlgoritmo(vistaSelectorAlgoritmo, conGuardado);
+
         vistaSelectorAlgoritmo.setSize(new Dimension(650, 300));
         vistaSelectorAlgoritmo.setMinimumSize(new Dimension(500, 200));
         vistaSelectorAlgoritmo.setLocationRelativeTo(vistaInicio);
@@ -124,6 +125,7 @@ public class CtrlPresentacion {
     }
 
     public void cerrarVistaSeleccionAlgoritmo() {
+        //Next Change Area
         vistaSelectorAlgoritmo = null;
     }
 
