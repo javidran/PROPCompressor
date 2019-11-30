@@ -1,7 +1,6 @@
 package Controllers;
 
-import DataLayer.GestorArchivo;
-import DataLayer.GestorEstadisticas;
+import DataLayer.*;
 import DomainLayer.Algoritmos.Algoritmo;
 import DomainLayer.Proceso.DatosProceso;
 
@@ -12,6 +11,11 @@ public class CtrlDatos {
      * Instancia de CtrlDatos para garantizar que es una clase Singleton
      */
     private static CtrlDatos instance = null;
+
+
+    private GestorCarpeta gestorCarpeta = null;
+
+
     /**
      * Getter de la instancia Singleton de CtrlDatoos
      * @return La instancia Singleton de CtrlDatos
@@ -71,6 +75,27 @@ public class CtrlDatos {
                 break;
         }
         GestorArchivo.guardaArchivo(data, path, sobreescribir);
+    }
+
+    public void crearGestorCarpeta(String path, boolean comprimir, Algoritmo algoritmoDeTexto) {
+        if(comprimir) gestorCarpeta = new GestorCarpetaComprimir(path, algoritmoDeTexto);
+        else gestorCarpeta = new GestorCarpetaDescomprimir(path);
+    }
+
+    public Algoritmo leerAlgoritmoProximoArchivo() {
+        return gestorCarpeta.algoritmoProximoArchivo();
+    }
+
+    public byte[] leerProximoArchivo() {
+        return gestorCarpeta.leerProximoArchivo();
+    }
+
+    public void guardaProximoArchivo(byte[] data) {
+        gestorCarpeta.guardaProximoArchivo(data);
+    }
+
+    public void finalizarGestorCarpeta() {
+        gestorCarpeta = null;
     }
 
     /**
