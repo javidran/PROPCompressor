@@ -229,7 +229,7 @@ public class CtrlPresentacion {
     public void crearVistaEstadisticas() {
         vistaEstadisticas = new VistaEstadisticas(vistaInicio);
         vistaEstadisticas.setSize(new Dimension(600, 300));
-        vistaEstadisticas.setMinimumSize(new Dimension(500, 200)); //600 300
+        vistaEstadisticas.setMinimumSize(new Dimension(500, 250));
         vistaEstadisticas.setLocationRelativeTo(vistaInicio);
         vistaEstadisticas.setResizable(true);
         vistaEstadisticas.setVisible(true);
