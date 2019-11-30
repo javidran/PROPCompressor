@@ -113,6 +113,10 @@ public class CtrlDatos {
         }
     }
 
+    public boolean existeArchivo(String path) {
+        return GestorArchivo.existeArchivo(path);
+    }
+
     /**
      * Llama a la clase GestorArchivo para que lea el archivo del path.
      * <p>
@@ -151,43 +155,43 @@ public class CtrlDatos {
      * @param esCompresion Indicador de si el proceso ha sido de compresión o no (y por tanto de descompresión).
      * @return Path del archivo procesado, con su correspondiente extensión.
      */
-    private String actualizarPathSalida(String path, Algoritmo algoritmo, boolean esCompresion) {
+    public static String actualizarPathSalida(String path, Algoritmo algoritmo, boolean esCompresion) {
         String [] pathSplitted = path.split("\\.");
         switch (algoritmo) {
             case LZW:
                 if(esCompresion) path = path.replace(".txt", ".lzw");
-                else path = path.replace("."+pathSplitted[pathSplitted.length - 1], "_out.txt");
+                else path = path.replace("."+pathSplitted[pathSplitted.length - 1], ".txt");
                 break;
             case LZSS:
                 if(esCompresion) path = path.replace(".txt", ".lzss");
-                else path = path.replace("."+pathSplitted[pathSplitted.length - 1], "_out.txt");
+                else path = path.replace("."+pathSplitted[pathSplitted.length - 1], ".txt");
                 break;
             case LZ78:
                 if(esCompresion) path = path.replace(".txt", ".lz78");
-                else path = path.replace("."+pathSplitted[pathSplitted.length - 1], "_out.txt");
+                else path = path.replace("."+pathSplitted[pathSplitted.length - 1], ".txt");
                 break;
             case JPEG:
                 if(esCompresion) path = path.replace(".ppm", ".imgc");
-                else path = path.replace("."+pathSplitted[pathSplitted.length - 1], "_out.ppm");
+                else path = path.replace("."+pathSplitted[pathSplitted.length - 1], ".ppm");
                 break;
         }
         return path;
     }
 
-    public void crearGestorCarpeta(String path, boolean comprimir, Algoritmo algoritmoDeTexto) {
+    public void crearGestorCarpeta(String path, boolean comprimir, Algoritmo algoritmoDeTexto) throws FileNotFoundException {
         if(comprimir) gestorCarpeta = new GestorCarpetaComprimir(path, algoritmoDeTexto);
         else gestorCarpeta = new GestorCarpetaDescomprimir(path);
     }
 
-    public Algoritmo leerAlgoritmoProximoArchivo() {
+    public Algoritmo leerAlgoritmoProximoArchivo() throws IOException {
         return gestorCarpeta.algoritmoProximoArchivo();
     }
 
-    public byte[] leerProximoArchivo() {
+    public byte[] leerProximoArchivo() throws IOException {
         return gestorCarpeta.leerProximoArchivo();
     }
 
-    public void guardaProximoArchivo(byte[] data) {
+    public void guardaProximoArchivo(byte[] data) throws IOException {
         gestorCarpeta.guardaProximoArchivo(data);
     }
 
