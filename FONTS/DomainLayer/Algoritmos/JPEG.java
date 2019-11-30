@@ -117,38 +117,41 @@ public class JPEG implements CompresorDecompresor {
     }
 
     /**
-     * Cuenta el número de bits mínimos con los que representar un número
-     * @param num El número del cual queremos saber su tamaño en bits
-     * @return El número de bits mínimos con los que representar un número
+     * Cuenta el número de bits mínimos con los que representar el número pasado por parámetro
+     * @param numero El número del cual queremos saber su tamaño en bits
+     * @return El número de bits mínimos con los que representar el número pasado por parámetro
      */
-    private static byte bitsNumero(byte num) {
+    private static byte bitsNumero(byte numero) {
         byte bits = 0;
-        int numero = 0xFF & num;
-        while (numero != 0) {
+        int numeroUnsigned = 0xFF & numero; //avoiding shift logical malfunction with byte type
+        while (numeroUnsigned != 0) { //counting minimum amount of bits to represent number passed as parameter
             bits++;
-            numero >>>= 1;
+            numeroUnsigned >>>= 1;
         }
         return bits;
     }
 
     /**
      * Convierte un binary string en un byte array
-     * @param rleY El binary string en cuestión
-     * @return El byte array deseado
+     * <p>
+     *     El binary string pasado por parámetro sólo contiene los caracteres '1' y '0'
+     * </p>
+     * @param binaryString El binary string en cuestión
+     * @return El byte list deseado
      */
-    private List<Byte> toByteList(String rleY) {
+    private List<Byte> toByteList(String binaryString) {
         List<Byte> l = new ArrayList<>();
         byte n = 0;
-        for (int i = 0; i < rleY.length(); ++i) {
-            if (rleY.charAt(i) == '1') n++;
+        for (int i = 0; i < binaryString.length(); ++i) { //for each 8 chars, being '1' or '0', one byte is created and added to the byte list
+            if (binaryString.charAt(i) == '1') n++;
             if (i % 8 != 7) n<<=1;
             else {
                 l.add(n);
                 n = 0;
             }
         }
-        if (rleY.length() % 8 != 0) {
-            for (int i = 1; i < (8 - rleY.length() % 8); ++i) n <<= 1;
+        if (binaryString.length() % 8 != 0) { //if there remains some chars as offset of last byte, the highest '1' is shifted till it is the 8th highest value bit of the byte, and then the byte is appended to the list
+            for (int i = 1; i < (8 - binaryString.length() % 8); ++i) n <<= 1;
             l.add(n);
         }
         return l;
@@ -353,7 +356,7 @@ public class JPEG implements CompresorDecompresor {
                 boolean up = true;
                 int i = x, j = y, it = 0;
                 byte[] lineY = new byte[64]; //linear vector for zigzagged elements of Y before RLE
-                while (i < topu && j < topv) { //zig-zag and RLE of Luminance 8x8 square
+                while (i < topu && j < topv) { //zig-zag, RLE and Huffman Coding of Luminance 8x8 square
                     lineY[it++] = (byte)Math.round(buffY[i%8][j%8]); //.imgc extension determines that the pixelmap will contain first the luminance pixelmap and then the chrominance one
                     if (i == x && j != topv - 1 && up) {
                         ++j;
@@ -440,7 +443,7 @@ public class JPEG implements CompresorDecompresor {
                 int i = x, j = y, it = 0;
                 byte[] lineCb = new byte[64]; //linear vector for zigzagged elements of Cb before RLE
                 byte[] lineCr = new byte[64]; //linear vector for zigzagged elements of Cr before RLE
-                while (i < topu && j < topv) { //zig-zag and RLE of Chrominance 8x8 square
+                while (i < topu && j < topv) { //zig-zag, RLE and Huffman of Chrominance 8x8 square
                     lineCb[it] = (byte)Math.round(buffCb[i%8][j%8]);
                     lineCr[it++] = (byte)Math.round(buffCr[i%8][j%8]);
                     if (i == x && j != topv - 1 && up) {
@@ -640,7 +643,7 @@ public class JPEG implements CompresorDecompresor {
                 }
                 byte[] lineY = new byte[64];
                 int lineYit = 0;
-                for (int it = 0; it < huffmanList.size(); ++it) { //RLE and Huffman lossless decompression for Luminance
+                for (int it = 0; it < huffmanList.size(); ++it) { //RLE lossless decompression for Luminance
                     int howManyZeroes = huffmanList.get(it++);
                     int size = huffmanList.get(it++);
                     if (howManyZeroes != 0 || size != 0) {
