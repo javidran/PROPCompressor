@@ -1,20 +1,21 @@
 package DataLayer;
 
 import DomainLayer.Algoritmos.Algoritmo;
+import Exceptions.FormatoErroneoException;
 
 import java.io.File;
+import java.io.IOException;
 
 public abstract class GestorCarpeta {
     protected File carpeta;
-    protected Algoritmo algoritmoTexto = null;
 
     protected GestorCarpeta(String path) {
         carpeta = new File(path);
     }
 
-    public abstract Algoritmo algoritmoProximoArchivo();
+    public abstract Algoritmo algoritmoProximoArchivo() throws FormatoErroneoException;
 
-    public abstract byte[] leerProximoArchivo();
+    public abstract byte[] leerProximoArchivo() throws IOException;
 
     public abstract void guardaProximoArchivo(byte[] data);
 }

@@ -151,7 +151,7 @@ public class CtrlDatos {
      * @param esCompresion Indicador de si el proceso ha sido de compresión o no (y por tanto de descompresión).
      * @return Path del archivo procesado, con su correspondiente extensión.
      */
-    private String actualizarPathSalida(String path, Algoritmo algoritmo, boolean esCompresion) {
+    public static String actualizarPathSalida(String path, Algoritmo algoritmo, boolean esCompresion) {
         String [] pathSplitted = path.split("\\.");
         switch (algoritmo) {
             case LZW:
@@ -179,11 +179,11 @@ public class CtrlDatos {
         else gestorCarpeta = new GestorCarpetaDescomprimir(path);
     }
 
-    public Algoritmo leerAlgoritmoProximoArchivo() {
+    public Algoritmo leerAlgoritmoProximoArchivo() throws FormatoErroneoException {
         return gestorCarpeta.algoritmoProximoArchivo();
     }
 
-    public byte[] leerProximoArchivo() {
+    public byte[] leerProximoArchivo() throws IOException {
         return gestorCarpeta.leerProximoArchivo();
     }
 
