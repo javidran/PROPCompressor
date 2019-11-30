@@ -7,6 +7,9 @@ import DomainLayer.Proceso.ProcesoComprimir;
 import DomainLayer.Proceso.ProcesoDescomprimir;
 import DomainLayer.Proceso.ProcesoFichero;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 /**
  * La clase Singleton CtrlProcesos es el Controlador de Dominio del programa, y la encargada de crear procesos de compresión y/o descompresión, además de interactuar con las capas de datos y presentación.
  */
@@ -126,6 +129,24 @@ public class CtrlProcesos {
             ctrlDatos.actualizaEstadistica(dp, tipoAlgoritmo, false);
         }
     }
+
+    public void descomprimirCarpeta(String pathIn, String pathOut, Algoritmo algoritmo) throws Exception {
+        long tiempo = 0;
+        CtrlDatos ctrlDatos = CtrlDatos.getInstance();
+        ctrlDatos.crearGestorCarpeta(pathIn, false, algoritmo);
+        Algoritmo algoritmoArchivo = null;
+        while((algoritmoArchivo = ctrlDatos.leerAlgoritmoProximoArchivo())!= null) {
+            ProcesoFichero desc = new ProcesoDescomprimir(ctrlDatos.leerProximoArchivo(), algoritmoArchivo);
+            desc.ejecutarProceso();
+            ctrlDatos.guardaProximoArchivo(desc.getOutput());
+            DatosProceso dp = desc.getDatosProceso();
+            tiempo += dp.getTiempo();
+            if(dp.isSatisfactorio()) {
+                ctrlDatos.actualizaEstadistica(dp, algoritmoArchivo, false);
+            }
+        }
+    }
+
 
     /**
      * Asigna un algoritmo de texto predeterminado al Singleton de CtrlProcesos
