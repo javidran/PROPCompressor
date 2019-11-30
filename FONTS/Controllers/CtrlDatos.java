@@ -115,4 +115,9 @@ public class CtrlDatos {
     public double getPorcentajeAhorradoMedio(Algoritmo algoritmo, boolean esCompresion) throws IOException {
         return GestorEstadisticas.getPorcentajeAhorradoMedio(algoritmo,esCompresion);
     }
+
+    public static boolean existeArchivo(String path) {
+        return GestorArchivo.existeArchivo(path);
+    }
+
 }

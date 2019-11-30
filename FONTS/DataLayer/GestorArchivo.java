@@ -59,6 +59,14 @@ public class GestorArchivo {
         bfout.close();
     }
 
+    public static boolean existeArchivo(String path) {
+        boolean existe;
+        File archivoAExaminar = new File(path);
+        if (archivoAExaminar.exists()) existe = true;
+        else existe = false;
+        return existe;
+    }
+
 }
 
 

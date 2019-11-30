@@ -40,7 +40,7 @@ public class VistaSelectorAlgoritmo extends JDialog {
 
         cancelarButton.addActionListener(actionEvent -> {
             setVisible(false);
-            ctrlPresentacion.cerrarVistaSeleccionAlgoritmo();
+            ctrlPresentacion.pulsarCerradoVistaSeleccionAlgoritmo();
         });
 
         explorarButton.addActionListener(actionEvent -> seleccionDeArchivo());

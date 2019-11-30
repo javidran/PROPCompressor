@@ -111,10 +111,43 @@ public class CtrlPresentacion {
         if(vistaInicio != null) vistaInicio.algoritmoPredeterminado(CtrlProcesos.getAlgoritmoDeTextoPredeterminado());
     }
 
+    public void crearVistaSeleccionAlgoritmo(boolean conGuardado) {
+
+
+        //TODO Mirar que exista o no el fichero desde presen
+
+        boolean existe = CtrlDatos.existeArchivo(modeloParametros.getPathOriginal());
+        if (!existe) {
+            int respuesta = JOptionPane.showConfirmDialog(null, "¡El fichero o carpeta que desea procesar no existe! Seleccione un archivo o carpeta existente", "Sobrescribir",
+                    JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+            cerrarVistaSeleccionAlgoritmo();
+            if (respuesta == JOptionPane.NO_OPTION) {
+                cerrarVistaSeleccionAlgoritmo();
+            }
+        }
+        else{
+            VistaSelectorAlgoritmo vistaSelectorAlgoritmo = new VistaSelectorAlgoritmo(vistaInicio);
+            modeloParametros.setVistaSelectorAlgoritmo(vistaSelectorAlgoritmo, conGuardado);
+
+            vistaSelectorAlgoritmo.setSize(new Dimension(650, 300));
+            vistaSelectorAlgoritmo.setMinimumSize(new Dimension(500, 200));
+            vistaSelectorAlgoritmo.setLocationRelativeTo(vistaInicio);
+            vistaSelectorAlgoritmo.setResizable(true);
+            vistaSelectorAlgoritmo.setVisible(true);
+        }
+
+    }
+
     public void cerrarVistaSeleccionAlgoritmo() {
-        //Next Change Area
         vistaSelectorAlgoritmo = null;
     }
+
+    public void pulsarCerradoVistaSeleccionAlgoritmo() {
+        //Next Change Area
+        algoritmoSeleccionado("Predeterminado");//Para que en caso de volver atras se quede con el algoritmo predeterminado por si vuelves a entrar al selctor de algoritmo
+        cerrarVistaSeleccionAlgoritmo();
+    }
+
 
     private String extension() {
         String extension = null;
