@@ -59,6 +59,18 @@ public class GestorArchivo {
         bfout.close();
     }
 
+    /**
+     * Comprueba si existe un archivo con el path provisto.
+     * @param path El path del supuesto archivo.
+     * @return Un booleano indicando si existe o no.
+     */
+    public static boolean existeArchivo(String path) {
+        boolean existe;
+        File archivoAExaminar = new File(path);
+        if (archivoAExaminar.exists()) existe = true;
+        else existe = false;
+        return existe;
+    }
 }
 
 
