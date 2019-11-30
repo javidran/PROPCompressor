@@ -37,9 +37,9 @@ public class GestorCarpetaComprimir extends GestorCarpeta {
 
     @Override
     public Algoritmo algoritmoProximoArchivo() throws FormatoErroneoException {
-        File proximoArchivo = archivosAComprimir.peek();
-        Algoritmo[] algoritmos;
         Algoritmo algoritmoArchivo = null;
+        Algoritmo[] algoritmos;
+        File proximoArchivo = archivosAComprimir.peek();
         if (proximoArchivo != null) {
             algoritmos = CtrlDatos.algoritmosPosibles(proximoArchivo.getPath());
             if (algoritmos.length > 1) algoritmoArchivo = algoritmoTexto;
