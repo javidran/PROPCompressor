@@ -113,7 +113,7 @@ public class CtrlDatos {
         }
     }
 
-    public boolean existeArchivo(String path) {
+    public static boolean existeArchivo(String path) {
         return GestorArchivo.existeArchivo(path);
     }
 
