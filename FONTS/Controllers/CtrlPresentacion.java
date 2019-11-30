@@ -112,18 +112,11 @@ public class CtrlPresentacion {
     }
 
     public void crearVistaSeleccionAlgoritmo(boolean conGuardado) {
-
-
-        //TODO Mirar que exista o no el fichero desde presen
-
         boolean existe = CtrlDatos.existeArchivo(modeloParametros.getPathOriginal());
         if (!existe) {
-            int respuesta = JOptionPane.showConfirmDialog(null, "¡El fichero o carpeta que desea procesar no existe! Seleccione un archivo o carpeta existente", "Sobrescribir",
-                    JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+            int respuesta = JOptionPane.showConfirmDialog(null, "¡El fichero o carpeta que desea procesar no existe! Seleccione un archivo o carpeta existente", "¡No existe!",
+                    JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
             cerrarVistaSeleccionAlgoritmo();
-            if (respuesta == JOptionPane.NO_OPTION) {
-                cerrarVistaSeleccionAlgoritmo();
-            }
         }
         else{
             VistaSelectorAlgoritmo vistaSelectorAlgoritmo = new VistaSelectorAlgoritmo(vistaInicio);
@@ -268,15 +261,7 @@ public class CtrlPresentacion {
         vistaEstadisticas.setVisible(true);
     }
 
-    public void crearVistaSeleccionAlgoritmo(boolean conGuardado) {
-        vistaSelectorAlgoritmo = new VistaSelectorAlgoritmo(vistaInicio);
-        modeloParametros.setVistaSelectorAlgoritmo(vistaSelectorAlgoritmo, conGuardado);
-        vistaSelectorAlgoritmo.setSize(new Dimension(650, 300));
-        vistaSelectorAlgoritmo.setMinimumSize(new Dimension(500, 200));
-        vistaSelectorAlgoritmo.setLocationRelativeTo(vistaInicio);
-        vistaSelectorAlgoritmo.setResizable(true);
-        vistaSelectorAlgoritmo.setVisible(true);
-    }
+
 
     public void mostrarEstadisticas(String data) throws IOException {
         String mensaje = getEstadisticas(data);
