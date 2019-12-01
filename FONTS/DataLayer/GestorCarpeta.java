@@ -1,7 +1,6 @@
 package DataLayer;
 
 import DomainLayer.Algoritmos.Algoritmo;
-import Exceptions.FormatoErroneoException;
 
 import java.io.File;
 import java.io.IOException;

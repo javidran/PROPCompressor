@@ -8,12 +8,14 @@ import java.io.*;
 import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Queue;
+import java.util.regex.Pattern;
 
 public class GestorCarpetaComprimir extends GestorCarpeta {
 
     private Queue<File> archivosAComprimir;
     private Algoritmo algoritmoTexto;
     private File carpetaComprimida;
+    private String pathArchivoActual;
 
     private LinkedList<File> listarArchivosCarpeta(final File carpeta) {
         LinkedList<File> listaArchivos = new LinkedList<>();
@@ -31,7 +33,7 @@ public class GestorCarpetaComprimir extends GestorCarpeta {
         super(path);
         this.algoritmoTexto = algoritmoTexto;
         archivosAComprimir = new LinkedList<>(listarArchivosCarpeta(carpeta));
-        carpetaComprimida = new File(CtrlDatos.actualizarPathSalida(carpeta.getPath(), Algoritmo.CARPETA, true));
+        carpetaComprimida = new File(CtrlDatos.actualizarPathSalida(carpeta.getAbsolutePath(), Algoritmo.CARPETA, true));
     }
 
     @Override
@@ -50,16 +52,28 @@ public class GestorCarpetaComprimir extends GestorCarpeta {
     @Override
     public byte[] leerProximoArchivo() throws IOException {
         File proximoArchivo = archivosAComprimir.poll();
-        byte[] datosArchivo;
-        if (proximoArchivo != null) {
-            datosArchivo = GestorArchivo.leeArchivo(proximoArchivo.getPath());
-        }
-        else datosArchivo = null;
-        return datosArchivo;
+        assert proximoArchivo != null;
+        pathArchivoActual = proximoArchivo.getAbsolutePath();
+        return GestorArchivo.leeArchivo(pathArchivoActual);
     }
 
     @Override
-    public void guardaProximoArchivo(byte[] data) {
-
+    public void guardaProximoArchivo(byte[] data) throws IOException {
+        FileOutputStream fileOutputStream = new FileOutputStream(carpetaComprimida);
+        BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
+        String[] directoriosPathCarpeta = carpeta.getAbsolutePath().split(Pattern.quote(System.getProperty("file.separator")));
+        String nombreCarpeta = directoriosPathCarpeta[directoriosPathCarpeta.length - 1];
+        int ocurrenciasNombreCarpeta = 0;
+        for (String s : directoriosPathCarpeta) {
+            if (s.equals(nombreCarpeta)) ++ocurrenciasNombreCarpeta;
+        }
+        String[] pathRelativo = pathArchivoActual.split(nombreCarpeta);
+        String endOfLine = "\n";
+        bufferedOutputStream.write(pathRelativo[ocurrenciasNombreCarpeta].getBytes());
+        bufferedOutputStream.write(endOfLine.getBytes());
+        bufferedOutputStream.write(data.length);
+        bufferedOutputStream.write(endOfLine.getBytes());
+        bufferedOutputStream.write(data);
+        bufferedOutputStream.close();
     }
 }
