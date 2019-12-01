@@ -32,7 +32,6 @@ public class GestorCarpetaDescomprimir extends GestorCarpeta {
 
         byte[] data = new byte[size];
         lector.read(data);
-
         return data;
     }
 
