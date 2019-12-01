@@ -230,6 +230,10 @@ public class JPEG implements CompresorDecompresor {
         ++pos;
         String rgbMVal = buff.toString(); //string of rgb maximum value per pixel (8 bits)
         if (!rgbMVal.equals("255")) throw new FormatoErroneoException("El formato de .ppm no es correcto!");
+        String qualityPercent = Integer.toString(calidadHeader); //writting in header the compression quality
+        char [] qualityPercentArray = qualityPercent.toCharArray(); //.imgc extension determines that its header will be the same one than the one of the .ppm image, but adding the quality compression in it
+        for (char c : qualityPercentArray) result.add((byte)c);
+        result.add((byte)'\n');
         //end of header reading
 
         //start of pixelmap reading
@@ -322,12 +326,7 @@ public class JPEG implements CompresorDecompresor {
                 }
             }
         }
-
-        String qualityPercent = Integer.toString(calidadHeader); //writting in header the compression quality
-        char [] qualityPercentArray = qualityPercent.toCharArray(); //.imgc extension determines that its header will be the same one than the one of the .ppm image, but adding the quality compression in it
-        for (char c : qualityPercentArray) result.add((byte)c);
-        result.add((byte)'\n');
-
+        
         int topu, topv;
         double alphau, alphav, cosu, cosv;
         double[][] buffY = new double[8][8];
