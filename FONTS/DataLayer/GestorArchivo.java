@@ -53,6 +53,8 @@ public class GestorArchivo {
         if (tempFile.exists() && !sobrescribir) throw new ArchivoYaExisteException("No se desea sobrescribir pero el fichero a escribir ya existe");
 
         File fileOut = new File(path);
+        fileOut.getParentFile().mkdirs();
+        fileOut.createNewFile();
         FileOutputStream fout = new FileOutputStream(fileOut);
         BufferedOutputStream bfout = new BufferedOutputStream(fout);
         bfout.write(data);

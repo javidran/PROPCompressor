@@ -3,7 +3,12 @@ package DataLayer;
 import Controllers.CtrlDatos;
 import DomainLayer.Algoritmos.Algoritmo;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GestorCarpetaDescomprimir extends GestorCarpeta {
     private BufferedInputStream lector;
@@ -17,9 +22,20 @@ public class GestorCarpetaDescomprimir extends GestorCarpeta {
 
     @Override
     public Algoritmo algoritmoProximoArchivo() throws IOException {
-        BufferedReader r = new BufferedReader(new InputStreamReader(lector));
-        path = r.readLine();
-        if(path == null) return null;
+        byte endOfLine = '\n';
+        byte b;
+        List<Byte> byteList = new ArrayList<>();
+        StringBuilder sb = new StringBuilder();
+        while((b=(byte)lector.read())!= endOfLine) {
+            if(b == -1)
+                return null;
+            byteList.add(b);
+        }
+        byte[] byteArray = new byte[byteList.size()];
+        for(int i=0; i<byteArray.length; ++i) {
+            byteArray[i] = byteList.get(i);
+        }
+        path = new String(byteArray);
         Algoritmo[] algoritmosPosibles = CtrlDatos.algoritmosPosibles(path);
         algoritmo = algoritmosPosibles[0];
         return algoritmo;
@@ -27,8 +43,21 @@ public class GestorCarpetaDescomprimir extends GestorCarpeta {
 
     @Override
     public byte[] leerProximoArchivo() throws IOException {
-        BufferedReader r = new BufferedReader(new InputStreamReader(lector));
-        int size = Integer.parseInt(r.readLine());
+        byte endOfLine = '\n';
+        byte b;
+        List<Byte> byteList = new ArrayList<>();
+        StringBuilder sb = new StringBuilder();
+        while((b=(byte)lector.read())!= endOfLine) {
+            if(b == -1)
+                return null;
+            byteList.add(b);
+        }
+        byte[] byteArray = new byte[byteList.size()];
+        for(int i=0; i<byteArray.length; ++i) {
+            byteArray[i] = byteList.get(i);
+        }
+        String sizeText = new String(byteArray);
+        int size = Integer.parseInt(sizeText);
 
         byte[] data = new byte[size];
         lector.read(data);
@@ -38,9 +67,9 @@ public class GestorCarpetaDescomprimir extends GestorCarpeta {
 
     @Override
     public void guardaProximoArchivo(byte[] data) throws IOException {
-        String pathCarpeta = carpeta.getAbsolutePath();
+        String pathCarpeta = carpeta.getAbsolutePath().replace(".comp", "");
         String pathResultado = CtrlDatos.actualizarPathSalida(path,algoritmo,false);
-        String pathCompleto = pathCarpeta + (pathCarpeta.contains("/")?"/":"\\") + pathResultado;
+        String pathCompleto = pathCarpeta + pathResultado;
         GestorArchivo.guardaArchivo(data,pathCompleto, true);
     }
 

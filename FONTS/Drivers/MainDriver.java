@@ -149,7 +149,7 @@ public class MainDriver {
                         } else s = args[0];
                         System.out.println("Se inicia el proceso");
                         ctrlProcesos.descomprimirCarpeta(s, s, null);
-                        System.out.println("El archivo " + s + " se ha comprimido correctamente!\n");
+                        System.out.println("El archivo " + s + " se ha descomprimido correctamente!\n");
                         break;
                     case "estadisticas":
                     case "7":

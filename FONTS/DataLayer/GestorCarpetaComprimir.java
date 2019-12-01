@@ -77,7 +77,7 @@ public class GestorCarpetaComprimir extends GestorCarpeta {
         String endOfLine = "\n";
         bufferedOutputStream.write(pathComprimido.getBytes());
         bufferedOutputStream.write(endOfLine.getBytes());
-        bufferedOutputStream.write(new Integer(data.length).toString().getBytes());
+        bufferedOutputStream.write(Integer.toString(data.length).getBytes());
         bufferedOutputStream.write(endOfLine.getBytes());
         bufferedOutputStream.write(data);
         bufferedOutputStream.write(endOfLine.getBytes());
