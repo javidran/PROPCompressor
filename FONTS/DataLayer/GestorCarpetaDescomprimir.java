@@ -22,7 +22,6 @@ public class GestorCarpetaDescomprimir extends GestorCarpeta {
         if(path == null) return null;
         Algoritmo[] algoritmosPosibles = CtrlDatos.algoritmosPosibles(path);
         algoritmo = algoritmosPosibles[0];
-        r.close();
         return algoritmo;
     }
 
@@ -33,7 +32,6 @@ public class GestorCarpetaDescomprimir extends GestorCarpeta {
 
         byte[] data = new byte[size];
         lector.read(data);
-        r.close();
         return data;
     }
 
