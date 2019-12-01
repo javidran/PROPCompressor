@@ -19,6 +19,7 @@ public class GestorCarpetaDescomprimir extends GestorCarpeta {
     public Algoritmo algoritmoProximoArchivo() throws IOException {
         BufferedReader r = new BufferedReader(new InputStreamReader(lector));
         path = r.readLine();
+        if(path == null) return null;
         Algoritmo[] algoritmosPosibles = CtrlDatos.algoritmosPosibles(path);
         algoritmo = algoritmosPosibles[0];
         return algoritmo;

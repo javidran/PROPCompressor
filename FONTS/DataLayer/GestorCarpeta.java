@@ -7,7 +7,6 @@ import java.io.IOException;
 
 public abstract class GestorCarpeta {
     protected File carpeta;
-    protected Algoritmo algoritmoTexto = null;
 
     protected GestorCarpeta(String path) {
         carpeta = new File(path);

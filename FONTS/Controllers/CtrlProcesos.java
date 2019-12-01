@@ -6,6 +6,10 @@ import DomainLayer.Proceso.DatosProceso;
 import DomainLayer.Proceso.ProcesoComprimir;
 import DomainLayer.Proceso.ProcesoDescomprimir;
 import DomainLayer.Proceso.ProcesoFichero;
+import javafx.scene.control.ScrollToEvent;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 /**
  * La clase Singleton CtrlProcesos es el Controlador de Dominio del programa, y la encargada de crear procesos de compresión y/o descompresión, además de interactuar con las capas de datos y presentación.
@@ -126,6 +130,43 @@ public class CtrlProcesos {
             ctrlDatos.actualizaEstadistica(dp, tipoAlgoritmo, false);
         }
     }
+
+    public void comprimirCarpeta(String pathIn, String pathOut, Algoritmo algoritmo) throws Exception {
+        long tiempo = 0;
+        CtrlDatos ctrlDatos = CtrlDatos.getInstance();
+        ctrlDatos.crearGestorCarpeta(pathIn, true, algoritmo);
+        Algoritmo algoritmoArchivo;
+        while((algoritmoArchivo = ctrlDatos.leerAlgoritmoProximoArchivo())!= null) {
+            ProcesoFichero desc = new ProcesoComprimir(ctrlDatos.leerProximoArchivo(), algoritmoArchivo);
+            desc.ejecutarProceso();
+            ctrlDatos.guardaProximoArchivo(desc.getOutput());
+            DatosProceso dp = desc.getDatosProceso();
+            tiempo += dp.getTiempo();
+            if(dp.isSatisfactorio()) {
+                ctrlDatos.actualizaEstadistica(dp, algoritmoArchivo, true);
+            }
+        }
+        ctrlDatos.finalizarGestorCarpeta();
+    }
+
+    public void descomprimirCarpeta(String pathIn, String pathOut, Algoritmo algoritmo) throws Exception {
+        long tiempo = 0;
+        CtrlDatos ctrlDatos = CtrlDatos.getInstance();
+        ctrlDatos.crearGestorCarpeta(pathIn, false, algoritmo);
+        Algoritmo algoritmoArchivo;
+        while((algoritmoArchivo = ctrlDatos.leerAlgoritmoProximoArchivo())!= null) {
+            ProcesoFichero desc = new ProcesoDescomprimir(ctrlDatos.leerProximoArchivo(), algoritmoArchivo);
+            desc.ejecutarProceso();
+            ctrlDatos.guardaProximoArchivo(desc.getOutput());
+            DatosProceso dp = desc.getDatosProceso();
+            tiempo += dp.getTiempo();
+            if(dp.isSatisfactorio()) {
+                ctrlDatos.actualizaEstadistica(dp, algoritmoArchivo, false);
+            }
+        }
+        ctrlDatos.finalizarGestorCarpeta();
+    }
+
 
     /**
      * Asigna un algoritmo de texto predeterminado al Singleton de CtrlProcesos

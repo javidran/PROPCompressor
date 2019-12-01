@@ -14,7 +14,7 @@ public class CtrlDatos {
     private static CtrlDatos instance = null;
 
 
-    private GestorCarpeta gestorCarpeta = null;
+    private GestorCarpeta gestorCarpeta;
 
 
     /**
@@ -41,6 +41,7 @@ public class CtrlDatos {
     public static Algoritmo[] algoritmosPosibles(String path) throws FormatoErroneoException {
         String[] splittedPath = path.split("\\.");
         String type = splittedPath[splittedPath.length-1];
+        if (type.length() == 1) return new Algoritmo[] {Algoritmo.CARPETA};
 
         switch (type) {
             case "txt":
@@ -54,6 +55,8 @@ public class CtrlDatos {
                 return new Algoritmo[] {Algoritmo.LZ78};
             case "lzw":
                 return new Algoritmo[] {Algoritmo.LZW};
+            case "comp":
+                return new Algoritmo[] {Algoritmo.CARPETA};
             default:
                 throw new FormatoErroneoException("No hay ningun tipo de algoritmo compatible");
         }
@@ -113,7 +116,7 @@ public class CtrlDatos {
         }
     }
 
-    public boolean existeArchivo(String path) {
+    public static boolean existeArchivo(String path) {
         return GestorArchivo.existeArchivo(path);
     }
 
@@ -160,20 +163,23 @@ public class CtrlDatos {
         switch (algoritmo) {
             case LZW:
                 if(esCompresion) path = path.replace(".txt", ".lzw");
-                else path = path.replace("."+pathSplitted[pathSplitted.length - 1], ".txt");
+                else path = path.replace("." + pathSplitted[pathSplitted.length - 1], ".txt");
                 break;
             case LZSS:
                 if(esCompresion) path = path.replace(".txt", ".lzss");
-                else path = path.replace("."+pathSplitted[pathSplitted.length - 1], ".txt");
+                else path = path.replace("." + pathSplitted[pathSplitted.length - 1], ".txt");
                 break;
             case LZ78:
                 if(esCompresion) path = path.replace(".txt", ".lz78");
-                else path = path.replace("."+pathSplitted[pathSplitted.length - 1], ".txt");
+                else path = path.replace("." + pathSplitted[pathSplitted.length - 1], ".txt");
                 break;
             case JPEG:
                 if(esCompresion) path = path.replace(".ppm", ".imgc");
-                else path = path.replace("."+pathSplitted[pathSplitted.length - 1], ".ppm");
+                else path = path.replace("." + pathSplitted[pathSplitted.length - 1], ".ppm");
                 break;
+            case CARPETA:
+                if (esCompresion) path += ".comp";
+                else path = path.replace(pathSplitted[pathSplitted.length - 1], "");
         }
         return path;
     }
