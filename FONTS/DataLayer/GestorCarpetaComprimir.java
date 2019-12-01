@@ -54,8 +54,7 @@ public class GestorCarpetaComprimir extends GestorCarpeta {
     @Override
     public byte[] leerProximoArchivo() throws IOException {
         File proximoArchivo = archivosAComprimir.poll();
-        assert proximoArchivo != null;
-        pathArchivoActual = proximoArchivo.getAbsolutePath();
+        if (proximoArchivo != null) pathArchivoActual = proximoArchivo.getAbsolutePath();
         return GestorArchivo.leeArchivo(pathArchivoActual);
     }
 
@@ -68,8 +67,15 @@ public class GestorCarpetaComprimir extends GestorCarpeta {
             if (s.equals(nombreCarpeta)) ++ocurrenciasNombreCarpeta;
         }
         String[] pathRelativo = pathArchivoActual.split(nombreCarpeta);
+        Algoritmo algoritmoArchivo = null;
+        Algoritmo[] algoritmos;
+        String pathRootCarpeta = pathRelativo[ocurrenciasNombreCarpeta];
+        algoritmos = CtrlDatos.algoritmosPosibles(pathRootCarpeta);
+        if (algoritmos.length > 1) algoritmoArchivo = algoritmoTexto;
+        else algoritmoArchivo = Algoritmo.JPEG;
+        String pathComprimido = CtrlDatos.actualizarPathSalida(pathRootCarpeta, algoritmoArchivo, true);
         String endOfLine = "\n";
-        bufferedOutputStream.write(pathRelativo[ocurrenciasNombreCarpeta].getBytes());
+        bufferedOutputStream.write(pathComprimido.getBytes());
         bufferedOutputStream.write(endOfLine.getBytes());
         bufferedOutputStream.write(data.length);
         bufferedOutputStream.write(endOfLine.getBytes());
