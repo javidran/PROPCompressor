@@ -11,7 +11,7 @@ import java.util.Queue;
 import java.util.regex.Pattern;
 
 public class GestorCarpetaComprimir extends GestorCarpeta {
-
+    private BufferedOutputStream bufferedOutputStream;
     private Queue<File> archivosAComprimir;
     private Algoritmo algoritmoTexto;
     private File carpetaComprimida;
@@ -29,11 +29,13 @@ public class GestorCarpetaComprimir extends GestorCarpeta {
         return listaArchivos;
     }
 
-    public GestorCarpetaComprimir(String path, Algoritmo algoritmoTexto) {
+    public GestorCarpetaComprimir(String path, Algoritmo algoritmoTexto) throws FileNotFoundException {
         super(path);
         this.algoritmoTexto = algoritmoTexto;
         archivosAComprimir = new LinkedList<>(listarArchivosCarpeta(carpeta));
         carpetaComprimida = new File(CtrlDatos.actualizarPathSalida(carpeta.getAbsolutePath(), Algoritmo.CARPETA, true));
+        FileOutputStream fileOutputStream = new FileOutputStream(carpetaComprimida);
+        bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
     }
 
     @Override
@@ -59,8 +61,6 @@ public class GestorCarpetaComprimir extends GestorCarpeta {
 
     @Override
     public void guardaProximoArchivo(byte[] data) throws IOException {
-        FileOutputStream fileOutputStream = new FileOutputStream(carpetaComprimida);
-        BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
         String[] directoriosPathCarpeta = carpeta.getAbsolutePath().split(Pattern.quote(System.getProperty("file.separator")));
         String nombreCarpeta = directoriosPathCarpeta[directoriosPathCarpeta.length - 1];
         int ocurrenciasNombreCarpeta = 0;
@@ -74,6 +74,5 @@ public class GestorCarpetaComprimir extends GestorCarpeta {
         bufferedOutputStream.write(data.length);
         bufferedOutputStream.write(endOfLine.getBytes());
         bufferedOutputStream.write(data);
-        bufferedOutputStream.close();
     }
 }

@@ -139,6 +139,18 @@ public class MainDriver {
                         ctrlProcesos.comprimirCarpeta(s, s, tipoCompresor);
                         System.out.println("El archivo " + s + " se ha comprimido correctamente!\n");
                         break;
+                    case "descomprimirCarpeta":
+                    case "5":
+                        if (args.length == 0) {
+                            System.out.println("Escriba el path relativo de la carpeta a descomprimir");
+                            s = System.getProperty("user.dir");
+                            s += s.contains("/")?"/":"\\";
+                            s += scanner.nextLine();
+                        } else s = args[0];
+                        System.out.println("Se inicia el proceso");
+                        ctrlProcesos.descomprimirCarpeta(s, s, null);
+                        System.out.println("El archivo " + s + " se ha comprimido correctamente!\n");
+                        break;
                     case "estadisticas":
                     case "7":
                         System.out.print("Escriba el algoritmo de compresión que quiera consultar, de entre los siguientes:\njpeg\nlzss\nlz78\nlzw\n");
