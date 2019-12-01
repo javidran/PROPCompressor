@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.IntStream;
 
 /**
  * La clase Singleton JPEG es la encargada de procesar archivos de imagen de extensión .ppm o .imgc y comprimirlos y descomprimirlos respectivamente
@@ -328,22 +329,27 @@ public class JPEG implements CompresorDecompresor {
         }
         
         int topu, topv;
-        double alphau, alphav, cosu, cosv;
+
         double[][] buffY = new double[8][8];
         for (int x = 0; x < paddedHeight; x += 8) { //image DCT-II and quantization (done in pixel squares of 8x8) for luminance
             topu = x + 8;                           //for each luminance pixel square of 8x8 of the image, DCT-II algorithm is applied, letting calculate the image frequencies
             for (int y = 0; y < paddedWidth; y += 8) {
                 topv = y + 8;
-                for (int u = x; u < topu; ++u) {
+                int finalY = y;
+                int finalTopv = topv;
+                int finalTopu = topu;
+                int finalX = x;
+                IntStream.range(x, topu).parallel().forEach(u -> {
+                    double alphau, alphav, cosu, cosv;
                     if (u % 8 == 0) alphau = 1 / Math.sqrt(2);
                     else alphau = 1;
-                    for (int v = y; v < topv; ++v) { //for each luminance pixel of the 8x8 square, the DCT-II calculation is applied
+                    for (int v = finalY; v < finalTopv; ++v) { //for each luminance pixel of the 8x8 square, the DCT-II calculation is applied
                         if (v % 8 == 0) alphav = 1 / Math.sqrt(2);
                         else alphav = 1;
                         buffY[u%8][v%8] = 0;
-                        for (int i = x; i < topu; ++i) {
+                        for (int i = finalX; i < finalTopu; ++i) {
                             cosu = Math.cos(((2 * (i % 8) + 1) * (u % 8) * Math.PI) / 16.0);
-                            for (int j = y; j < topv; ++j) {
+                            for (int j = finalY; j < finalTopv; ++j) {
                                 cosv = Math.cos(((2 * (j % 8) + 1) * (v % 8) * Math.PI) / 16.0);
                                 buffY[u%8][v%8] += Y[i][j] * cosu * cosv;
                             }
@@ -351,7 +357,7 @@ public class JPEG implements CompresorDecompresor {
                         buffY[u%8][v%8] *= (alphau * alphav * 0.25);
                         buffY[u%8][v%8] /= (LuminanceQuantizationTable[u%8][v%8] * calidad);
                     }
-                }
+                });
                 boolean up = true;
                 int i = x, j = y, it = 0;
                 byte[] lineY = new byte[64]; //linear vector for zigzagged elements of Y before RLE
@@ -416,17 +422,22 @@ public class JPEG implements CompresorDecompresor {
             topu = x + 8;                                      //for each chrominance pixel square of 8x8 of the image, DCT-II algorithm is applied, letting calculate the image frequencies
             for (int y = 0; y < downSampledPaddedWidth; y += 8) {
                 topv = y + 8;
-                for (int u = x; u < topu; ++u) {
+                int finalX = x;
+                int finalTopu1 = topu;
+                int finalTopv1 = topv;
+                int finalY = y;
+                IntStream.range(x, topu).parallel().forEach(u -> {
+                    double alphau, alphav, cosu, cosv;
                     if (u % 8 == 0) alphau = 1 / Math.sqrt(2);
                     else alphau = 1;
-                    for (int v = y; v < topv; ++v) { //for each chrominance pixel of the 8x8 square, the DCT-II calculation is applied
+                    for (int v = finalY; v < finalTopv1; ++v) { //for each chrominance pixel of the 8x8 square, the DCT-II calculation is applied
                         if (v % 8 == 0) alphav = 1 / Math.sqrt(2);
                         else alphav = 1;
                         buffCb[u%8][v%8] = 0;
                         buffCr[u%8][v%8] = 0;
-                        for (int i = x; i < topu; ++i) {
+                        for (int i = finalX; i < finalTopu1; ++i) {
                             cosu = Math.cos(((2 * (i % 8) + 1) * (u % 8) * Math.PI) / 16.0);
-                            for (int j = y; j < topv; ++j) {
+                            for (int j = finalY; j < finalTopv1; ++j) {
                                 cosv = Math.cos(((2 * (j % 8) + 1) * (v % 8) * Math.PI) / 16.0);
                                 buffCb[u%8][v%8] += downSampledCb[i][j] * cosu * cosv;
                                 buffCr[u%8][v%8] += downSampledCr[i][j] * cosu * cosv;
@@ -437,7 +448,7 @@ public class JPEG implements CompresorDecompresor {
                         buffCr[u%8][v%8] *= (alphau * alphav * 0.25);
                         buffCr[u%8][v%8] /= (ChrominanceQuantizationTable[u%8][v%8] * calidad);
                     }
-                }
+                });
                 boolean up = true;
                 int i = x, j = y, it = 0;
                 byte[] lineCb = new byte[64]; //linear vector for zigzagged elements of Cb before RLE
@@ -605,7 +616,6 @@ public class JPEG implements CompresorDecompresor {
         int[][] Cr = new int[downSampledPaddedHeight][downSampledPaddedWidth];//chrominance red
         int topi, topj;
         double[][] buffY = new double[8][8];
-        double alphau, alphav, cosu, cosv;
         for (int x = 0; x < paddedHeight; x += 8) { //image inverse quantization and DCT-III (aka inverse DCT) (done in pixel squares of 8x8) for luminance
             topi = x + 8;                           //for each luminance pixel square of 8x8 of the image, inverse downsampling and DCT-III (aka inverse DCT) algorithm are applied, letting recover the image value
             for (int y = 0; y < paddedWidth; y += 8) {
@@ -688,14 +698,19 @@ public class JPEG implements CompresorDecompresor {
                         --l;
                     }
                 }
-                for (int i = x; i < topi; ++i) {
-                    for (int j = y; j < topj; ++j) { //for each luminance pixel of the 8x8 square, the DCT-III calculation is applied
+                int finalY = y;
+                int finalTopj1 = topj;
+                int finalX = x;
+                int finalTopi1 = topi;
+                IntStream.range(x, topi).parallel().forEach(i -> {
+                    double alphau, alphav, cosu, cosv;
+                    for (int j = finalY; j < finalTopj1; ++j) { //for each luminance pixel of the 8x8 square, the DCT-III calculation is applied
                         buffY[i%8][j%8] = 0;
-                        for (int u = x; u < topi; ++u) {
+                        for (int u = finalX; u < finalTopi1; ++u) {
                             if (u % 8 == 0) alphau = 1 / Math.sqrt(2);
                             else alphau = 1;
                             cosu = Math.cos(((2 * (i % 8) + 1) * (u % 8) * Math.PI) / 16.0);
-                            for (int v = y; v < topj; ++v) {
+                            for (int v = finalY; v < finalTopj1; ++v) {
                                 if (v % 8 == 0) alphav = 1 / Math.sqrt(2);
                                 else alphav = 1;
                                 cosv = Math.cos(((2 * (j % 8) + 1) * (v % 8) * Math.PI) / 16.0);
@@ -704,7 +719,7 @@ public class JPEG implements CompresorDecompresor {
                         }
                         buffY[i%8][j%8] *= 0.25;
                     }
-                }
+                });
                 for (int i = x; i < topi; ++i) {
                     for (int j = y; j < topj; ++j) {
                         Y[i][j] = (int)Math.round(buffY[i%8][j%8]);
@@ -842,16 +857,20 @@ public class JPEG implements CompresorDecompresor {
                         --l;
                     }
                 }
-                for (int i = x; i < topi; ++i) {
-                    for (int j = y; j < topj; ++j) { //for each chrominance pixel of the 8x8 square, the DCT-III calculation is applied
-                        buffY[i%8][j%8] = 0;
+                int finalY = y;
+                int finalTopj = topj;
+                int finalTopi = topi;
+                int finalX = x;
+                IntStream.range(x, topi).parallel().forEach(i -> {
+                    double alphau, alphav, cosu, cosv;
+                    for (int j = finalY; j < finalTopj; ++j) { //for each chrominance pixel of the 8x8 square, the DCT-III calculation is applied
                         buffCb[i%8][j%8] = 0;
                         buffCr[i%8][j%8] = 0;
-                        for (int u = x; u < topi; ++u) {
+                        for (int u = finalX; u < finalTopi; ++u) {
                             if (u % 8 == 0) alphau = 1 / Math.sqrt(2);
                             else alphau = 1;
                             cosu = Math.cos(((2 * (i % 8) + 1) * (u % 8) * Math.PI) / 16.0);
-                            for (int v = y; v < topj; ++v) {
+                            for (int v = finalY; v < finalTopj; ++v) {
                                 if (v % 8 == 0) alphav = 1 / Math.sqrt(2);
                                 else alphav = 1;
                                 cosv = Math.cos(((2 * (j % 8) + 1) * (v % 8) * Math.PI) / 16.0);
@@ -862,7 +881,7 @@ public class JPEG implements CompresorDecompresor {
                         buffCb[i%8][j%8] *= 0.25;
                         buffCr[i%8][j%8] *= 0.25;
                     }
-                }
+                });
                 for (int i = x; i < topi; ++i) {
                     for (int j = y; j < topj; ++j) {
                         Cb[i][j] = (int)Math.round(buffCb[i%8][j%8]);
