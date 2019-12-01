@@ -216,7 +216,7 @@ public class CtrlPresentacion {
         actualizarPathSalida(modeloParametros.getPathResultado());
     }
 
-    public void iniciarProceso() {
+    public void iniciarProceso() throws Exception {
         boolean existe = (new File(modeloParametros.getPathResultado())).exists();
         if (existe) {
             int respuesta = JOptionPane.showConfirmDialog(null, "El fichero resultante del proceso sobrescribirá uno ya existente, ¿desea sobrescribirlo?", "Sobrescribir",
@@ -226,8 +226,24 @@ public class CtrlPresentacion {
                 crearVistaSeleccionAlgoritmo(modeloParametros.isConGuardado());
             }
         }
-        else cerrarVistaSeleccionAlgoritmo();
-        //TODO Procesar El Fichero
+        else  cerrarVistaSeleccionAlgoritmo();
+
+        procesar();
+    }
+
+    private void procesar() throws Exception {
+        JOptionPane.showMessageDialog(null, "Procesando...", "WAIT", JOptionPane.PLAIN_MESSAGE);
+        CtrlProcesos ctrlProcesos = CtrlProcesos.getInstance();
+        if (modeloParametros.isCompresion()) {
+            ctrlProcesos.comprimirArchivo(modeloParametros.getPathOriginal(), modeloParametros.getAlgoritmo());
+        }
+        else if (modeloParametros.isConGuardado()){
+            ctrlProcesos.comprimirArchivo(modeloParametros.getPathOriginal(), modeloParametros.getAlgoritmo());
+            ctrlProcesos.descomprimirArchivo(modeloParametros.getPathResultado());
+        }
+        else {
+            ctrlProcesos.descomprimirArchivo(modeloParametros.getPathResultado());
+        }
     }
 
     public String getEstadisticas(String data) throws IOException {
