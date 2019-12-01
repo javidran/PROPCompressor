@@ -201,7 +201,8 @@ public class CtrlDatos {
         gestorCarpeta.guardaProximoArchivo(data);
     }
 
-    public void finalizarGestorCarpeta() {
+    public void finalizarGestorCarpeta() throws IOException {
+        gestorCarpeta.finalizarGestor();
         gestorCarpeta = null;
     }
 

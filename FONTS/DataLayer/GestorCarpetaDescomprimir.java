@@ -43,4 +43,9 @@ public class GestorCarpetaDescomprimir extends GestorCarpeta {
         String pathCompleto = pathCarpeta + (pathCarpeta.contains("/")?"/":"\\") + pathResultado;
         GestorArchivo.guardaArchivo(data,pathCompleto, true);
     }
+
+    @Override
+    public void finalizarGestor() throws IOException {
+        lector.close();
+    }
 }
