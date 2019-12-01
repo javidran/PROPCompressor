@@ -17,4 +17,6 @@ public abstract class GestorCarpeta {
     public abstract byte[] leerProximoArchivo() throws IOException;
 
     public abstract void guardaProximoArchivo(byte[] data) throws IOException;
+
+    public abstract void finalizarGestor() throws IOException;
 }

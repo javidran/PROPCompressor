@@ -82,4 +82,9 @@ public class GestorCarpetaComprimir extends GestorCarpeta {
         bufferedOutputStream.write(data);
         bufferedOutputStream.write(endOfLine.getBytes());
     }
+
+    @Override
+    public void finalizarGestor() throws IOException {
+        bufferedOutputStream.close();
+    }
 }

@@ -32,6 +32,7 @@ public class GestorCarpetaDescomprimir extends GestorCarpeta {
 
         byte[] data = new byte[size];
         lector.read(data);
+        lector.readNBytes(1);
         return data;
     }
 
@@ -41,5 +42,10 @@ public class GestorCarpetaDescomprimir extends GestorCarpeta {
         String pathResultado = CtrlDatos.actualizarPathSalida(path,algoritmo,false);
         String pathCompleto = pathCarpeta + (pathCarpeta.contains("/")?"/":"\\") + pathResultado;
         GestorArchivo.guardaArchivo(data,pathCompleto, true);
+    }
+
+    @Override
+    public void finalizarGestor() throws IOException {
+        lector.close();
     }
 }
