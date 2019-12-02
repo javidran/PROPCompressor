@@ -14,7 +14,7 @@ public class MainDriver {
         while (b) {
             try {
                 Algoritmo tipoCompresor;
-                System.out.print("Introduzca uno de los siguientes comandos disponibles:\n\n1. comprimirArchivo\n2. descomprimirArchivo\n3. comprimirYdescomprimirArchivo\n4. comprimirCarpeta\n5. descomprimirCarpeta\n6. comprimirYdescomprimirArchivo\n7. estadisticas\n8. cambiarAlgoritmoTextoPredeterminado\n9. salir\n");
+                System.out.print("Introduzca uno de los siguientes comandos disponibles:\n\n1. comprimirArchivo\n2. descomprimirArchivo\n3. comprimirYdescomprimirArchivo\n4. comprimirCarpeta\n5. descomprimirCarpeta\n6. comprimirYdescomprimirCarpeta\n7. estadisticas\n8. cambiarAlgoritmoTextoPredeterminado\n9. salir\n");
                 Scanner scanner = new Scanner(System.in);
                 String comando = scanner.nextLine();
                 String s;
@@ -150,6 +150,38 @@ public class MainDriver {
                         System.out.println("Se inicia el proceso");
                         ctrlProcesos.descomprimirCarpeta(s, s, null);
                         System.out.println("El archivo " + s + " se ha descomprimido correctamente!\n");
+                        break;
+                    case "comprimirYdescomprimirCarpeta":
+                    case "6":
+                        if (args.length == 0) {
+                            System.out.println("Escriba el path relativo de la carpeta a descomprimir");
+                            s = System.getProperty("user.dir");
+                            s += s.contains("/")?"/":"\\";
+                            s += scanner.nextLine();
+                        } else s = args[0];
+                        System.out.print("Escriba el algoritmo de compresión de texto que quiera usar, de entre los siguientes:\npredeterminado\nlzss\nlz78\nlzw\n");
+                        algoritmoComp = scanner.nextLine();
+                        switch (algoritmoComp) {
+                            case "lzss":
+                                tipoCompresor = Algoritmo.LZSS;
+                                break;
+                            case "lzw":
+                                tipoCompresor = Algoritmo.LZW;
+                                break;
+                            case "lz78":
+                                tipoCompresor = Algoritmo.LZ78;
+                                break;
+                            case "predeterminado":
+                                tipoCompresor = Algoritmo.PREDETERMINADO;
+                                break;
+                            default:
+                                throw new EnumConstantNotPresentException(Algoritmo.class, "El tipo de compresor " + algoritmoComp + " no existe o no está disponible para un archivo .txt\n");
+                        }
+                        System.out.println("Se inicia el proceso");
+                        ctrlProcesos.comprimirCarpeta(s, s, tipoCompresor);
+                        String carpetaComp = s + ".comp";
+                        ctrlProcesos.descomprimirCarpeta(carpetaComp, s, null);
+                        System.out.println("El archivo " + s + " se ha comprimido y descomprimido correctamente!\n");
                         break;
                     case "estadisticas":
                     case "7":
