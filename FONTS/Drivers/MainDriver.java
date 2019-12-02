@@ -135,6 +135,8 @@ public class MainDriver {
                             default:
                                 throw new EnumConstantNotPresentException(Algoritmo.class, "El tipo de compresor " + algoritmoComp + " no existe o no está disponible para un archivo .txt\n");
                         }
+                        System.out.println("Indique la calidad de compresión a usar para las imágenes (del 1 al 7)");
+                        ctrlProcesos.setCalidadJPEG(scanner.nextInt());
                         System.out.println("Se inicia el proceso");
                         ctrlProcesos.comprimirCarpeta(s, s, tipoCompresor);
                         System.out.println("El archivo " + s + " se ha comprimido correctamente!\n");
@@ -177,6 +179,8 @@ public class MainDriver {
                             default:
                                 throw new EnumConstantNotPresentException(Algoritmo.class, "El tipo de compresor " + algoritmoComp + " no existe o no está disponible para un archivo .txt\n");
                         }
+                        System.out.println("Indique la calidad de compresión a usar para las imágenes (del 1 al 7)");
+                        ctrlProcesos.setCalidadJPEG(scanner.nextInt());
                         System.out.println("Se inicia el proceso");
                         ctrlProcesos.comprimirCarpeta(s, s, tipoCompresor);
                         String carpetaComp = s + ".comp";
