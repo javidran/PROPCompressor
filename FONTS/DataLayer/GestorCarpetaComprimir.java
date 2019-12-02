@@ -66,10 +66,10 @@ public class GestorCarpetaComprimir extends GestorCarpeta {
         Algoritmo[] algoritmos;
         StringBuilder pathRootCarpeta = new StringBuilder(pathArchivoActual.replace(pathRelativo[0], ""));
         String[] dirs = pathRootCarpeta.toString().split(Pattern.quote(System.getProperty("file.separator")));
-        pathRootCarpeta = new StringBuilder("/");
+        pathRootCarpeta = new StringBuilder(File.separator);
         for (int i = 1; i < dirs.length; ++i) {
             pathRootCarpeta.append(dirs[i]);
-            if (i < dirs.length - 1) pathRootCarpeta.append("/");
+            if (i < dirs.length - 1) pathRootCarpeta.append(File.separator);
         }
         algoritmos = CtrlDatos.algoritmosPosibles(pathRootCarpeta.toString());
         if (algoritmos.length > 1) algoritmoArchivo = algoritmoTexto;
