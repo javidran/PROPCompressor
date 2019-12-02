@@ -132,7 +132,7 @@ public class CtrlProcesos {
     }
 
     public void comprimirCarpeta(String pathIn, String pathOut, Algoritmo algoritmo) throws Exception {
-        long tiempo = 0;
+        long tiempo = 0, oldSize = 0, newSize = 0;
         CtrlDatos ctrlDatos = CtrlDatos.getInstance();
         ctrlDatos.crearGestorCarpeta(pathIn, true, algoritmo);
         Algoritmo algoritmoArchivo;
@@ -142,15 +142,20 @@ public class CtrlProcesos {
             ctrlDatos.guardaProximoArchivo(desc.getOutput());
             DatosProceso dp = desc.getDatosProceso();
             tiempo += dp.getTiempo();
+            oldSize += dp.getOldSize();
+            newSize += dp.getNewSize();
             if(dp.isSatisfactorio()) {
                 ctrlDatos.actualizaEstadistica(dp, algoritmoArchivo, true);
             }
         }
         ctrlDatos.finalizarGestorCarpeta();
+        long diffSize = oldSize - newSize;
+        double diffSizePercentage = (newSize /(double) oldSize)*100;
+        System.out.println("El proceso ha tardado " + tiempo / 1000000000.0 + "s. El cambio de tamaño pasa de " + oldSize + "B a " + newSize + "B con diferencia de " + diffSize + "B que resulta en un " + diffSizePercentage + "% del archivo original.");
     }
 
     public void descomprimirCarpeta(String pathIn, String pathOut, Algoritmo algoritmo) throws Exception {
-        long tiempo = 0;
+        long tiempo = 0, oldSize = 0, newSize = 0;
         CtrlDatos ctrlDatos = CtrlDatos.getInstance();
         ctrlDatos.crearGestorCarpeta(pathIn, false, algoritmo);
         Algoritmo algoritmoArchivo;
@@ -160,11 +165,16 @@ public class CtrlProcesos {
             ctrlDatos.guardaProximoArchivo(desc.getOutput());
             DatosProceso dp = desc.getDatosProceso();
             tiempo += dp.getTiempo();
+            oldSize += dp.getOldSize();
+            newSize += dp.getNewSize();
             if(dp.isSatisfactorio()) {
                 ctrlDatos.actualizaEstadistica(dp, algoritmoArchivo, false);
             }
         }
         ctrlDatos.finalizarGestorCarpeta();
+        long diffSize = newSize - oldSize;
+        double diffSizePercentage = (newSize /(double) oldSize)*100;
+        System.out.println("El proceso ha tardado " + tiempo / 1000000000.0 + "s. El cambio de tamaño pasa de " + oldSize + "B a " + newSize + "B con diferencia de " + diffSize + "B que resulta en un " + diffSizePercentage + "% del archivo original.");
     }
 
 

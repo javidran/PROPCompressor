@@ -25,7 +25,6 @@ public class GestorCarpetaDescomprimir extends GestorCarpeta {
         byte endOfLine = '\n';
         byte b;
         List<Byte> byteList = new ArrayList<>();
-        StringBuilder sb = new StringBuilder();
         while((b=(byte)lector.read())!= endOfLine) {
             if(b == -1)
                 return null;
@@ -46,7 +45,6 @@ public class GestorCarpetaDescomprimir extends GestorCarpeta {
         byte endOfLine = '\n';
         byte b;
         List<Byte> byteList = new ArrayList<>();
-        StringBuilder sb = new StringBuilder();
         while((b=(byte)lector.read())!= endOfLine) {
             if(b == -1)
                 return null;
@@ -56,12 +54,10 @@ public class GestorCarpetaDescomprimir extends GestorCarpeta {
         for(int i=0; i<byteArray.length; ++i) {
             byteArray[i] = byteList.get(i);
         }
-        String sizeText = new String(byteArray);
-        int size = Integer.parseInt(sizeText);
 
-        byte[] data = new byte[size];
+        byte[] data = new byte[Integer.parseInt(new String(byteArray))];
         lector.read(data);
-        lector.readNBytes(1);
+        lector.read();
         return data;
     }
 

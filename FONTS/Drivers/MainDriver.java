@@ -14,7 +14,7 @@ public class MainDriver {
         while (b) {
             try {
                 Algoritmo tipoCompresor;
-                System.out.print("Introduzca uno de los siguientes comandos disponibles:\n\n1. comprimirArchivo\n2. descomprimirArchivo\n3. comprimirYdescomprimirArchivo\n4. comprimirCarpeta\n5. descomprimirCarpeta\n6. comprimirYdescomprimirArchivo\n7. estadisticas\n8. cambiarAlgoritmoTextoPredeterminado\n9. salir\n");
+                System.out.print("Introduzca uno de los siguientes comandos disponibles:\n\n1. comprimirArchivo\n2. descomprimirArchivo\n3. comprimirYdescomprimirArchivo\n4. comprimirCarpeta\n5. descomprimirCarpeta\n6. estadisticas\n7. cambiarAlgoritmoTextoPredeterminado\n8. salir\n");
                 Scanner scanner = new Scanner(System.in);
                 String comando = scanner.nextLine();
                 String s;
@@ -135,6 +135,8 @@ public class MainDriver {
                             default:
                                 throw new EnumConstantNotPresentException(Algoritmo.class, "El tipo de compresor " + algoritmoComp + " no existe o no está disponible para un archivo .txt\n");
                         }
+                        System.out.println("Indique la calidad de compresión a usar para las imágenes (del 1 al 7)");
+                        ctrlProcesos.setCalidadJPEG(scanner.nextInt());
                         System.out.println("Se inicia el proceso");
                         ctrlProcesos.comprimirCarpeta(s, s, tipoCompresor);
                         System.out.println("El archivo " + s + " se ha comprimido correctamente!\n");
@@ -152,7 +154,7 @@ public class MainDriver {
                         System.out.println("El archivo " + s + " se ha descomprimido correctamente!\n");
                         break;
                     case "estadisticas":
-                    case "7":
+                    case "6":
                         System.out.print("Escriba el algoritmo de compresión que quiera consultar, de entre los siguientes:\njpeg\nlzss\nlz78\nlzw\n");
                         algoritmoComp = scanner.nextLine();
                         switch (algoritmoComp) {
@@ -175,7 +177,7 @@ public class MainDriver {
                         System.out.print(ctrlEstadistica.estadisticas(tipoCompresor));
                         break;
                     case "cambiarAlgoritmoTextoPredeterminado":
-                    case "8":
+                    case "7":
                         System.out.println("El algoritmo de compresión de texto predeterminado es " + CtrlProcesos.getAlgoritmoDeTextoPredeterminado() + ".");
                         System.out.print("Escriba el algoritmo de compresión que quiera usar de manera predeterminada, de entre los siguientes:\nlzss\nlz78\nlzw\n");
                         String algoritmoCompresion = scanner.nextLine();
@@ -197,7 +199,7 @@ public class MainDriver {
                         System.out.println("Algoritmo de texto predeterminado cambiado a " + tipoAlgoritmo + ".");
                         break;
                     case "salir":
-                    case "9":
+                    case "8":
                         b = false;
                         break;
                     default:

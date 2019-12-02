@@ -60,20 +60,21 @@ public class GestorCarpetaComprimir extends GestorCarpeta {
 
     @Override
     public void guardaProximoArchivo(byte[] data) throws IOException {
-        String[] directoriosPathCarpeta = carpeta.getAbsolutePath().split(Pattern.quote(System.getProperty("file.separator")));
-        String nombreCarpeta = directoriosPathCarpeta[directoriosPathCarpeta.length - 1];
-        int ocurrenciasNombreCarpeta = 0;
-        for (String s : directoriosPathCarpeta) {
-            if (s.equals(nombreCarpeta)) ++ocurrenciasNombreCarpeta;
-        }
+        String nombreCarpeta = carpeta.getName();
         String[] pathRelativo = pathArchivoActual.split(nombreCarpeta);
-        Algoritmo algoritmoArchivo = null;
+        Algoritmo algoritmoArchivo;
         Algoritmo[] algoritmos;
-        String pathRootCarpeta = pathRelativo[ocurrenciasNombreCarpeta];
-        algoritmos = CtrlDatos.algoritmosPosibles(pathRootCarpeta);
+        StringBuilder pathRootCarpeta = new StringBuilder(pathArchivoActual.replace(pathRelativo[0], ""));
+        String[] dirs = pathRootCarpeta.toString().split(Pattern.quote(System.getProperty("file.separator")));
+        pathRootCarpeta = new StringBuilder(File.separator);
+        for (int i = 1; i < dirs.length; ++i) {
+            pathRootCarpeta.append(dirs[i]);
+            if (i < dirs.length - 1) pathRootCarpeta.append(File.separator);
+        }
+        algoritmos = CtrlDatos.algoritmosPosibles(pathRootCarpeta.toString());
         if (algoritmos.length > 1) algoritmoArchivo = algoritmoTexto;
         else algoritmoArchivo = Algoritmo.JPEG;
-        String pathComprimido = CtrlDatos.actualizarPathSalida(pathRootCarpeta, algoritmoArchivo, true);
+        String pathComprimido = CtrlDatos.actualizarPathSalida(pathRootCarpeta.toString(), algoritmoArchivo, true);
         String endOfLine = "\n";
         bufferedOutputStream.write(pathComprimido.getBytes());
         bufferedOutputStream.write(endOfLine.getBytes());
