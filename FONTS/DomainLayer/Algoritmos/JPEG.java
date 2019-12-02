@@ -1,8 +1,6 @@
 package DomainLayer.Algoritmos;
 
 import Exceptions.FormatoErroneoException;
-import javafx.util.Pair;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,7 +38,7 @@ public class JPEG implements CompresorDecompresor {
     /**
      * Tabla de valores estándar para la descodificación según Huffman coding de los valores obtenidos con el RLE del algoritmo JPEG. Este atributo es estático
      */
-    private static Map<String, Pair<Byte, Byte>> ACInverseHuffmanTable = new HashMap<>();
+    private static Map<String, Pair> ACInverseHuffmanTable = new HashMap<>();
     /**
      * Getter de la instancia Singleton de JPEG
      * @return La instancia Singleton de JPEG
@@ -97,23 +95,23 @@ public class JPEG implements CompresorDecompresor {
                 {"", "1111111111101011", "1111111111101100", "1111111111101101", "1111111111101110", "1111111111101111", "1111111111110000", "1111111111110001", "1111111111110010", "1111111111110011", "1111111111110100"},
                 {"11111111001", "1111111111110101", "1111111111110110", "1111111111110111", "1111111111111000", "1111111111111001", "1111111111111010", "1111111111111011", "1111111111111100", "1111111111111101", "1111111111111110"}
         };
-        ACInverseHuffmanTable = new HashMap<String, Pair<Byte, Byte>>() {{
-            put("1010", new Pair<>((byte) 0, (byte) 0)); put("00", new Pair<>((byte) 0, (byte) 1)); put("01", new Pair<>((byte) 0, (byte) 2)); put("100", new Pair<>((byte) 0, (byte) 3)); put("1011", new Pair<>((byte) 0, (byte) 4)); put("11010", new Pair<>((byte) 0, (byte) 5)); put("1111000", new Pair<>((byte) 0, (byte) 6)); put("11111000", new Pair<>((byte) 0, (byte) 7)); put("1111110110", new Pair<>((byte) 0, (byte) 8)); put("1111111110000010", new Pair<>((byte) 0, (byte) 9)); put("1111111110000011", new Pair<>((byte) 0, (byte) 10));
-            put("1100", new Pair<>((byte) 1, (byte) 1)); put("11011", new Pair<>((byte) 1, (byte) 2)); put("1111001", new Pair<>((byte) 1, (byte) 3)); put("111110110", new Pair<>((byte) 1, (byte) 4)); put("11111110110", new Pair<>((byte) 1, (byte) 5)); put("1111111110000100", new Pair<>((byte) 1, (byte) 6)); put("1111111110000101", new Pair<>((byte) 1, (byte) 7)); put("1111111110000110", new Pair<>((byte) 1, (byte) 8)); put("1111111110000111", new Pair<>((byte) 1, (byte) 9)); put("1111111110001000", new Pair<>((byte) 1, (byte) 10));
-            put("11100", new Pair<>((byte) 2, (byte) 1)); put("11111001", new Pair<>((byte) 2, (byte) 2)); put("1111110111", new Pair<>((byte) 2, (byte) 3)); put("111111110100", new Pair<>((byte) 2, (byte) 4)); put("1111111110001001", new Pair<>((byte) 2, (byte) 5)); put("1111111110001010", new Pair<>((byte) 2, (byte) 6)); put("1111111110001011", new Pair<>((byte) 2, (byte) 7)); put("1111111110001100", new Pair<>((byte) 2, (byte) 8)); put("1111111110001101", new Pair<>((byte) 2, (byte) 9)); put("1111111110001110", new Pair<>((byte) 2, (byte) 10));
-            put("111010", new Pair<>((byte) 3, (byte) 1)); put("111110111", new Pair<>((byte) 3, (byte) 2)); put("111111110101", new Pair<>((byte) 3, (byte) 3)); put("1111111110001111", new Pair<>((byte) 3, (byte) 4)); put("1111111110010000", new Pair<>((byte) 3, (byte) 5)); put("1111111110010001", new Pair<>((byte) 3, (byte) 6)); put("1111111110010010", new Pair<>((byte) 3, (byte) 7)); put("1111111110010011", new Pair<>((byte) 3, (byte) 8)); put("1111111110010100", new Pair<>((byte) 3, (byte) 9)); put("1111111110010101", new Pair<>((byte) 3, (byte) 10));
-            put("111011", new Pair<>((byte) 4, (byte) 1)); put("1111111000", new Pair<>((byte) 4, (byte) 2)); put("1111111110010110", new Pair<>((byte) 4, (byte) 3)); put("1111111110010111", new Pair<>((byte) 4, (byte) 4)); put("1111111110011000", new Pair<>((byte) 4, (byte) 5)); put("1111111110011001", new Pair<>((byte) 4, (byte) 6)); put("1111111110011010", new Pair<>((byte) 4, (byte) 7)); put("1111111110011011", new Pair<>((byte) 4, (byte) 8)); put("1111111110011100", new Pair<>((byte) 4, (byte) 9)); put("1111111110011101", new Pair<>((byte) 4, (byte) 10));
-            put("1111010", new Pair<>((byte) 5, (byte) 1)); put("11111110111", new Pair<>((byte) 5, (byte) 2)); put("1111111110011110", new Pair<>((byte) 5, (byte) 3)); put("1111111110011111", new Pair<>((byte) 5, (byte) 4)); put("1111111110100000", new Pair<>((byte) 5, (byte) 5)); put("1111111110100001", new Pair<>((byte) 5, (byte) 6)); put("1111111110100010", new Pair<>((byte) 5, (byte) 7)); put("1111111110100011", new Pair<>((byte) 5, (byte) 8)); put("1111111110100100", new Pair<>((byte) 5, (byte) 9)); put("1111111110100101", new Pair<>((byte) 5, (byte) 10));
-            put("1111011", new Pair<>((byte) 6, (byte) 1)); put("111111110110", new Pair<>((byte) 6, (byte) 2)); put("1111111110100110", new Pair<>((byte) 6, (byte) 3)); put("1111111110100111", new Pair<>((byte) 6, (byte) 4)); put("1111111110101000", new Pair<>((byte) 6, (byte) 5)); put("1111111110101001", new Pair<>((byte) 6, (byte) 6)); put("1111111110101010", new Pair<>((byte) 6, (byte) 7)); put("1111111110101011", new Pair<>((byte) 6, (byte) 8)); put("1111111110101100", new Pair<>((byte) 6, (byte) 9)); put("1111111110101101", new Pair<>((byte) 6, (byte) 10));
-            put("11111010", new Pair<>((byte) 7, (byte) 1)); put("111111110111", new Pair<>((byte) 7, (byte) 2)); put("1111111110101110", new Pair<>((byte) 7, (byte) 3)); put("1111111110101111", new Pair<>((byte) 7, (byte) 4)); put("1111111110110000", new Pair<>((byte) 7, (byte) 5)); put("1111111110110001", new Pair<>((byte) 7, (byte) 6)); put("1111111110110010", new Pair<>((byte) 7, (byte) 7)); put("1111111110110011", new Pair<>((byte) 7, (byte) 8)); put("1111111110110100", new Pair<>((byte) 7, (byte) 9)); put("1111111110110101", new Pair<>((byte) 7, (byte) 10));
-            put("111111000", new Pair<>((byte) 8, (byte) 1)); put("111111111000000", new Pair<>((byte) 8, (byte) 2)); put("1111111110110110", new Pair<>((byte) 8, (byte) 3)); put("1111111110110111", new Pair<>((byte) 8, (byte) 4)); put("1111111110111000", new Pair<>((byte) 8, (byte) 5)); put("1111111110111001", new Pair<>((byte) 8, (byte) 6)); put("1111111110111010", new Pair<>((byte) 8, (byte) 7)); put("1111111110111011", new Pair<>((byte) 8, (byte) 8)); put("1111111110111100", new Pair<>((byte) 8, (byte) 9)); put("1111111110111101", new Pair<>((byte) 8, (byte) 10));
-            put("111111001", new Pair<>((byte) 9, (byte) 1)); put("1111111110111110", new Pair<>((byte) 9, (byte) 2)); put("1111111110111111", new Pair<>((byte) 9, (byte) 3)); put("1111111111000000", new Pair<>((byte) 9, (byte) 4)); put("1111111111000001", new Pair<>((byte) 9, (byte) 5)); put("1111111111000010", new Pair<>((byte) 9, (byte) 6)); put("1111111111000011", new Pair<>((byte) 9, (byte) 7)); put("1111111111000100", new Pair<>((byte) 9, (byte) 8)); put("1111111111000101", new Pair<>((byte) 9, (byte) 9)); put("1111111111000110", new Pair<>((byte) 9, (byte) 10));
-            put("111111010", new Pair<>((byte) 10, (byte) 1)); put("1111111111000111", new Pair<>((byte) 10, (byte) 2)); put("1111111111001000", new Pair<>((byte) 10, (byte) 3)); put("1111111111001001", new Pair<>((byte) 10, (byte) 4)); put("1111111111001010", new Pair<>((byte) 10, (byte) 5)); put("1111111111001011", new Pair<>((byte) 10, (byte) 6)); put("1111111111001100", new Pair<>((byte) 10, (byte) 7)); put("1111111111001101", new Pair<>((byte) 10, (byte) 8)); put("1111111111001110", new Pair<>((byte) 10, (byte) 9)); put("1111111111001111", new Pair<>((byte) 10, (byte) 10));
-            put("1111111001", new Pair<>((byte) 11, (byte) 1)); put("1111111111010000", new Pair<>((byte) 11, (byte) 2)); put("1111111111010001", new Pair<>((byte) 11, (byte) 3)); put("1111111111010010", new Pair<>((byte) 11, (byte) 4)); put("1111111111010011", new Pair<>((byte) 11, (byte) 5)); put("1111111111010100", new Pair<>((byte) 11, (byte) 6)); put("1111111111010101", new Pair<>((byte) 11, (byte) 7)); put("1111111111010110", new Pair<>((byte) 11, (byte) 8)); put("1111111111010111", new Pair<>((byte) 11, (byte) 9)); put("1111111111011000", new Pair<>((byte) 11, (byte) 10));
-            put("1111111010", new Pair<>((byte) 12, (byte) 1)); put("1111111111011001", new Pair<>((byte) 12, (byte) 2)); put("1111111111011010", new Pair<>((byte) 12, (byte) 3)); put("1111111111011011", new Pair<>((byte) 12, (byte) 4)); put("1111111111011100", new Pair<>((byte) 12, (byte) 5)); put("1111111111011101", new Pair<>((byte) 12, (byte) 6)); put("1111111111011110", new Pair<>((byte) 12, (byte) 7)); put("1111111111011111", new Pair<>((byte) 12, (byte) 8)); put("1111111111100000", new Pair<>((byte) 12, (byte) 9)); put("1111111111100001", new Pair<>((byte) 12, (byte) 10));
-            put("11111111000", new Pair<>((byte) 13, (byte) 1)); put("1111111111100010", new Pair<>((byte) 13, (byte) 2)); put("1111111111100011", new Pair<>((byte) 13, (byte) 3)); put("1111111111100100", new Pair<>((byte) 13, (byte) 4)); put("1111111111100101", new Pair<>((byte) 13, (byte) 5)); put("1111111111100110", new Pair<>((byte) 13, (byte) 6)); put("1111111111100111", new Pair<>((byte) 13, (byte) 7)); put("1111111111101000", new Pair<>((byte) 13, (byte) 8)); put("1111111111101001", new Pair<>((byte) 13, (byte) 9)); put("1111111111101010", new Pair<>((byte) 13, (byte) 10));
-            put("1111111111101011", new Pair<>((byte) 14, (byte) 1)); put("1111111111101100", new Pair<>((byte) 14, (byte) 2)); put("1111111111101101", new Pair<>((byte) 14, (byte) 3)); put("1111111111101110", new Pair<>((byte) 14, (byte) 4)); put("1111111111101111", new Pair<>((byte) 14, (byte) 5)); put("1111111111110000", new Pair<>((byte) 14, (byte) 6)); put("1111111111110001", new Pair<>((byte) 14, (byte) 7)); put("1111111111110010", new Pair<>((byte) 14, (byte) 8)); put("1111111111110011", new Pair<>((byte) 14, (byte) 9)); put("1111111111110100", new Pair<>((byte) 14, (byte) 10));
-            put("11111111001", new Pair<>((byte) 15, (byte) 0)); put("1111111111110101", new Pair<>((byte) 15, (byte) 1)); put("1111111111110110", new Pair<>((byte) 15, (byte) 2)); put("1111111111110111", new Pair<>((byte) 15, (byte) 3)); put("1111111111111000", new Pair<>((byte) 15, (byte) 4)); put("1111111111111001", new Pair<>((byte) 15, (byte) 5)); put("1111111111111010", new Pair<>((byte) 15, (byte) 6)); put("1111111111111011", new Pair<>((byte) 15, (byte) 7)); put("1111111111111100", new Pair<>((byte) 15, (byte) 8)); put("1111111111111101", new Pair<>((byte) 15, (byte) 9)); put("1111111111111110", new Pair<>((byte) 15, (byte) 10));
+        ACInverseHuffmanTable = new HashMap<String, Pair>() {{
+            put("1010", new Pair((byte) 0, (byte) 0)); put("00", new Pair((byte) 0, (byte) 1)); put("01", new Pair((byte) 0, (byte) 2)); put("100", new Pair((byte) 0, (byte) 3)); put("1011", new Pair((byte) 0, (byte) 4)); put("11010", new Pair((byte) 0, (byte) 5)); put("1111000", new Pair((byte) 0, (byte) 6)); put("11111000", new Pair((byte) 0, (byte) 7)); put("1111110110", new Pair((byte) 0, (byte) 8)); put("1111111110000010", new Pair((byte) 0, (byte) 9)); put("1111111110000011", new Pair((byte) 0, (byte) 10));
+            put("1100", new Pair((byte) 1, (byte) 1)); put("11011", new Pair((byte) 1, (byte) 2)); put("1111001", new Pair((byte) 1, (byte) 3)); put("111110110", new Pair((byte) 1, (byte) 4)); put("11111110110", new Pair((byte) 1, (byte) 5)); put("1111111110000100", new Pair((byte) 1, (byte) 6)); put("1111111110000101", new Pair((byte) 1, (byte) 7)); put("1111111110000110", new Pair((byte) 1, (byte) 8)); put("1111111110000111", new Pair((byte) 1, (byte) 9)); put("1111111110001000", new Pair((byte) 1, (byte) 10));
+            put("11100", new Pair((byte) 2, (byte) 1)); put("11111001", new Pair((byte) 2, (byte) 2)); put("1111110111", new Pair((byte) 2, (byte) 3)); put("111111110100", new Pair((byte) 2, (byte) 4)); put("1111111110001001", new Pair((byte) 2, (byte) 5)); put("1111111110001010", new Pair((byte) 2, (byte) 6)); put("1111111110001011", new Pair((byte) 2, (byte) 7)); put("1111111110001100", new Pair((byte) 2, (byte) 8)); put("1111111110001101", new Pair((byte) 2, (byte) 9)); put("1111111110001110", new Pair((byte) 2, (byte) 10));
+            put("111010", new Pair((byte) 3, (byte) 1)); put("111110111", new Pair((byte) 3, (byte) 2)); put("111111110101", new Pair((byte) 3, (byte) 3)); put("1111111110001111", new Pair((byte) 3, (byte) 4)); put("1111111110010000", new Pair((byte) 3, (byte) 5)); put("1111111110010001", new Pair((byte) 3, (byte) 6)); put("1111111110010010", new Pair((byte) 3, (byte) 7)); put("1111111110010011", new Pair((byte) 3, (byte) 8)); put("1111111110010100", new Pair((byte) 3, (byte) 9)); put("1111111110010101", new Pair((byte) 3, (byte) 10));
+            put("111011", new Pair((byte) 4, (byte) 1)); put("1111111000", new Pair((byte) 4, (byte) 2)); put("1111111110010110", new Pair((byte) 4, (byte) 3)); put("1111111110010111", new Pair((byte) 4, (byte) 4)); put("1111111110011000", new Pair((byte) 4, (byte) 5)); put("1111111110011001", new Pair((byte) 4, (byte) 6)); put("1111111110011010", new Pair((byte) 4, (byte) 7)); put("1111111110011011", new Pair((byte) 4, (byte) 8)); put("1111111110011100", new Pair((byte) 4, (byte) 9)); put("1111111110011101", new Pair((byte) 4, (byte) 10));
+            put("1111010", new Pair((byte) 5, (byte) 1)); put("11111110111", new Pair((byte) 5, (byte) 2)); put("1111111110011110", new Pair((byte) 5, (byte) 3)); put("1111111110011111", new Pair((byte) 5, (byte) 4)); put("1111111110100000", new Pair((byte) 5, (byte) 5)); put("1111111110100001", new Pair((byte) 5, (byte) 6)); put("1111111110100010", new Pair((byte) 5, (byte) 7)); put("1111111110100011", new Pair((byte) 5, (byte) 8)); put("1111111110100100", new Pair((byte) 5, (byte) 9)); put("1111111110100101", new Pair((byte) 5, (byte) 10));
+            put("1111011", new Pair((byte) 6, (byte) 1)); put("111111110110", new Pair((byte) 6, (byte) 2)); put("1111111110100110", new Pair((byte) 6, (byte) 3)); put("1111111110100111", new Pair((byte) 6, (byte) 4)); put("1111111110101000", new Pair((byte) 6, (byte) 5)); put("1111111110101001", new Pair((byte) 6, (byte) 6)); put("1111111110101010", new Pair((byte) 6, (byte) 7)); put("1111111110101011", new Pair((byte) 6, (byte) 8)); put("1111111110101100", new Pair((byte) 6, (byte) 9)); put("1111111110101101", new Pair((byte) 6, (byte) 10));
+            put("11111010", new Pair((byte) 7, (byte) 1)); put("111111110111", new Pair((byte) 7, (byte) 2)); put("1111111110101110", new Pair((byte) 7, (byte) 3)); put("1111111110101111", new Pair((byte) 7, (byte) 4)); put("1111111110110000", new Pair((byte) 7, (byte) 5)); put("1111111110110001", new Pair((byte) 7, (byte) 6)); put("1111111110110010", new Pair((byte) 7, (byte) 7)); put("1111111110110011", new Pair((byte) 7, (byte) 8)); put("1111111110110100", new Pair((byte) 7, (byte) 9)); put("1111111110110101", new Pair((byte) 7, (byte) 10));
+            put("111111000", new Pair((byte) 8, (byte) 1)); put("111111111000000", new Pair((byte) 8, (byte) 2)); put("1111111110110110", new Pair((byte) 8, (byte) 3)); put("1111111110110111", new Pair((byte) 8, (byte) 4)); put("1111111110111000", new Pair((byte) 8, (byte) 5)); put("1111111110111001", new Pair((byte) 8, (byte) 6)); put("1111111110111010", new Pair((byte) 8, (byte) 7)); put("1111111110111011", new Pair((byte) 8, (byte) 8)); put("1111111110111100", new Pair((byte) 8, (byte) 9)); put("1111111110111101", new Pair((byte) 8, (byte) 10));
+            put("111111001", new Pair((byte) 9, (byte) 1)); put("1111111110111110", new Pair((byte) 9, (byte) 2)); put("1111111110111111", new Pair((byte) 9, (byte) 3)); put("1111111111000000", new Pair((byte) 9, (byte) 4)); put("1111111111000001", new Pair((byte) 9, (byte) 5)); put("1111111111000010", new Pair((byte) 9, (byte) 6)); put("1111111111000011", new Pair((byte) 9, (byte) 7)); put("1111111111000100", new Pair((byte) 9, (byte) 8)); put("1111111111000101", new Pair((byte) 9, (byte) 9)); put("1111111111000110", new Pair((byte) 9, (byte) 10));
+            put("111111010", new Pair((byte) 10, (byte) 1)); put("1111111111000111", new Pair((byte) 10, (byte) 2)); put("1111111111001000", new Pair((byte) 10, (byte) 3)); put("1111111111001001", new Pair((byte) 10, (byte) 4)); put("1111111111001010", new Pair((byte) 10, (byte) 5)); put("1111111111001011", new Pair((byte) 10, (byte) 6)); put("1111111111001100", new Pair((byte) 10, (byte) 7)); put("1111111111001101", new Pair((byte) 10, (byte) 8)); put("1111111111001110", new Pair((byte) 10, (byte) 9)); put("1111111111001111", new Pair((byte) 10, (byte) 10));
+            put("1111111001", new Pair((byte) 11, (byte) 1)); put("1111111111010000", new Pair((byte) 11, (byte) 2)); put("1111111111010001", new Pair((byte) 11, (byte) 3)); put("1111111111010010", new Pair((byte) 11, (byte) 4)); put("1111111111010011", new Pair((byte) 11, (byte) 5)); put("1111111111010100", new Pair((byte) 11, (byte) 6)); put("1111111111010101", new Pair((byte) 11, (byte) 7)); put("1111111111010110", new Pair((byte) 11, (byte) 8)); put("1111111111010111", new Pair((byte) 11, (byte) 9)); put("1111111111011000", new Pair((byte) 11, (byte) 10));
+            put("1111111010", new Pair((byte) 12, (byte) 1)); put("1111111111011001", new Pair((byte) 12, (byte) 2)); put("1111111111011010", new Pair((byte) 12, (byte) 3)); put("1111111111011011", new Pair((byte) 12, (byte) 4)); put("1111111111011100", new Pair((byte) 12, (byte) 5)); put("1111111111011101", new Pair((byte) 12, (byte) 6)); put("1111111111011110", new Pair((byte) 12, (byte) 7)); put("1111111111011111", new Pair((byte) 12, (byte) 8)); put("1111111111100000", new Pair((byte) 12, (byte) 9)); put("1111111111100001", new Pair((byte) 12, (byte) 10));
+            put("11111111000", new Pair((byte) 13, (byte) 1)); put("1111111111100010", new Pair((byte) 13, (byte) 2)); put("1111111111100011", new Pair((byte) 13, (byte) 3)); put("1111111111100100", new Pair((byte) 13, (byte) 4)); put("1111111111100101", new Pair((byte) 13, (byte) 5)); put("1111111111100110", new Pair((byte) 13, (byte) 6)); put("1111111111100111", new Pair((byte) 13, (byte) 7)); put("1111111111101000", new Pair((byte) 13, (byte) 8)); put("1111111111101001", new Pair((byte) 13, (byte) 9)); put("1111111111101010", new Pair((byte) 13, (byte) 10));
+            put("1111111111101011", new Pair((byte) 14, (byte) 1)); put("1111111111101100", new Pair((byte) 14, (byte) 2)); put("1111111111101101", new Pair((byte) 14, (byte) 3)); put("1111111111101110", new Pair((byte) 14, (byte) 4)); put("1111111111101111", new Pair((byte) 14, (byte) 5)); put("1111111111110000", new Pair((byte) 14, (byte) 6)); put("1111111111110001", new Pair((byte) 14, (byte) 7)); put("1111111111110010", new Pair((byte) 14, (byte) 8)); put("1111111111110011", new Pair((byte) 14, (byte) 9)); put("1111111111110100", new Pair((byte) 14, (byte) 10));
+            put("11111111001", new Pair((byte) 15, (byte) 0)); put("1111111111110101", new Pair((byte) 15, (byte) 1)); put("1111111111110110", new Pair((byte) 15, (byte) 2)); put("1111111111110111", new Pair((byte) 15, (byte) 3)); put("1111111111111000", new Pair((byte) 15, (byte) 4)); put("1111111111111001", new Pair((byte) 15, (byte) 5)); put("1111111111111010", new Pair((byte) 15, (byte) 6)); put("1111111111111011", new Pair((byte) 15, (byte) 7)); put("1111111111111100", new Pair((byte) 15, (byte) 8)); put("1111111111111101", new Pair((byte) 15, (byte) 9)); put("1111111111111110", new Pair((byte) 15, (byte) 10));
         }};
     }
 
@@ -635,11 +633,11 @@ public class JPEG implements CompresorDecompresor {
                 String huffmanBuff = "";
                 for (int it = 0; it < rleSize * 8 - offsetSize; ++it) { //getting RLE values from Huffman block after offset applied
                     huffmanBuff += huffmanStringBuilder.charAt(it);
-                    Pair<Byte, Byte> pair = ACInverseHuffmanTable.get(huffmanBuff); //check if Huffman code exists
+                    Pair pair = ACInverseHuffmanTable.get(huffmanBuff); //check if Huffman code exists
                     if (pair != null) { //if exists, get RLE value and store it in zigzag line of block
-                        Byte runlength = pair.getKey(); //getting runlength and size of RLE value
+                        byte runlength = pair.getKey(); //getting runlength and size of RLE value
                         huffmanList.add(runlength);
-                        Byte size = pair.getValue();
+                        byte size = pair.getValue();
                         huffmanList.add(size);
                         StringBuilder amplitude = new StringBuilder();
                         for (int n = 0; n < size; ++n) {
@@ -748,11 +746,11 @@ public class JPEG implements CompresorDecompresor {
                 String huffmanBuff = "";
                 for (int it = 0; it < rleSize * 8 - offsetSize; ++it) { //getting RLE values from Huffman block after offset applied
                     huffmanBuff += huffmanStringBuilder.charAt(it);
-                    Pair<Byte, Byte> pair = ACInverseHuffmanTable.get(huffmanBuff); //check if Huffman code exists
+                    Pair pair = ACInverseHuffmanTable.get(huffmanBuff); //check if Huffman code exists
                     if (pair != null) { //if exists, get RLE value and store it in zigzag line of block
-                        Byte runlength = pair.getKey(); //getting runlength and size of RLE value
+                        byte runlength = pair.getKey(); //getting runlength and size of RLE value
                         huffmanList.add(runlength);
-                        Byte size = pair.getValue();
+                        byte size = pair.getValue();
                         huffmanList.add(size);
                         StringBuilder amplitude = new StringBuilder();
                         for (int n = 0; n < size; ++n) {
@@ -792,11 +790,11 @@ public class JPEG implements CompresorDecompresor {
                 huffmanBuff = "";
                 for (int it = 0; it < rleSize * 8 - offsetSize; ++it) { //getting RLE values from Huffman block after offset applied
                     huffmanBuff += huffmanCrStringBuilder.charAt(it);
-                    Pair<Byte, Byte> pair = ACInverseHuffmanTable.get(huffmanBuff); //check if Huffman code exists
+                    Pair pair = ACInverseHuffmanTable.get(huffmanBuff); //check if Huffman code exists
                     if (pair != null) { //if exists, get RLE value and store it in zigzag line of block
-                        Byte runlength = pair.getKey(); //getting runlength and size of RLE value
+                        byte runlength = pair.getKey(); //getting runlength and size of RLE value
                         huffmanCrList.add(runlength);
-                        Byte size = pair.getValue();
+                        byte size = pair.getValue();
                         huffmanCrList.add(size);
                         StringBuilder amplitude = new StringBuilder();
                         for (int n = 0; n < size; ++n) {
@@ -910,5 +908,46 @@ public class JPEG implements CompresorDecompresor {
         }
         long endTime = System.nanoTime(), totalTime = endTime - startTime; //ending time and total execution time
         return new OutputAlgoritmo(totalTime, datosOutput); //returning output time and data byte array
+    }
+
+
+    /**
+     * Clase encargada de contener un par de datos de tipo byte para la tabla de Huffman de descompresión
+     */
+    static class Pair {
+        /**
+         * Primer byte, el cual, según RLE, contiene el valor de Runlength
+         */
+        byte key;
+        /**
+         * Segundo byte, el cual, según RLE, contiene el valor del size del valor distinto de cero
+         */
+        byte value;
+
+        /**
+         * Constructora de la clase
+         * @param key Valor de Runlength
+         * @param value Valor del size del valor distinto de cero
+         */
+        Pair(byte key, byte value) {
+            this.key = key;
+            this.value = value;
+        }
+
+        /**
+         * Obtenedora del key del pair
+         * @return El key del pair
+         */
+        byte getKey() {
+            return this.key;
+        }
+
+        /**
+         * Obtenedora del value del pair
+         * @return El value del pair
+         */
+        byte getValue() {
+            return this.value;
+        }
     }
 }
