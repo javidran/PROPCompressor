@@ -411,8 +411,8 @@ public class JPEG implements CompresorDecompresor {
             });
         });
         List<Byte>[][] tempResultCbCr = new List[downSampledPaddedHeight/8][downSampledPaddedWidth/8];
-        IntStream.range(0, paddedHeight).parallel().filter(x -> x % 8 == 0).forEach(x -> { //image DCT-II and quantization (done in pixel squares of 8x8) for chrominance
-            IntStream.range(0, paddedWidth).parallel().filter(y -> y % 8 == 0).forEach(y -> { //for each chrominance pixel square of 8x8 of the image, DCT-II algorithm is applied, letting calculate the image frequencies
+        IntStream.range(0, downSampledPaddedHeight).parallel().filter(x -> x % 8 == 0).forEach(x -> { //image DCT-II and quantization (done in pixel squares of 8x8) for chrominance
+            IntStream.range(0, downSampledPaddedWidth).parallel().filter(y -> y % 8 == 0).forEach(y -> { //for each chrominance pixel square of 8x8 of the image, DCT-II algorithm is applied, letting calculate the image frequencies
                 double[][] buffCb = new double[8][8];
                 double[][] buffCr = new double[8][8];
                 tempResultCbCr[x /8][y/8] = new ArrayList<>();

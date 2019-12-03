@@ -99,7 +99,7 @@ public class JPEGDriver {
                     default:
                         System.out.print("Comando incorrecto!\n");
                 }
-            } catch (IOException e) {
+            } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
         }
