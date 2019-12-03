@@ -328,22 +328,23 @@ public class JPEG implements CompresorDecompresor {
         }
 
         List<Byte>[][] tempResultY = new List[paddedHeight/8][paddedWidth/8];
-        double[][] buffY = new double[8][8];
         IntStream.range(0, paddedHeight).parallel().filter(x -> x % 8 == 0).forEach(x -> { //image DCT-II and quantization (done in pixel squares of 8x8) for luminance
-            IntStream.range(0, paddedWidth).parallel().filter(y -> y % 8 == 0).forEach(y -> {
+            for (int y = 0; y < paddedWidth; y += 8) {
+                double[][] buffY = new double[8][8];
                 tempResultY[x /8][y/8] = new ArrayList<>();
                 int topu = x + 8, topv = y + 8;
+                int finalY = y;
                 IntStream.range(x, topu).parallel().forEach(u -> {
                     double alphau, alphav, cosu, cosv;
                     if (u % 8 == 0) alphau = 1 / Math.sqrt(2);
                     else alphau = 1;
-                    for (int v = y; v < topv; ++v) { //for each luminance pixel of the 8x8 square, the DCT-II calculation is applied
+                    for (int v = finalY; v < topv; ++v) { //for each luminance pixel of the 8x8 square, the DCT-II calculation is applied
                         if (v % 8 == 0) alphav = 1 / Math.sqrt(2);
                         else alphav = 1;
                         buffY[u%8][v%8] = 0;
                         for (int i = x; i < topu; ++i) {
                             cosu = Math.cos(((2 * (i % 8) + 1) * (u % 8) * Math.PI) / 16.0);
-                            for (int j = y; j < topv; ++j) {
+                            for (int j = finalY; j < topv; ++j) {
                                 cosv = Math.cos(((2 * (j % 8) + 1) * (v % 8) * Math.PI) / 16.0);
                                 buffY[u%8][v%8] += Y[i][j] * cosu * cosv;
                             }
@@ -408,27 +409,28 @@ public class JPEG implements CompresorDecompresor {
                 tempResultY[x /8][y/8].add((byte)offsetOfBlock);
                 //addition of block to result
                 tempResultY[x /8][y/8].addAll(toByteList(rleY)); //dumping the Huffman block into result
-            });
+            }
         });
         List<Byte>[][] tempResultCbCr = new List[downSampledPaddedHeight/8][downSampledPaddedWidth/8];
-        double[][] buffCb = new double[8][8];
-        double[][] buffCr = new double[8][8];
         IntStream.range(0, paddedHeight).parallel().filter(x -> x % 8 == 0).forEach(x -> { //image DCT-II and quantization (done in pixel squares of 8x8) for chrominance
-            IntStream.range(0, paddedWidth).parallel().filter(y -> y % 8 == 0).forEach(y -> { //for each chrominance pixel square of 8x8 of the image, DCT-II algorithm is applied, letting calculate the image frequencies
+            for (int y = 0; y < paddedWidth; y += 8) { //for each chrominance pixel square of 8x8 of the image, DCT-II algorithm is applied, letting calculate the image frequencies
+                double[][] buffCb = new double[8][8];
+                double[][] buffCr = new double[8][8];
                 tempResultCbCr[x /8][y/8] = new ArrayList<>();
                 int topu = x + 8, topv = y + 8;
+                int finalY = y;
                 IntStream.range(x, topu).parallel().forEach(u -> {
                     double alphau, alphav, cosu, cosv;
                     if (u % 8 == 0) alphau = 1 / Math.sqrt(2);
                     else alphau = 1;
-                    for (int v = y; v < topv; ++v) { //for each chrominance pixel of the 8x8 square, the DCT-II calculation is applied
+                    for (int v = finalY; v < topv; ++v) { //for each chrominance pixel of the 8x8 square, the DCT-II calculation is applied
                         if (v % 8 == 0) alphav = 1 / Math.sqrt(2);
                         else alphav = 1;
                         buffCb[u%8][v%8] = 0;
                         buffCr[u%8][v%8] = 0;
                         for (int i = x; i < topu; ++i) {
                             cosu = Math.cos(((2 * (i % 8) + 1) * (u % 8) * Math.PI) / 16.0);
-                            for (int j = y; j < topv; ++j) {
+                            for (int j = finalY; j < topv; ++j) {
                                 cosv = Math.cos(((2 * (j % 8) + 1) * (v % 8) * Math.PI) / 16.0);
                                 buffCb[u%8][v%8] += downSampledCb[i][j] * cosu * cosv;
                                 buffCr[u%8][v%8] += downSampledCr[i][j] * cosu * cosv;
@@ -520,7 +522,7 @@ public class JPEG implements CompresorDecompresor {
                 tempResultCbCr[x /8][y/8].add((byte)offsetOfBlock);
                 //addition of block to result
                 tempResultCbCr[x /8][y/8].addAll(toByteList(rleCr)); //dumping the Huffman block into result
-            });
+            }
         });
         for (int x = 0; x < paddedHeight/8; ++x) {
             for (int y = 0; y < paddedWidth/8; ++y) {
