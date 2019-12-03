@@ -2,7 +2,6 @@ package DomainLayer.Algoritmos;
 
 import Exceptions.FormatoErroneoException;
 
-import java.lang.*;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.BitSet;

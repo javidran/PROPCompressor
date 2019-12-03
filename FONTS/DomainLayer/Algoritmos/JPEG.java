@@ -1,6 +1,7 @@
 package DomainLayer.Algoritmos;
 
 import Exceptions.FormatoErroneoException;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -56,7 +57,7 @@ public class JPEG implements CompresorDecompresor {
      */
     private JPEG() {
         calidad = 1.0;
-        calidadHeader = 50;
+        calidadHeader = 5;
         LuminanceQuantizationTable = new int[][] {
                 {16, 11, 10, 16,  24,  40,  51,  61},
                 {12, 12, 14, 19,  26,  58,  60,  55},
@@ -591,6 +592,7 @@ public class JPEG implements CompresorDecompresor {
         }
         ++pos;
         String quality = buff.toString();
+        setCalidad(Integer.parseInt(quality));
         if(quality.length() > 1) throw new FormatoErroneoException("El formato de .imgc no es correcto!");
         //end of header reading
 
