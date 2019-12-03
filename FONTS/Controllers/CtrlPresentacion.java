@@ -232,18 +232,23 @@ public class CtrlPresentacion {
     }
 
     private void procesar() throws Exception {
-        JOptionPane.showMessageDialog(null, "Procesando...", "WAIT", JOptionPane.PLAIN_MESSAGE);
+        /*
+        JOptionPane jOptionPane = new JOptionPane("Procesando...", JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
+        JDialog jDialog = jOptionPane.createDialog(null, "");
+        jDialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+        jDialog.setVisible(true);
+        */
         CtrlProcesos ctrlProcesos = CtrlProcesos.getInstance();
-        if (modeloParametros.isCompresion()) {
-            ctrlProcesos.comprimirArchivo(modeloParametros.getPathOriginal(), modeloParametros.getAlgoritmo());
+        if(!modeloParametros.isConGuardado()) {
+            ctrlProcesos.comprimirDescomprimirArchivo(modeloParametros.getPathOriginal(), modeloParametros.getAlgoritmo());
         }
-        else if (modeloParametros.isConGuardado()){
+        else if (modeloParametros.isCompresion()) {
             ctrlProcesos.comprimirArchivo(modeloParametros.getPathOriginal(), modeloParametros.getAlgoritmo());
-            ctrlProcesos.descomprimirArchivo(modeloParametros.getPathResultado());
         }
         else {
-            ctrlProcesos.descomprimirArchivo(modeloParametros.getPathResultado());
+            ctrlProcesos.descomprimirArchivo(modeloParametros.getPathOriginal());
         }
+        //jDialog.dispose();
     }
 
     public String getEstadisticas(String data) throws IOException {
