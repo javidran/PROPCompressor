@@ -133,16 +133,19 @@ public class CtrlProcesos {
         ctrlDatos.crearGestorCarpeta(pathIn, true, algoritmo);
         Algoritmo algoritmoArchivo;
         while((algoritmoArchivo = ctrlDatos.leerAlgoritmoProximoArchivo())!= null) {
-            ProcesoFichero desc = new ProcesoComprimir(ctrlDatos.leerProximoArchivo(), algoritmoArchivo);
-            desc.ejecutarProceso();
-            ctrlDatos.guardaProximoArchivo(desc.getOutput());
-            DatosProceso dp = desc.getDatosProceso();
-            tiempo += dp.getTiempo();
-            oldSize += dp.getOldSize();
-            newSize += dp.getNewSize();
-            if(dp.isSatisfactorio()) {
-                ctrlDatos.actualizaEstadistica(dp, algoritmoArchivo, true);
+            if (algoritmoArchivo != Algoritmo.CARPETA) {
+                ProcesoFichero desc = new ProcesoComprimir(ctrlDatos.leerProximoArchivo(), algoritmoArchivo);
+                desc.ejecutarProceso();
+                ctrlDatos.guardaProximoArchivo(desc.getOutput());
+                DatosProceso dp = desc.getDatosProceso();
+                tiempo += dp.getTiempo();
+                oldSize += dp.getOldSize();
+                newSize += dp.getNewSize();
+                if(dp.isSatisfactorio()) {
+                    ctrlDatos.actualizaEstadistica(dp, algoritmoArchivo, true);
+                }
             }
+            else ctrlDatos.guardaProximoArchivo(ctrlDatos.leerProximoArchivo());
         }
         ctrlDatos.finalizarGestorCarpeta();
         long diffSize = oldSize - newSize;
