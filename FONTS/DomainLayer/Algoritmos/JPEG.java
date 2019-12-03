@@ -156,6 +156,7 @@ public class JPEG implements CompresorDecompresor {
         }
         return l;
     }
+    List<Byte>[] ll;
 
     /**
      * Asigna un valor de calidad de compresión al Singleton de JPEG
