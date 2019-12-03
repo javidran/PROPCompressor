@@ -329,22 +329,23 @@ public class JPEG implements CompresorDecompresor {
 
         List<Byte>[][] tempResultY = new List[paddedHeight/8][paddedWidth/8];
         double[][] buffY = new double[8][8];
-        for (int x = 0; x < paddedHeight; x += 8) { //image DCT-II and quantization (done in pixel squares of 8x8) for luminance
+        IntStream.range(0, paddedHeight).filter(x -> x % 8 == 0).forEach(x -> { //image DCT-II and quantization (done in pixel squares of 8x8) for luminance
             int finalX = x;                        //for each luminance pixel square of 8x8 of the image, DCT-II algorithm is applied, letting calculate the image frequencies
-            IntStream.range(0, paddedWidth).filter(y -> y % 8 == 0).forEach(y -> {
+            for (int y = 0; y < paddedWidth; y += 8) {
                 tempResultY[finalX /8][y/8] = new ArrayList<>();
                 int topu = finalX + 8, topv = y + 8;
+                int finalY = y;
                 IntStream.range(finalX, topu).parallel().forEach(u -> {
                     double alphau, alphav, cosu, cosv;
                     if (u % 8 == 0) alphau = 1 / Math.sqrt(2);
                     else alphau = 1;
-                    for (int v = y; v < topv; ++v) { //for each luminance pixel of the 8x8 square, the DCT-II calculation is applied
+                    for (int v = finalY; v < topv; ++v) { //for each luminance pixel of the 8x8 square, the DCT-II calculation is applied
                         if (v % 8 == 0) alphav = 1 / Math.sqrt(2);
                         else alphav = 1;
                         buffY[u%8][v%8] = 0;
                         for (int i = finalX; i < topu; ++i) {
                             cosu = Math.cos(((2 * (i % 8) + 1) * (u % 8) * Math.PI) / 16.0);
-                            for (int j = y; j < topv; ++j) {
+                            for (int j = finalY; j < topv; ++j) {
                                 cosv = Math.cos(((2 * (j % 8) + 1) * (v % 8) * Math.PI) / 16.0);
                                 buffY[u%8][v%8] += Y[i][j] * cosu * cosv;
                             }
@@ -409,8 +410,8 @@ public class JPEG implements CompresorDecompresor {
                 tempResultY[finalX /8][y/8].add((byte)offsetOfBlock);
                 //addition of block to result
                 tempResultY[finalX /8][y/8].addAll(toByteList(rleY)); //dumping the Huffman block into result
-            });
-        }
+            }
+        });
         List<Byte>[][] tempResultCbCr = new List[downSampledPaddedHeight/8][downSampledPaddedWidth/8];
         double[][] buffCb = new double[8][8];
         double[][] buffCr = new double[8][8];
