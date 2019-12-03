@@ -591,6 +591,7 @@ public class JPEG implements CompresorDecompresor {
         }
         ++pos;
         String quality = buff.toString();
+        setCalidad(Integer.parseInt(quality) * 10);
         if(quality.length() > 1) throw new FormatoErroneoException("El formato de .imgc no es correcto!");
         //end of header reading
 

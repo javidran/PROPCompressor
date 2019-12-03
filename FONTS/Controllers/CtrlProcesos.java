@@ -150,7 +150,7 @@ public class CtrlProcesos {
         }
         ctrlDatos.finalizarGestorCarpeta();
         long diffSize = oldSize - newSize;
-        double diffSizePercentage = (newSize /(double) oldSize)*100;
+        double diffSizePercentage = Math.floor((newSize /(double) oldSize)*100);
         System.out.println("El proceso ha tardado " + tiempo / 1000000000.0 + "s. El cambio de tamaño pasa de " + oldSize + "B a " + newSize + "B con diferencia de " + diffSize + "B que resulta en un " + diffSizePercentage + "% del archivo original.");
     }
 
@@ -173,7 +173,7 @@ public class CtrlProcesos {
         }
         ctrlDatos.finalizarGestorCarpeta();
         long diffSize = newSize - oldSize;
-        double diffSizePercentage = (newSize /(double) oldSize)*100;
+        double diffSizePercentage = Math.floor((newSize /(double) oldSize)*100);
         System.out.println("El proceso ha tardado " + tiempo / 1000000000.0 + "s. El cambio de tamaño pasa de " + oldSize + "B a " + newSize + "B con diferencia de " + diffSize + "B que resulta en un " + diffSizePercentage + "% del archivo original.");
     }
 
