@@ -331,10 +331,10 @@ public class JPEG implements CompresorDecompresor {
         double[][] buffY = new double[8][8];
         for (int x = 0; x < paddedHeight; x += 8) { //image DCT-II and quantization (done in pixel squares of 8x8) for luminance
             int finalX = x;                        //for each luminance pixel square of 8x8 of the image, DCT-II algorithm is applied, letting calculate the image frequencies
-            IntStream.range(0, paddedWidth).filter(y -> y % 8 == 0).parallel().forEach(y -> {
+            IntStream.range(0, paddedWidth).filter(y -> y % 8 == 0).forEach(y -> {
                 tempResultY[finalX /8][y/8] = new ArrayList<>();
                 int topu = finalX + 8, topv = y + 8;
-                for (int u = finalX; u < topu; ++u) {
+                IntStream.range(finalX, topu).parallel().forEach(u -> {
                     double alphau, alphav, cosu, cosv;
                     if (u % 8 == 0) alphau = 1 / Math.sqrt(2);
                     else alphau = 1;
@@ -352,7 +352,7 @@ public class JPEG implements CompresorDecompresor {
                         buffY[u%8][v%8] *= (alphau * alphav * 0.25);
                         buffY[u%8][v%8] /= (LuminanceQuantizationTable[u%8][v%8] * calidad);
                     }
-                }
+                });
                 boolean up = true;
                 int i = finalX, j = y, it = 0;
                 byte[] lineY = new byte[64]; //linear vector for zigzagged elements of Y before RLE
