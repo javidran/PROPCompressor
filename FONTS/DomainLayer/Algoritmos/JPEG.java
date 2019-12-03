@@ -334,7 +334,7 @@ public class JPEG implements CompresorDecompresor {
                 tempResultY[x /8][y/8] = new ArrayList<>();
                 int topu = x + 8, topv = y + 8;
                 int finalY = y;
-                for (int u = x; u < topu; ++u) {
+                IntStream.range(x, topu).parallel().forEach(u -> {
                     double alphau, alphav, cosu, cosv;
                     if (u % 8 == 0) alphau = 1 / Math.sqrt(2);
                     else alphau = 1;
@@ -352,7 +352,7 @@ public class JPEG implements CompresorDecompresor {
                         buffY[u%8][v%8] *= (alphau * alphav * 0.25);
                         buffY[u%8][v%8] /= (LuminanceQuantizationTable[u%8][v%8] * calidad);
                     }
-                }
+                });
                 boolean up = true;
                 int i = x, j = y, it = 0;
                 byte[] lineY = new byte[64]; //linear vector for zigzagged elements of Y before RLE
