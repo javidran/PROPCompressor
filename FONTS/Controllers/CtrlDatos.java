@@ -5,7 +5,8 @@ import DomainLayer.Algoritmos.Algoritmo;
 import DomainLayer.Proceso.DatosProceso;
 import Exceptions.FormatoErroneoException;
 
-import java.io.*;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 public class CtrlDatos {
     /**

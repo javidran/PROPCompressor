@@ -3,7 +3,10 @@ package DomainLayer.Algoritmos;
 import Exceptions.FormatoErroneoException;
 
 import java.nio.ByteBuffer;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class LZW implements CompresorDecompresor {
     private static LZW instance = null;

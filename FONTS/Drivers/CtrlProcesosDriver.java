@@ -1,6 +1,5 @@
 package Drivers;
 
-import Controllers.CtrlEstadistica;
 import Controllers.CtrlProcesos;
 import DomainLayer.Algoritmos.Algoritmo;
 

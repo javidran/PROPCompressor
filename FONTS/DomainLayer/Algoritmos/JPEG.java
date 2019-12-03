@@ -1,6 +1,7 @@
 package DomainLayer.Algoritmos;
 
 import Exceptions.FormatoErroneoException;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
