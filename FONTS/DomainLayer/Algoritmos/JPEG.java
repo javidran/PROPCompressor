@@ -329,7 +329,7 @@ public class JPEG implements CompresorDecompresor {
 
         List<Byte>[][] tempResultY = new List[paddedHeight/8][paddedWidth/8];
         double[][] buffY = new double[8][8];
-        IntStream.range(0, paddedHeight).filter(x -> x % 8 == 0).forEach(x -> { //image DCT-II and quantization (done in pixel squares of 8x8) for luminance
+        IntStream.range(0, paddedHeight).parallel().filter(x -> x % 8 == 0).forEach(x -> { //image DCT-II and quantization (done in pixel squares of 8x8) for luminance
             for (int y = 0; y < paddedWidth; y += 8) {
                 tempResultY[x /8][y/8] = new ArrayList<>();
                 int topu = x + 8, topv = y + 8;
@@ -414,7 +414,7 @@ public class JPEG implements CompresorDecompresor {
         List<Byte>[][] tempResultCbCr = new List[downSampledPaddedHeight/8][downSampledPaddedWidth/8];
         double[][] buffCb = new double[8][8];
         double[][] buffCr = new double[8][8];
-        IntStream.range(0, downSampledPaddedHeight).filter(x -> x % 8 == 0).forEach(x -> { //image DCT-II and quantization (done in pixel squares of 8x8) for chrominance
+        IntStream.range(0, downSampledPaddedHeight).parallel().filter(x -> x % 8 == 0).forEach(x -> { //image DCT-II and quantization (done in pixel squares of 8x8) for chrominance
             for (int y = 0; y < downSampledPaddedWidth; y += 8) { //for each chrominance pixel square of 8x8 of the image, DCT-II algorithm is applied, letting calculate the image frequencies
                 tempResultCbCr[x/8][y/8] = new ArrayList<>();
                 int topu = x + 8, topv = y + 8;
