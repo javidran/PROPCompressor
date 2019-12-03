@@ -1,7 +1,6 @@
 package DomainLayer.Proceso;
 
 import DomainLayer.Algoritmos.*;
-import DomainLayer.Algoritmos.LZ78;
 
 
 /**
