@@ -635,17 +635,18 @@ public class JPEG implements CompresorDecompresor {
                 }
             }
         }
-        IntStream.range(0, downSampledPaddedHeight).parallel().filter(x -> x % 8 == 0).forEach(x -> { //image inverse quantization and DCT-III (aka inverse DCT) (done in pixel squares of 8x8) for luminance
+        for (int x = 0; x < paddedHeight; x += 8) { //image inverse quantization and DCT-III (aka inverse DCT) (done in pixel squares of 8x8) for luminance
             int topi = x + 8;                           //for each luminance pixel square of 8x8 of the image, inverse downsampling and DCT-III (aka inverse DCT) algorithm are applied, letting recover the image value
-            for (int y = 0; y < paddedWidth; y += 8) {
+            int finalX1 = x;
+            IntStream.range(0, downSampledPaddedHeight).parallel().filter(y -> y % 8 == 0).forEach(y -> {
                 double[][] buffY = new double[8][8];
                 int topj = y + 8;
                 boolean up = true;
-                int k = x, l = y;
+                int k = finalX1, l = y;
                 List<Byte> huffmanList = new ArrayList<>();
                 String huffmanBuff = "";
-                for (int it = 0; it < rleSizeY[x/8][y/8] * 8 - offsetSizeY[x/8][y/8]; ++it) { //getting RLE values from Huffman block after offset applied
-                    huffmanBuff += huffmanStringBuilderY[x/8][y/8].charAt(it);
+                for (int it = 0; it < rleSizeY[finalX1 /8][y/8] * 8 - offsetSizeY[finalX1 /8][y/8]; ++it) { //getting RLE values from Huffman block after offset applied
+                    huffmanBuff += huffmanStringBuilderY[finalX1 /8][y/8].charAt(it);
                     Pair pair = ACInverseHuffmanTable.get(huffmanBuff); //check if Huffman code exists
                     if (pair != null) { //if exists, get RLE value and store it in zigzag line of block
                         byte runlength = pair.getKey(); //getting runlength and size of RLE value
@@ -654,10 +655,10 @@ public class JPEG implements CompresorDecompresor {
                         huffmanList.add(size);
                         StringBuilder amplitude = new StringBuilder();
                         for (int n = 0; n < size; ++n) {
-                            amplitude.append(huffmanStringBuilderY[x/8][y/8].charAt(++it)); //binary string of non-zero value
+                            amplitude.append(huffmanStringBuilderY[finalX1 /8][y/8].charAt(++it)); //binary string of non-zero value
                         }
                         if (runlength != 0 || size != 0) huffmanList.add((byte)Integer.parseInt(amplitude.toString(), 2)); //binary string (8 bits long) to byte
-                        else it = rleSizeY[x/8][y/8] * 8 - offsetSizeY[x/8][y/8];
+                        else it = rleSizeY[finalX1 /8][y/8] * 8 - offsetSizeY[finalX1 /8][y/8];
                         huffmanBuff = "";
                     }
                 }
@@ -680,7 +681,7 @@ public class JPEG implements CompresorDecompresor {
                 while (k < topi && l < topj) { //zig-zag reading Luminance and inverse downsampling values
                     buffY[k%8][l%8] = (lineY[lineYit++]) * (LuminanceQuantizationTable[k%8][l%8] * calidad); //(byte) because reads [0,255] but it's been stored as [-128,127]
                     Y[k][l] = (int)Math.round(buffY[k%8][l%8]);
-                    if (k == x && l != topj - 1 && up) {
+                    if (k == finalX1 && l != topj - 1 && up) {
                         ++l;
                         up = false;
                     }
@@ -710,11 +711,12 @@ public class JPEG implements CompresorDecompresor {
                     }
                 }
                 int finalY = y;
-                IntStream.range(x, topi).parallel().forEach(i -> {
+                int finalX = finalX1;
+                IntStream.range(finalX1, topi).parallel().forEach(i -> {
                     double alphau, alphav, cosu, cosv;
                     for (int j = finalY; j < topj; ++j) { //for each luminance pixel of the 8x8 square, the DCT-III calculation is applied
                         buffY[i%8][j%8] = 0;
-                        for (int u = x; u < topi; ++u) {
+                        for (int u = finalX; u < topi; ++u) {
                             if (u % 8 == 0) alphau = 1 / Math.sqrt(2);
                             else alphau = 1;
                             cosu = Math.cos(((2 * (i % 8) + 1) * (u % 8) * Math.PI) / 16.0);
@@ -728,13 +730,13 @@ public class JPEG implements CompresorDecompresor {
                         buffY[i%8][j%8] *= 0.25;
                     }
                 });
-                for (int i = x; i < topi; ++i) {
+                for (int i = finalX1; i < topi; ++i) {
                     for (int j = y; j < topj; ++j) {
                         Y[i][j] = (int)Math.round(buffY[i%8][j%8]);
                     }
                 }
-            }
-        });
+            });
+        }
         for (int x = 0; x < downSampledPaddedHeight; x += 8) { //image inverse quantization and DCT-III (aka inverse DCT) (done in pixel squares of 8x8) for chrominance
             int topi = x + 8;                                      //for each chrominance pixel square of 8x8 of the image, inverse downsampling and DCT-III (aka inverse DCT) algorithm are applied, letting recover the image values
             for (int y = 0; y < downSampledPaddedWidth; y += 8) {
