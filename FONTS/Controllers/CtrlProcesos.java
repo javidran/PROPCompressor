@@ -1,11 +1,11 @@
 package Controllers;
 
-import DomainLayer.Algoritmos.Algoritmo;
 import DomainLayer.Algoritmos.JPEG;
 import DomainLayer.Proceso.DatosProceso;
 import DomainLayer.Proceso.ProcesoComprimir;
 import DomainLayer.Proceso.ProcesoDescomprimir;
 import DomainLayer.Proceso.ProcesoFichero;
+import Enumeration.Algoritmo;
 
 /**
  * La clase Singleton CtrlProcesos es el Controlador de Dominio del programa, y la encargada de crear procesos de compresión y/o descompresión, además de interactuar con las capas de datos y presentación.
@@ -18,7 +18,7 @@ public class CtrlProcesos {
     /**
      * Algortimo de texto predeterminado de entre los tres posibles.
      * <p>
-     *     Por defecto es LZSS, pero se puede modificar llamando a setAlgoritmoDeTextoPredeterminado(Algoritmo).
+     *     Por defecto es LZSS, pero se puede modificar llamando a setAlgoritmoDeTextoPredeterminado(Enumeration.Algoritmo).
      * </p>
      */
     private static Algoritmo algoritmoDeTextoPredeterminado = Algoritmo.LZSS;
@@ -47,7 +47,7 @@ public class CtrlProcesos {
      * @param tipoAlgoritmo El algoritmo a usar para la compresión del fichero.
      * @throws Exception El proceso de compresión no se ha podido llevar a cabo.
      */
-    public void comprimirArchivo(String path, Algoritmo tipoAlgoritmo) throws Exception {
+    public DatosProceso comprimirArchivo(String path, Algoritmo tipoAlgoritmo) throws Exception {
         CtrlDatos ctrlDatos = CtrlDatos.getInstance();
         if(tipoAlgoritmo == Algoritmo.PREDETERMINADO) {
             Algoritmo[] algoritmos = CtrlDatos.algoritmosPosibles(path);
@@ -64,6 +64,7 @@ public class CtrlProcesos {
         } else {
             System.out.println("El proceso de compresión no ha resultado satisfactorio ya que el archivo comprimido ocupa igual o más que el archivo original. Se guardará igualmente.");
         }
+        return dp;
     }
 
     /**
@@ -74,7 +75,7 @@ public class CtrlProcesos {
      * @param path El path donde se encuentra el fichero a descomprimir.
      * @throws Exception El proceso de descompresión no se ha podido llevar a cabo.
      */
-    public void descomprimirArchivo(String path) throws Exception {
+    public DatosProceso descomprimirArchivo(String path) throws Exception {
         CtrlDatos ctrlDatos = CtrlDatos.getInstance();
         Algoritmo[] algoritmos = CtrlDatos.algoritmosPosibles(path);
         ProcesoFichero desc = new ProcesoDescomprimir(ctrlDatos.leerArchivo(path), algoritmos[0]);
@@ -87,6 +88,7 @@ public class CtrlProcesos {
         } else {
             System.out.println("El proceso de descompresión no ha resultado satisfactorio ya que el archivo descomprimido ocupa igual o menos que el archivo original. Se guardará igualmente.");
         }
+        return dp;
     }
 
     /**
@@ -101,7 +103,7 @@ public class CtrlProcesos {
      * @param tipoAlgoritmo El algoritmo a usar para la compresión del fichero.
      * @throws Exception El proceso de compresión y descompresión no se ha podido llevar a cabo.
      */
-    public void comprimirDescomprimirArchivo(String path, Algoritmo tipoAlgoritmo) throws Exception {
+    public DatosProceso comprimirDescomprimirArchivo(String path, Algoritmo tipoAlgoritmo) throws Exception {
         CtrlDatos ctrlDatos = CtrlDatos.getInstance();
         if (tipoAlgoritmo == Algoritmo.PREDETERMINADO) {
             Algoritmo[] algoritmos = CtrlDatos.algoritmosPosibles(path);
@@ -125,6 +127,7 @@ public class CtrlProcesos {
         if (dp.isSatisfactorio()) {
             ctrlDatos.actualizaEstadistica(dp, tipoAlgoritmo, false);
         }
+        return dp;
     }
 
     public void comprimirCarpeta(String pathIn, String pathOut, Algoritmo algoritmo) throws Exception {
@@ -194,6 +197,17 @@ public class CtrlProcesos {
      */
     public static Algoritmo getAlgoritmoDeTextoPredeterminado() {
         return algoritmoDeTextoPredeterminado;
+    }
+
+    /**
+     * Actualiza el path pasado por parámetro para que sea el path de salida del fichero procesado.
+     * @param path El path del archivo antes de ser procesado.
+     * @param algoritmo El algorimo usado en el proceso.
+     * @param esCompresion Indicador de si el proceso ha sido de compresión o no (y por tanto de descompresión).
+     * @return Path del archivo procesado, con su correspondiente extensión.
+     */
+    public static String calcularPathSalida(String path, Algoritmo algoritmo, boolean esCompresion) {
+        return CtrlDatos.actualizarPathSalida(path, algoritmo, esCompresion);
     }
 
     /**

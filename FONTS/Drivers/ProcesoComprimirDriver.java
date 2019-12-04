@@ -1,9 +1,9 @@
 package Drivers;
 
-import DomainLayer.Algoritmos.Algoritmo;
 import DomainLayer.Algoritmos.JPEG;
 import DomainLayer.Proceso.DatosProceso;
 import DomainLayer.Proceso.ProcesoComprimir;
+import Enumeration.Algoritmo;
 
 import java.io.*;
 import java.util.Scanner;

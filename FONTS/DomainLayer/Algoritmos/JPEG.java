@@ -173,7 +173,7 @@ public class JPEG implements CompresorDecompresor {
     }
 
     /**
-     * Algoritmo de compresión JPEG
+     * Enumeration.Algoritmo de compresión JPEG
      * <p>
      *     La imagen de entrada tiene que ser .ppm con magic number P6 y valor máximo de RGB 255
      * </p>
@@ -542,7 +542,7 @@ public class JPEG implements CompresorDecompresor {
     }
 
     /**
-     * Algoritmo de descompresión JPEG
+     * Enumeration.Algoritmo de descompresión JPEG
      * <p>
      *     La imagen de entrada tiene que ser .imgc tal y como se ha definido el formato
      * </p>
