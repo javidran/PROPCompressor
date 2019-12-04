@@ -200,6 +200,17 @@ public class CtrlProcesos {
     }
 
     /**
+     * Actualiza el path pasado por parámetro para que sea el path de salida del fichero procesado.
+     * @param path El path del archivo antes de ser procesado.
+     * @param algoritmo El algorimo usado en el proceso.
+     * @param esCompresion Indicador de si el proceso ha sido de compresión o no (y por tanto de descompresión).
+     * @return Path del archivo procesado, con su correspondiente extensión.
+     */
+    public static String calcularPathSalida(String path, Algoritmo algoritmo, boolean esCompresion) {
+        return CtrlDatos.actualizarPathSalida(path, algoritmo, esCompresion);
+    }
+
+    /**
      * Asigna un valor de calidad de compresión al Singleton de JPEG
      * @param calidadJPEG La calidad de compresión de JPEG. A mayor valor, más alta será la calidad de la compresión.
      */

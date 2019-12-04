@@ -58,8 +58,6 @@ public class CtrlPresentacion {
         String[] splitP = path.split("\\.");
         String type = splitP[splitP.length-1];
 
-        //TODO Detectar correctamente carpetas aunque estas tengan puntos
-
         if(splitP.length == 1 && !path.endsWith(".")) {
             modeloParametros.setCompresion(true);
             modeloParametros.setAlgoritmo(Algoritmo.CARPETA);
@@ -94,10 +92,6 @@ public class CtrlPresentacion {
         actualizarPathSalida(path);
     }
 
-    public void estadisticasPulsado() {
-
-    }
-
     public void escogerPredeterminadoPulsado() {
         JDialog dialog = new VistaSelectorAlgortimoPredeterminado(vistaInicio);
         dialog.setSize(new Dimension(600, 200));
@@ -115,9 +109,7 @@ public class CtrlPresentacion {
     public void crearVistaSeleccionAlgoritmo(boolean conGuardado) {
         boolean existe = CtrlDatos.existeArchivo(modeloParametros.getPathOriginal());
         if (!existe) {
-            int respuesta = JOptionPane.showConfirmDialog(null, "¡El fichero o carpeta que desea procesar no existe! Seleccione un archivo o carpeta existente", "¡No existe!",
-                    JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
-            cerrarVistaSeleccionAlgoritmo();
+            JOptionPane.showConfirmDialog(null, "¡El fichero o carpeta que desea procesar no existe! Seleccione un archivo o carpeta existente", "¡No existe!", JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
         }
         else{
             VistaSelectorAlgoritmo vistaSelectorAlgoritmo = new VistaSelectorAlgoritmo(vistaInicio);
@@ -129,7 +121,6 @@ public class CtrlPresentacion {
             vistaSelectorAlgoritmo.setResizable(true);
             vistaSelectorAlgoritmo.setVisible(true);
         }
-
     }
 
     public void cerrarVistaSeleccionAlgoritmo() {
@@ -137,61 +128,16 @@ public class CtrlPresentacion {
     }
 
     public void pulsarCerradoVistaSeleccionAlgoritmo() {
-        //Next Change Area
-        algoritmoSeleccionado("Predeterminado");//Para que en caso de volver atras se quede con el algoritmo predeterminado por si vuelves a entrar al selctor de algoritmo
+        algoritmoSeleccionado("Predeterminado"); //Para que en caso de volver atras se quede con el algoritmo predeterminado por si vuelves a entrar al selctor de algoritmo
         cerrarVistaSeleccionAlgoritmo();
     }
 
-
-    private String extension() {
-        String extension = null;
-        Algoritmo tipoAlgoritmo = modeloParametros.getAlgoritmo();
-        if(modeloParametros.isCompresion()) {
-            switch (tipoAlgoritmo) {
-                case LZW:
-                    extension = "lzw";
-                    break;
-                case LZSS:
-                    extension = "lzss";
-                    break;
-                case LZ78:
-                    extension = "lz78";
-                    break;
-                case JPEG:
-                    extension = "imgc";
-                    break;
-                case CARPETA:
-                    extension = "comp";
-                    break;
-            }
-        } else {
-            switch (tipoAlgoritmo) {
-                case LZW:
-                case LZSS:
-                case LZ78:
-                    extension = "txt";
-                    break;
-                case JPEG:
-                    extension = "ppm";
-                    break;
-                case CARPETA:
-                    extension = "";
-                    break;
-            }
-        }
-        return extension;
-    }
-
+    /**
+     * Actualiza el path pasado por parámetro para que sea el path de salida del fichero procesado.
+     * @param path El path del archivo antes de ser procesado.
+     */
     public void actualizarPathSalida(String path) {
-        String[] splitP = path.split("\\.");
-        String type = splitP[splitP.length-1];
-        String ext = extension();
-        if(!path.contains(".")) path = path + "." + ext;
-        else if(splitP.length==1) path = path + ext;
-        else if (!type.equalsIgnoreCase(ext)) {
-            if(modeloParametros.getAlgoritmo().equals(Algoritmo.CARPETA) && !modeloParametros.isCompresion()) path = path.replace("." + type, ext);
-            else path = path.replace(type, ext);
-        }
+        path = CtrlProcesos.calcularPathSalida(path, modeloParametros.getAlgoritmo(), modeloParametros.isCompresion());
         modeloParametros.setPathResultado(path);
     }
 
@@ -284,8 +230,6 @@ public class CtrlPresentacion {
         vistaEstadisticas.setResizable(true);
         vistaEstadisticas.setVisible(true);
     }
-
-
 
     public void mostrarEstadisticas(String data) throws IOException {
         String mensaje = getEstadisticas(data);

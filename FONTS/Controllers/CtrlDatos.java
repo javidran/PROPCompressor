@@ -154,6 +154,44 @@ public class CtrlDatos {
         GestorArchivo.guardaArchivo(data, path, sobreescribir);
     }
 
+    private static String extension(Algoritmo algoritmo, boolean esCompresion) {
+        String extension = null;
+        if(esCompresion) {
+            switch (algoritmo) {
+                case LZW:
+                    extension = "lzw";
+                    break;
+                case LZSS:
+                    extension = "lzss";
+                    break;
+                case LZ78:
+                    extension = "lz78";
+                    break;
+                case JPEG:
+                    extension = "imgc";
+                    break;
+                case CARPETA:
+                    extension = "comp";
+                    break;
+            }
+        } else {
+            switch (algoritmo) {
+                case LZW:
+                case LZSS:
+                case LZ78:
+                    extension = "txt";
+                    break;
+                case JPEG:
+                    extension = "ppm";
+                    break;
+                case CARPETA:
+                    extension = "";
+                    break;
+            }
+        }
+        return extension;
+    }
+
     /**
      * Actualiza el path pasado por parámetro para que sea el path de salida del fichero procesado.
      * @param path El path del archivo antes de ser procesado.
@@ -162,27 +200,14 @@ public class CtrlDatos {
      * @return Path del archivo procesado, con su correspondiente extensión.
      */
     public static String actualizarPathSalida(String path, Algoritmo algoritmo, boolean esCompresion) {
-        String [] pathSplitted = path.split("\\.");
-        switch (algoritmo) {
-            case LZW:
-                if(esCompresion) path = path.replace(".txt", ".lzw");
-                else path = path.replace("." + pathSplitted[pathSplitted.length - 1], ".txt");
-                break;
-            case LZSS:
-                if(esCompresion) path = path.replace(".txt", ".lzss");
-                else path = path.replace("." + pathSplitted[pathSplitted.length - 1], ".txt");
-                break;
-            case LZ78:
-                if(esCompresion) path = path.replace(".txt", ".lz78");
-                else path = path.replace("." + pathSplitted[pathSplitted.length - 1], ".txt");
-                break;
-            case JPEG:
-                if(esCompresion) path = path.replace(".ppm", ".imgc");
-                else path = path.replace("." + pathSplitted[pathSplitted.length - 1], ".ppm");
-                break;
-            case CARPETA:
-                if (esCompresion) path += ".comp";
-                else path = path.replace(pathSplitted[pathSplitted.length - 1], "");
+        String[] splitP = path.split("\\.");
+        String type = splitP[splitP.length-1];
+        String ext = extension(algoritmo, esCompresion);
+        if(!path.contains(".")) path = path + "." + ext;
+        else if(splitP.length==1) path = path + ext;
+        else if (!type.equalsIgnoreCase(ext)) {
+            if(algoritmo.equals(Algoritmo.CARPETA) && !esCompresion) path = path.replace("." + type, ext);
+            else path = path.replace(type, ext);
         }
         return path;
     }
