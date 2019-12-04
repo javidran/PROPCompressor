@@ -874,13 +874,12 @@ public class JPEG implements CompresorDecompresor {
                         --l;
                     }
                 }
-                int finalX = x;
                 IntStream.range(x, topi).parallel().forEach(i -> {
                     double alphau, alphav, cosu, cosv;
                     for (int j = y; j < topj; ++j) { //for each chrominance pixel of the 8x8 square, the DCT-III calculation is applied
                         buffCb[i%8][j%8] = 0;
                         buffCr[i%8][j%8] = 0;
-                        for (int u = finalX; u < topi; ++u) {
+                        for (int u = x; u < topi; ++u) {
                             if (u % 8 == 0) alphau = 1 / Math.sqrt(2);
                             else alphau = 1;
                             cosu = Math.cos(((2 * (i % 8) + 1) * (u % 8) * Math.PI) / 16.0);
