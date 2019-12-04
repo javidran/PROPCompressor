@@ -635,7 +635,7 @@ public class JPEG implements CompresorDecompresor {
                 }
             }
         }
-        for (int x = 0; x < paddedHeight; x += 8) { //image inverse quantization and DCT-III (aka inverse DCT) (done in pixel squares of 8x8) for luminance
+        IntStream.range(0, downSampledPaddedHeight).parallel().filter(x -> x % 8 == 0).forEach(x -> { //image inverse quantization and DCT-III (aka inverse DCT) (done in pixel squares of 8x8) for luminance
             int topi = x + 8;                           //for each luminance pixel square of 8x8 of the image, inverse downsampling and DCT-III (aka inverse DCT) algorithm are applied, letting recover the image value
             for (int y = 0; y < paddedWidth; y += 8) {
                 double[][] buffY = new double[8][8];
@@ -735,7 +735,7 @@ public class JPEG implements CompresorDecompresor {
                     }
                 }
             }
-        }
+        });
         for (int x = 0; x < downSampledPaddedHeight; x += 8) { //image inverse quantization and DCT-III (aka inverse DCT) (done in pixel squares of 8x8) for chrominance
             int topi = x + 8;                                      //for each chrominance pixel square of 8x8 of the image, inverse downsampling and DCT-III (aka inverse DCT) algorithm are applied, letting recover the image values
             for (int y = 0; y < downSampledPaddedWidth; y += 8) {
