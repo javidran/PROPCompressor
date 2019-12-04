@@ -621,11 +621,11 @@ public class JPEG implements CompresorDecompresor {
         int[][] rleSizeY = new int[paddedHeight/8][paddedWidth/8];
         int[][] offsetSizeY = new int[paddedHeight/8][paddedWidth/8];
         StringBuilder[][] huffmanStringBuilderY = new StringBuilder[paddedHeight/8][paddedWidth/8];
-        for (int x = 0; x < paddedHeight / 8; x += 8) {
-            for (int y = 0; y < paddedWidth / 8; y += 8) {
+        for (int x = 0; x < paddedHeight; x += 8) {
+            for (int y = 0; y < paddedWidth; y += 8) {
                 rleSizeY[x/8][y/8] = datosInput[pos++]; //reading Huffman block header
                 offsetSizeY[x/8][y/8] = datosInput[pos++];
-                huffmanStringBuilderY[x/8][y/8] =new StringBuilder();
+                huffmanStringBuilderY[x/8][y/8] = new StringBuilder();
                 for (int it = 0; it < rleSizeY[x/8][y/8]; ++it) {
                     huffmanStringBuilderY[x/8][y/8].append(String.format("%8s", Integer.toBinaryString((datosInput[pos++] & 0xFF))).replace(' ', '0')); //converting input bytes into binary string
                 }
