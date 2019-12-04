@@ -1,5 +1,6 @@
 package Controllers;
 
+import DomainLayer.Proceso.DatosProceso;
 import Enumeration.Algoritmo;
 import PresentationLayer.*;
 
@@ -239,16 +240,18 @@ public class CtrlPresentacion {
         jDialog.setVisible(true);
         */
         CtrlProcesos ctrlProcesos = CtrlProcesos.getInstance();
+        DatosProceso dp;
         if(!modeloParametros.isConGuardado()) {
-            ctrlProcesos.comprimirDescomprimirArchivo(modeloParametros.getPathOriginal(), modeloParametros.getAlgoritmo());
+            dp = ctrlProcesos.comprimirDescomprimirArchivo(modeloParametros.getPathOriginal(), modeloParametros.getAlgoritmo());
         }
         else if (modeloParametros.isCompresion()) {
-            ctrlProcesos.comprimirArchivo(modeloParametros.getPathOriginal(), modeloParametros.getAlgoritmo());
+            dp = ctrlProcesos.comprimirArchivo(modeloParametros.getPathOriginal(), modeloParametros.getAlgoritmo());
         }
         else {
-            ctrlProcesos.descomprimirArchivo(modeloParametros.getPathOriginal());
+            dp = ctrlProcesos.descomprimirArchivo(modeloParametros.getPathOriginal());
         }
         //jDialog.dispose();
+        //dp <-- estructura datos proceso resultante de el proceso ejecutado (erase when read)
     }
 
     public String getEstadisticas(String data) throws IOException {
