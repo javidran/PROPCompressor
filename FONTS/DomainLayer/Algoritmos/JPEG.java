@@ -732,6 +732,36 @@ public class JPEG implements CompresorDecompresor {
                 }
             });
         });
+        int[][] rleSizeCb = new int[downSampledPaddedHeight/8][downSampledPaddedWidth/8];
+        int[][] rleSizeCr = new int[downSampledPaddedHeight/8][downSampledPaddedWidth/8];
+        int[][] offsetSizeCb = new int[downSampledPaddedHeight/8][downSampledPaddedWidth/8];
+        int[][] offsetSizeCr = new int[downSampledPaddedHeight/8][downSampledPaddedWidth/8];
+        StringBuilder[][] huffmanStringBuilderCb = new StringBuilder[downSampledPaddedHeight/8][downSampledPaddedWidth/8];
+        StringBuilder[][] huffmanStringBuilderCr = new StringBuilder[downSampledPaddedHeight/8][downSampledPaddedWidth/8];
+        for (int x = 0; x < downSampledPaddedHeight; x += 8) {
+            for (int y = 0; y < downSampledPaddedWidth; y += 8) {
+                rleSizeCb[x/8][y/8] = datosInput[pos++]; //reading Huffman block header
+                offsetSizeCb[x/8][y/8] = datosInput[pos++];
+                huffmanStringBuilderCb[x/8][y/8] = new StringBuilder();
+                for (int it = 0; it < rleSizeCb[x/8][y/8]; ++it) {
+                    huffmanStringBuilderCb[x/8][y/8].append(String.format("%8s", Integer.toBinaryString((datosInput[pos++] & 0xFF))).replace(' ', '0')); //converting input bytes into binary string
+                }
+                if (offsetSizeCb[x/8][y/8] != 0) {
+                    for (int it = 0; it < (8 - offsetSizeCb[x/8][y/8]); ++it)
+                        huffmanStringBuilderCb[x/8][y/8].deleteCharAt(huffmanStringBuilderCb[x/8][y/8].length() - 1); //deleting extra final bits of last byte of block till offset is fulfilled
+                }
+                rleSizeCr[x/8][y/8] = datosInput[pos++]; //reading Huffman block header
+                offsetSizeCr[x/8][y/8] = datosInput[pos++];
+                huffmanStringBuilderCr[x/8][y/8] = new StringBuilder();
+                for (int it = 0; it < rleSizeCr[x/8][y/8]; ++it) {
+                    huffmanStringBuilderCr[x/8][y/8].append(String.format("%8s", Integer.toBinaryString((datosInput[pos++] & 0xFF))).replace(' ', '0')); //converting input bytes into binary string
+                }
+                if (offsetSizeCr[x/8][y/8] != 0) {
+                    for (int it = 0; it < (8 - offsetSizeCr[x/8][y/8]); ++it)
+                        huffmanStringBuilderCr[x/8][y/8].deleteCharAt(huffmanStringBuilderCr[x/8][y/8].length() - 1); //deleting extra final bits of last byte of block till offset is fulfilled
+                }
+            }
+        }
         for (int x = 0; x < downSampledPaddedHeight; x += 8) { //image inverse quantization and DCT-III (aka inverse DCT) (done in pixel squares of 8x8) for chrominance
             int topi = x + 8;                                      //for each chrominance pixel square of 8x8 of the image, inverse downsampling and DCT-III (aka inverse DCT) algorithm are applied, letting recover the image values
             for (int y = 0; y < downSampledPaddedWidth; y += 8) {
@@ -740,19 +770,10 @@ public class JPEG implements CompresorDecompresor {
                 int topj = y + 8;
                 boolean up = true;
                 int k = x, l = y;
-                int rleSize = datosInput[pos++]; //reading Huffman block header
-                int offsetSize = datosInput[pos++];
-                StringBuilder huffmanStringBuilder = new StringBuilder();
-                for (int it = 0; it < rleSize; ++it) {
-                    huffmanStringBuilder.append(String.format("%8s",Integer.toBinaryString((datosInput[pos++] & 0xFF))).replace(' ', '0')); //converting input bytes into binary string
-                }
-                if (offsetSize != 0) {
-                    for (int it = 0; it < (8 - offsetSize); ++it) huffmanStringBuilder.deleteCharAt(huffmanStringBuilder.length() - 1); //deleting extra final bits of last byte of block till offset is fulfilled
-                }
                 List<Byte> huffmanList = new ArrayList<>();
                 String huffmanBuff = "";
-                for (int it = 0; it < rleSize * 8 - offsetSize; ++it) { //getting RLE values from Huffman block after offset applied
-                    huffmanBuff += huffmanStringBuilder.charAt(it);
+                for (int it = 0; it < rleSizeCb[x/8][y/8] * 8 - offsetSizeCb[x/8][y/8]; ++it) { //getting RLE values from Huffman block after offset applied
+                    huffmanBuff += huffmanStringBuilderCb[x/8][y/8].charAt(it);
                     Pair pair = ACInverseHuffmanTable.get(huffmanBuff); //check if Huffman code exists
                     if (pair != null) { //if exists, get RLE value and store it in zigzag line of block
                         byte runlength = pair.getKey(); //getting runlength and size of RLE value
@@ -761,10 +782,10 @@ public class JPEG implements CompresorDecompresor {
                         huffmanList.add(size);
                         StringBuilder amplitude = new StringBuilder();
                         for (int n = 0; n < size; ++n) {
-                            amplitude.append(huffmanStringBuilder.charAt(++it)); //binary string of non-zero value
+                            amplitude.append(huffmanStringBuilderCb[x/8][y/8].charAt(++it)); //binary string of non-zero value
                         }
                         if (runlength != 0 || size != 0) huffmanList.add((byte)Integer.parseInt(amplitude.toString(), 2)); //binary string (8 bits long) to byte
-                        else it = rleSize * 8 - offsetSize;
+                        else it = rleSizeCb[x/8][y/8] * 8 - offsetSizeCb[x/8][y/8];
                         huffmanBuff = "";
                     }
                 }
@@ -784,19 +805,10 @@ public class JPEG implements CompresorDecompresor {
                     }
                 }
                 lineCbit = 0;
-                rleSize = datosInput[pos++]; //reading Huffman block header
-                offsetSize = datosInput[pos++];
-                StringBuilder huffmanCrStringBuilder = new StringBuilder();
-                for (int it = 0; it < rleSize; ++it) {
-                    huffmanCrStringBuilder.append(String.format("%8s",Integer.toBinaryString((datosInput[pos++] & 0xFF))).replace(' ', '0')); //converting input bytes into binary string
-                }
-                if (offsetSize != 0) {
-                    for (int it = 0; it < (8 - offsetSize); ++it) huffmanCrStringBuilder.deleteCharAt(huffmanCrStringBuilder.length() - 1); //deleting extra final bits of last byte of block till offset is fulfilled
-                }
                 List<Byte> huffmanCrList = new ArrayList<>();
                 huffmanBuff = "";
-                for (int it = 0; it < rleSize * 8 - offsetSize; ++it) { //getting RLE values from Huffman block after offset applied
-                    huffmanBuff += huffmanCrStringBuilder.charAt(it);
+                for (int it = 0; it < rleSizeCr[x/8][y/8] * 8 - offsetSizeCr[x/8][y/8]; ++it) { //getting RLE values from Huffman block after offset applied
+                    huffmanBuff += huffmanStringBuilderCr[x/8][y/8].charAt(it);
                     Pair pair = ACInverseHuffmanTable.get(huffmanBuff); //check if Huffman code exists
                     if (pair != null) { //if exists, get RLE value and store it in zigzag line of block
                         byte runlength = pair.getKey(); //getting runlength and size of RLE value
@@ -805,10 +817,10 @@ public class JPEG implements CompresorDecompresor {
                         huffmanCrList.add(size);
                         StringBuilder amplitude = new StringBuilder();
                         for (int n = 0; n < size; ++n) {
-                            amplitude.append(huffmanCrStringBuilder.charAt(++it)); //binary string of non-zero value
+                            amplitude.append(huffmanStringBuilderCr[x/8][y/8].charAt(++it)); //binary string of non-zero value
                         }
                         if (runlength != 0 || size != 0) huffmanCrList.add((byte)Integer.parseInt(amplitude.toString(), 2)); //binary string (8 bits long) to byte
-                        else it = rleSize * 8 - offsetSize;
+                        else it = rleSizeCr[x/8][y/8] * 8 - offsetSizeCr[x/8][y/8];
                         huffmanBuff = "";
                     }
                 }
