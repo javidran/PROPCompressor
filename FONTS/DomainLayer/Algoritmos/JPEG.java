@@ -618,27 +618,34 @@ public class JPEG implements CompresorDecompresor {
         int[][] Y = new int[paddedHeight][paddedWidth];//luminance
         int[][] Cb = new int[downSampledPaddedHeight][downSampledPaddedWidth];//chrominance blue
         int[][] Cr = new int[downSampledPaddedHeight][downSampledPaddedWidth];//chrominance red
-        int topi, topj;
-        double[][] buffY = new double[8][8];
+        int[][] rleSizeY = new int[paddedHeight/8][paddedWidth/8];
+        int[][] offsetSizeY = new int[paddedHeight/8][paddedWidth/8];
+        StringBuilder[][] huffmanStringBuilderY = new StringBuilder[paddedHeight/8][paddedWidth/8];
+        for (int x = 0; x < paddedHeight / 8; x += 8) {
+            for (int y = 0; y < paddedWidth / 8; y += 8) {
+                rleSizeY[x/8][y/8] = datosInput[pos++]; //reading Huffman block header
+                offsetSizeY[x/8][y/8] = datosInput[pos++];
+                huffmanStringBuilderY[x/8][y/8] =new StringBuilder();
+                for (int it = 0; it < rleSizeY[x/8][y/8]; ++it) {
+                    huffmanStringBuilderY[x/8][y/8].append(String.format("%8s", Integer.toBinaryString((datosInput[pos++] & 0xFF))).replace(' ', '0')); //converting input bytes into binary string
+                }
+                if (offsetSizeY[x/8][y/8] != 0) {
+                    for (int it = 0; it < (8 - offsetSizeY[x/8][y/8]); ++it)
+                        huffmanStringBuilderY[x/8][y/8].deleteCharAt(huffmanStringBuilderY[x/8][y/8].length() - 1); //deleting extra final bits of last byte of block till offset is fulfilled
+                }
+            }
+        }
         for (int x = 0; x < paddedHeight; x += 8) { //image inverse quantization and DCT-III (aka inverse DCT) (done in pixel squares of 8x8) for luminance
-            topi = x + 8;                           //for each luminance pixel square of 8x8 of the image, inverse downsampling and DCT-III (aka inverse DCT) algorithm are applied, letting recover the image value
+            int topi = x + 8;                           //for each luminance pixel square of 8x8 of the image, inverse downsampling and DCT-III (aka inverse DCT) algorithm are applied, letting recover the image value
             for (int y = 0; y < paddedWidth; y += 8) {
-                topj = y + 8;
+                double[][] buffY = new double[8][8];
+                int topj = y + 8;
                 boolean up = true;
                 int k = x, l = y;
-                int rleSize = datosInput[pos++]; //reading Huffman block header
-                int offsetSize = datosInput[pos++];
-                StringBuilder huffmanStringBuilder = new StringBuilder();
-                for (int it = 0; it < rleSize; ++it) {
-                    huffmanStringBuilder.append(String.format("%8s",Integer.toBinaryString((datosInput[pos++] & 0xFF))).replace(' ', '0')); //converting input bytes into binary string
-                }
-                if (offsetSize != 0) {
-                    for (int it = 0; it < (8 - offsetSize); ++it) huffmanStringBuilder.deleteCharAt(huffmanStringBuilder.length() - 1); //deleting extra final bits of last byte of block till offset is fulfilled
-                }
                 List<Byte> huffmanList = new ArrayList<>();
                 String huffmanBuff = "";
-                for (int it = 0; it < rleSize * 8 - offsetSize; ++it) { //getting RLE values from Huffman block after offset applied
-                    huffmanBuff += huffmanStringBuilder.charAt(it);
+                for (int it = 0; it < rleSizeY[x/8][y/8] * 8 - offsetSizeY[x/8][y/8]; ++it) { //getting RLE values from Huffman block after offset applied
+                    huffmanBuff += huffmanStringBuilderY[x/8][y/8].charAt(it);
                     Pair pair = ACInverseHuffmanTable.get(huffmanBuff); //check if Huffman code exists
                     if (pair != null) { //if exists, get RLE value and store it in zigzag line of block
                         byte runlength = pair.getKey(); //getting runlength and size of RLE value
@@ -647,10 +654,10 @@ public class JPEG implements CompresorDecompresor {
                         huffmanList.add(size);
                         StringBuilder amplitude = new StringBuilder();
                         for (int n = 0; n < size; ++n) {
-                            amplitude.append(huffmanStringBuilder.charAt(++it)); //binary string of non-zero value
+                            amplitude.append(huffmanStringBuilderY[x/8][y/8].charAt(++it)); //binary string of non-zero value
                         }
                         if (runlength != 0 || size != 0) huffmanList.add((byte)Integer.parseInt(amplitude.toString(), 2)); //binary string (8 bits long) to byte
-                        else it = rleSize * 8 - offsetSize;
+                        else it = rleSizeY[x/8][y/8] * 8 - offsetSizeY[x/8][y/8];
                         huffmanBuff = "";
                     }
                 }
@@ -703,18 +710,16 @@ public class JPEG implements CompresorDecompresor {
                     }
                 }
                 int finalY = y;
-                int finalTopj1 = topj;
                 int finalX = x;
-                int finalTopi1 = topi;
                 IntStream.range(x, topi).parallel().forEach(i -> {
                     double alphau, alphav, cosu, cosv;
-                    for (int j = finalY; j < finalTopj1; ++j) { //for each luminance pixel of the 8x8 square, the DCT-III calculation is applied
+                    for (int j = finalY; j < topj; ++j) { //for each luminance pixel of the 8x8 square, the DCT-III calculation is applied
                         buffY[i%8][j%8] = 0;
-                        for (int u = finalX; u < finalTopi1; ++u) {
+                        for (int u = finalX; u < topi; ++u) {
                             if (u % 8 == 0) alphau = 1 / Math.sqrt(2);
                             else alphau = 1;
                             cosu = Math.cos(((2 * (i % 8) + 1) * (u % 8) * Math.PI) / 16.0);
-                            for (int v = finalY; v < finalTopj1; ++v) {
+                            for (int v = finalY; v < topj; ++v) {
                                 if (v % 8 == 0) alphav = 1 / Math.sqrt(2);
                                 else alphav = 1;
                                 cosv = Math.cos(((2 * (j % 8) + 1) * (v % 8) * Math.PI) / 16.0);
@@ -731,12 +736,12 @@ public class JPEG implements CompresorDecompresor {
                 }
             }
         }
-        double[][] buffCb = new double[8][8];
-        double[][] buffCr = new double[8][8];
         for (int x = 0; x < downSampledPaddedHeight; x += 8) { //image inverse quantization and DCT-III (aka inverse DCT) (done in pixel squares of 8x8) for chrominance
-            topi = x + 8;                                      //for each chrominance pixel square of 8x8 of the image, inverse downsampling and DCT-III (aka inverse DCT) algorithm are applied, letting recover the image values
+            int topi = x + 8;                                      //for each chrominance pixel square of 8x8 of the image, inverse downsampling and DCT-III (aka inverse DCT) algorithm are applied, letting recover the image values
             for (int y = 0; y < downSampledPaddedWidth; y += 8) {
-                topj = y + 8;
+                double[][] buffCb = new double[8][8];
+                double[][] buffCr = new double[8][8];
+                int topj = y + 8;
                 boolean up = true;
                 int k = x, l = y;
                 int rleSize = datosInput[pos++]; //reading Huffman block header
@@ -862,19 +867,17 @@ public class JPEG implements CompresorDecompresor {
                     }
                 }
                 int finalY = y;
-                int finalTopj = topj;
-                int finalTopi = topi;
                 int finalX = x;
                 IntStream.range(x, topi).parallel().forEach(i -> {
                     double alphau, alphav, cosu, cosv;
-                    for (int j = finalY; j < finalTopj; ++j) { //for each chrominance pixel of the 8x8 square, the DCT-III calculation is applied
+                    for (int j = finalY; j < topj; ++j) { //for each chrominance pixel of the 8x8 square, the DCT-III calculation is applied
                         buffCb[i%8][j%8] = 0;
                         buffCr[i%8][j%8] = 0;
-                        for (int u = finalX; u < finalTopi; ++u) {
+                        for (int u = finalX; u < topi; ++u) {
                             if (u % 8 == 0) alphau = 1 / Math.sqrt(2);
                             else alphau = 1;
                             cosu = Math.cos(((2 * (i % 8) + 1) * (u % 8) * Math.PI) / 16.0);
-                            for (int v = finalY; v < finalTopj; ++v) {
+                            for (int v = finalY; v < topj; ++v) {
                                 if (v % 8 == 0) alphav = 1 / Math.sqrt(2);
                                 else alphav = 1;
                                 cosv = Math.cos(((2 * (j % 8) + 1) * (v % 8) * Math.PI) / 16.0);
