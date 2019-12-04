@@ -73,7 +73,7 @@ public class CtrlDatos {
      * @throws FormatoErroneoException No hay ningún algoritmo compatible con la extensión del archivo
      */
     public static boolean esComprimible(String path) throws FormatoErroneoException {
-        if(!path.contains("\\.")) return true;
+        if(!path.contains(".")) return true;
         String[] splitP = path.split("\\.");
         String type = splitP[splitP.length-1];
 
