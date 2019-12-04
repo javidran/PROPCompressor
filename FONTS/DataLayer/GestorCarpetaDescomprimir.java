@@ -66,7 +66,7 @@ public class GestorCarpetaDescomprimir extends GestorCarpeta {
         String pathCarpeta = carpeta.getAbsolutePath().replace(".comp", "");
         String pathResultado = CtrlDatos.actualizarPathSalida(path,algoritmo,false);
         String pathCompleto = pathCarpeta + pathResultado;
-        GestorArchivo.guardaArchivo(data,pathCompleto, true);
+        GestorArchivo.guardaArchivo(data,pathCompleto);
     }
 
     private void guardaCarpeta() {
