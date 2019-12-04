@@ -48,7 +48,7 @@ public class CtrlProcesos {
      * @param tipoAlgoritmo El algoritmo a usar para la compresión del fichero.
      * @throws Exception El proceso de compresión no se ha podido llevar a cabo.
      */
-    public void comprimirArchivo(String path, Algoritmo tipoAlgoritmo) throws Exception {
+    public DatosProceso comprimirArchivo(String path, Algoritmo tipoAlgoritmo) throws Exception {
         CtrlDatos ctrlDatos = CtrlDatos.getInstance();
         if(tipoAlgoritmo == Algoritmo.PREDETERMINADO) {
             Algoritmo[] algoritmos = algoritmosPosibles(path);
@@ -65,6 +65,7 @@ public class CtrlProcesos {
         } else {
             System.out.println("El proceso de compresión no ha resultado satisfactorio ya que el archivo comprimido ocupa igual o más que el archivo original. Se guardará igualmente.");
         }
+        return dp;
     }
 
     /**
@@ -75,7 +76,7 @@ public class CtrlProcesos {
      * @param path El path donde se encuentra el fichero a descomprimir.
      * @throws Exception El proceso de descompresión no se ha podido llevar a cabo.
      */
-    public void descomprimirArchivo(String path) throws Exception {
+    public DatosProceso descomprimirArchivo(String path) throws Exception {
         CtrlDatos ctrlDatos = CtrlDatos.getInstance();
         Algoritmo[] algoritmos = algoritmosPosibles(path);
         ProcesoFichero desc = new ProcesoDescomprimir(ctrlDatos.leerArchivo(path), algoritmos[0]);
@@ -88,6 +89,7 @@ public class CtrlProcesos {
         } else {
             System.out.println("El proceso de descompresión no ha resultado satisfactorio ya que el archivo descomprimido ocupa igual o menos que el archivo original. Se guardará igualmente.");
         }
+        return dp;
     }
 
     /**
@@ -102,7 +104,7 @@ public class CtrlProcesos {
      * @param tipoAlgoritmo El algoritmo a usar para la compresión del fichero.
      * @throws Exception El proceso de compresión y descompresión no se ha podido llevar a cabo.
      */
-    public void comprimirDescomprimirArchivo(String path, Algoritmo tipoAlgoritmo) throws Exception {
+    public DatosProceso comprimirDescomprimirArchivo(String path, Algoritmo tipoAlgoritmo) throws Exception {
         CtrlDatos ctrlDatos = CtrlDatos.getInstance();
         if (tipoAlgoritmo == Algoritmo.PREDETERMINADO) {
             Algoritmo[] algoritmos = algoritmosPosibles(path);
@@ -126,6 +128,7 @@ public class CtrlProcesos {
         if (dp.isSatisfactorio()) {
             ctrlDatos.actualizaEstadistica(dp, tipoAlgoritmo, false);
         }
+        return dp;
     }
 
     /**
