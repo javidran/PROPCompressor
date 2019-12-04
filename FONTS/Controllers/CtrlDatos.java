@@ -40,7 +40,7 @@ public class CtrlDatos {
      * @throws FormatoErroneoException No hay ningún algoritmo compatible con la extensión del archivo
      */
     public static Algoritmo[] algoritmosPosibles(String path) throws FormatoErroneoException {
-        if (!path.contains("\\.")) return new Algoritmo[] {Algoritmo.CARPETA};
+        if (!path.contains(".")) return new Algoritmo[] {Algoritmo.CARPETA};
         String[] splittedPath = path.split("\\.");
         String type = splittedPath[splittedPath.length-1];
 

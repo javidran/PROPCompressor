@@ -58,7 +58,6 @@ public class GestorCarpetaDescomprimir extends GestorCarpeta {
 
         byte[] data = new byte[Integer.parseInt(new String(byteArray))];
         lector.read(data);
-        lector.read();
         return data;
     }
 
