@@ -762,9 +762,9 @@ public class JPEG implements CompresorDecompresor {
                 }
             }
         }
-        for (int x = 0; x < downSampledPaddedHeight; x += 8) { //image inverse quantization and DCT-III (aka inverse DCT) (done in pixel squares of 8x8) for chrominance
+        IntStream.range(0, downSampledPaddedHeight).parallel().filter(x -> x % 8 == 0).forEach(x -> { //image inverse quantization and DCT-III (aka inverse DCT) (done in pixel squares of 8x8) for chrominance
             int topi = x + 8;                                      //for each chrominance pixel square of 8x8 of the image, inverse downsampling and DCT-III (aka inverse DCT) algorithm are applied, letting recover the image values
-            for (int y = 0; y < downSampledPaddedWidth; y += 8) {
+            IntStream.range(0, downSampledPaddedWidth).parallel().filter(y -> y % 8 == 0).forEach(y -> {
                 double[][] buffCb = new double[8][8];
                 double[][] buffCr = new double[8][8];
                 int topj = y + 8;
@@ -874,18 +874,17 @@ public class JPEG implements CompresorDecompresor {
                         --l;
                     }
                 }
-                int finalY = y;
                 int finalX = x;
                 IntStream.range(x, topi).parallel().forEach(i -> {
                     double alphau, alphav, cosu, cosv;
-                    for (int j = finalY; j < topj; ++j) { //for each chrominance pixel of the 8x8 square, the DCT-III calculation is applied
+                    for (int j = y; j < topj; ++j) { //for each chrominance pixel of the 8x8 square, the DCT-III calculation is applied
                         buffCb[i%8][j%8] = 0;
                         buffCr[i%8][j%8] = 0;
                         for (int u = finalX; u < topi; ++u) {
                             if (u % 8 == 0) alphau = 1 / Math.sqrt(2);
                             else alphau = 1;
                             cosu = Math.cos(((2 * (i % 8) + 1) * (u % 8) * Math.PI) / 16.0);
-                            for (int v = finalY; v < topj; ++v) {
+                            for (int v = y; v < topj; ++v) {
                                 if (v % 8 == 0) alphav = 1 / Math.sqrt(2);
                                 else alphav = 1;
                                 cosv = Math.cos(((2 * (j % 8) + 1) * (v % 8) * Math.PI) / 16.0);
@@ -903,8 +902,8 @@ public class JPEG implements CompresorDecompresor {
                         Cr[i][j] = (int)Math.round(buffCr[i%8][j%8]);
                     }
                 }
-            }
-        }
+            });
+        });
 
         int[] rgb = new int[3];
         for (int x = 0; x < height; ++x) { //converting YCbCr to RGB and changing range from [-128,127] to [0,255]
