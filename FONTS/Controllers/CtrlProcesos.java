@@ -6,6 +6,7 @@ import DomainLayer.Proceso.ProcesoComprimir;
 import DomainLayer.Proceso.ProcesoDescomprimir;
 import DomainLayer.Proceso.ProcesoFichero;
 import Enumeration.Algoritmo;
+import Exceptions.FormatoErroneoException;
 
 /**
  * La clase Singleton CtrlProcesos es el Controlador de Dominio del programa, y la encargada de crear procesos de compresión y/o descompresión, además de interactuar con las capas de datos y presentación.
@@ -208,6 +209,16 @@ public class CtrlProcesos {
      */
     public static String calcularPathSalida(String path, Algoritmo algoritmo, boolean esCompresion) {
         return CtrlDatos.actualizarPathSalida(path, algoritmo, esCompresion);
+    }
+
+    public static boolean esComprimible(String path) throws FormatoErroneoException {
+        return CtrlDatos.esComprimible(path);
+    }
+
+    public static Algoritmo algoritmoPosible(String path) throws FormatoErroneoException {
+        Algoritmo[] algoritmos = CtrlDatos.algoritmosPosibles(path);
+        if(algoritmos.length > 1) return getAlgoritmoDeTextoPredeterminado();
+        return algoritmos[0];
     }
 
     /**

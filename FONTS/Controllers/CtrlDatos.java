@@ -85,35 +85,8 @@ public class CtrlDatos {
             case "lzss":
             case "lz78":
             case "lzw":
-                return false;
-            default:
-                throw new FormatoErroneoException("No hay ningun tipo de algoritmo compatible");
-        }
-    }
-
-    /**
-     * Comprueba si el archivo es capaz de ser descomprimido según la extensión del mismo.
-     * <p>
-     *     El path del archivo debe seguir el formato general de cualquier tipo de path de archivo y puede ser relativo o absoluto.
-     * </p>
-     * @param path El path del archivo que se quiere comprobar
-     * @return Un booleano que indica si el archivo es descomprimible
-     * @throws FormatoErroneoException No hay ningún algoritmo compatible con la extensión del archivo
-     */
-    public static boolean esDescomprimible(String path) throws FormatoErroneoException {
-        String[] splitP = path.split("\\.");
-        String type = splitP[splitP.length-1];
-
-        switch (type) {
-            case "txt":
-            case "ppm":
-                return false;
-            case "imgc":
-            case "lzss":
-            case "lz78":
-            case "lzw":
             case "comp":
-                return true;
+                return false;
             default:
                 throw new FormatoErroneoException("No hay ningun tipo de algoritmo compatible");
         }

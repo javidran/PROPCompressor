@@ -2,6 +2,7 @@ package Controllers;
 
 import DomainLayer.Proceso.DatosProceso;
 import Enumeration.Algoritmo;
+import Exceptions.FormatoErroneoException;
 import PresentationLayer.*;
 
 import javax.swing.*;
@@ -53,41 +54,12 @@ public class CtrlPresentacion {
     }
 
     public void pathCambiado(String path) {
-        //TODO Mover comprobaciones a capa de Datos
         modeloParametros.setPathOriginal(path);
-        String[] splitP = path.split("\\.");
-        String type = splitP[splitP.length-1];
-
-        if(splitP.length == 1 && !path.endsWith(".")) {
-            modeloParametros.setCompresion(true);
-            modeloParametros.setAlgoritmo(Algoritmo.CARPETA);
-        }
-        else switch (type) {
-            case "imgc":
-                modeloParametros.setCompresion(false);
-                modeloParametros.setAlgoritmo(Algoritmo.JPEG);
-                break;
-            case "comp":
-                modeloParametros.setCompresion(false);
-                modeloParametros.setAlgoritmo(Algoritmo.CARPETA);
-                break;
-            case "lzss":
-            case "lzw":
-            case "lz78":
-                modeloParametros.setCompresion(false);
-                modeloParametros.setAlgoritmo(CtrlProcesos.getAlgoritmoDeTextoPredeterminado());
-                break;
-            case "txt":
-                modeloParametros.setCompresion(true);
-                modeloParametros.setAlgoritmo(CtrlProcesos.getAlgoritmoDeTextoPredeterminado());
-                break;
-            case "ppm":
-                modeloParametros.setCompresion(true);
-                modeloParametros.setAlgoritmo(Algoritmo.JPEG);
-                break;
-            default:
-                vistaInicio.deshabilitarBotones();
-                break;
+        try {
+            modeloParametros.setCompresion(CtrlProcesos.esComprimible(path));
+            modeloParametros.setAlgoritmo(CtrlProcesos.algoritmoPosible(path));
+        } catch (FormatoErroneoException e) {
+            vistaInicio.deshabilitarBotones();
         }
         actualizarPathSalida(path);
     }
