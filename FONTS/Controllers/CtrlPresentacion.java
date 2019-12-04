@@ -173,10 +173,14 @@ public class CtrlPresentacion {
             dp = ctrlProcesos.comprimirDescomprimirArchivo(modeloParametros.getPathOriginal(), modeloParametros.getAlgoritmo());
         }
         else if (modeloParametros.isCompresion()) {
-            dp = ctrlProcesos.comprimirArchivo(modeloParametros.getPathOriginal(), modeloParametros.getPathResultado(), modeloParametros.getAlgoritmo());
+            if(modeloParametros.getAlgoritmo().equals(Algoritmo.CARPETA))
+                ctrlProcesos.comprimirCarpeta(modeloParametros.getPathOriginal(), modeloParametros.getPathResultado(), Algoritmo.CARPETA);
+            else dp = ctrlProcesos.comprimirArchivo(modeloParametros.getPathOriginal(), modeloParametros.getPathResultado(), modeloParametros.getAlgoritmo());
         }
         else {
-            dp = ctrlProcesos.descomprimirArchivo(modeloParametros.getPathOriginal(), modeloParametros.getPathResultado());
+            if(modeloParametros.getAlgoritmo().equals(Algoritmo.CARPETA))
+                ctrlProcesos.descomprimirCarpeta(modeloParametros.getPathOriginal(), modeloParametros.getPathResultado(), Algoritmo.CARPETA);
+            else dp = ctrlProcesos.descomprimirArchivo(modeloParametros.getPathOriginal(), modeloParametros.getPathResultado());
         }
         //jDialog.dispose();
         //dp <-- estructura datos proceso resultante de el proceso ejecutado (erase when read)
