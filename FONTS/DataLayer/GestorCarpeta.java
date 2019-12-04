@@ -1,6 +1,6 @@
 package DataLayer;
 
-import DomainLayer.Algoritmos.Algoritmo;
+import Enumeration.Algoritmo;
 
 import java.io.File;
 import java.io.IOException;

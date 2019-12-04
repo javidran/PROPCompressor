@@ -1,8 +1,8 @@
 package Controllers;
 
 import DataLayer.*;
-import DomainLayer.Algoritmos.Algoritmo;
 import DomainLayer.Proceso.DatosProceso;
+import Enumeration.Algoritmo;
 import Exceptions.FormatoErroneoException;
 
 import java.io.FileNotFoundException;
@@ -250,10 +250,6 @@ public class CtrlDatos {
      */
     public double getPorcentajeAhorradoMedio(Algoritmo algoritmo, boolean esCompresion) throws IOException {
         return GestorEstadisticas.getPorcentajeAhorradoMedio(algoritmo,esCompresion);
-    }
-
-    public static boolean existeArchivo(String path) {
-        return GestorArchivo.existeArchivo(path);
     }
 
 }

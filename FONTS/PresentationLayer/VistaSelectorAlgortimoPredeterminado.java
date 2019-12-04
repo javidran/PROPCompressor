@@ -1,7 +1,6 @@
 package PresentationLayer;
 
 import Controllers.CtrlPresentacion;
-import Controllers.CtrlProcesos;
 import Enumeration.Algoritmo;
 
 import javax.swing.*;
