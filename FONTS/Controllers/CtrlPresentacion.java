@@ -75,6 +75,16 @@ public class CtrlPresentacion {
 
     public void algoritmoPredeterminadoEscogido(Algoritmo algoritmo) {
         CtrlProcesos.setAlgoritmoDeTextoPredeterminado(algoritmo);
+        if(modeloParametros.isCompresion()) {
+            switch (modeloParametros.getAlgoritmo()) {
+                case LZSS:
+                case LZW:
+                case LZ78:
+                    modeloParametros.setAlgoritmo(algoritmo);
+                    actualizarPathSalida(modeloParametros.getPathResultado());
+                    break;
+            }
+        }
         if(vistaInicio != null) vistaInicio.algoritmoPredeterminado(CtrlProcesos.getAlgoritmoDeTextoPredeterminado());
     }
 
