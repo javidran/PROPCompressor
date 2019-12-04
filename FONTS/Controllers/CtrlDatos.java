@@ -181,9 +181,9 @@ public class CtrlDatos {
         return path;
     }
 
-    public void crearGestorCarpeta(String path, boolean comprimir, Algoritmo algoritmoDeTexto) throws FileNotFoundException {
-        if(comprimir) gestorCarpeta = new GestorCarpetaComprimir(path, algoritmoDeTexto);
-        else gestorCarpeta = new GestorCarpetaDescomprimir(path);
+    public void crearGestorCarpeta(String pathOriginal, String pathSalida, boolean comprimir, Algoritmo algoritmoDeTexto) throws FileNotFoundException {
+        if(comprimir) gestorCarpeta = new GestorCarpetaComprimir(pathOriginal, pathSalida, algoritmoDeTexto);
+        else gestorCarpeta = new GestorCarpetaDescomprimir(pathOriginal, pathSalida);
     }
 
     public Algoritmo leerAlgoritmoProximoArchivo() throws IOException {

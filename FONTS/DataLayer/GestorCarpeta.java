@@ -7,9 +7,12 @@ import java.io.IOException;
 
 public abstract class GestorCarpeta {
     protected File carpeta;
+    protected String pathSalida;
+    protected String pathArchivoActual;
 
-    protected GestorCarpeta(String path) {
-        carpeta = new File(path);
+    protected GestorCarpeta(String pathOriginal, String pathSalida) {
+        carpeta = new File(pathOriginal);
+        this.pathSalida = pathSalida;
     }
 
     public abstract Algoritmo algoritmoProximoArchivo() throws IOException;

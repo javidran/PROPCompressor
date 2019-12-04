@@ -1,6 +1,5 @@
 package Drivers;
 
-import Controllers.CtrlDatos;
 import DataLayer.GestorArchivo;
 
 import java.util.Scanner;

@@ -174,12 +174,12 @@ public class CtrlPresentacion {
         }
         else if (modeloParametros.isCompresion()) {
             if(modeloParametros.getAlgoritmo().equals(Algoritmo.CARPETA))
-                ctrlProcesos.comprimirCarpeta(modeloParametros.getPathOriginal(), modeloParametros.getPathResultado(), Algoritmo.CARPETA);
+                ctrlProcesos.comprimirCarpeta(modeloParametros.getPathOriginal(), modeloParametros.getPathResultado());
             else dp = ctrlProcesos.comprimirArchivo(modeloParametros.getPathOriginal(), modeloParametros.getPathResultado(), modeloParametros.getAlgoritmo());
         }
         else {
             if(modeloParametros.getAlgoritmo().equals(Algoritmo.CARPETA))
-                ctrlProcesos.descomprimirCarpeta(modeloParametros.getPathOriginal(), modeloParametros.getPathResultado(), Algoritmo.CARPETA);
+                ctrlProcesos.descomprimirCarpeta(modeloParametros.getPathOriginal(), modeloParametros.getPathResultado());
             else dp = ctrlProcesos.descomprimirArchivo(modeloParametros.getPathOriginal(), modeloParametros.getPathResultado());
         }
         //jDialog.dispose();

@@ -14,7 +14,6 @@ public class GestorCarpetaComprimir extends GestorCarpeta {
     private BufferedOutputStream bufferedOutputStream;
     private Queue<File> archivosAComprimir;
     private Algoritmo algoritmoTexto;
-    private String pathArchivoActual;
 
     private LinkedList<File> listarArchivosCarpeta(final File carpeta) {
         LinkedList<File> listaArchivos = new LinkedList<>();
@@ -29,11 +28,11 @@ public class GestorCarpetaComprimir extends GestorCarpeta {
         return listaArchivos;
     }
 
-    public GestorCarpetaComprimir(String path, Algoritmo algoritmoTexto) throws FileNotFoundException {
-        super(path);
+    public GestorCarpetaComprimir(String pathOriginal, String pathSalida, Algoritmo algoritmoTexto) throws FileNotFoundException {
+        super(pathOriginal, pathSalida);
         this.algoritmoTexto = algoritmoTexto;
         archivosAComprimir = new LinkedList<>(listarArchivosCarpeta(carpeta));
-        File carpetaComprimida = new File(CtrlDatos.actualizarPathSalida(carpeta.getAbsolutePath(), Algoritmo.CARPETA, true));
+        File carpetaComprimida = new File(pathSalida);
         FileOutputStream fileOutputStream = new FileOutputStream(carpetaComprimida);
         bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
     }

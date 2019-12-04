@@ -155,7 +155,7 @@ public class MainDriver {
                         System.out.println("Indique la calidad de compresión a usar para las imágenes (del 1 al 7)");
                         ctrlProcesos.setCalidadJPEG(scanner.nextInt());
                         System.out.println("Se inicia el proceso");
-                        ctrlProcesos.comprimirCarpeta(s, s, tipoCompresor);
+                        ctrlProcesos.comprimirCarpeta(s, s+".comp");
                         System.out.println("El archivo " + s + " se ha comprimido correctamente!\n");
                         break;
                     case "descomprimirCarpeta":
@@ -167,7 +167,7 @@ public class MainDriver {
                             s += scanner.nextLine();
                         } else s = args[0];
                         System.out.println("Se inicia el proceso");
-                        ctrlProcesos.descomprimirCarpeta(s, s, null);
+                        ctrlProcesos.descomprimirCarpeta(s, s.replace(".comp", ""));
                         System.out.println("El archivo " + s + " se ha descomprimido correctamente!\n");
                         break;
                     case "estadisticas":
