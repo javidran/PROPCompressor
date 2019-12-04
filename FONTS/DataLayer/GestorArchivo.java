@@ -1,10 +1,6 @@
 package DataLayer;
 
-import Exceptions.ArchivoYaExisteException;
-
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * GestorArchivo es una clase utilizada por todos los algoritmos tanto al comprimir como al descomir, se encarga de leer los ficheros.
@@ -24,8 +20,6 @@ public class GestorArchivo {
      * @throws IOException se ha producido un error en la lectura del fichero
      */
     public static byte[] leeArchivo(String path) throws IOException {
-        List<Byte> srclist = new ArrayList<>();
-
         File fileIn = new File(path);
         int length = (int) fileIn.length();
         FileInputStream fis = new FileInputStream(fileIn);
@@ -45,13 +39,9 @@ public class GestorArchivo {
      * </p>
      * @param data contiene el archivo codificado o descodificado que se va a guardar en un archivo nuevo
      * @param path El path donde se escribirá el fichero que contiene el Array de bytes
-     * @param sobrescribir Indica si se desearía sobrescribir en caso de que el fichero que se va a crear ya esté en el path
      * @throws IOException se ha producido un error en la escritura del fichero
      */
-    public static void guardaArchivo(byte[] data, String path, boolean sobrescribir) throws IOException {
-        File tempFile = new File(path);
-        if (tempFile.exists() && !sobrescribir) throw new ArchivoYaExisteException("No se desea sobrescribir pero el fichero a escribir ya existe");
-
+    public static void guardaArchivo(byte[] data, String path) throws IOException {
         File fileOut = new File(path);
         fileOut.getParentFile().mkdirs();
         fileOut.createNewFile();

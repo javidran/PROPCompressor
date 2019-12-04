@@ -44,7 +44,7 @@ public class GestorArchivoDriver {
                             if (sobrescribirInteger == 0) {
                                 sobrescribir = false;
                             } else sobrescribir = true;
-                            GestorArchivo.guardaArchivo(b1,s,sobrescribir);
+                            GestorArchivo.guardaArchivo(b1, s);
                             System.out.println("El archivo " + s + " se ha escrito correctamente!\n");
                         } else System.out.println("El formato del fichero debe de ser .txt");
                         break;

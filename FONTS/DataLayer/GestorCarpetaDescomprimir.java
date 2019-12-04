@@ -9,11 +9,10 @@ import java.util.List;
 
 public class GestorCarpetaDescomprimir extends GestorCarpeta {
     private BufferedInputStream lector;
-    private String path;
-    private Algoritmo algoritmo;
+    private Algoritmo algoritmoActual;
 
-    public GestorCarpetaDescomprimir(String path) throws FileNotFoundException {
-        super(path);
+    public GestorCarpetaDescomprimir(String pathOriginal, String pathSalida) throws FileNotFoundException {
+        super(pathOriginal, pathSalida);
         lector = new BufferedInputStream(new FileInputStream(carpeta));
     }
 
@@ -31,14 +30,14 @@ public class GestorCarpetaDescomprimir extends GestorCarpeta {
         for(int i=0; i<byteArray.length; ++i) {
             byteArray[i] = byteList.get(i);
         }
-        path = new String(byteArray);
-        Algoritmo[] algoritmosPosibles = CtrlDatos.algoritmosPosibles(path);
+        pathArchivoActual = new String(byteArray);
+        Algoritmo[] algoritmosPosibles = CtrlDatos.algoritmosPosibles(pathArchivoActual);
         if(algoritmosPosibles[0].equals(Algoritmo.CARPETA)) {
             guardaCarpeta();
             return algoritmoProximoArchivo();
         }
-        algoritmo = algoritmosPosibles[0];
-        return algoritmo;
+        algoritmoActual = algoritmosPosibles[0];
+        return algoritmoActual;
     }
 
     @Override
@@ -63,16 +62,12 @@ public class GestorCarpetaDescomprimir extends GestorCarpeta {
 
     @Override
     public void guardaProximoArchivo(byte[] data) throws IOException {
-        String pathCarpeta = carpeta.getAbsolutePath().replace(".comp", "");
-        String pathResultado = CtrlDatos.actualizarPathSalida(path,algoritmo,false);
-        String pathCompleto = pathCarpeta + pathResultado;
-        GestorArchivo.guardaArchivo(data,pathCompleto, true);
+        String pathCompleto = pathSalida + CtrlDatos.actualizarPathSalida(pathArchivoActual, algoritmoActual,false);
+        GestorArchivo.guardaArchivo(data,pathCompleto);
     }
 
     private void guardaCarpeta() {
-        String pathCarpeta = carpeta.getAbsolutePath().replace(".comp", "");
-        String pathCompleto = pathCarpeta + path;
-        new File(pathCompleto).mkdirs();
+        new File(pathSalida + pathArchivoActual).mkdirs();
     }
 
     @Override

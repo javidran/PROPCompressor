@@ -44,20 +44,22 @@ public class CtrlProcesos {
      * <p>
      *     El algoritmo es capaz de comprimir el formato del fichero.
      * </p>
-     * @param path El path donde se encuentra el fichero a comprimir.
+     *
+     * @param pathOriginal El path donde se encuentra el fichero a comprimir.
+     * @param pathResultado El path donde se guardará el fichero comprimido.
      * @param tipoAlgoritmo El algoritmo a usar para la compresión del fichero.
      * @throws Exception El proceso de compresión no se ha podido llevar a cabo.
      */
-    public DatosProceso comprimirArchivo(String path, Algoritmo tipoAlgoritmo) throws Exception {
+    public DatosProceso comprimirArchivo(String pathOriginal, String pathResultado, Algoritmo tipoAlgoritmo) throws Exception {
         CtrlDatos ctrlDatos = CtrlDatos.getInstance();
         if(tipoAlgoritmo == Algoritmo.PREDETERMINADO) {
-            Algoritmo[] algoritmos = CtrlDatos.algoritmosPosibles(path);
+            Algoritmo[] algoritmos = CtrlDatos.algoritmosPosibles(pathOriginal);
             if(algoritmos[0] == Algoritmo.JPEG) tipoAlgoritmo = Algoritmo.JPEG;
             else tipoAlgoritmo = algoritmoDeTextoPredeterminado;
         }
-        ProcesoFichero comp = new ProcesoComprimir(ctrlDatos.leerArchivo(path), tipoAlgoritmo);
+        ProcesoFichero comp = new ProcesoComprimir(ctrlDatos.leerArchivo(pathOriginal), tipoAlgoritmo);
         comp.ejecutarProceso();
-        ctrlDatos.guardaArchivo(comp.getOutput(), path, tipoAlgoritmo, true, true);
+        ctrlDatos.guardaArchivo(comp.getOutput(), pathResultado);
         DatosProceso dp = comp.getDatosProceso();
         System.out.println("El proceso ha tardado " + dp.getTiempo()/1000000000.0 + "s. El cambio de tamaño pasa de " + dp.getOldSize() + "B a " + dp.getNewSize() + "B con diferencia de " + dp.getDiffSize() + "B que resulta en un " + dp.getDiffSizePercentage() + "% del archivo original.");
         if(dp.isSatisfactorio()) {
@@ -73,15 +75,17 @@ public class CtrlProcesos {
      * <p>
      *     El path sigue del archivo debe seguir el formato general de cualquier tipo de path de archivo, y debe ser relativo.
      * </p>
-     * @param path El path donde se encuentra el fichero a descomprimir.
+     *
+     * @param pathOriginal El path donde se encuentra el fichero a descomprimir.
+     * @param pathResultado El path donde se guardará el fichero descomprimido.
      * @throws Exception El proceso de descompresión no se ha podido llevar a cabo.
      */
-    public DatosProceso descomprimirArchivo(String path) throws Exception {
+    public DatosProceso descomprimirArchivo(String pathOriginal, String pathResultado ) throws Exception {
         CtrlDatos ctrlDatos = CtrlDatos.getInstance();
-        Algoritmo[] algoritmos = CtrlDatos.algoritmosPosibles(path);
-        ProcesoFichero desc = new ProcesoDescomprimir(ctrlDatos.leerArchivo(path), algoritmos[0]);
+        Algoritmo[] algoritmos = CtrlDatos.algoritmosPosibles(pathOriginal);
+        ProcesoFichero desc = new ProcesoDescomprimir(ctrlDatos.leerArchivo(pathOriginal), algoritmos[0]);
         desc.ejecutarProceso();
-        ctrlDatos.guardaArchivo(desc.getOutput(), path, algoritmos[0], false, true);
+        ctrlDatos.guardaArchivo(desc.getOutput(), pathResultado);
         DatosProceso dp = desc.getDatosProceso();
         System.out.println("El proceso ha tardado " + dp.getTiempo()/1000000000.0 + "s. El cambio de tamaño pasa de " + dp.getOldSize() + "B a " + dp.getNewSize() + "B con diferencia de " + dp.getDiffSize() + "B que resulta en un " + dp.getDiffSizePercentage() + "% del archivo original.");
         if(dp.isSatisfactorio()) {
@@ -120,9 +124,9 @@ public class CtrlProcesos {
         } else {
             System.out.println("El proceso de compresión no ha resultado satisfactorio ya que el archivo comprimido ocupa igual o más que el archivo original. Se guardará igualmente.");
         }
+
         ProcesoFichero desc = new ProcesoDescomprimir(comp.getOutput(), tipoAlgoritmo);
         desc.ejecutarProceso();
-        ctrlDatos.guardaArchivo(desc.getOutput(), path, tipoAlgoritmo, false, true);
         dp = desc.getDatosProceso();
         System.out.println("El proceso ha tardado " + dp.getTiempo() / 1000000000.0 + "s. El cambio de tamaño pasa de " + dp.getOldSize() + "B a " + dp.getNewSize() + "B con diferencia de " + dp.getDiffSize() + "B que resulta en un " + dp.getDiffSizePercentage() + "% del archivo original.");
         if (dp.isSatisfactorio()) {
@@ -131,10 +135,10 @@ public class CtrlProcesos {
         return dp;
     }
 
-    public void comprimirCarpeta(String pathIn, String pathOut, Algoritmo algoritmo) throws Exception {
+    public void comprimirCarpeta(String pathIn, String pathOut) throws Exception {
         long tiempo = 0, oldSize = 0, newSize = 0;
         CtrlDatos ctrlDatos = CtrlDatos.getInstance();
-        ctrlDatos.crearGestorCarpeta(pathIn, true, algoritmo);
+        ctrlDatos.crearGestorCarpeta(pathIn,pathOut, true, getAlgoritmoDeTextoPredeterminado());
         Algoritmo algoritmoArchivo;
         while((algoritmoArchivo = ctrlDatos.leerAlgoritmoProximoArchivo())!= null) {
             if (algoritmoArchivo != Algoritmo.CARPETA) {
@@ -157,10 +161,10 @@ public class CtrlProcesos {
         System.out.println("El proceso ha tardado " + tiempo / 1000000000.0 + "s. El cambio de tamaño pasa de " + oldSize + "B a " + newSize + "B con diferencia de " + diffSize + "B que resulta en un " + diffSizePercentage + "% del archivo original.");
     }
 
-    public void descomprimirCarpeta(String pathIn, String pathOut, Algoritmo algoritmo) throws Exception {
+    public void descomprimirCarpeta(String pathIn, String pathOut) throws Exception {
         long tiempo = 0, oldSize = 0, newSize = 0;
         CtrlDatos ctrlDatos = CtrlDatos.getInstance();
-        ctrlDatos.crearGestorCarpeta(pathIn, false, algoritmo);
+        ctrlDatos.crearGestorCarpeta(pathIn, pathOut, false, getAlgoritmoDeTextoPredeterminado());
         Algoritmo algoritmoArchivo;
         while((algoritmoArchivo = ctrlDatos.leerAlgoritmoProximoArchivo())!= null) {
             ProcesoFichero desc = new ProcesoDescomprimir(ctrlDatos.leerProximoArchivo(), algoritmoArchivo);
