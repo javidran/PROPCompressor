@@ -3,10 +3,7 @@ package DataLayer;
 import Controllers.CtrlDatos;
 import DomainLayer.Algoritmos.Algoritmo;
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +33,10 @@ public class GestorCarpetaDescomprimir extends GestorCarpeta {
         }
         path = new String(byteArray);
         Algoritmo[] algoritmosPosibles = CtrlDatos.algoritmosPosibles(path);
+        if(algoritmosPosibles[0].equals(Algoritmo.CARPETA)) {
+            guardaCarpeta();
+            return algoritmoProximoArchivo();
+        }
         algoritmo = algoritmosPosibles[0];
         return algoritmo;
     }
@@ -67,6 +68,12 @@ public class GestorCarpetaDescomprimir extends GestorCarpeta {
         String pathResultado = CtrlDatos.actualizarPathSalida(path,algoritmo,false);
         String pathCompleto = pathCarpeta + pathResultado;
         GestorArchivo.guardaArchivo(data,pathCompleto, true);
+    }
+
+    private void guardaCarpeta() {
+        String pathCarpeta = carpeta.getAbsolutePath().replace(".comp", "");
+        String pathCompleto = pathCarpeta + path;
+        new File(pathCompleto).mkdirs();
     }
 
     @Override
