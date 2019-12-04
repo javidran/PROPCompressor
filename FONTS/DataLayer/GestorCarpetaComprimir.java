@@ -14,14 +14,14 @@ public class GestorCarpetaComprimir extends GestorCarpeta {
     private BufferedOutputStream bufferedOutputStream;
     private Queue<File> archivosAComprimir;
     private Algoritmo algoritmoTexto;
-    private File carpetaComprimida;
     private String pathArchivoActual;
 
     private LinkedList<File> listarArchivosCarpeta(final File carpeta) {
         LinkedList<File> listaArchivos = new LinkedList<>();
         for (final File archivo : Objects.requireNonNull(carpeta.listFiles())) {
             if (archivo.isDirectory()) {
-                listaArchivos.addAll(listarArchivosCarpeta(archivo));
+                boolean hayMas = listaArchivos.addAll(listarArchivosCarpeta(archivo));
+                if (!hayMas) listaArchivos.add(archivo);
             } else {
                 listaArchivos.add(archivo);
             }
@@ -33,7 +33,7 @@ public class GestorCarpetaComprimir extends GestorCarpeta {
         super(path);
         this.algoritmoTexto = algoritmoTexto;
         archivosAComprimir = new LinkedList<>(listarArchivosCarpeta(carpeta));
-        carpetaComprimida = new File(CtrlDatos.actualizarPathSalida(carpeta.getAbsolutePath(), Algoritmo.CARPETA, true));
+        File carpetaComprimida = new File(CtrlDatos.actualizarPathSalida(carpeta.getAbsolutePath(), Algoritmo.CARPETA, true));
         FileOutputStream fileOutputStream = new FileOutputStream(carpetaComprimida);
         bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
     }
@@ -44,9 +44,12 @@ public class GestorCarpetaComprimir extends GestorCarpeta {
         Algoritmo[] algoritmos;
         File proximoArchivo = archivosAComprimir.peek();
         if (proximoArchivo != null) {
-            algoritmos = CtrlDatos.algoritmosPosibles(proximoArchivo.getPath());
-            if (algoritmos.length > 1) algoritmoArchivo = algoritmoTexto;
-            else algoritmoArchivo = Algoritmo.JPEG;
+            if (proximoArchivo.isDirectory()) algoritmoArchivo = Algoritmo.CARPETA;
+            else {
+                algoritmos = CtrlDatos.algoritmosPosibles(proximoArchivo.getPath());
+                if (algoritmos.length > 1) algoritmoArchivo = algoritmoTexto;
+                else algoritmoArchivo = Algoritmo.JPEG;
+            }
         }
         return algoritmoArchivo;
     }
@@ -54,8 +57,12 @@ public class GestorCarpetaComprimir extends GestorCarpeta {
     @Override
     public byte[] leerProximoArchivo() throws IOException {
         File proximoArchivo = archivosAComprimir.poll();
-        if (proximoArchivo != null) pathArchivoActual = proximoArchivo.getAbsolutePath();
-        return GestorArchivo.leeArchivo(pathArchivoActual);
+        byte[] bytesProximoArchivo = new byte[0];
+        if (proximoArchivo != null) {
+            pathArchivoActual = proximoArchivo.getAbsolutePath();
+            if (!proximoArchivo.isDirectory()) bytesProximoArchivo = GestorArchivo.leeArchivo(pathArchivoActual);
+        }
+        return bytesProximoArchivo;
     }
 
     @Override
@@ -71,17 +78,24 @@ public class GestorCarpetaComprimir extends GestorCarpeta {
             pathRootCarpeta.append(dirs[i]);
             if (i < dirs.length - 1) pathRootCarpeta.append(File.separator);
         }
-        algoritmos = CtrlDatos.algoritmosPosibles(pathRootCarpeta.toString());
-        if (algoritmos.length > 1) algoritmoArchivo = algoritmoTexto;
-        else algoritmoArchivo = Algoritmo.JPEG;
-        String pathComprimido = CtrlDatos.actualizarPathSalida(pathRootCarpeta.toString(), algoritmoArchivo, true);
+        String pathComprimido;
         String endOfLine = "\n";
-        bufferedOutputStream.write(pathComprimido.getBytes());
-        bufferedOutputStream.write(endOfLine.getBytes());
-        bufferedOutputStream.write(Integer.toString(data.length).getBytes());
-        bufferedOutputStream.write(endOfLine.getBytes());
-        bufferedOutputStream.write(data);
-        bufferedOutputStream.write(endOfLine.getBytes());
+        if (data.length > 0) {
+            algoritmos = CtrlDatos.algoritmosPosibles(pathRootCarpeta.toString());
+            if (algoritmos.length > 1) algoritmoArchivo = algoritmoTexto;
+            else algoritmoArchivo = Algoritmo.JPEG;
+            pathComprimido = CtrlDatos.actualizarPathSalida(pathRootCarpeta.toString(), algoritmoArchivo, true);
+            bufferedOutputStream.write(pathComprimido.getBytes());
+            bufferedOutputStream.write(endOfLine.getBytes());
+            bufferedOutputStream.write(Integer.toString(data.length).getBytes());
+            bufferedOutputStream.write(endOfLine.getBytes());
+            bufferedOutputStream.write(data);
+        }
+        else {
+            pathComprimido = pathRootCarpeta.toString();
+            bufferedOutputStream.write(pathComprimido.getBytes());
+            bufferedOutputStream.write(endOfLine.getBytes());
+        }
     }
 
     @Override

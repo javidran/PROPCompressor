@@ -40,9 +40,9 @@ public class CtrlDatos {
      * @throws FormatoErroneoException No hay ningún algoritmo compatible con la extensión del archivo
      */
     public static Algoritmo[] algoritmosPosibles(String path) throws FormatoErroneoException {
+        if (!path.contains(".")) return new Algoritmo[] {Algoritmo.CARPETA};
         String[] splittedPath = path.split("\\.");
         String type = splittedPath[splittedPath.length-1];
-        if (type.length() == 1) return new Algoritmo[] {Algoritmo.CARPETA};
 
         switch (type) {
             case "txt":
@@ -73,6 +73,7 @@ public class CtrlDatos {
      * @throws FormatoErroneoException No hay ningún algoritmo compatible con la extensión del archivo
      */
     public static boolean esComprimible(String path) throws FormatoErroneoException {
+        if(!path.contains("\\.")) return true;
         String[] splitP = path.split("\\.");
         String type = splitP[splitP.length-1];
 
@@ -111,6 +112,7 @@ public class CtrlDatos {
             case "lzss":
             case "lz78":
             case "lzw":
+            case "comp":
                 return true;
             default:
                 throw new FormatoErroneoException("No hay ningun tipo de algoritmo compatible");
