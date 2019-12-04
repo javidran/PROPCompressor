@@ -53,12 +53,19 @@ public class GestorArchivo {
         if (tempFile.exists() && !sobrescribir) throw new ArchivoYaExisteException("No se desea sobrescribir pero el fichero a escribir ya existe");
 
         File fileOut = new File(path);
+        fileOut.getParentFile().mkdirs();
+        fileOut.createNewFile();
         FileOutputStream fout = new FileOutputStream(fileOut);
         BufferedOutputStream bfout = new BufferedOutputStream(fout);
         bfout.write(data);
         bfout.close();
     }
 
+    /**
+     * Comprueba si existe un archivo con el path provisto.
+     * @param path El path del supuesto archivo.
+     * @return Un booleano indicando si existe o no.
+     */
     public static boolean existeArchivo(String path) {
         boolean existe;
         File archivoAExaminar = new File(path);
@@ -66,7 +73,6 @@ public class GestorArchivo {
         else existe = false;
         return existe;
     }
-
 }
 
 

@@ -3,7 +3,10 @@ package DomainLayer.Algoritmos;
 import Exceptions.FormatoErroneoException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.IntStream;
 
 /**
  * La clase Singleton JPEG es la encargada de procesar archivos de imagen de extensión .ppm o .imgc y comprimirlos y descomprimirlos respectivamente
@@ -29,7 +32,14 @@ public class JPEG implements CompresorDecompresor {
      * Tabla de cuantización usada para comprimir y descomprimir los valores de crominancia (Cb y Cr) de los cuadrados de píxeles de dimensiones 8x8. Este atributo es estático
      */
     private static int[][] ChrominanceQuantizationTable = new int[8][8]; //50% compression
-
+    /**
+     * Tabla de valores estándar para la codificación según Huffman coding de los valores obtenidos con el RLE del algoritmo JPEG. Este atributo es estático
+     */
+    private static String[][] ACHuffmanTable = new String[15][11];
+    /**
+     * Tabla de valores estándar para la descodificación según Huffman coding de los valores obtenidos con el RLE del algoritmo JPEG. Este atributo es estático
+     */
+    private static Map<String, Pair> ACInverseHuffmanTable = new HashMap<>();
     /**
      * Getter de la instancia Singleton de JPEG
      * @return La instancia Singleton de JPEG
@@ -47,7 +57,7 @@ public class JPEG implements CompresorDecompresor {
      */
     private JPEG() {
         calidad = 1.0;
-        calidadHeader = 50;
+        calidadHeader = 5;
         LuminanceQuantizationTable = new int[][] {
                 {16, 11, 10, 16,  24,  40,  51,  61},
                 {12, 12, 14, 19,  26,  58,  60,  55},
@@ -68,6 +78,83 @@ public class JPEG implements CompresorDecompresor {
                 {99, 99, 99, 99, 99, 99, 99, 99},
                 {99, 99, 99, 99, 99, 99, 99, 99}
         };
+        ACHuffmanTable = new String[][] {
+                {"1010", "00", "01", "100", "1011", "11010", "1111000", "11111000", "1111110110", "1111111110000010", "1111111110000011"},
+                {"", "1100", "11011", "1111001", "111110110", "11111110110", "1111111110000100", "1111111110000101", "1111111110000110", "1111111110000111", "1111111110001000"},
+                {"", "11100", "11111001", "1111110111", "111111110100", "1111111110001001", "1111111110001010", "1111111110001011", "1111111110001100", "1111111110001101", "1111111110001110"},
+                {"", "111010", "111110111", "111111110101", "1111111110001111", "1111111110010000", "1111111110010001", "1111111110010010", "1111111110010011", "1111111110010100", "1111111110010101"},
+                {"", "111011", "1111111000", "1111111110010110", "1111111110010111", "1111111110011000", "1111111110011001", "1111111110011010", "1111111110011011", "1111111110011100", "1111111110011101"},
+                {"", "1111010", "11111110111", "1111111110011110", "1111111110011111", "1111111110100000", "1111111110100001", "1111111110100010", "1111111110100011", "1111111110100100", "1111111110100101"},
+                {"", "1111011", "111111110110", "1111111110100110", "1111111110100111", "1111111110101000", "1111111110101001", "1111111110101010", "1111111110101011", "1111111110101100", "1111111110101101"},
+                {"", "11111010", "111111110111", "1111111110101110", "1111111110101111", "1111111110110000", "1111111110110001", "1111111110110010", "1111111110110011", "1111111110110100", "1111111110110101"},
+                {"", "111111000", "111111111000000", "1111111110110110", "1111111110110111", "1111111110111000", "1111111110111001", "1111111110111010", "1111111110111011", "1111111110111100", "1111111110111101"},
+                {"", "111111001", "1111111110111110", "1111111110111111", "1111111111000000", "1111111111000001", "1111111111000010", "1111111111000011", "1111111111000100", "1111111111000101", "1111111111000110"},
+                {"", "111111010", "1111111111000111", "1111111111001000", "1111111111001001", "1111111111001010", "1111111111001011", "1111111111001100", "1111111111001101", "1111111111001110", "1111111111001111"},
+                {"", "1111111001", "1111111111010000", "1111111111010001", "1111111111010010", "1111111111010011", "1111111111010100", "1111111111010101", "1111111111010110", "1111111111010111", "1111111111011000"},
+                {"", "1111111010", "1111111111011001", "1111111111011010", "1111111111011011", "1111111111011100", "1111111111011101", "1111111111011110", "1111111111011111", "1111111111100000", "1111111111100001"},
+                {"", "11111111000", "1111111111100010", "1111111111100011", "1111111111100100", "1111111111100101", "1111111111100110", "1111111111100111", "1111111111101000", "1111111111101001", "1111111111101010"},
+                {"", "1111111111101011", "1111111111101100", "1111111111101101", "1111111111101110", "1111111111101111", "1111111111110000", "1111111111110001", "1111111111110010", "1111111111110011", "1111111111110100"},
+                {"11111111001", "1111111111110101", "1111111111110110", "1111111111110111", "1111111111111000", "1111111111111001", "1111111111111010", "1111111111111011", "1111111111111100", "1111111111111101", "1111111111111110"}
+        };
+        ACInverseHuffmanTable = new HashMap<String, Pair>() {{
+            put("1010", new Pair((byte) 0, (byte) 0)); put("00", new Pair((byte) 0, (byte) 1)); put("01", new Pair((byte) 0, (byte) 2)); put("100", new Pair((byte) 0, (byte) 3)); put("1011", new Pair((byte) 0, (byte) 4)); put("11010", new Pair((byte) 0, (byte) 5)); put("1111000", new Pair((byte) 0, (byte) 6)); put("11111000", new Pair((byte) 0, (byte) 7)); put("1111110110", new Pair((byte) 0, (byte) 8)); put("1111111110000010", new Pair((byte) 0, (byte) 9)); put("1111111110000011", new Pair((byte) 0, (byte) 10));
+            put("1100", new Pair((byte) 1, (byte) 1)); put("11011", new Pair((byte) 1, (byte) 2)); put("1111001", new Pair((byte) 1, (byte) 3)); put("111110110", new Pair((byte) 1, (byte) 4)); put("11111110110", new Pair((byte) 1, (byte) 5)); put("1111111110000100", new Pair((byte) 1, (byte) 6)); put("1111111110000101", new Pair((byte) 1, (byte) 7)); put("1111111110000110", new Pair((byte) 1, (byte) 8)); put("1111111110000111", new Pair((byte) 1, (byte) 9)); put("1111111110001000", new Pair((byte) 1, (byte) 10));
+            put("11100", new Pair((byte) 2, (byte) 1)); put("11111001", new Pair((byte) 2, (byte) 2)); put("1111110111", new Pair((byte) 2, (byte) 3)); put("111111110100", new Pair((byte) 2, (byte) 4)); put("1111111110001001", new Pair((byte) 2, (byte) 5)); put("1111111110001010", new Pair((byte) 2, (byte) 6)); put("1111111110001011", new Pair((byte) 2, (byte) 7)); put("1111111110001100", new Pair((byte) 2, (byte) 8)); put("1111111110001101", new Pair((byte) 2, (byte) 9)); put("1111111110001110", new Pair((byte) 2, (byte) 10));
+            put("111010", new Pair((byte) 3, (byte) 1)); put("111110111", new Pair((byte) 3, (byte) 2)); put("111111110101", new Pair((byte) 3, (byte) 3)); put("1111111110001111", new Pair((byte) 3, (byte) 4)); put("1111111110010000", new Pair((byte) 3, (byte) 5)); put("1111111110010001", new Pair((byte) 3, (byte) 6)); put("1111111110010010", new Pair((byte) 3, (byte) 7)); put("1111111110010011", new Pair((byte) 3, (byte) 8)); put("1111111110010100", new Pair((byte) 3, (byte) 9)); put("1111111110010101", new Pair((byte) 3, (byte) 10));
+            put("111011", new Pair((byte) 4, (byte) 1)); put("1111111000", new Pair((byte) 4, (byte) 2)); put("1111111110010110", new Pair((byte) 4, (byte) 3)); put("1111111110010111", new Pair((byte) 4, (byte) 4)); put("1111111110011000", new Pair((byte) 4, (byte) 5)); put("1111111110011001", new Pair((byte) 4, (byte) 6)); put("1111111110011010", new Pair((byte) 4, (byte) 7)); put("1111111110011011", new Pair((byte) 4, (byte) 8)); put("1111111110011100", new Pair((byte) 4, (byte) 9)); put("1111111110011101", new Pair((byte) 4, (byte) 10));
+            put("1111010", new Pair((byte) 5, (byte) 1)); put("11111110111", new Pair((byte) 5, (byte) 2)); put("1111111110011110", new Pair((byte) 5, (byte) 3)); put("1111111110011111", new Pair((byte) 5, (byte) 4)); put("1111111110100000", new Pair((byte) 5, (byte) 5)); put("1111111110100001", new Pair((byte) 5, (byte) 6)); put("1111111110100010", new Pair((byte) 5, (byte) 7)); put("1111111110100011", new Pair((byte) 5, (byte) 8)); put("1111111110100100", new Pair((byte) 5, (byte) 9)); put("1111111110100101", new Pair((byte) 5, (byte) 10));
+            put("1111011", new Pair((byte) 6, (byte) 1)); put("111111110110", new Pair((byte) 6, (byte) 2)); put("1111111110100110", new Pair((byte) 6, (byte) 3)); put("1111111110100111", new Pair((byte) 6, (byte) 4)); put("1111111110101000", new Pair((byte) 6, (byte) 5)); put("1111111110101001", new Pair((byte) 6, (byte) 6)); put("1111111110101010", new Pair((byte) 6, (byte) 7)); put("1111111110101011", new Pair((byte) 6, (byte) 8)); put("1111111110101100", new Pair((byte) 6, (byte) 9)); put("1111111110101101", new Pair((byte) 6, (byte) 10));
+            put("11111010", new Pair((byte) 7, (byte) 1)); put("111111110111", new Pair((byte) 7, (byte) 2)); put("1111111110101110", new Pair((byte) 7, (byte) 3)); put("1111111110101111", new Pair((byte) 7, (byte) 4)); put("1111111110110000", new Pair((byte) 7, (byte) 5)); put("1111111110110001", new Pair((byte) 7, (byte) 6)); put("1111111110110010", new Pair((byte) 7, (byte) 7)); put("1111111110110011", new Pair((byte) 7, (byte) 8)); put("1111111110110100", new Pair((byte) 7, (byte) 9)); put("1111111110110101", new Pair((byte) 7, (byte) 10));
+            put("111111000", new Pair((byte) 8, (byte) 1)); put("111111111000000", new Pair((byte) 8, (byte) 2)); put("1111111110110110", new Pair((byte) 8, (byte) 3)); put("1111111110110111", new Pair((byte) 8, (byte) 4)); put("1111111110111000", new Pair((byte) 8, (byte) 5)); put("1111111110111001", new Pair((byte) 8, (byte) 6)); put("1111111110111010", new Pair((byte) 8, (byte) 7)); put("1111111110111011", new Pair((byte) 8, (byte) 8)); put("1111111110111100", new Pair((byte) 8, (byte) 9)); put("1111111110111101", new Pair((byte) 8, (byte) 10));
+            put("111111001", new Pair((byte) 9, (byte) 1)); put("1111111110111110", new Pair((byte) 9, (byte) 2)); put("1111111110111111", new Pair((byte) 9, (byte) 3)); put("1111111111000000", new Pair((byte) 9, (byte) 4)); put("1111111111000001", new Pair((byte) 9, (byte) 5)); put("1111111111000010", new Pair((byte) 9, (byte) 6)); put("1111111111000011", new Pair((byte) 9, (byte) 7)); put("1111111111000100", new Pair((byte) 9, (byte) 8)); put("1111111111000101", new Pair((byte) 9, (byte) 9)); put("1111111111000110", new Pair((byte) 9, (byte) 10));
+            put("111111010", new Pair((byte) 10, (byte) 1)); put("1111111111000111", new Pair((byte) 10, (byte) 2)); put("1111111111001000", new Pair((byte) 10, (byte) 3)); put("1111111111001001", new Pair((byte) 10, (byte) 4)); put("1111111111001010", new Pair((byte) 10, (byte) 5)); put("1111111111001011", new Pair((byte) 10, (byte) 6)); put("1111111111001100", new Pair((byte) 10, (byte) 7)); put("1111111111001101", new Pair((byte) 10, (byte) 8)); put("1111111111001110", new Pair((byte) 10, (byte) 9)); put("1111111111001111", new Pair((byte) 10, (byte) 10));
+            put("1111111001", new Pair((byte) 11, (byte) 1)); put("1111111111010000", new Pair((byte) 11, (byte) 2)); put("1111111111010001", new Pair((byte) 11, (byte) 3)); put("1111111111010010", new Pair((byte) 11, (byte) 4)); put("1111111111010011", new Pair((byte) 11, (byte) 5)); put("1111111111010100", new Pair((byte) 11, (byte) 6)); put("1111111111010101", new Pair((byte) 11, (byte) 7)); put("1111111111010110", new Pair((byte) 11, (byte) 8)); put("1111111111010111", new Pair((byte) 11, (byte) 9)); put("1111111111011000", new Pair((byte) 11, (byte) 10));
+            put("1111111010", new Pair((byte) 12, (byte) 1)); put("1111111111011001", new Pair((byte) 12, (byte) 2)); put("1111111111011010", new Pair((byte) 12, (byte) 3)); put("1111111111011011", new Pair((byte) 12, (byte) 4)); put("1111111111011100", new Pair((byte) 12, (byte) 5)); put("1111111111011101", new Pair((byte) 12, (byte) 6)); put("1111111111011110", new Pair((byte) 12, (byte) 7)); put("1111111111011111", new Pair((byte) 12, (byte) 8)); put("1111111111100000", new Pair((byte) 12, (byte) 9)); put("1111111111100001", new Pair((byte) 12, (byte) 10));
+            put("11111111000", new Pair((byte) 13, (byte) 1)); put("1111111111100010", new Pair((byte) 13, (byte) 2)); put("1111111111100011", new Pair((byte) 13, (byte) 3)); put("1111111111100100", new Pair((byte) 13, (byte) 4)); put("1111111111100101", new Pair((byte) 13, (byte) 5)); put("1111111111100110", new Pair((byte) 13, (byte) 6)); put("1111111111100111", new Pair((byte) 13, (byte) 7)); put("1111111111101000", new Pair((byte) 13, (byte) 8)); put("1111111111101001", new Pair((byte) 13, (byte) 9)); put("1111111111101010", new Pair((byte) 13, (byte) 10));
+            put("1111111111101011", new Pair((byte) 14, (byte) 1)); put("1111111111101100", new Pair((byte) 14, (byte) 2)); put("1111111111101101", new Pair((byte) 14, (byte) 3)); put("1111111111101110", new Pair((byte) 14, (byte) 4)); put("1111111111101111", new Pair((byte) 14, (byte) 5)); put("1111111111110000", new Pair((byte) 14, (byte) 6)); put("1111111111110001", new Pair((byte) 14, (byte) 7)); put("1111111111110010", new Pair((byte) 14, (byte) 8)); put("1111111111110011", new Pair((byte) 14, (byte) 9)); put("1111111111110100", new Pair((byte) 14, (byte) 10));
+            put("11111111001", new Pair((byte) 15, (byte) 0)); put("1111111111110101", new Pair((byte) 15, (byte) 1)); put("1111111111110110", new Pair((byte) 15, (byte) 2)); put("1111111111110111", new Pair((byte) 15, (byte) 3)); put("1111111111111000", new Pair((byte) 15, (byte) 4)); put("1111111111111001", new Pair((byte) 15, (byte) 5)); put("1111111111111010", new Pair((byte) 15, (byte) 6)); put("1111111111111011", new Pair((byte) 15, (byte) 7)); put("1111111111111100", new Pair((byte) 15, (byte) 8)); put("1111111111111101", new Pair((byte) 15, (byte) 9)); put("1111111111111110", new Pair((byte) 15, (byte) 10));
+        }};
+    }
+
+    /**
+     * Cuenta el número de bits mínimos con los que representar el número pasado por parámetro
+     * @param numero El número del cual queremos saber su tamaño en bits
+     * @return El número de bits mínimos con los que representar el número pasado por parámetro
+     */
+    private static byte bitsNumero(byte numero) {
+        byte bits = 0;
+        int numeroUnsigned = 0xFF & numero; //avoiding shift logical malfunction with byte type
+        while (numeroUnsigned != 0) { //counting minimum amount of bits to represent number passed as parameter
+            bits++;
+            numeroUnsigned >>>= 1;
+        }
+        return bits;
+    }
+
+    /**
+     * Convierte un binary string en un byte array
+     * <p>
+     *     El binary string pasado por parámetro sólo contiene los caracteres '1' y '0'
+     * </p>
+     * @param binaryString El binary string en cuestión
+     * @return El byte list deseado
+     */
+    private List<Byte> toByteList(String binaryString) {
+        List<Byte> l = new ArrayList<>();
+        byte n = 0;
+        for (int i = 0; i < binaryString.length(); ++i) { //for each 8 chars, being '1' or '0', one byte is created and added to the byte list
+            if (binaryString.charAt(i) == '1') n++;
+            if (i % 8 != 7) n<<=1;
+            else {
+                l.add(n);
+                n = 0;
+            }
+        }
+        if (binaryString.length() % 8 != 0) { //if there remains some chars as offset of last byte, the highest '1' is shifted till it is the 8th highest value bit of the byte, and then the byte is appended to the list
+            for (int i = 1; i < (8 - binaryString.length() % 8); ++i) n <<= 1;
+            l.add(n);
+        }
+        return l;
     }
 
     /**
@@ -100,16 +187,16 @@ public class JPEG implements CompresorDecompresor {
         List<Byte> result = new ArrayList<>(); //data will be written here before passing it into output byte array
         if (datosInput.length < 14) throw new FormatoErroneoException("El formato de .ppm no es correcto!");
         int pos = 0;
-        String buff = "";
+        StringBuilder buff = new StringBuilder();
         //start of header reading
         while (pos < datosInput.length - 1 && (char)datosInput[pos] != '\n') {
-            buff += (char)datosInput[pos];
+            buff.append((char) datosInput[pos]);
             result.add(datosInput[pos]);
             ++pos;
         }
         result.add((byte)'\n');
         ++pos;
-        String magicNumber = buff; //read .ppm magicNumber, which is P6 (pixels are codified in binary)
+        String magicNumber = buff.toString(); //read .ppm magicNumber, which is P6 (pixels are codified in binary)
         if(!magicNumber.equals("P6")) throw new FormatoErroneoException("El formato de .ppm no es correcto!");
         while (pos < datosInput.length - 1 && (char)datosInput[pos] == '#') {
             while ((char)datosInput[pos] != '\n') { //avoiding comments between parameters...
@@ -117,15 +204,15 @@ public class JPEG implements CompresorDecompresor {
             }
             ++pos;
         }
-        buff = "";
+        buff = new StringBuilder();
         while (pos < datosInput.length - 1 && (char)datosInput[pos] != '\n') {
-            buff += (char)datosInput[pos];
+            buff.append((char) datosInput[pos]);
             result.add(datosInput[pos]);
             ++pos;
         }
         result.add((byte)'\n');
         ++pos;
-        String[] widthHeight = buff.split(" ");  //read and split dimensions into two (one for each value)
+        String[] widthHeight = buff.toString().split(" ");  //read and split dimensions into two (one for each value)
         if (widthHeight.length > 2 || Integer.parseInt(widthHeight[0]) < 1 || Integer.parseInt(widthHeight[1]) < 1) throw new FormatoErroneoException("El formato de .ppm no es correcto!");
         while (pos < datosInput.length - 1 && (char)datosInput[pos] == '#') {
             while ((char)datosInput[pos] != '\n') { //avoiding comments between parameters...
@@ -133,16 +220,20 @@ public class JPEG implements CompresorDecompresor {
             }
             ++pos;
         }
-        buff = "";
+        buff = new StringBuilder();
         while (pos < datosInput.length - 1 && (char)datosInput[pos] != '\n') {
-            buff += (char)datosInput[pos];
+            buff.append((char) datosInput[pos]);
             result.add(datosInput[pos]);
             ++pos;
         }
         result.add((byte)'\n');
         ++pos;
-        String rgbMVal = buff; //string of rgb maximum value per pixel (8 bits)
+        String rgbMVal = buff.toString(); //string of rgb maximum value per pixel (8 bits)
         if (!rgbMVal.equals("255")) throw new FormatoErroneoException("El formato de .ppm no es correcto!");
+        String qualityPercent = Integer.toString(calidadHeader); //writting in header the compression quality
+        char [] qualityPercentArray = qualityPercent.toCharArray(); //.imgc extension determines that its header will be the same one than the one of the .ppm image, but adding the quality compression in it
+        for (char c : qualityPercentArray) result.add((byte)c);
+        result.add((byte)'\n');
         //end of header reading
 
         //start of pixelmap reading
@@ -191,7 +282,9 @@ public class JPEG implements CompresorDecompresor {
                 }
             }
         }
+        //end of pixelmap reading
 
+        //start of image compression
         int downSampledPaddedHeight, downSampledPaddedWidth;
         if ((paddedHeight/2) % 8 == 0) downSampledPaddedHeight = paddedHeight/2;
         else downSampledPaddedHeight = (paddedHeight/2) + 4;
@@ -233,22 +326,15 @@ public class JPEG implements CompresorDecompresor {
                 }
             }
         }
-        //end of pixelmap reading
 
-        String qualityPercent = Integer.toString(calidadHeader); //writting in header the compression quality
-        char [] qualityPercentArray = qualityPercent.toCharArray(); //.imgc extension determines that its header will be the same one than the one of the .ppm image, but adding the quality compression in it
-        for (char c : qualityPercentArray) result.add((byte)c);
-        result.add((byte)'\n');
-
-        //start of image compression
-        int topu, topv;
-        double alphau, alphav, cosu, cosv;
-        double[][] buffY = new double[8][8];
-        for (int x = 0; x < paddedHeight; x += 8) { //image DCT-II and quantization (done in pixel squares of 8x8) for luminance
-            topu = x + 8;                           //for each luminance pixel square of 8x8 of the image, DCT-II algorithm is applied, letting calculate the image frequencies
-            for (int y = 0; y < paddedWidth; y += 8) {
-                topv = y + 8;
-                for (int u = x; u < topu; ++u) {
+        List<Byte>[][] tempResultY = new List[paddedHeight/8][paddedWidth/8];
+        IntStream.range(0, paddedHeight).parallel().filter(x -> x % 8 == 0).forEach(x -> { //image DCT-II and quantization (done in pixel squares of 8x8) for luminance
+            IntStream.range(0, paddedWidth).parallel().filter(y -> y % 8 == 0).forEach(y -> {
+                double[][] buffY = new double[8][8];
+                tempResultY[x /8][y/8] = new ArrayList<>();
+                int topu = x + 8, topv = y + 8;
+                IntStream.range(x, topu).parallel().forEach(u -> {
+                    double alphau, alphav, cosu, cosv;
                     if (u % 8 == 0) alphau = 1 / Math.sqrt(2);
                     else alphau = 1;
                     for (int v = y; v < topv; ++v) { //for each luminance pixel of the 8x8 square, the DCT-II calculation is applied
@@ -265,11 +351,11 @@ public class JPEG implements CompresorDecompresor {
                         buffY[u%8][v%8] *= (alphau * alphav * 0.25);
                         buffY[u%8][v%8] /= (LuminanceQuantizationTable[u%8][v%8] * calidad);
                     }
-                }
+                });
                 boolean up = true;
                 int i = x, j = y, it = 0;
                 byte[] lineY = new byte[64]; //linear vector for zigzagged elements of Y before RLE
-                while (i < topu && j < topv) { //zig-zag and RLE of Luminance 8x8 square (Huffman yet to be applied)
+                while (i < topu && j < topv) { //zig-zag, RLE and Huffman Coding of Luminance 8x8 square
                     lineY[it++] = (byte)Math.round(buffY[i%8][j%8]); //.imgc extension determines that the pixelmap will contain first the luminance pixelmap and then the chrominance one
                     if (i == x && j != topv - 1 && up) {
                         ++j;
@@ -300,33 +386,39 @@ public class JPEG implements CompresorDecompresor {
                         --j;
                     }
                 }
-                List<Byte> rleY = new ArrayList<>(); //losless compression of 8x8 block values
-                int howManyZeroes = 0; //how many zeroes have been ignored until a non zero value found in 8x8 block
+                String rleY = ""; //RLE: lossless compression of 8x8 block values
+                byte howManyZeroes = 0; //how many zeroes have been ignored until a non zero value found in 8x8 block
                 for (int k = 0; k < 64; ++k) {
                     if (lineY[k] == 0) {
                         howManyZeroes++;
+                        if (howManyZeroes > 15) k = 64;
                     }
                     else {
-                        rleY.add((byte)howManyZeroes); //rle refines that each time a non zero value is found, is written how many zeroes have been ignored before
-                        rleY.add(lineY[k]); //then the non zero value is written
+                        //rle refines that each time a non zero value is found, is written how many zeroes have been ignored before and the size of the value in bits
+                        rleY = rleY.concat(ACHuffmanTable[howManyZeroes][bitsNumero(lineY[k])]); //substitution of those 2 values for Huffman value
+                        rleY = rleY.concat(Integer.toBinaryString(lineY[k] & 0xFF)); //then the non zero value is written (only 8 bits or less, the minimum possible to represent its value)
                         howManyZeroes = 0;
                     }
                 }
-                rleY.add((byte)0);
-                rleY.add((byte)0);
-                result.add((byte)rleY.size());
-                for (int k = 0; k < rleY.size(); ++k) {
-                    result.add(rleY.get(k));
-                }
-            }
-        }
-        double[][] buffCb = new double[8][8];
-        double[][] buffCr = new double[8][8];
-        for (int x = 0; x < downSampledPaddedHeight; x += 8) { //image DCT-II and quantization (done in pixel squares of 8x8) for chrominance
-            topu = x + 8;                                      //for each chrominance pixel square of 8x8 of the image, DCT-II algorithm is applied, letting calculate the image frequencies
-            for (int y = 0; y < downSampledPaddedWidth; y += 8) {
-                topv = y + 8;
-                for (int u = x; u < topu; ++u) {
+                rleY = rleY.concat(ACHuffmanTable[0][0]); //end of block: (0,0)
+                int sizeOfBlock = rleY.length() / 8; //header of 8x8 Huffman block
+                int offsetOfBlock = rleY.length() % 8;
+                if (rleY.length() % 8 != 0) sizeOfBlock++; //if there is offset, then there is another byte to be added
+                tempResultY[x /8][y/8].add((byte)sizeOfBlock); //size in bits of block defined before reading each block in order to know how many bytes have to be read
+                tempResultY[x /8][y/8].add((byte)offsetOfBlock);
+                //addition of block to result
+                tempResultY[x /8][y/8].addAll(toByteList(rleY)); //dumping the Huffman block into result
+            });
+        });
+        List<Byte>[][] tempResultCbCr = new List[downSampledPaddedHeight/8][downSampledPaddedWidth/8];
+        IntStream.range(0, downSampledPaddedHeight).parallel().filter(x -> x % 8 == 0).forEach(x -> { //image DCT-II and quantization (done in pixel squares of 8x8) for chrominance
+            IntStream.range(0, downSampledPaddedWidth).parallel().filter(y -> y % 8 == 0).forEach(y -> { //for each chrominance pixel square of 8x8 of the image, DCT-II algorithm is applied, letting calculate the image frequencies
+                double[][] buffCb = new double[8][8];
+                double[][] buffCr = new double[8][8];
+                tempResultCbCr[x /8][y/8] = new ArrayList<>();
+                int topu = x + 8, topv = y + 8;
+                IntStream.range(x, topu).parallel().forEach(u -> {
+                    double alphau, alphav, cosu, cosv;
                     if (u % 8 == 0) alphau = 1 / Math.sqrt(2);
                     else alphau = 1;
                     for (int v = y; v < topv; ++v) { //for each chrominance pixel of the 8x8 square, the DCT-II calculation is applied
@@ -347,12 +439,12 @@ public class JPEG implements CompresorDecompresor {
                         buffCr[u%8][v%8] *= (alphau * alphav * 0.25);
                         buffCr[u%8][v%8] /= (ChrominanceQuantizationTable[u%8][v%8] * calidad);
                     }
-                }
+                });
                 boolean up = true;
                 int i = x, j = y, it = 0;
                 byte[] lineCb = new byte[64]; //linear vector for zigzagged elements of Cb before RLE
                 byte[] lineCr = new byte[64]; //linear vector for zigzagged elements of Cr before RLE
-                while (i < topu && j < topv) { //zig-zag and RLE of Chrominance 8x8 square (Huffman yet to be applied)
+                while (i < topu && j < topv) { //zig-zag, RLE and Huffman of Chrominance 8x8 square
                     lineCb[it] = (byte)Math.round(buffCb[i%8][j%8]);
                     lineCr[it++] = (byte)Math.round(buffCr[i%8][j%8]);
                     if (i == x && j != topv - 1 && up) {
@@ -384,42 +476,60 @@ public class JPEG implements CompresorDecompresor {
                         --j;
                     }
                 }
-                List<Byte> rleCb = new ArrayList<>(); //losless compression of 8x8 block values
-                int howManyZeroes = 0; //how many zeroes have been ignored until a non zero value found in 8x8 block
+                String rleCb = ""; //RLE: lossless compression of 8x8 block values
+                byte howManyZeroes = 0; //how many zeroes have been ignored until a non zero value found in 8x8 block
                 for (int k = 0; k < 64; ++k) {
                     if (lineCb[k] == 0) {
                         howManyZeroes++;
+                        if (howManyZeroes > 15) k = 64;
                     }
                     else {
-                        rleCb.add((byte)howManyZeroes); //rle refines that each time a non zero value is found, is written how many zeroes have been ignored before
-                        rleCb.add(lineCb[k]); //then the non zero value is written
+                        //rle refines that each time a non zero value is found, is written how many zeroes have been ignored before and the size of the value in bits
+                        rleCb = rleCb.concat(ACHuffmanTable[howManyZeroes][bitsNumero(lineCb[k])]); //substitution of those 2 values for Huffman value
+                        rleCb = rleCb.concat(Integer.toBinaryString(lineCb[k] & 0xFF)); //then the non zero value is written (only 8 bits or less, the minimum possible to represent its value)
                         howManyZeroes = 0;
                     }
                 }
-                rleCb.add((byte)0);
-                rleCb.add((byte)0);
-                result.add((byte)rleCb.size());
-                for (int k = 0; k < rleCb.size(); ++k) {
-                    result.add(rleCb.get(k));
-                }
-                howManyZeroes = 0;
-                List<Byte> rleCr = new ArrayList<>(); //losless compression of 8x8 block values
+                rleCb = rleCb.concat(ACHuffmanTable[0][0]); //end of block: (0,0)
+                int sizeOfBlock = rleCb.length() / 8; //header of 8x8 Huffman block
+                int offsetOfBlock = rleCb.length() % 8;
+                if (rleCb.length() % 8 != 0) sizeOfBlock++; //if there is offset, then there is another byte to be added
+                tempResultCbCr[x /8][y/8].add((byte)sizeOfBlock); //size in bits of block defined before reading each block in order to know how many bytes have to be read
+                tempResultCbCr[x /8][y/8].add((byte)offsetOfBlock);
+                //addition of block to result
+                tempResultCbCr[x /8][y/8].addAll(toByteList(rleCb)); //dumping the Huffman block into result
+                String rleCr = ""; //RLE: lossless compression of 8x8 block values
+                howManyZeroes = 0; //how many zeroes have been ignored until a non zero value found in 8x8 block
                 for (int k = 0; k < 64; ++k) {
                     if (lineCr[k] == 0) {
                         howManyZeroes++;
+                        if (howManyZeroes > 15) k = 64;
                     }
                     else {
-                        rleCr.add((byte)howManyZeroes); //rle refines that each time a non zero value is found, is written how many zeroes have been ignored before
-                        rleCr.add(lineCr[k]); //then the non zero value is written
+                        //rle refines that each time a non zero value is found, is written how many zeroes have been ignored before and the size of the value in bits
+                        rleCr = rleCr.concat(ACHuffmanTable[howManyZeroes][bitsNumero(lineCr[k])]); //substitution of those 2 values for Huffman value
+                        rleCr = rleCr.concat(Integer.toBinaryString(lineCr[k] & 0xFF)); //then the non zero value is written (only 8 bits or less, the minimum possible to represent its value)
                         howManyZeroes = 0;
                     }
                 }
-                rleCr.add((byte)0);
-                rleCr.add((byte)0);
-                result.add((byte)rleCr.size());
-                for (int k = 0; k < rleCr.size(); ++k) {
-                    result.add(rleCr.get(k));
-                }
+                rleCr = rleCr.concat(ACHuffmanTable[0][0]); //end of block: (0,0)
+                sizeOfBlock = rleCr.length() / 8; //header of 8x8 Huffman block
+                offsetOfBlock = rleCr.length() % 8;
+                if (rleCr.length() % 8 != 0) sizeOfBlock++; //if there is offset, then there is another byte to be added
+                tempResultCbCr[x /8][y/8].add((byte)sizeOfBlock); //size in bits of block defined before reading each block in order to know how many bytes have to be read
+                tempResultCbCr[x /8][y/8].add((byte)offsetOfBlock);
+                //addition of block to result
+                tempResultCbCr[x /8][y/8].addAll(toByteList(rleCr)); //dumping the Huffman block into result
+            });
+        });
+        for (int x = 0; x < paddedHeight/8; ++x) {
+            for (int y = 0; y < paddedWidth/8; ++y) {
+                result.addAll(tempResultY[x][y]);
+            }
+        }
+        for (int x = 0; x < downSampledPaddedHeight/8; ++x) {
+            for (int y = 0; y < downSampledPaddedWidth/8; ++y) {
+                result.addAll(tempResultCbCr[x][y]);
             }
         }
         //end of image compression
@@ -446,44 +556,45 @@ public class JPEG implements CompresorDecompresor {
         List<Byte> result = new ArrayList<>(); //data will be written here before passing it into output byte array
         if (datosInput.length < 16) throw new FormatoErroneoException("El formato de .imgc no es correcto!");
         int pos = 0;
-        String buff = "";
+        StringBuilder buff = new StringBuilder();
         //start of header reading
         while (pos < datosInput.length - 1 && (char)datosInput[pos] != '\n') {
-            buff += (char)datosInput[pos];
+            buff.append((char) datosInput[pos]);
             result.add(datosInput[pos]);
             ++pos;
         }
         result.add((byte)'\n');
         ++pos;
-        String magicNumber = buff; //read .ppm magicNumber, which is P6 (pixels are codified in binary)
+        String magicNumber = buff.toString(); //read .ppm magicNumber, which is P6 (pixels are codified in binary)
         if(!magicNumber.equals("P6")) throw new FormatoErroneoException("El formato de .imgc no es correcto!");
-        buff = "";
+        buff = new StringBuilder();
         while (pos < datosInput.length - 1 && (char)datosInput[pos] != '\n') {
-            buff += (char)datosInput[pos];
+            buff.append((char) datosInput[pos]);
             result.add(datosInput[pos]);
             ++pos;
         }
         result.add((byte)'\n');
         ++pos;
-        String[] widthHeight = buff.split(" ");  //read and split dimensions into two (one for each value)
+        String[] widthHeight = buff.toString().split(" ");  //read and split dimensions into two (one for each value)
         if (widthHeight.length > 2 || Integer.parseInt(widthHeight[0]) < 1 || Integer.parseInt(widthHeight[1]) < 1) throw new FormatoErroneoException("El formato de .imgc no es correcto!");
-        buff = "";
+        buff = new StringBuilder();
         while (pos < datosInput.length - 1 && (char)datosInput[pos] != '\n') {
-            buff += (char)datosInput[pos];
+            buff.append((char) datosInput[pos]);
             result.add(datosInput[pos]);
             ++pos;
         }
         result.add((byte)'\n');
         ++pos;
-        String rgbMVal = buff; //string of rgb maximum value per pixel (8 bits)
+        String rgbMVal = buff.toString(); //string of rgb maximum value per pixel (8 bits)
         if (!rgbMVal.equals("255")) throw new FormatoErroneoException("El formato de .imgc no es correcto!");
-        buff = "";
+        buff = new StringBuilder();
         while (pos < datosInput.length - 1 && (char)datosInput[pos] != '\n') {
-            buff += (char)datosInput[pos];
+            buff.append((char) datosInput[pos]);
             ++pos;
         }
         ++pos;
-        String quality = buff;
+        String quality = buff.toString();
+        setCalidad(Integer.parseInt(quality));
         if(quality.length() > 1) throw new FormatoErroneoException("El formato de .imgc no es correcto!");
         //end of header reading
 
@@ -505,32 +616,66 @@ public class JPEG implements CompresorDecompresor {
         int[][] Y = new int[paddedHeight][paddedWidth];//luminance
         int[][] Cb = new int[downSampledPaddedHeight][downSampledPaddedWidth];//chrominance blue
         int[][] Cr = new int[downSampledPaddedHeight][downSampledPaddedWidth];//chrominance red
-        int topi, topj;
-        double[][] buffY = new double[8][8];
-        double alphau, alphav, cosu, cosv;
-        for (int x = 0; x < paddedHeight; x += 8) { //image inverse quantization and DCT-III (aka inverse DCT) (done in pixel squares of 8x8) for luminance
-            topi = x + 8;                           //for each luminance pixel square of 8x8 of the image, inverse downsampling and DCT-III (aka inverse DCT) algorithm are applied, letting recover the image value
+        int[][] rleSizeY = new int[paddedHeight/8][paddedWidth/8];
+        int[][] offsetSizeY = new int[paddedHeight/8][paddedWidth/8];
+        StringBuilder[][] huffmanStringBuilderY = new StringBuilder[paddedHeight/8][paddedWidth/8];
+        for (int x = 0; x < paddedHeight; x += 8) {
             for (int y = 0; y < paddedWidth; y += 8) {
-                topj = y + 8;
+                rleSizeY[x/8][y/8] = datosInput[pos++]; //reading Huffman block header
+                offsetSizeY[x/8][y/8] = datosInput[pos++];
+                huffmanStringBuilderY[x/8][y/8] = new StringBuilder();
+                for (int it = 0; it < rleSizeY[x/8][y/8]; ++it) {
+                    huffmanStringBuilderY[x/8][y/8].append(String.format("%8s", Integer.toBinaryString((datosInput[pos++] & 0xFF))).replace(' ', '0')); //converting input bytes into binary string
+                }
+                if (offsetSizeY[x/8][y/8] != 0) {
+                    for (int it = 0; it < (8 - offsetSizeY[x/8][y/8]); ++it)
+                        huffmanStringBuilderY[x/8][y/8].deleteCharAt(huffmanStringBuilderY[x/8][y/8].length() - 1); //deleting extra final bits of last byte of block till offset is fulfilled
+                }
+            }
+        }
+        IntStream.range(0, paddedHeight).parallel().filter(x -> x % 8 == 0).forEach(x -> { //image inverse quantization and DCT-III (aka inverse DCT) (done in pixel squares of 8x8) for luminance
+            int topi = x + 8;                           //for each luminance pixel square of 8x8 of the image, inverse downsampling and DCT-III (aka inverse DCT) algorithm are applied, letting recover the image value
+            IntStream.range(0, paddedWidth).parallel().filter(y -> y % 8 == 0).forEach(y -> {
+                double[][] buffY = new double[8][8];
+                int topj = y + 8;
                 boolean up = true;
                 int k = x, l = y;
-                int rleSize = datosInput[pos++];
+                List<Byte> huffmanList = new ArrayList<>();
+                String huffmanBuff = "";
+                for (int it = 0; it < rleSizeY[x /8][y/8] * 8 - offsetSizeY[x /8][y/8]; ++it) { //getting RLE values from Huffman block after offset applied
+                    huffmanBuff += huffmanStringBuilderY[x /8][y/8].charAt(it);
+                    Pair pair = ACInverseHuffmanTable.get(huffmanBuff); //check if Huffman code exists
+                    if (pair != null) { //if exists, get RLE value and store it in zigzag line of block
+                        byte runlength = pair.getKey(); //getting runlength and size of RLE value
+                        huffmanList.add(runlength);
+                        byte size = pair.getValue();
+                        huffmanList.add(size);
+                        StringBuilder amplitude = new StringBuilder();
+                        for (int n = 0; n < size; ++n) {
+                            amplitude.append(huffmanStringBuilderY[x /8][y/8].charAt(++it)); //binary string of non-zero value
+                        }
+                        if (runlength != 0 || size != 0) huffmanList.add((byte)Integer.parseInt(amplitude.toString(), 2)); //binary string (8 bits long) to byte
+                        else it = rleSizeY[x /8][y/8] * 8 - offsetSizeY[x /8][y/8];
+                        huffmanBuff = "";
+                    }
+                }
                 byte[] lineY = new byte[64];
                 int lineYit = 0;
-                for (int it = 0; it < rleSize; ++it) {
-                    int howManyZeroes = datosInput[pos++];
-                    byte value = datosInput[pos++];
-                    if (howManyZeroes != 0 || value != 0) {
+                for (int it = 0; it < huffmanList.size(); ++it) { //RLE lossless decompression for Luminance
+                    int howManyZeroes = huffmanList.get(it++);
+                    int size = huffmanList.get(it++);
+                    if (howManyZeroes != 0 || size != 0) {
+                        byte value = huffmanList.get(it);
                         for (int z = 0; z < howManyZeroes; ++z) lineY[lineYit++] = 0;
                         lineY[lineYit++] = value;
                     }
                     else {
                         while (lineYit < 64) lineY[lineYit++] = 0;
-                        it = rleSize;
+                        it = huffmanList.size();
                     }
                 }
                 lineYit = 0;
-                while (k < topi && l < topj) { //zig-zag reading Luminance and inverse downsampling values (Huffman yet to be applied)
+                while (k < topi && l < topj) { //zig-zag reading Luminance and inverse downsampling values
                     buffY[k%8][l%8] = (lineY[lineYit++]) * (LuminanceQuantizationTable[k%8][l%8] * calidad); //(byte) because reads [0,255] but it's been stored as [-128,127]
                     Y[k][l] = (int)Math.round(buffY[k%8][l%8]);
                     if (k == x && l != topj - 1 && up) {
@@ -562,7 +707,8 @@ public class JPEG implements CompresorDecompresor {
                         --l;
                     }
                 }
-                for (int i = x; i < topi; ++i) {
+                IntStream.range(x, topi).parallel().forEach(i -> {
+                    double alphau, alphav, cosu, cosv;
                     for (int j = y; j < topj; ++j) { //for each luminance pixel of the 8x8 square, the DCT-III calculation is applied
                         buffY[i%8][j%8] = 0;
                         for (int u = x; u < topi; ++u) {
@@ -578,55 +724,123 @@ public class JPEG implements CompresorDecompresor {
                         }
                         buffY[i%8][j%8] *= 0.25;
                     }
-                }
+                });
                 for (int i = x; i < topi; ++i) {
                     for (int j = y; j < topj; ++j) {
                         Y[i][j] = (int)Math.round(buffY[i%8][j%8]);
                     }
                 }
+            });
+        });
+        int[][] rleSizeCb = new int[downSampledPaddedHeight/8][downSampledPaddedWidth/8];
+        int[][] rleSizeCr = new int[downSampledPaddedHeight/8][downSampledPaddedWidth/8];
+        int[][] offsetSizeCb = new int[downSampledPaddedHeight/8][downSampledPaddedWidth/8];
+        int[][] offsetSizeCr = new int[downSampledPaddedHeight/8][downSampledPaddedWidth/8];
+        StringBuilder[][] huffmanStringBuilderCb = new StringBuilder[downSampledPaddedHeight/8][downSampledPaddedWidth/8];
+        StringBuilder[][] huffmanStringBuilderCr = new StringBuilder[downSampledPaddedHeight/8][downSampledPaddedWidth/8];
+        for (int x = 0; x < downSampledPaddedHeight; x += 8) {
+            for (int y = 0; y < downSampledPaddedWidth; y += 8) {
+                rleSizeCb[x/8][y/8] = datosInput[pos++]; //reading Huffman block header
+                offsetSizeCb[x/8][y/8] = datosInput[pos++];
+                huffmanStringBuilderCb[x/8][y/8] = new StringBuilder();
+                for (int it = 0; it < rleSizeCb[x/8][y/8]; ++it) {
+                    huffmanStringBuilderCb[x/8][y/8].append(String.format("%8s", Integer.toBinaryString((datosInput[pos++] & 0xFF))).replace(' ', '0')); //converting input bytes into binary string
+                }
+                if (offsetSizeCb[x/8][y/8] != 0) {
+                    for (int it = 0; it < (8 - offsetSizeCb[x/8][y/8]); ++it)
+                        huffmanStringBuilderCb[x/8][y/8].deleteCharAt(huffmanStringBuilderCb[x/8][y/8].length() - 1); //deleting extra final bits of last byte of block till offset is fulfilled
+                }
+                rleSizeCr[x/8][y/8] = datosInput[pos++]; //reading Huffman block header
+                offsetSizeCr[x/8][y/8] = datosInput[pos++];
+                huffmanStringBuilderCr[x/8][y/8] = new StringBuilder();
+                for (int it = 0; it < rleSizeCr[x/8][y/8]; ++it) {
+                    huffmanStringBuilderCr[x/8][y/8].append(String.format("%8s", Integer.toBinaryString((datosInput[pos++] & 0xFF))).replace(' ', '0')); //converting input bytes into binary string
+                }
+                if (offsetSizeCr[x/8][y/8] != 0) {
+                    for (int it = 0; it < (8 - offsetSizeCr[x/8][y/8]); ++it)
+                        huffmanStringBuilderCr[x/8][y/8].deleteCharAt(huffmanStringBuilderCr[x/8][y/8].length() - 1); //deleting extra final bits of last byte of block till offset is fulfilled
+                }
             }
         }
-        double[][] buffCb = new double[8][8];
-        double[][] buffCr = new double[8][8];
-        for (int x = 0; x < downSampledPaddedHeight; x += 8) { //image inverse quantization and DCT-III (aka inverse DCT) (done in pixel squares of 8x8) for chrominance
-            topi = x + 8;                                      //for each chrominance pixel square of 8x8 of the image, inverse downsampling and DCT-III (aka inverse DCT) algorithm are applied, letting recover the image values
-            for (int y = 0; y < downSampledPaddedWidth; y += 8) {
-                topj = y + 8;
+        IntStream.range(0, downSampledPaddedHeight).parallel().filter(x -> x % 8 == 0).forEach(x -> { //image inverse quantization and DCT-III (aka inverse DCT) (done in pixel squares of 8x8) for chrominance
+            int topi = x + 8;                                      //for each chrominance pixel square of 8x8 of the image, inverse downsampling and DCT-III (aka inverse DCT) algorithm are applied, letting recover the image values
+            IntStream.range(0, downSampledPaddedWidth).parallel().filter(y -> y % 8 == 0).forEach(y -> {
+                double[][] buffCb = new double[8][8];
+                double[][] buffCr = new double[8][8];
+                int topj = y + 8;
                 boolean up = true;
                 int k = x, l = y;
-                int rleSize = datosInput[pos++];
+                List<Byte> huffmanList = new ArrayList<>();
+                String huffmanBuff = "";
+                for (int it = 0; it < rleSizeCb[x/8][y/8] * 8 - offsetSizeCb[x/8][y/8]; ++it) { //getting RLE values from Huffman block after offset applied
+                    huffmanBuff += huffmanStringBuilderCb[x/8][y/8].charAt(it);
+                    Pair pair = ACInverseHuffmanTable.get(huffmanBuff); //check if Huffman code exists
+                    if (pair != null) { //if exists, get RLE value and store it in zigzag line of block
+                        byte runlength = pair.getKey(); //getting runlength and size of RLE value
+                        huffmanList.add(runlength);
+                        byte size = pair.getValue();
+                        huffmanList.add(size);
+                        StringBuilder amplitude = new StringBuilder();
+                        for (int n = 0; n < size; ++n) {
+                            amplitude.append(huffmanStringBuilderCb[x/8][y/8].charAt(++it)); //binary string of non-zero value
+                        }
+                        if (runlength != 0 || size != 0) huffmanList.add((byte)Integer.parseInt(amplitude.toString(), 2)); //binary string (8 bits long) to byte
+                        else it = rleSizeCb[x/8][y/8] * 8 - offsetSizeCb[x/8][y/8];
+                        huffmanBuff = "";
+                    }
+                }
                 byte[] lineCb = new byte[64];
                 int lineCbit = 0;
-                for (int it = 0; it < rleSize; ++it) {
-                    int howManyZeroes = datosInput[pos++];
-                    byte value = datosInput[pos++];
-                    if (howManyZeroes != 0 || value != 0) {
+                for (int it = 0; it < huffmanList.size(); ++it) { //RLE lossless decompression for Chrominance
+                    int howManyZeroes = huffmanList.get(it++);
+                    int size = huffmanList.get(it++);
+                    if (howManyZeroes != 0 || size != 0) {
+                        byte value = huffmanList.get(it);
                         for (int z = 0; z < howManyZeroes; ++z) lineCb[lineCbit++] = 0;
                         lineCb[lineCbit++] = value;
                     }
                     else {
                         while (lineCbit < 64) lineCb[lineCbit++] = 0;
-                        it = rleSize;
+                        it = huffmanList.size();
                     }
                 }
                 lineCbit = 0;
-                rleSize = datosInput[pos++];
+                List<Byte> huffmanCrList = new ArrayList<>();
+                huffmanBuff = "";
+                for (int it = 0; it < rleSizeCr[x/8][y/8] * 8 - offsetSizeCr[x/8][y/8]; ++it) { //getting RLE values from Huffman block after offset applied
+                    huffmanBuff += huffmanStringBuilderCr[x/8][y/8].charAt(it);
+                    Pair pair = ACInverseHuffmanTable.get(huffmanBuff); //check if Huffman code exists
+                    if (pair != null) { //if exists, get RLE value and store it in zigzag line of block
+                        byte runlength = pair.getKey(); //getting runlength and size of RLE value
+                        huffmanCrList.add(runlength);
+                        byte size = pair.getValue();
+                        huffmanCrList.add(size);
+                        StringBuilder amplitude = new StringBuilder();
+                        for (int n = 0; n < size; ++n) {
+                            amplitude.append(huffmanStringBuilderCr[x/8][y/8].charAt(++it)); //binary string of non-zero value
+                        }
+                        if (runlength != 0 || size != 0) huffmanCrList.add((byte)Integer.parseInt(amplitude.toString(), 2)); //binary string (8 bits long) to byte
+                        else it = rleSizeCr[x/8][y/8] * 8 - offsetSizeCr[x/8][y/8];
+                        huffmanBuff = "";
+                    }
+                }
                 byte[] lineCr = new byte[64];
                 int lineCrit = 0;
-                for (int it = 0; it < rleSize; ++it) {
-                    int howManyZeroes = datosInput[pos++];
-                    byte value = datosInput[pos++];
-                    if (howManyZeroes != 0 || value != 0) {
+                for (int it = 0; it < huffmanCrList.size(); ++it) { //RLE lossless decompression for Chrominance
+                    int howManyZeroes = huffmanCrList.get(it++);
+                    int size = huffmanCrList.get(it++);
+                    if (howManyZeroes != 0 || size != 0) {
+                        byte value = huffmanCrList.get(it);
                         for (int z = 0; z < howManyZeroes; ++z) lineCr[lineCrit++] = 0;
                         lineCr[lineCrit++] = value;
                     }
                     else {
                         while (lineCrit < 64) lineCr[lineCrit++] = 0;
-                        it = rleSize;
+                        it = huffmanCrList.size();
                     }
                 }
                 lineCrit = 0;
-                while (k < topi && l < topj) { //zig-zag reading Chrominance and inverse downsampling values (Huffman yet to be applied)
+                while (k < topi && l < topj) { //zig-zag reading Chrominance and inverse downsampling values
                     buffCb[k%8][l%8] = (lineCb[lineCbit++]) * (ChrominanceQuantizationTable[k%8][l%8] * calidad); //(byte) because reads [0,255] but it's been stored as [-128,127]
                     buffCr[k%8][l%8] = (lineCr[lineCrit++]) * (ChrominanceQuantizationTable[k%8][l%8] * calidad); //(byte) because reads [0,255] but it's been stored as [-128,127]
                     Cb[k][l] = (int)Math.round(buffCb[k%8][l%8]);
@@ -660,9 +874,9 @@ public class JPEG implements CompresorDecompresor {
                         --l;
                     }
                 }
-                for (int i = x; i < topi; ++i) {
+                IntStream.range(x, topi).parallel().forEach(i -> {
+                    double alphau, alphav, cosu, cosv;
                     for (int j = y; j < topj; ++j) { //for each chrominance pixel of the 8x8 square, the DCT-III calculation is applied
-                        buffY[i%8][j%8] = 0;
                         buffCb[i%8][j%8] = 0;
                         buffCr[i%8][j%8] = 0;
                         for (int u = x; u < topi; ++u) {
@@ -680,15 +894,15 @@ public class JPEG implements CompresorDecompresor {
                         buffCb[i%8][j%8] *= 0.25;
                         buffCr[i%8][j%8] *= 0.25;
                     }
-                }
+                });
                 for (int i = x; i < topi; ++i) {
                     for (int j = y; j < topj; ++j) {
                         Cb[i][j] = (int)Math.round(buffCb[i%8][j%8]);
                         Cr[i][j] = (int)Math.round(buffCr[i%8][j%8]);
                     }
                 }
-            }
-        }
+            });
+        });
 
         int[] rgb = new int[3];
         for (int x = 0; x < height; ++x) { //converting YCbCr to RGB and changing range from [-128,127] to [0,255]
@@ -709,5 +923,46 @@ public class JPEG implements CompresorDecompresor {
         }
         long endTime = System.nanoTime(), totalTime = endTime - startTime; //ending time and total execution time
         return new OutputAlgoritmo(totalTime, datosOutput); //returning output time and data byte array
+    }
+
+
+    /**
+     * Clase encargada de contener un par de datos de tipo byte para la tabla de Huffman de descompresión
+     */
+    static class Pair {
+        /**
+         * Primer byte, el cual, según RLE, contiene el valor de Runlength
+         */
+        byte key;
+        /**
+         * Segundo byte, el cual, según RLE, contiene el valor del size del valor distinto de cero
+         */
+        byte value;
+
+        /**
+         * Constructora de la clase
+         * @param key Valor de Runlength
+         * @param value Valor del size del valor distinto de cero
+         */
+        Pair(byte key, byte value) {
+            this.key = key;
+            this.value = value;
+        }
+
+        /**
+         * Obtenedora del key del pair
+         * @return El key del pair
+         */
+        byte getKey() {
+            return this.key;
+        }
+
+        /**
+         * Obtenedora del value del pair
+         * @return El value del pair
+         */
+        byte getValue() {
+            return this.value;
+        }
     }
 }

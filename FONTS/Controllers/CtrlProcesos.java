@@ -51,7 +51,7 @@ public class CtrlProcesos {
     public DatosProceso comprimirArchivo(String path, Algoritmo tipoAlgoritmo) throws Exception {
         CtrlDatos ctrlDatos = CtrlDatos.getInstance();
         if(tipoAlgoritmo == Algoritmo.PREDETERMINADO) {
-            Algoritmo[] algoritmos = algoritmosPosibles(path);
+            Algoritmo[] algoritmos = CtrlDatos.algoritmosPosibles(path);
             if(algoritmos[0] == Algoritmo.JPEG) tipoAlgoritmo = Algoritmo.JPEG;
             else tipoAlgoritmo = algoritmoDeTextoPredeterminado;
         }
@@ -78,7 +78,7 @@ public class CtrlProcesos {
      */
     public DatosProceso descomprimirArchivo(String path) throws Exception {
         CtrlDatos ctrlDatos = CtrlDatos.getInstance();
-        Algoritmo[] algoritmos = algoritmosPosibles(path);
+        Algoritmo[] algoritmos = CtrlDatos.algoritmosPosibles(path);
         ProcesoFichero desc = new ProcesoDescomprimir(ctrlDatos.leerArchivo(path), algoritmos[0]);
         desc.ejecutarProceso();
         ctrlDatos.guardaArchivo(desc.getOutput(), path, algoritmos[0], false, true);
@@ -107,7 +107,7 @@ public class CtrlProcesos {
     public DatosProceso comprimirDescomprimirArchivo(String path, Algoritmo tipoAlgoritmo) throws Exception {
         CtrlDatos ctrlDatos = CtrlDatos.getInstance();
         if (tipoAlgoritmo == Algoritmo.PREDETERMINADO) {
-            Algoritmo[] algoritmos = algoritmosPosibles(path);
+            Algoritmo[] algoritmos = CtrlDatos.algoritmosPosibles(path);
             if (algoritmos[0] == Algoritmo.JPEG) tipoAlgoritmo = Algoritmo.JPEG;
             else tipoAlgoritmo = algoritmoDeTextoPredeterminado;
         }
@@ -130,6 +130,56 @@ public class CtrlProcesos {
         }
         return dp;
     }
+
+    public void comprimirCarpeta(String pathIn, String pathOut, Algoritmo algoritmo) throws Exception {
+        long tiempo = 0, oldSize = 0, newSize = 0;
+        CtrlDatos ctrlDatos = CtrlDatos.getInstance();
+        ctrlDatos.crearGestorCarpeta(pathIn, true, algoritmo);
+        Algoritmo algoritmoArchivo;
+        while((algoritmoArchivo = ctrlDatos.leerAlgoritmoProximoArchivo())!= null) {
+            if (algoritmoArchivo != Algoritmo.CARPETA) {
+                ProcesoFichero desc = new ProcesoComprimir(ctrlDatos.leerProximoArchivo(), algoritmoArchivo);
+                desc.ejecutarProceso();
+                ctrlDatos.guardaProximoArchivo(desc.getOutput());
+                DatosProceso dp = desc.getDatosProceso();
+                tiempo += dp.getTiempo();
+                oldSize += dp.getOldSize();
+                newSize += dp.getNewSize();
+                if(dp.isSatisfactorio()) {
+                    ctrlDatos.actualizaEstadistica(dp, algoritmoArchivo, true);
+                }
+            }
+            else ctrlDatos.guardaProximoArchivo(ctrlDatos.leerProximoArchivo());
+        }
+        ctrlDatos.finalizarGestorCarpeta();
+        long diffSize = oldSize - newSize;
+        double diffSizePercentage = Math.floor((newSize /(double) oldSize)*100);
+        System.out.println("El proceso ha tardado " + tiempo / 1000000000.0 + "s. El cambio de tamaño pasa de " + oldSize + "B a " + newSize + "B con diferencia de " + diffSize + "B que resulta en un " + diffSizePercentage + "% del archivo original.");
+    }
+
+    public void descomprimirCarpeta(String pathIn, String pathOut, Algoritmo algoritmo) throws Exception {
+        long tiempo = 0, oldSize = 0, newSize = 0;
+        CtrlDatos ctrlDatos = CtrlDatos.getInstance();
+        ctrlDatos.crearGestorCarpeta(pathIn, false, algoritmo);
+        Algoritmo algoritmoArchivo;
+        while((algoritmoArchivo = ctrlDatos.leerAlgoritmoProximoArchivo())!= null) {
+            ProcesoFichero desc = new ProcesoDescomprimir(ctrlDatos.leerProximoArchivo(), algoritmoArchivo);
+            desc.ejecutarProceso();
+            ctrlDatos.guardaProximoArchivo(desc.getOutput());
+            DatosProceso dp = desc.getDatosProceso();
+            tiempo += dp.getTiempo();
+            oldSize += dp.getOldSize();
+            newSize += dp.getNewSize();
+            if(dp.isSatisfactorio()) {
+                ctrlDatos.actualizaEstadistica(dp, algoritmoArchivo, false);
+            }
+        }
+        ctrlDatos.finalizarGestorCarpeta();
+        long diffSize = newSize - oldSize;
+        double diffSizePercentage = Math.floor((newSize /(double) oldSize)*100);
+        System.out.println("El proceso ha tardado " + tiempo / 1000000000.0 + "s. El cambio de tamaño pasa de " + oldSize + "B a " + newSize + "B con diferencia de " + diffSize + "B que resulta en un " + diffSizePercentage + "% del archivo original.");
+    }
+
 
     /**
      * Asigna un algoritmo de texto predeterminado al Singleton de CtrlProcesos
@@ -158,87 +208,4 @@ public class CtrlProcesos {
         JPEG.getInstance().setCalidad(calidadJPEG);
     }
 
-    /**
-     * Comprueba qué algoritmos se pueden usar para comprimir o descomprimir un fichero, el cual se pasa por parámetro.
-     * <p>
-     *     El path del archivo debe seguir el formato general de cualquier tipo de path de archivo y puede ser relativo o absoluto.
-     * </p>
-     * @param path El path del archivo a comprobar
-     * @return Un vector de algoritmos posibles a ejecutar para comprimir o descomprimir el fichero
-     * @throws FormatoErroneoException No hay ningún algoritmo compatible con la extensión del archivo
-     */
-    public static Algoritmo[] algoritmosPosibles(String path) throws FormatoErroneoException {
-        String[] splittedPath = path.split("\\.");
-        String type = splittedPath[splittedPath.length-1];
-
-        switch (type) {
-            case "txt":
-                return new Algoritmo[] {Algoritmo.LZSS, Algoritmo.LZW, Algoritmo.LZ78};
-            case "ppm":
-            case "imgc":
-                return new Algoritmo[] {Algoritmo.JPEG};
-            case "lzss":
-                return new Algoritmo[] {Algoritmo.LZSS};
-            case "lz78":
-                return new Algoritmo[] {Algoritmo.LZ78};
-            case "lzw":
-                return new Algoritmo[] {Algoritmo.LZW};
-            default:
-                throw new FormatoErroneoException("No hay ningun tipo de algoritmo compatible");
-        }
-    }
-
-    /**
-     * Comprueba si el archivo es capaz de ser comprimido según la extensión del mismo.
-     * <p>
-     *     El path del archivo debe seguir el formato general de cualquier tipo de path de archivo y puede ser relativo o absoluto.
-     * </p>
-     * @param path El path del archivo que se quiere comprobar
-     * @return Un booleano que indica si el archivo es comprimible
-     * @throws FormatoErroneoException No hay ningún algoritmo compatible con la extensión del archivo
-     */
-    public static boolean esComprimible(String path) throws FormatoErroneoException {
-        String[] splitP = path.split("\\.");
-        String type = splitP[splitP.length-1];
-
-        switch (type) {
-            case "txt":
-            case "ppm":
-                return true;
-            case "imgc":
-            case "lzss":
-            case "lz78":
-            case "lzw":
-                return false;
-            default:
-                throw new FormatoErroneoException("No hay ningun tipo de algoritmo compatible");
-        }
-    }
-
-    /**
-     * Comprueba si el archivo es capaz de ser descomprimido según la extensión del mismo.
-     * <p>
-     *     El path del archivo debe seguir el formato general de cualquier tipo de path de archivo y puede ser relativo o absoluto.
-     * </p>
-     * @param path El path del archivo que se quiere comprobar
-     * @return Un booleano que indica si el archivo es descomprimible
-     * @throws FormatoErroneoException No hay ningún algoritmo compatible con la extensión del archivo
-     */
-    public static boolean esDescomprimible(String path) throws FormatoErroneoException {
-        String[] splitP = path.split("\\.");
-        String type = splitP[splitP.length-1];
-
-        switch (type) {
-            case "txt":
-            case "ppm":
-                return false;
-            case "imgc":
-            case "lzss":
-            case "lz78":
-            case "lzw":
-                return true;
-            default:
-                throw new FormatoErroneoException("No hay ningun tipo de algoritmo compatible");
-        }
-    }
 }
