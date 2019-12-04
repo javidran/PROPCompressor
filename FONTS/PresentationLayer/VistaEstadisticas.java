@@ -27,11 +27,7 @@ public class VistaEstadisticas extends JDialog {
 
         procesarButton.addActionListener(e -> {
             String data =  Objects.requireNonNull(comboBox1.getSelectedItem()).toString();
-            try {
-                ctrlPresentacion.mostrarEstadisticas(data);
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+            ctrlPresentacion.mostrarEstadisticas(data);
         });
         cancelarButton.addActionListener(e -> dispose());
     }

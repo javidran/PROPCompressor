@@ -173,10 +173,10 @@ public class CtrlPresentacion {
             dp = ctrlProcesos.comprimirDescomprimirArchivo(modeloParametros.getPathOriginal(), modeloParametros.getAlgoritmo());
         }
         else if (modeloParametros.isCompresion()) {
-            dp = ctrlProcesos.comprimirArchivo(modeloParametros.getPathOriginal(), modeloParametros.getAlgoritmo());
+            dp = ctrlProcesos.comprimirArchivo(modeloParametros.getPathOriginal(), modeloParametros.getPathResultado(), modeloParametros.getAlgoritmo());
         }
         else {
-            dp = ctrlProcesos.descomprimirArchivo(modeloParametros.getPathOriginal());
+            dp = ctrlProcesos.descomprimirArchivo(modeloParametros.getPathOriginal(), modeloParametros.getPathResultado());
         }
         //jDialog.dispose();
         //dp <-- estructura datos proceso resultante de el proceso ejecutado (erase when read)
@@ -213,8 +213,11 @@ public class CtrlPresentacion {
         vistaEstadisticas.setVisible(true);
     }
 
-    public void mostrarEstadisticas(String data) throws IOException {
-        String mensaje = getEstadisticas(data);
-        vistaEstadisticas.mostrarEstadisticasSelecionadas(mensaje);
+    public void mostrarEstadisticas(String data) {
+        try {
+            vistaEstadisticas.mostrarEstadisticasSelecionadas(getEstadisticas(data));
+        } catch (IOException e) {
+            JOptionPane.showConfirmDialog(null, "Ha habido un problema al acceder a los datos estadísticos. Por favor, vuelva a intentarlo más tarde.",null, JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
+        }
     }
 }

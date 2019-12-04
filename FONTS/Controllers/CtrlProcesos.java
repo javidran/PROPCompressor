@@ -44,20 +44,22 @@ public class CtrlProcesos {
      * <p>
      *     El algoritmo es capaz de comprimir el formato del fichero.
      * </p>
-     * @param path El path donde se encuentra el fichero a comprimir.
+     *
+     * @param pathOriginal
+     * @param pathResultado El path donde se encuentra el fichero a comprimir.
      * @param tipoAlgoritmo El algoritmo a usar para la compresión del fichero.
      * @throws Exception El proceso de compresión no se ha podido llevar a cabo.
      */
-    public DatosProceso comprimirArchivo(String path, Algoritmo tipoAlgoritmo) throws Exception {
+    public DatosProceso comprimirArchivo(String pathOriginal, String pathResultado, Algoritmo tipoAlgoritmo) throws Exception {
         CtrlDatos ctrlDatos = CtrlDatos.getInstance();
         if(tipoAlgoritmo == Algoritmo.PREDETERMINADO) {
-            Algoritmo[] algoritmos = CtrlDatos.algoritmosPosibles(path);
+            Algoritmo[] algoritmos = CtrlDatos.algoritmosPosibles(pathResultado);
             if(algoritmos[0] == Algoritmo.JPEG) tipoAlgoritmo = Algoritmo.JPEG;
             else tipoAlgoritmo = algoritmoDeTextoPredeterminado;
         }
-        ProcesoFichero comp = new ProcesoComprimir(ctrlDatos.leerArchivo(path), tipoAlgoritmo);
+        ProcesoFichero comp = new ProcesoComprimir(ctrlDatos.leerArchivo(pathResultado), tipoAlgoritmo);
         comp.ejecutarProceso();
-        ctrlDatos.guardaArchivo(comp.getOutput(), path, tipoAlgoritmo, true, true);
+        ctrlDatos.guardaArchivo(comp.getOutput(), pathResultado, tipoAlgoritmo, true, true);
         DatosProceso dp = comp.getDatosProceso();
         System.out.println("El proceso ha tardado " + dp.getTiempo()/1000000000.0 + "s. El cambio de tamaño pasa de " + dp.getOldSize() + "B a " + dp.getNewSize() + "B con diferencia de " + dp.getDiffSize() + "B que resulta en un " + dp.getDiffSizePercentage() + "% del archivo original.");
         if(dp.isSatisfactorio()) {
@@ -73,15 +75,17 @@ public class CtrlProcesos {
      * <p>
      *     El path sigue del archivo debe seguir el formato general de cualquier tipo de path de archivo, y debe ser relativo.
      * </p>
-     * @param path El path donde se encuentra el fichero a descomprimir.
+     *
+     * @param pathOriginal
+     * @param pathResultado El path donde se encuentra el fichero a descomprimir.
      * @throws Exception El proceso de descompresión no se ha podido llevar a cabo.
      */
-    public DatosProceso descomprimirArchivo(String path) throws Exception {
+    public DatosProceso descomprimirArchivo(String pathOriginal, String pathResultado) throws Exception {
         CtrlDatos ctrlDatos = CtrlDatos.getInstance();
-        Algoritmo[] algoritmos = CtrlDatos.algoritmosPosibles(path);
-        ProcesoFichero desc = new ProcesoDescomprimir(ctrlDatos.leerArchivo(path), algoritmos[0]);
+        Algoritmo[] algoritmos = CtrlDatos.algoritmosPosibles(pathResultado);
+        ProcesoFichero desc = new ProcesoDescomprimir(ctrlDatos.leerArchivo(pathResultado), algoritmos[0]);
         desc.ejecutarProceso();
-        ctrlDatos.guardaArchivo(desc.getOutput(), path, algoritmos[0], false, true);
+        ctrlDatos.guardaArchivo(desc.getOutput(), pathResultado, algoritmos[0], false, true);
         DatosProceso dp = desc.getDatosProceso();
         System.out.println("El proceso ha tardado " + dp.getTiempo()/1000000000.0 + "s. El cambio de tamaño pasa de " + dp.getOldSize() + "B a " + dp.getNewSize() + "B con diferencia de " + dp.getDiffSize() + "B que resulta en un " + dp.getDiffSizePercentage() + "% del archivo original.");
         if(dp.isSatisfactorio()) {
