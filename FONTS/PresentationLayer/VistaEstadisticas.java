@@ -4,7 +4,6 @@ import Controllers.CtrlPresentacion;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.IOException;
 import java.util.Objects;
 
 public class VistaEstadisticas extends JDialog {

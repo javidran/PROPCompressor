@@ -117,14 +117,10 @@ public class CtrlDatos {
      * </p>
      * @param data Los datos que se guardaran en el archivo.
      * @param path El path del archivo donde se quiere guardar.
-     * @param algoritmo El algoritmo con el qual se ha comprimido o descomprimido el archivo.
-     * @param esCompresion Un boolean que indica si se ha hecho compresión o descompresión.
-     * @param sobreescribir Un boolean que indica si se va a sobreescribir.
      * @throws IOException No se ha podido escribir en el archivo por el path indicado.
      */
-    public void guardaArchivo (byte[] data, String path, Algoritmo algoritmo, boolean esCompresion, boolean sobreescribir) throws IOException {
-        path = actualizarPathSalida(path, algoritmo, esCompresion);
-        GestorArchivo.guardaArchivo(data, path, sobreescribir);
+    public void guardaArchivo (byte[] data, String path) throws IOException {
+        GestorArchivo.guardaArchivo(data, path);
     }
 
     private static String extension(Algoritmo algoritmo, boolean esCompresion) {
