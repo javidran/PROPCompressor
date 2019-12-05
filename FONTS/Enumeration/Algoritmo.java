@@ -7,5 +7,5 @@ package Enumeration;
  * </p>
  */
 public enum Algoritmo {
-    JPEG, LZW, LZ78, LZSS, CARPETA, PREDETERMINADO
+    JPEG, LZW, LZ78, LZSS, CARPETA
 }

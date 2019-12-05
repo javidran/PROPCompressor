@@ -268,6 +268,6 @@ public class CtrlPresentacion {
     }
 
     public void CalidadModificada(int value) {
-        
+        CtrlProcesos.setCalidadJPEG(value);
     }
 }
