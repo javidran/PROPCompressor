@@ -6,6 +6,7 @@ import Exceptions.FormatoErroneoException;
 import PresentationLayer.*;
 
 import javax.swing.*;
+import javax.swing.plaf.basic.BasicProgressBarUI;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -161,33 +162,63 @@ public class CtrlPresentacion {
     }
 
     private void procesar(){
-        /*
-        JOptionPane jOptionPane = new JOptionPane("Procesando...", JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
-        JDialog jDialog = jOptionPane.createDialog(null, "");
-        jDialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
-        jDialog.setVisible(true);
-        */
-        try {
-            CtrlProcesos ctrlProcesos = CtrlProcesos.getInstance();
-            DatosProceso dp;
-            if (!modeloParametros.isConGuardado()) {
-                dp = ctrlProcesos.comprimirDescomprimirArchivo(modeloParametros.getPathOriginal(), modeloParametros.getAlgoritmo());
-            } else if (modeloParametros.isCompresion()) {
-                if (modeloParametros.getAlgoritmo().equals(Algoritmo.CARPETA))
-                    dp =ctrlProcesos.comprimirCarpeta(modeloParametros.getPathOriginal(), modeloParametros.getPathResultado());
-                else
-                    dp = ctrlProcesos.comprimirArchivo(modeloParametros.getPathOriginal(), modeloParametros.getPathResultado(), modeloParametros.getAlgoritmo());
-            } else {
-                if (modeloParametros.getAlgoritmo().equals(Algoritmo.CARPETA))
-                    dp =ctrlProcesos.descomprimirCarpeta(modeloParametros.getPathOriginal(), modeloParametros.getPathResultado());
-                else
-                    dp = ctrlProcesos.descomprimirArchivo(modeloParametros.getPathOriginal(), modeloParametros.getPathResultado());
+
+        final JDialog dialog = new JDialog(vistaInicio, true); // modal
+        dialog.setResizable(false);
+        dialog.setUndecorated(true);
+        JProgressBar bar = new JProgressBar();
+        bar.setIndeterminate(true);
+        bar.setStringPainted(true);
+        bar.setBorderPainted(true);
+
+        bar.setString("Procesando...");
+        dialog.add(bar);
+        bar.setBackground(Color.white);
+        bar.setUI(new BasicProgressBarUI() {
+            protected Color getSelectionBackground() { return Color.black; }
+            protected Color getSelectionForeground() { return Color.white; }
+        });
+        dialog.pack();
+        dialog.setSize(new Dimension(300, 50));
+        dialog.setLocationRelativeTo(vistaInicio);
+
+
+        SwingWorker<Void,Void> worker = new SwingWorker<Void,Void>()
+        {
+            @Override
+            protected Void doInBackground()
+            {
+                try {
+                    CtrlProcesos ctrlProcesos = CtrlProcesos.getInstance();
+                    DatosProceso dp;
+                    if (!modeloParametros.isConGuardado()) {
+                        dp = ctrlProcesos.comprimirDescomprimirArchivo(modeloParametros.getPathOriginal(), modeloParametros.getAlgoritmo());
+                    } else if (modeloParametros.isCompresion()) {
+                        if (modeloParametros.getAlgoritmo().equals(Algoritmo.CARPETA))
+                            dp =ctrlProcesos.comprimirCarpeta(modeloParametros.getPathOriginal(), modeloParametros.getPathResultado());
+                        else
+                            dp = ctrlProcesos.comprimirArchivo(modeloParametros.getPathOriginal(), modeloParametros.getPathResultado(), modeloParametros.getAlgoritmo());
+                    } else {
+                        if (modeloParametros.getAlgoritmo().equals(Algoritmo.CARPETA))
+                            dp =ctrlProcesos.descomprimirCarpeta(modeloParametros.getPathOriginal(), modeloParametros.getPathResultado());
+                        else
+                            dp = ctrlProcesos.descomprimirArchivo(modeloParametros.getPathOriginal(), modeloParametros.getPathResultado());
+                    }
+                }
+                catch (Exception e){
+                    JOptionPane.showConfirmDialog(null, "Se ha dado el siguente error durante el proceso:\n"+e.getMessage(),null, JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
+                }
+                return null;
             }
-        }
-        catch (Exception e){
-            JOptionPane.showConfirmDialog(null, "Se ha dado el siguente error durante el proceso:\n"+e.getMessage(),null, JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
-        }
-        //jDialog.dispose();
+
+            @Override
+            protected void done() {
+                dialog.dispose();
+            }
+        };
+        worker.execute();
+        dialog.setVisible(true); // will block but with a responsive GUI
+
         //dp <-- estructura datos proceso resultante de el proceso ejecutado (erase when read)
     }
 
