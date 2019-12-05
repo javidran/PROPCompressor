@@ -9,10 +9,9 @@ import java.util.List;
 
 public class GestorCarpetaDescomprimir extends GestorCarpeta {
     private BufferedInputStream lector;
-    private Algoritmo algoritmoActual;
 
-    public GestorCarpetaDescomprimir(String pathOriginal, String pathSalida) throws FileNotFoundException {
-        super(pathOriginal, pathSalida);
+    public GestorCarpetaDescomprimir(String pathOriginal) throws FileNotFoundException {
+        super(pathOriginal);
         lector = new BufferedInputStream(new FileInputStream(carpeta));
     }
 
@@ -55,13 +54,12 @@ public class GestorCarpetaDescomprimir extends GestorCarpeta {
 
     @Override
     public void guardaProximoArchivo(byte[] data, String path) throws IOException {
-        String pathCompleto = pathSalida + CtrlDatos.actualizarPathSalida(pathArchivoActual, algoritmoActual,false);
-        GestorArchivo.guardaArchivo(data,pathCompleto);
+        GestorArchivo.guardaArchivo(data, path);
     }
 
     @Override
     public void guardaCarpeta(String path) {
-        new File(pathSalida + pathArchivoActual).mkdirs();
+        new File(path).mkdirs();
     }
 
     @Override
