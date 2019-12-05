@@ -52,11 +52,6 @@ public class CtrlProcesos {
      */
     public DatosProceso comprimirArchivo(String pathOriginal, String pathResultado, Algoritmo tipoAlgoritmo) throws Exception {
         CtrlDatos ctrlDatos = CtrlDatos.getInstance();
-        if(tipoAlgoritmo == Algoritmo.PREDETERMINADO) {
-            Algoritmo[] algoritmos = CtrlDatos.algoritmosPosibles(pathOriginal);
-            if(algoritmos[0] == Algoritmo.JPEG) tipoAlgoritmo = Algoritmo.JPEG;
-            else tipoAlgoritmo = algoritmoDeTextoPredeterminado;
-        }
         ProcesoFichero comp = new ProcesoComprimir(ctrlDatos.leerArchivo(pathOriginal), tipoAlgoritmo);
         comp.ejecutarProceso();
         ctrlDatos.guardaArchivo(comp.getOutput(), pathResultado);
@@ -82,14 +77,14 @@ public class CtrlProcesos {
      */
     public DatosProceso descomprimirArchivo(String pathOriginal, String pathResultado ) throws Exception {
         CtrlDatos ctrlDatos = CtrlDatos.getInstance();
-        Algoritmo[] algoritmos = CtrlDatos.algoritmosPosibles(pathOriginal);
-        ProcesoFichero desc = new ProcesoDescomprimir(ctrlDatos.leerArchivo(pathOriginal), algoritmos[0]);
+        Algoritmo algoritmo = algoritmoPosible(pathOriginal);
+        ProcesoFichero desc = new ProcesoDescomprimir(ctrlDatos.leerArchivo(pathOriginal), algoritmo);
         desc.ejecutarProceso();
         ctrlDatos.guardaArchivo(desc.getOutput(), pathResultado);
         DatosProceso dp = desc.getDatosProceso();
         System.out.println("El proceso ha tardado " + dp.getTiempo()/1000000000.0 + "s. El cambio de tamaño pasa de " + dp.getOldSize() + "B a " + dp.getNewSize() + "B con diferencia de " + dp.getDiffSize() + "B que resulta en un " + dp.getDiffSizePercentage() + "% del archivo original.");
         if(dp.isSatisfactorio()) {
-            ctrlDatos.actualizaEstadistica(dp, algoritmos[0], false);
+            ctrlDatos.actualizaEstadistica(dp, algoritmo, false);
         } else {
             System.out.println("El proceso de descompresión no ha resultado satisfactorio ya que el archivo descomprimido ocupa igual o menos que el archivo original. Se guardará igualmente.");
         }
@@ -110,11 +105,6 @@ public class CtrlProcesos {
      */
     public DatosProceso comprimirDescomprimirArchivo(String path, Algoritmo tipoAlgoritmo) throws Exception {
         CtrlDatos ctrlDatos = CtrlDatos.getInstance();
-        if (tipoAlgoritmo == Algoritmo.PREDETERMINADO) {
-            Algoritmo[] algoritmos = CtrlDatos.algoritmosPosibles(path);
-            if (algoritmos[0] == Algoritmo.JPEG) tipoAlgoritmo = Algoritmo.JPEG;
-            else tipoAlgoritmo = algoritmoDeTextoPredeterminado;
-        }
         ProcesoFichero comp = new ProcesoComprimir(ctrlDatos.leerArchivo(path), tipoAlgoritmo);
         comp.ejecutarProceso();
         DatosProceso dp = comp.getDatosProceso();
@@ -139,8 +129,9 @@ public class CtrlProcesos {
         long tiempo = 0, oldSize = 0, newSize = 0;
         CtrlDatos ctrlDatos = CtrlDatos.getInstance();
         ctrlDatos.crearGestorCarpeta(pathIn,pathOut, true, getAlgoritmoDeTextoPredeterminado());
-        Algoritmo algoritmoArchivo;
-        while((algoritmoArchivo = ctrlDatos.leerAlgoritmoProximoArchivo())!= null) {
+        String pathArchivo = null;
+        while((pathArchivo = ctrlDatos.leerPathProximoArchivo())!= null) {
+            Algoritmo algoritmoArchivo = algoritmoPosible(pathArchivo);
             if (algoritmoArchivo != Algoritmo.CARPETA) {
                 ProcesoFichero desc = new ProcesoComprimir(ctrlDatos.leerProximoArchivo(), algoritmoArchivo);
                 desc.ejecutarProceso();
@@ -166,7 +157,7 @@ public class CtrlProcesos {
         CtrlDatos ctrlDatos = CtrlDatos.getInstance();
         ctrlDatos.crearGestorCarpeta(pathIn, pathOut, false, getAlgoritmoDeTextoPredeterminado());
         Algoritmo algoritmoArchivo;
-        while((algoritmoArchivo = ctrlDatos.leerAlgoritmoProximoArchivo())!= null) {
+        while((algoritmoArchivo = ctrlDatos.leerPathProximoArchivo())!= null) {
             ProcesoFichero desc = new ProcesoDescomprimir(ctrlDatos.leerProximoArchivo(), algoritmoArchivo);
             desc.ejecutarProceso();
             ctrlDatos.guardaProximoArchivo(desc.getOutput());
@@ -205,6 +196,106 @@ public class CtrlProcesos {
     }
 
     /**
+     * Comprueba si el archivo es capaz de ser comprimido según la extensión del mismo.
+     * <p>
+     *     El path del archivo debe seguir el formato general de cualquier tipo de path de archivo y puede ser relativo o absoluto.
+     * </p>
+     * @param path El path del archivo que se quiere comprobar
+     * @return Un booleano que indica si el archivo es comprimible
+     * @throws FormatoErroneoException No hay ningún algoritmo compatible con la extensión del archivo
+     */
+    public static boolean esComprimible(String path) throws FormatoErroneoException {
+        if(!path.contains(".")) return true;
+        String[] splitP = path.split("\\.");
+        String type = splitP[splitP.length-1];
+
+        switch (type) {
+            case "txt":
+            case "ppm":
+                return true;
+            case "imgc":
+            case "lzss":
+            case "lz78":
+            case "lzw":
+            case "comp":
+                return false;
+            default:
+                throw new FormatoErroneoException("No hay ningun tipo de algoritmo compatible");
+        }
+    }
+
+    /**
+     * Comprueba qué algoritmos se pueden usar para comprimir o descomprimir un fichero, el cual se pasa por parámetro.
+     * <p>
+     *     El path del archivo debe seguir el formato general de cualquier tipo de path de archivo y puede ser relativo o absoluto.
+     * </p>
+     * @param path El path del archivo a comprobar
+     * @return Un vector de algoritmos posibles a ejecutar para comprimir o descomprimir el fichero
+     * @throws FormatoErroneoException No hay ningún algoritmo compatible con la extensión del archivo
+     */
+    public static Algoritmo algoritmoPosible(String path) throws FormatoErroneoException {
+        if (!path.contains(".")) return Algoritmo.CARPETA;
+        String[] splittedPath = path.split("\\.");
+        String type = splittedPath[splittedPath.length-1];
+
+        switch (type) {
+            case "txt":
+                return getAlgoritmoDeTextoPredeterminado();
+            case "ppm":
+            case "imgc":
+                return Algoritmo.JPEG;
+            case "lzss":
+                return Algoritmo.LZSS;
+            case "lz78":
+                return Algoritmo.LZ78;
+            case "lzw":
+                return Algoritmo.LZW;
+            case "comp":
+                return Algoritmo.CARPETA;
+            default:
+                throw new FormatoErroneoException("No hay ningun tipo de algoritmo compatible");
+        }
+    }
+
+    private static String extension(Algoritmo algoritmo, boolean esCompresion) {
+        String extension = null;
+        if(esCompresion) {
+            switch (algoritmo) {
+                case LZW:
+                    extension = "lzw";
+                    break;
+                case LZSS:
+                    extension = "lzss";
+                    break;
+                case LZ78:
+                    extension = "lz78";
+                    break;
+                case JPEG:
+                    extension = "imgc";
+                    break;
+                case CARPETA:
+                    extension = "comp";
+                    break;
+            }
+        } else {
+            switch (algoritmo) {
+                case LZW:
+                case LZSS:
+                case LZ78:
+                    extension = "txt";
+                    break;
+                case JPEG:
+                    extension = "ppm";
+                    break;
+                case CARPETA:
+                    extension = "";
+                    break;
+            }
+        }
+        return extension;
+    }
+
+    /**
      * Actualiza el path pasado por parámetro para que sea el path de salida del fichero procesado.
      * @param path El path del archivo antes de ser procesado.
      * @param algoritmo El algorimo usado en el proceso.
@@ -212,17 +303,16 @@ public class CtrlProcesos {
      * @return Path del archivo procesado, con su correspondiente extensión.
      */
     public static String calcularPathSalida(String path, Algoritmo algoritmo, boolean esCompresion) {
-        return CtrlDatos.actualizarPathSalida(path, algoritmo, esCompresion);
-    }
-
-    public static boolean esComprimible(String path) throws FormatoErroneoException {
-        return CtrlDatos.esComprimible(path);
-    }
-
-    public static Algoritmo algoritmoPosible(String path) throws FormatoErroneoException {
-        Algoritmo[] algoritmos = CtrlDatos.algoritmosPosibles(path);
-        if(algoritmos.length > 1) return getAlgoritmoDeTextoPredeterminado();
-        return algoritmos[0];
+        String[] splitP = path.split("\\.");
+        String type = splitP[splitP.length-1];
+        String ext = extension(algoritmo, esCompresion);
+        if(!path.contains(".")) path = path + "." + ext;
+        else if(splitP.length==1) path = path + ext;
+        else if (!type.equalsIgnoreCase(ext)) {
+            if(algoritmo.equals(Algoritmo.CARPETA) && !esCompresion) path = path.replace("." + type, ext);
+            else path = path.replace(type, ext);
+        }
+        return path;
     }
 
     /**

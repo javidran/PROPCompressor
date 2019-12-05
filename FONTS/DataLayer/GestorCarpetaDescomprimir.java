@@ -17,7 +17,7 @@ public class GestorCarpetaDescomprimir extends GestorCarpeta {
     }
 
     @Override
-    public Algoritmo algoritmoProximoArchivo() throws IOException {
+    public String pathProximoArchivo() throws IOException {
         byte endOfLine = '\n';
         byte b;
         List<Byte> byteList = new ArrayList<>();
@@ -30,14 +30,7 @@ public class GestorCarpetaDescomprimir extends GestorCarpeta {
         for(int i=0; i<byteArray.length; ++i) {
             byteArray[i] = byteList.get(i);
         }
-        pathArchivoActual = new String(byteArray);
-        Algoritmo[] algoritmosPosibles = CtrlDatos.algoritmosPosibles(pathArchivoActual);
-        if(algoritmosPosibles[0].equals(Algoritmo.CARPETA)) {
-            guardaCarpeta();
-            return algoritmoProximoArchivo();
-        }
-        algoritmoActual = algoritmosPosibles[0];
-        return algoritmoActual;
+        return new String(byteArray);
     }
 
     @Override
@@ -61,12 +54,13 @@ public class GestorCarpetaDescomprimir extends GestorCarpeta {
     }
 
     @Override
-    public void guardaProximoArchivo(byte[] data) throws IOException {
+    public void guardaProximoArchivo(byte[] data, String path) throws IOException {
         String pathCompleto = pathSalida + CtrlDatos.actualizarPathSalida(pathArchivoActual, algoritmoActual,false);
         GestorArchivo.guardaArchivo(data,pathCompleto);
     }
 
-    private void guardaCarpeta() {
+    @Override
+    public void guardaCarpeta(String path) {
         new File(pathSalida + pathArchivoActual).mkdirs();
     }
 
