@@ -175,13 +175,13 @@ public class CtrlPresentacion {
                 dp = ctrlProcesos.comprimirDescomprimirArchivo(modeloParametros.getPathOriginal(), modeloParametros.getAlgoritmo());
             } else if (modeloParametros.isCompresion()) {
                 if (modeloParametros.getAlgoritmo().equals(Algoritmo.CARPETA))
-                    ctrlProcesos.comprimirCarpeta(modeloParametros.getPathOriginal(), modeloParametros.getPathResultado());
+                    dp =ctrlProcesos.comprimirCarpeta(modeloParametros.getPathOriginal(), modeloParametros.getPathResultado());
                 else
                 if (modeloParametros.getAlgoritmo().equals(Algoritmo.JPEG) ) ctrlProcesos.setCalidadJPEG(modeloParametros.getCalidad());
                     dp = ctrlProcesos.comprimirArchivo(modeloParametros.getPathOriginal(), modeloParametros.getPathResultado(), modeloParametros.getAlgoritmo());
             } else {
                 if (modeloParametros.getAlgoritmo().equals(Algoritmo.CARPETA))
-                    ctrlProcesos.descomprimirCarpeta(modeloParametros.getPathOriginal(), modeloParametros.getPathResultado());
+                    dp =ctrlProcesos.descomprimirCarpeta(modeloParametros.getPathOriginal(), modeloParametros.getPathResultado());
                 else
                     dp = ctrlProcesos.descomprimirArchivo(modeloParametros.getPathOriginal(), modeloParametros.getPathResultado());
             }
