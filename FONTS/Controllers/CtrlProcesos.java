@@ -132,7 +132,7 @@ public class CtrlProcesos {
         String pathArchivo;
         while((pathArchivo = ctrlDatos.leerPathProximoArchivo())!= null) {
             Algoritmo algoritmoArchivo = algoritmoPosible(pathArchivo);
-            String pathArchivoOut = calcularPathSalida(pathArchivo, algoritmoArchivo, true);
+            String pathArchivoOut = calcularPathSalida(pathArchivo, algoritmoArchivo, true).replace(pathIn, "");
             if (algoritmoArchivo.equals(Algoritmo.CARPETA)) {
                 ctrlDatos.guardaCarpeta(pathArchivoOut);
             } else {

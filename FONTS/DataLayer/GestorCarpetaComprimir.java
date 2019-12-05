@@ -4,7 +4,6 @@ import java.io.*;
 import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Queue;
-import java.util.regex.Pattern;
 
 public class GestorCarpetaComprimir extends GestorCarpeta {
     private BufferedOutputStream bufferedOutputStream;
@@ -47,9 +46,8 @@ public class GestorCarpetaComprimir extends GestorCarpeta {
 
     @Override
     public void guardaProximoArchivo(byte[] data, String path) throws IOException {
-        String pathComprimido = formatearPath(path);
         String endOfLine = "\n";
-        bufferedOutputStream.write(pathComprimido.getBytes());
+        bufferedOutputStream.write(path.getBytes());
         bufferedOutputStream.write(endOfLine.getBytes());
         bufferedOutputStream.write(Integer.toString(data.length).getBytes());
         bufferedOutputStream.write(endOfLine.getBytes());
@@ -59,23 +57,9 @@ public class GestorCarpetaComprimir extends GestorCarpeta {
     @Override
     public void guardaCarpeta(String path) throws IOException {
         archivosAComprimir.remove();
-        String pathComprimido = formatearPath(path);
         String endOfLine = "\n";
-        bufferedOutputStream.write(pathComprimido.getBytes());
+        bufferedOutputStream.write(path.getBytes());
         bufferedOutputStream.write(endOfLine.getBytes());
-    }
-
-    private String formatearPath(String path) {
-        String nombreCarpeta = carpeta.getName();
-        String[] pathRelativo = path.split(nombreCarpeta);
-        StringBuilder pathRootCarpeta = new StringBuilder(path.replace(pathRelativo[0], ""));
-        String[] dirs = pathRootCarpeta.toString().split(Pattern.quote(System.getProperty("file.separator")));
-        pathRootCarpeta = new StringBuilder(File.separator);
-        for (int i = 1; i < dirs.length; ++i) {
-            pathRootCarpeta.append(dirs[i]);
-            if (i < dirs.length - 1) pathRootCarpeta.append(File.separator);
-        }
-        return pathRootCarpeta.toString();
     }
 
     @Override
