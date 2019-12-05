@@ -132,12 +132,14 @@ public class CtrlProcesos {
         String pathArchivo;
         while((pathArchivo = ctrlDatos.leerPathProximoArchivo())!= null) {
             Algoritmo algoritmoArchivo = algoritmoPosible(pathArchivo);
-            String pathArchivoOut = calcularPathSalida(pathArchivo, algoritmoArchivo, true).replace(pathIn, "");
+            String pathArchivoOut;
             if (algoritmoArchivo.equals(Algoritmo.CARPETA)) {
+                pathArchivoOut = pathArchivo.replace(pathIn, "");
                 ctrlDatos.guardaCarpeta(pathArchivoOut);
             } else {
                 ProcesoFichero comp = new ProcesoComprimir(ctrlDatos.leerProximoArchivo(), algoritmoArchivo);
                 comp.ejecutarProceso();
+                pathArchivoOut = calcularPathSalida(pathArchivo, algoritmoArchivo, true).replace(pathIn, "");
                 ctrlDatos.guardaProximoArchivo(comp.getOutput(), pathArchivoOut);
                 DatosProceso dp = comp.getDatosProceso();
                 tiempo += dp.getTiempo();
@@ -320,7 +322,7 @@ public class CtrlProcesos {
         String[] splitP = path.split("\\.");
         String type = splitP[splitP.length-1];
         String ext = extension(algoritmo, esCompresion);
-        if(!path.contains(".")) path = path + "." + ext;
+        if(!path.contains(".") && esCompresion) path = path + "." + ext;
         else if(splitP.length==1) path = path + ext;
         else if (!type.equalsIgnoreCase(ext)) {
             if(algoritmo.equals(Algoritmo.CARPETA) && !esCompresion) path = path.replace("." + type, ext);

@@ -62,7 +62,7 @@ public class CtrlPresentacion {
             vistaInicio.deshabilitarBotones();
         }
         actualizarPathSalida(path);
-    }
+   }
 
     public void escogerPredeterminadoPulsado() {
         JDialog dialog = new VistaSelectorAlgortimoPredeterminado(vistaInicio);
