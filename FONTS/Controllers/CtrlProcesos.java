@@ -125,7 +125,7 @@ public class CtrlProcesos {
         return dp;
     }
 
-    public void comprimirCarpeta(String pathIn, String pathOut) throws Exception {
+    public DatosProceso comprimirCarpeta(String pathIn, String pathOut) throws Exception {
         long tiempo = 0, oldSize = 0, newSize = 0;
         CtrlDatos ctrlDatos = CtrlDatos.getInstance();
         ctrlDatos.crearGestorCarpeta(pathIn,pathOut, true, getAlgoritmoDeTextoPredeterminado());
@@ -133,10 +133,10 @@ public class CtrlProcesos {
         while((pathArchivo = ctrlDatos.leerPathProximoArchivo())!= null) {
             Algoritmo algoritmoArchivo = algoritmoPosible(pathArchivo);
             if (algoritmoArchivo != Algoritmo.CARPETA) {
-                ProcesoFichero desc = new ProcesoComprimir(ctrlDatos.leerProximoArchivo(), algoritmoArchivo);
-                desc.ejecutarProceso();
-                ctrlDatos.guardaProximoArchivo(desc.getOutput());
-                DatosProceso dp = desc.getDatosProceso();
+                ProcesoFichero comp = new ProcesoComprimir(ctrlDatos.leerProximoArchivo(), algoritmoArchivo);
+                comp.ejecutarProceso();
+                ctrlDatos.guardaProximoArchivo(comp.getOutput());
+                DatosProceso dp = comp.getDatosProceso();
                 tiempo += dp.getTiempo();
                 oldSize += dp.getOldSize();
                 newSize += dp.getNewSize();
@@ -147,12 +147,14 @@ public class CtrlProcesos {
             else ctrlDatos.guardaProximoArchivo(ctrlDatos.leerProximoArchivo());
         }
         ctrlDatos.finalizarGestorCarpeta();
-        long diffSize = oldSize - newSize;
-        double diffSizePercentage = Math.floor((newSize /(double) oldSize)*100);
-        System.out.println("El proceso ha tardado " + tiempo / 1000000000.0 + "s. El cambio de tamaño pasa de " + oldSize + "B a " + newSize + "B con diferencia de " + diffSize + "B que resulta en un " + diffSizePercentage + "% del archivo original.");
+        //long diffSize = oldSize - newSize;
+        //double diffSizePercentage = Math.floor((newSize /(double) oldSize)*100);
+        //System.out.println("El proceso ha tardado " + tiempo / 1000000000.0 + "s. El cambio de tamaño pasa de " + oldSize + "B a " + newSize + "B con diferencia de " + diffSize + "B que resulta en un " + diffSizePercentage + "% del archivo original.");
+        DatosProceso dpCarpeta  = new DatosProceso(tiempo, oldSize, newSize, true);
+        return dpCarpeta;
     }
 
-    public void descomprimirCarpeta(String pathIn, String pathOut) throws Exception {
+    public DatosProceso descomprimirCarpeta(String pathIn, String pathOut) throws Exception {
         long tiempo = 0, oldSize = 0, newSize = 0;
         CtrlDatos ctrlDatos = CtrlDatos.getInstance();
         ctrlDatos.crearGestorCarpeta(pathIn, pathOut, false, getAlgoritmoDeTextoPredeterminado());
@@ -170,9 +172,11 @@ public class CtrlProcesos {
             }
         }
         ctrlDatos.finalizarGestorCarpeta();
-        long diffSize = newSize - oldSize;
-        double diffSizePercentage = Math.floor((newSize /(double) oldSize)*100);
-        System.out.println("El proceso ha tardado " + tiempo / 1000000000.0 + "s. El cambio de tamaño pasa de " + oldSize + "B a " + newSize + "B con diferencia de " + diffSize + "B que resulta en un " + diffSizePercentage + "% del archivo original.");
+        //long diffSize = newSize - oldSize;
+        //double diffSizePercentage = Math.floor((newSize /(double) oldSize)*100);
+        //System.out.println("El proceso ha tardado " + tiempo / 1000000000.0 + "s. El cambio de tamaño pasa de " + oldSize + "B a " + newSize + "B con diferencia de " + diffSize + "B que resulta en un " + diffSizePercentage + "% del archivo original.");
+        DatosProceso dpCarpeta  = new DatosProceso(tiempo, oldSize, newSize, true);
+        return dpCarpeta;
     }
 
 
@@ -319,7 +323,7 @@ public class CtrlProcesos {
      * Asigna un valor de calidad de compresión al Singleton de JPEG
      * @param calidadJPEG La calidad de compresión de JPEG. A mayor valor, más alta será la calidad de la compresión.
      */
-    public void setCalidadJPEG(int calidadJPEG) {
+    public static void setCalidadJPEG(int calidadJPEG) {
         JPEG.getInstance().setCalidad(calidadJPEG);
     }
 

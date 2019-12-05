@@ -8,7 +8,6 @@ public class ModeloParametros {
 
     private boolean compresion;
     private Algoritmo algoritmo;
-    private int calidad;
     private String pathOriginal;
     private String pathResultado;
     private boolean conGuardado;
@@ -22,7 +21,7 @@ public class ModeloParametros {
         this.conGuardado = compresionYDescompresion;
         if(conGuardado) this.vistaSelectorAlgoritmo.mostrarSelectorDePath(pathResultado);
 
-        if(algoritmo.equals(Algoritmo.JPEG)) this.vistaSelectorAlgoritmo.mostrarSliderDeCalidad();
+        if(algoritmo.equals(Algoritmo.JPEG) && compresion) this.vistaSelectorAlgoritmo.mostrarSliderDeCalidad();
         else if(!algoritmo.equals(Algoritmo.CARPETA) && (this.isCompresion())) this.vistaSelectorAlgoritmo.mostrarSelectorAlgoritmo();
     }
 
@@ -43,14 +42,6 @@ public class ModeloParametros {
         this.algoritmo = algoritmo;
         if(algoritmo.equals(Algoritmo.CARPETA))  vistaInicio.botoncomprimirYDescomprimir(false);
         else vistaInicio.botoncomprimirYDescomprimir(compresion);
-    }
-
-    public int getCalidad() {
-        return calidad;
-    }
-
-    public void setCalidad(int calidad) {
-        this.calidad = calidad;
     }
 
     public String getPathOriginal() {

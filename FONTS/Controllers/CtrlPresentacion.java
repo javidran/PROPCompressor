@@ -160,27 +160,32 @@ public class CtrlPresentacion {
         procesar();
     }
 
-    private void procesar() throws Exception {
+    private void procesar(){
         /*
         JOptionPane jOptionPane = new JOptionPane("Procesando...", JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
         JDialog jDialog = jOptionPane.createDialog(null, "");
         jDialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
         jDialog.setVisible(true);
         */
-        CtrlProcesos ctrlProcesos = CtrlProcesos.getInstance();
-        DatosProceso dp;
-        if(!modeloParametros.isConGuardado()) {
-            dp = ctrlProcesos.comprimirDescomprimirArchivo(modeloParametros.getPathOriginal(), modeloParametros.getAlgoritmo());
+        try {
+            CtrlProcesos ctrlProcesos = CtrlProcesos.getInstance();
+            DatosProceso dp;
+            if (!modeloParametros.isConGuardado()) {
+                dp = ctrlProcesos.comprimirDescomprimirArchivo(modeloParametros.getPathOriginal(), modeloParametros.getAlgoritmo());
+            } else if (modeloParametros.isCompresion()) {
+                if (modeloParametros.getAlgoritmo().equals(Algoritmo.CARPETA))
+                    dp =ctrlProcesos.comprimirCarpeta(modeloParametros.getPathOriginal(), modeloParametros.getPathResultado());
+                else
+                    dp = ctrlProcesos.comprimirArchivo(modeloParametros.getPathOriginal(), modeloParametros.getPathResultado(), modeloParametros.getAlgoritmo());
+            } else {
+                if (modeloParametros.getAlgoritmo().equals(Algoritmo.CARPETA))
+                    dp =ctrlProcesos.descomprimirCarpeta(modeloParametros.getPathOriginal(), modeloParametros.getPathResultado());
+                else
+                    dp = ctrlProcesos.descomprimirArchivo(modeloParametros.getPathOriginal(), modeloParametros.getPathResultado());
+            }
         }
-        else if (modeloParametros.isCompresion()) {
-            if(modeloParametros.getAlgoritmo().equals(Algoritmo.CARPETA))
-                ctrlProcesos.comprimirCarpeta(modeloParametros.getPathOriginal(), modeloParametros.getPathResultado());
-            else dp = ctrlProcesos.comprimirArchivo(modeloParametros.getPathOriginal(), modeloParametros.getPathResultado(), modeloParametros.getAlgoritmo());
-        }
-        else {
-            if(modeloParametros.getAlgoritmo().equals(Algoritmo.CARPETA))
-                ctrlProcesos.descomprimirCarpeta(modeloParametros.getPathOriginal(), modeloParametros.getPathResultado());
-            else dp = ctrlProcesos.descomprimirArchivo(modeloParametros.getPathOriginal(), modeloParametros.getPathResultado());
+        catch (Exception e){
+            JOptionPane.showConfirmDialog(null, "Se ha dado el siguente error durante el proceso:\n"+e.getMessage(),null, JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
         }
         //jDialog.dispose();
         //dp <-- estructura datos proceso resultante de el proceso ejecutado (erase when read)
@@ -223,5 +228,9 @@ public class CtrlPresentacion {
         } catch (IOException e) {
             JOptionPane.showConfirmDialog(null, "Ha habido un problema al acceder a los datos estadísticos. Por favor, vuelva a intentarlo más tarde.",null, JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    public void CalidadModificada(int value) {
+        CtrlProcesos.setCalidadJPEG(value);
     }
 }
