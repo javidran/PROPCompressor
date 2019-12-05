@@ -1,9 +1,12 @@
 package PresentationLayer;
 
+import Controllers.CtrlPresentacion;
 import DomainLayer.Proceso.DatosProceso;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class VistaResultadoProceso extends JDialog{
 
@@ -12,17 +15,20 @@ public class VistaResultadoProceso extends JDialog{
     private JLabel NewSize;
     private JLabel diffSize;
     private JLabel Ratio;
+    private JPanel Result;
+    private JButton OKButton;
+    private JPanel panel;
 
     public VistaResultadoProceso(Frame owner, DatosProceso dp){
-        String t = Long.toString(dp.getTiempo());
-        String os = Long.toString(dp.getOldSize());
-        String ns = Long.toString(dp.getNewSize());
-        String df = Long.toString(dp.getDiffSize());
-        String r = Double.toString(dp.getDiffSizePercentage());
-        tiempo.setText(t);
-        OldSize.setText(os);
-        NewSize.setText(ns);
-        diffSize.setText(df);
-        Ratio.setText(r);
+        super (owner, true);
+        setContentPane(panel);
+        tiempo.setText(Long.toString(dp.getTiempo()));
+        OldSize.setText(Long.toString(dp.getOldSize()));
+        NewSize.setText(Long.toString(dp.getNewSize()));
+        diffSize.setText(Long.toString(dp.getDiffSize()));
+        Ratio.setText(Double.toString(dp.getDiffSizePercentage()));
+        OKButton.addActionListener(e -> {
+            dispose();
+        });
     }
 }
