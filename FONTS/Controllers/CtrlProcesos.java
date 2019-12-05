@@ -128,14 +128,17 @@ public class CtrlProcesos {
     public DatosProceso comprimirCarpeta(String pathIn, String pathOut) throws Exception {
         long tiempo = 0, oldSize = 0, newSize = 0;
         CtrlDatos ctrlDatos = CtrlDatos.getInstance();
-        ctrlDatos.crearGestorCarpeta(pathIn,pathOut, true, getAlgoritmoDeTextoPredeterminado());
-        String pathArchivo = null;
+        ctrlDatos.crearGestorCarpetaComprimir(pathIn, pathOut);
+        String pathArchivo;
         while((pathArchivo = ctrlDatos.leerPathProximoArchivo())!= null) {
             Algoritmo algoritmoArchivo = algoritmoPosible(pathArchivo);
-            if (algoritmoArchivo != Algoritmo.CARPETA) {
+            String pathArchivoOut = calcularPathSalida(pathArchivo, algoritmoArchivo, true);
+            if (algoritmoArchivo.equals(Algoritmo.CARPETA)) {
+                ctrlDatos.guardaCarpeta(pathArchivoOut);
+            } else {
                 ProcesoFichero comp = new ProcesoComprimir(ctrlDatos.leerProximoArchivo(), algoritmoArchivo);
                 comp.ejecutarProceso();
-                ctrlDatos.guardaProximoArchivo(comp.getOutput());
+                ctrlDatos.guardaProximoArchivo(comp.getOutput(), pathArchivoOut);
                 DatosProceso dp = comp.getDatosProceso();
                 tiempo += dp.getTiempo();
                 oldSize += dp.getOldSize();
@@ -144,39 +147,46 @@ public class CtrlProcesos {
                     ctrlDatos.actualizaEstadistica(dp, algoritmoArchivo, true);
                 }
             }
-            else ctrlDatos.guardaProximoArchivo(ctrlDatos.leerProximoArchivo());
         }
         ctrlDatos.finalizarGestorCarpeta();
-        //long diffSize = oldSize - newSize;
-        //double diffSizePercentage = Math.floor((newSize /(double) oldSize)*100);
-        //System.out.println("El proceso ha tardado " + tiempo / 1000000000.0 + "s. El cambio de tamaño pasa de " + oldSize + "B a " + newSize + "B con diferencia de " + diffSize + "B que resulta en un " + diffSizePercentage + "% del archivo original.");
-        DatosProceso dpCarpeta  = new DatosProceso(tiempo, oldSize, newSize, true);
-        return dpCarpeta;
+
+        long diffSize = oldSize - newSize;
+        double diffSizePercentage = Math.floor((newSize /(double) oldSize)*100);
+        System.out.println("El proceso ha tardado " + tiempo / 1000000000.0 + "s. El cambio de tamaño pasa de " + oldSize + "B a " + newSize + "B con diferencia de " + diffSize + "B que resulta en un " + diffSizePercentage + "% del archivo original.");
+
+        return new DatosProceso(tiempo, oldSize, newSize, true);
     }
 
     public DatosProceso descomprimirCarpeta(String pathIn, String pathOut) throws Exception {
         long tiempo = 0, oldSize = 0, newSize = 0;
         CtrlDatos ctrlDatos = CtrlDatos.getInstance();
-        ctrlDatos.crearGestorCarpeta(pathIn, pathOut, false, getAlgoritmoDeTextoPredeterminado());
-        Algoritmo algoritmoArchivo;
-        while((algoritmoArchivo = ctrlDatos.leerPathProximoArchivo())!= null) {
-            ProcesoFichero desc = new ProcesoDescomprimir(ctrlDatos.leerProximoArchivo(), algoritmoArchivo);
-            desc.ejecutarProceso();
-            ctrlDatos.guardaProximoArchivo(desc.getOutput());
-            DatosProceso dp = desc.getDatosProceso();
-            tiempo += dp.getTiempo();
-            oldSize += dp.getOldSize();
-            newSize += dp.getNewSize();
-            if(dp.isSatisfactorio()) {
-                ctrlDatos.actualizaEstadistica(dp, algoritmoArchivo, false);
+        ctrlDatos.crearGestorCarpetaDescomprimir(pathIn);
+        String pathArchivo;
+        while((pathArchivo = ctrlDatos.leerPathProximoArchivo())!= null) {
+            Algoritmo algoritmoArchivo = algoritmoPosible(pathArchivo);
+            String pathArchivoOut = pathOut + calcularPathSalida(pathArchivo, algoritmoArchivo, false);
+            if(algoritmoArchivo.equals(Algoritmo.CARPETA)) {
+                ctrlDatos.guardaCarpeta(pathArchivoOut);
+            } else {
+                ProcesoFichero desc = new ProcesoDescomprimir(ctrlDatos.leerProximoArchivo(), algoritmoArchivo);
+                desc.ejecutarProceso();
+                ctrlDatos.guardaProximoArchivo(desc.getOutput(), pathArchivoOut);
+                DatosProceso dp = desc.getDatosProceso();
+                tiempo += dp.getTiempo();
+                oldSize += dp.getOldSize();
+                newSize += dp.getNewSize();
+                if(dp.isSatisfactorio()) {
+                    ctrlDatos.actualizaEstadistica(dp, algoritmoArchivo, false);
+                }
             }
         }
         ctrlDatos.finalizarGestorCarpeta();
-        //long diffSize = newSize - oldSize;
-        //double diffSizePercentage = Math.floor((newSize /(double) oldSize)*100);
-        //System.out.println("El proceso ha tardado " + tiempo / 1000000000.0 + "s. El cambio de tamaño pasa de " + oldSize + "B a " + newSize + "B con diferencia de " + diffSize + "B que resulta en un " + diffSizePercentage + "% del archivo original.");
-        DatosProceso dpCarpeta  = new DatosProceso(tiempo, oldSize, newSize, true);
-        return dpCarpeta;
+
+        long diffSize = newSize - oldSize;
+        double diffSizePercentage = Math.floor((newSize /(double) oldSize)*100);
+        System.out.println("El proceso ha tardado " + tiempo / 1000000000.0 + "s. El cambio de tamaño pasa de " + oldSize + "B a " + newSize + "B con diferencia de " + diffSize + "B que resulta en un " + diffSizePercentage + "% del archivo original.");
+
+        return new DatosProceso(tiempo, oldSize, newSize, false);
     }
 
 

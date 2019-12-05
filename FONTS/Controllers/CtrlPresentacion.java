@@ -185,6 +185,7 @@ public class CtrlPresentacion {
             }
         }
         catch (Exception e){
+            e.printStackTrace();
             JOptionPane.showConfirmDialog(null, "Se ha dado el siguente error durante el proceso:\n"+e.getMessage(),null, JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
         }
         //jDialog.dispose();

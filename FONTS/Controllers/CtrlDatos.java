@@ -60,9 +60,12 @@ public class CtrlDatos {
         GestorArchivo.guardaArchivo(data, path);
     }
 
-    public void crearGestorCarpeta(String pathOriginal, String pathSalida, boolean comprimir) throws FileNotFoundException {
-        if(comprimir) gestorCarpeta = new GestorCarpetaComprimir(pathOriginal, pathSalida);
-        else gestorCarpeta = new GestorCarpetaDescomprimir(pathOriginal);
+    public void crearGestorCarpetaComprimir(String pathOriginal, String pathSalida) throws FileNotFoundException {
+        gestorCarpeta = new GestorCarpetaComprimir(pathOriginal, pathSalida);
+    }
+
+    public void crearGestorCarpetaDescomprimir(String pathOriginal) throws FileNotFoundException {
+        gestorCarpeta = new GestorCarpetaDescomprimir(pathOriginal);
     }
 
     public String leerPathProximoArchivo() throws IOException {
