@@ -55,14 +55,7 @@ public class CtrlProcesos {
         ProcesoFichero comp = new ProcesoComprimir(ctrlDatos.leerArchivo(pathOriginal), tipoAlgoritmo);
         comp.ejecutarProceso();
         ctrlDatos.guardaArchivo(comp.getOutput(), pathResultado);
-        DatosProceso dp = comp.getDatosProceso();
-        System.out.println("El proceso ha tardado " + dp.getTiempo()/1000000000.0 + "s. El cambio de tamaño pasa de " + dp.getOldSize() + "B a " + dp.getNewSize() + "B con diferencia de " + dp.getDiffSize() + "B que resulta en un " + dp.getDiffSizePercentage() + "% del archivo original.");
-        if(dp.isSatisfactorio()) {
-            ctrlDatos.actualizaEstadistica(dp, tipoAlgoritmo, true);
-        } else {
-            System.out.println("El proceso de compresión no ha resultado satisfactorio ya que el archivo comprimido ocupa igual o más que el archivo original. Se guardará igualmente.");
-        }
-        return dp;
+        return comp.getDatosProceso();
     }
 
     /**
