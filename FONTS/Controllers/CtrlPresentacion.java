@@ -19,6 +19,7 @@ public class CtrlPresentacion {
     private VistaInicio vistaInicio;
     private VistaSelectorAlgoritmo vistaSelectorAlgoritmo;
     private VistaEstadisticas vistaEstadisticas;
+    private VistaResultadoProceso vistaResultadoProceso;
 
     /**
      * Getter de la instancia Singleton de CtrlPresentacion
@@ -94,9 +95,8 @@ public class CtrlPresentacion {
             JOptionPane.showConfirmDialog(null, "¡El fichero o carpeta que desea procesar no existe! Seleccione un archivo o carpeta existente", "¡No existe!", JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
         }
         else{
-            VistaSelectorAlgoritmo vistaSelectorAlgoritmo = new VistaSelectorAlgoritmo(vistaInicio);
+            vistaSelectorAlgoritmo = new VistaSelectorAlgoritmo(vistaInicio);
             modeloParametros.setVistaSelectorAlgoritmo(vistaSelectorAlgoritmo, conGuardado);
-
             vistaSelectorAlgoritmo.setSize(new Dimension(650, 300));
             vistaSelectorAlgoritmo.setMinimumSize(new Dimension(500, 200));
             vistaSelectorAlgoritmo.setLocationRelativeTo(vistaInicio);
@@ -233,4 +233,5 @@ public class CtrlPresentacion {
     public void CalidadModificada(int value) {
         CtrlProcesos.setCalidadJPEG(value);
     }
+
 }
