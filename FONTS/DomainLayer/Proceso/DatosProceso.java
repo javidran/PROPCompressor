@@ -35,7 +35,7 @@ public class DatosProceso {
      * @param newSize Tamaño del fichero tratado tras la ejecución del proceso de compresión o descompresión
      * @param esCompresion Indicación para saber si es un proceso de compresión o descompresión
      */
-    protected DatosProceso(long time, long oldSize, long newSize, boolean esCompresion) {
+    public DatosProceso(long time, long oldSize, long newSize, boolean esCompresion) {
         tiempo = time;
         this.oldSize = oldSize;
         this.newSize = newSize;
