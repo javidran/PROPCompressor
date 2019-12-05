@@ -234,7 +234,7 @@ public class CtrlProcesos {
      * Asigna un valor de calidad de compresión al Singleton de JPEG
      * @param calidadJPEG La calidad de compresión de JPEG. A mayor valor, más alta será la calidad de la compresión.
      */
-    public void setCalidadJPEG(int calidadJPEG) {
+    public static void setCalidadJPEG(int calidadJPEG) {
         JPEG.getInstance().setCalidad(calidadJPEG);
     }
 
