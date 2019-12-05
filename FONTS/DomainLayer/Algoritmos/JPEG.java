@@ -187,8 +187,9 @@ public class JPEG implements CompresorDecompresor {
         List<Byte> result = new ArrayList<>(); //data will be written here before passing it into output byte array
         if (datosInput.length < 14) throw new FormatoErroneoException("El formato de .ppm no es correcto!");
         int pos = 0;
-        StringBuilder buff = new StringBuilder();
+        String[] widthHeight;
         //start of header reading
+        StringBuilder buff = new StringBuilder();
         while (pos < datosInput.length - 1 && (char)datosInput[pos] != '\n') {
             buff.append((char) datosInput[pos]);
             result.add(datosInput[pos]);
@@ -212,7 +213,7 @@ public class JPEG implements CompresorDecompresor {
         }
         result.add((byte)'\n');
         ++pos;
-        String[] widthHeight = buff.toString().split(" ");  //read and split dimensions into two (one for each value)
+        widthHeight = buff.toString().split(" ");  //read and split dimensions into two (one for each value)
         if (widthHeight.length > 2 || Integer.parseInt(widthHeight[0]) < 1 || Integer.parseInt(widthHeight[1]) < 1) throw new FormatoErroneoException("El formato de .ppm no es correcto!");
         while (pos < datosInput.length - 1 && (char)datosInput[pos] == '#') {
             while ((char)datosInput[pos] != '\n') { //avoiding comments between parameters...
@@ -248,40 +249,7 @@ public class JPEG implements CompresorDecompresor {
         double[][] Y = new double[paddedHeight][paddedWidth];
         double[][] Cb = new double[paddedHeight][paddedWidth];
         double[][] Cr = new double[paddedHeight][paddedWidth];
-        double[] rgb = new double[3];//red green blue
-        for (int x = 0; x < height; ++x) {//image color decomposition in YCbCr and centering values to 0 (range [-128,127]) (padding boundaries to have 8 multiple dimensions (needed for DCT))
-            for (int y = 0; y < width; ++y) {
-                rgb[0] = ((int)datosInput[pos++] & 0xFF);
-                rgb[1] = ((int)datosInput[pos++] & 0xFF);
-                rgb[2] = ((int)datosInput[pos++] & 0xFF);
-                Y[x][y] = 0.257 * rgb[0] + 0.504 * rgb[1] + 0.098 * rgb[2] + 16.0 - 128.0;
-                Cb[x][y] = - 0.148 * rgb[0] - 0.291 * rgb[1] + 0.439 * rgb[2];
-                Cr[x][y] = 0.439 * rgb[0] - 0.368 * rgb[1] - 0.071 * rgb[2];
-                if (x < height - 1 && y == width - 1) {
-                    for (int j = y; j < paddedWidth; ++j) {
-                        Y[x][j] = Y[x][width-1];
-                        Cb[x][j] = Cb[x][width-1];
-                        Cr[x][j] = Cr[x][width-1];
-                    }
-                }
-                else if (x == height - 1 && y < width - 1) {
-                    for (int i = x; i < paddedHeight; ++i) {
-                        Y[i][y] = Y[height-1][y];
-                        Cb[i][y] = Cb[height-1][y];
-                        Cr[i][y] = Cr[height-1][y];
-                    }
-                }
-                else if (x == height - 1 && y == width - 1) {
-                    for (int i = x; i < paddedHeight; ++i) {
-                        for (int j = y; j < paddedWidth; ++j) {
-                            Y[i][j] = Y[height-1][width-1];
-                            Cb[i][j] = Cb[height-1][width-1];
-                            Cr[i][j] = Cr[height-1][width-1];
-                        }
-                    }
-                }
-            }
-        }
+        readImage(datosInput, pos, width, height, paddedWidth, paddedHeight, Y, Cb, Cr);
         //end of pixelmap reading
 
         //start of image compression
@@ -539,6 +507,43 @@ public class JPEG implements CompresorDecompresor {
         }
         long endTime = System.nanoTime(), totalTime = endTime - startTime; //ending time and total execution time
         return new OutputAlgoritmo(totalTime, datosOutput); //returning output time and data byte array
+    }
+
+    private void readImage(byte[] datosInput, int pos, int width, int height, int paddedWidth, int paddedHeight, double[][] Y, double[][] Cb, double[][] cr) {
+        for (int x = 0; x < height; ++x) {//image color decomposition in YCbCr and centering values to 0 (range [-128,127]) (padding boundaries to have 8 multiple dimensions (needed for DCT))
+            for (int y = 0; y < width; ++y) {
+                double[] rgb = new double[3];//red green blue
+                rgb[0] = ((int)datosInput[pos++] & 0xFF);
+                rgb[1] = ((int)datosInput[pos++] & 0xFF);
+                rgb[2] = ((int)datosInput[pos++] & 0xFF);
+                Y[x][y] = 0.257 * rgb[0] + 0.504 * rgb[1] + 0.098 * rgb[2] + 16.0 - 128.0;
+                Cb[x][y] = - 0.148 * rgb[0] - 0.291 * rgb[1] + 0.439 * rgb[2];
+                cr[x][y] = 0.439 * rgb[0] - 0.368 * rgb[1] - 0.071 * rgb[2];
+                if (x < height - 1 && y == width - 1) {
+                    for (int j = y; j < paddedWidth; ++j) {
+                        Y[x][j] = Y[x][width-1];
+                        Cb[x][j] = Cb[x][width-1];
+                        cr[x][j] = cr[x][width-1];
+                    }
+                }
+                else if (x == height - 1 && y < width - 1) {
+                    for (int i = x; i < paddedHeight; ++i) {
+                        Y[i][y] = Y[height-1][y];
+                        Cb[i][y] = Cb[height-1][y];
+                        cr[i][y] = cr[height-1][y];
+                    }
+                }
+                else if (x == height - 1 && y == width - 1) {
+                    for (int i = x; i < paddedHeight; ++i) {
+                        for (int j = y; j < paddedWidth; ++j) {
+                            Y[i][j] = Y[height-1][width-1];
+                            Cb[i][j] = Cb[height-1][width-1];
+                            cr[i][j] = cr[height-1][width-1];
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**
