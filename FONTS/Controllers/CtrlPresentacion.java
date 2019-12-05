@@ -98,7 +98,7 @@ public class CtrlPresentacion {
         else{
             vistaSelectorAlgoritmo = new VistaSelectorAlgoritmo(vistaInicio);
             modeloParametros.setVistaSelectorAlgoritmo(vistaSelectorAlgoritmo, conGuardado);
-            vistaSelectorAlgoritmo.setSize(new Dimension(650, 300));
+            vistaSelectorAlgoritmo.setSize(new Dimension(650, 200));
             vistaSelectorAlgoritmo.setMinimumSize(new Dimension(500, 200));
             vistaSelectorAlgoritmo.setLocationRelativeTo(vistaInicio);
             vistaSelectorAlgoritmo.setResizable(true);
@@ -257,8 +257,8 @@ public class CtrlPresentacion {
 
     public void crearVistaEstadisticas() {
         vistaEstadisticas = new VistaEstadisticas(vistaInicio);
-        vistaEstadisticas.setSize(new Dimension(600, 300));
-        vistaEstadisticas.setMinimumSize(new Dimension(500, 250));
+        vistaEstadisticas.setSize(new Dimension(600, 150));
+        vistaEstadisticas.setMinimumSize(new Dimension(500, 150));
         vistaEstadisticas.setLocationRelativeTo(vistaInicio);
         vistaEstadisticas.setResizable(true);
         vistaEstadisticas.setVisible(true);
