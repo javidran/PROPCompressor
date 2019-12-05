@@ -54,12 +54,9 @@ public class VistaSelectorAlgoritmo extends JDialog {
             ctrlPresentacion.algoritmoSeleccionado(algoritmo);
         });
 
-        sliderCalidad.addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentMoved(ComponentEvent componentEvent) {
-                super.componentMoved(componentEvent);
-                //TODO Implementar
-            }
+        sliderCalidad.addChangeListener(e -> {
+            if (!sliderCalidad.getValueIsAdjusting())
+                ctrlPresentacion.CalidadModificada( sliderCalidad.getValue());
         });
     }
 

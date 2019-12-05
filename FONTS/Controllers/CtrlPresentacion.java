@@ -229,4 +229,8 @@ public class CtrlPresentacion {
             JOptionPane.showConfirmDialog(null, "Ha habido un problema al acceder a los datos estadísticos. Por favor, vuelva a intentarlo más tarde.",null, JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
         }
     }
+
+    public void CalidadModificada(int value) {
+        
+    }
 }
