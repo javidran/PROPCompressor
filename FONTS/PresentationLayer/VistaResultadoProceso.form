@@ -93,7 +93,7 @@
               </grid>
             </constraints>
             <properties>
-              <text value="Diferencia de tamaño"/>
+              <text value="Diferencia de tamaño:"/>
             </properties>
           </component>
           <component id="3da34" class="javax.swing.JLabel">
@@ -103,7 +103,7 @@
               </grid>
             </constraints>
             <properties>
-              <text value="Ratio proceso"/>
+              <text value="Ratio de compresión:"/>
             </properties>
           </component>
         </children>
