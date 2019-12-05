@@ -1,8 +1,5 @@
 package DataLayer;
 
-import Controllers.CtrlDatos;
-import Enumeration.Algoritmo;
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
