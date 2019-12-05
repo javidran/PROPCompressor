@@ -182,6 +182,8 @@ public class CtrlPresentacion {
         dialog.setSize(new Dimension(300, 50));
         dialog.setLocationRelativeTo(vistaInicio);
 
+        final DatosProceso[] dp = new DatosProceso[2];
+        final Exception[] exceptionProceso = {null};
 
         SwingWorker<Void,Void> worker = new SwingWorker<Void,Void>()
         {
@@ -190,23 +192,24 @@ public class CtrlPresentacion {
             {
                 try {
                     CtrlProcesos ctrlProcesos = CtrlProcesos.getInstance();
-                    DatosProceso dp;
                     if (!modeloParametros.isConGuardado()) {
-                        dp = ctrlProcesos.comprimirDescomprimirArchivo(modeloParametros.getPathOriginal(), modeloParametros.getAlgoritmo());
+                        DatosProceso[] multiplesDatos = ctrlProcesos.comprimirDescomprimirArchivo(modeloParametros.getPathOriginal(), modeloParametros.getAlgoritmo());
+                        dp[0] = multiplesDatos[0];
+                        dp[1] = multiplesDatos[1];
                     } else if (modeloParametros.isCompresion()) {
                         if (modeloParametros.getAlgoritmo().equals(Algoritmo.CARPETA))
-                            dp =ctrlProcesos.comprimirCarpeta(modeloParametros.getPathOriginal(), modeloParametros.getPathResultado());
+                            dp[0] = ctrlProcesos.comprimirCarpeta(modeloParametros.getPathOriginal(), modeloParametros.getPathResultado());
                         else
-                            dp = ctrlProcesos.comprimirArchivo(modeloParametros.getPathOriginal(), modeloParametros.getPathResultado(), modeloParametros.getAlgoritmo());
+                            dp[0] = ctrlProcesos.comprimirArchivo(modeloParametros.getPathOriginal(), modeloParametros.getPathResultado(), modeloParametros.getAlgoritmo());
                     } else {
                         if (modeloParametros.getAlgoritmo().equals(Algoritmo.CARPETA))
-                            dp =ctrlProcesos.descomprimirCarpeta(modeloParametros.getPathOriginal(), modeloParametros.getPathResultado());
+                            dp[0] =ctrlProcesos.descomprimirCarpeta(modeloParametros.getPathOriginal(), modeloParametros.getPathResultado());
                         else
-                            dp = ctrlProcesos.descomprimirArchivo(modeloParametros.getPathOriginal(), modeloParametros.getPathResultado());
+                            dp[0] = ctrlProcesos.descomprimirArchivo(modeloParametros.getPathOriginal(), modeloParametros.getPathResultado());
                     }
                 }
                 catch (Exception e){
-                    JOptionPane.showConfirmDialog(null, "Se ha dado el siguente error durante el proceso:\n"+e.getMessage(),null, JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
+                    exceptionProceso[0] = e;
                 }
                 return null;
             }
@@ -219,7 +222,10 @@ public class CtrlPresentacion {
         worker.execute();
         dialog.setVisible(true); // will block but with a responsive GUI
 
-        //dp <-- estructura datos proceso resultante de el proceso ejecutado (erase when read)
+        if(exceptionProceso[0]!= null) JOptionPane.showConfirmDialog(null, "Se ha dado el siguente error durante el proceso:\n"+exceptionProceso[0].getMessage(),null, JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
+        else {
+            //TODO mostrar vistas y todo eso.
+        }
     }
 
     public String getEstadisticas(String data) throws IOException {
