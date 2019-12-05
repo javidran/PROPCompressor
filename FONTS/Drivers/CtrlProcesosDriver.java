@@ -42,7 +42,7 @@ public class CtrlProcesosDriver {
                                     tipoCompresor = Algoritmo.LZ78;
                                     break;
                                 case "predeterminado":
-                                    tipoCompresor = Algoritmo.PREDETERMINADO;
+                                    tipoCompresor = CtrlProcesos.getAlgoritmoDeTextoPredeterminado();
                                     break;
                                 default:
                                     throw new EnumConstantNotPresentException(Algoritmo.class, "El tipo de compresor " + algoritmoComp + " no existe o no está disponible para un archivo .txt\n");
@@ -94,7 +94,7 @@ public class CtrlProcesosDriver {
                                     tipoCompresor = Algoritmo.LZ78;
                                     break;
                                 case "predeterminado":
-                                    tipoCompresor = Algoritmo.PREDETERMINADO;
+                                    tipoCompresor = CtrlProcesos.getAlgoritmoDeTextoPredeterminado();
                                     break;
                                 default:
                                     throw new EnumConstantNotPresentException(Algoritmo.class, "El tipo de compresor " + algoritmoComp + " no existe o no está disponible para un archivo .txt\n");

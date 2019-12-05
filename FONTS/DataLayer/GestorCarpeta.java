@@ -1,25 +1,22 @@
 package DataLayer;
 
-import Enumeration.Algoritmo;
-
 import java.io.File;
 import java.io.IOException;
 
 public abstract class GestorCarpeta {
     protected File carpeta;
-    protected String pathSalida;
-    protected String pathArchivoActual;
 
-    protected GestorCarpeta(String pathOriginal, String pathSalida) {
+    protected GestorCarpeta(String pathOriginal) {
         carpeta = new File(pathOriginal);
-        this.pathSalida = pathSalida;
     }
 
-    public abstract Algoritmo algoritmoProximoArchivo() throws IOException;
+    public abstract String pathProximoArchivo() throws IOException;
 
     public abstract byte[] leerProximoArchivo() throws IOException;
 
-    public abstract void guardaProximoArchivo(byte[] data) throws IOException;
+    public abstract void guardaProximoArchivo(byte[] data, String path) throws IOException;
+
+    public abstract void guardaCarpeta(String path) throws IOException;
 
     public abstract void finalizarGestor() throws IOException;
 }

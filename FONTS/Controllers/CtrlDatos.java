@@ -3,7 +3,6 @@ package Controllers;
 import DataLayer.*;
 import DomainLayer.Proceso.DatosProceso;
 import Enumeration.Algoritmo;
-import Exceptions.FormatoErroneoException;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -28,68 +27,6 @@ public class CtrlDatos {
             instance = new CtrlDatos();
 
         return instance;
-    }
-
-    /**
-     * Comprueba qué algoritmos se pueden usar para comprimir o descomprimir un fichero, el cual se pasa por parámetro.
-     * <p>
-     *     El path del archivo debe seguir el formato general de cualquier tipo de path de archivo y puede ser relativo o absoluto.
-     * </p>
-     * @param path El path del archivo a comprobar
-     * @return Un vector de algoritmos posibles a ejecutar para comprimir o descomprimir el fichero
-     * @throws FormatoErroneoException No hay ningún algoritmo compatible con la extensión del archivo
-     */
-    public static Algoritmo[] algoritmosPosibles(String path) throws FormatoErroneoException {
-        if (!path.contains(".")) return new Algoritmo[] {Algoritmo.CARPETA};
-        String[] splittedPath = path.split("\\.");
-        String type = splittedPath[splittedPath.length-1];
-
-        switch (type) {
-            case "txt":
-                return new Algoritmo[] {Algoritmo.LZSS, Algoritmo.LZW, Algoritmo.LZ78};
-            case "ppm":
-            case "imgc":
-                return new Algoritmo[] {Algoritmo.JPEG};
-            case "lzss":
-                return new Algoritmo[] {Algoritmo.LZSS};
-            case "lz78":
-                return new Algoritmo[] {Algoritmo.LZ78};
-            case "lzw":
-                return new Algoritmo[] {Algoritmo.LZW};
-            case "comp":
-                return new Algoritmo[] {Algoritmo.CARPETA};
-            default:
-                throw new FormatoErroneoException("No hay ningun tipo de algoritmo compatible");
-        }
-    }
-
-    /**
-     * Comprueba si el archivo es capaz de ser comprimido según la extensión del mismo.
-     * <p>
-     *     El path del archivo debe seguir el formato general de cualquier tipo de path de archivo y puede ser relativo o absoluto.
-     * </p>
-     * @param path El path del archivo que se quiere comprobar
-     * @return Un booleano que indica si el archivo es comprimible
-     * @throws FormatoErroneoException No hay ningún algoritmo compatible con la extensión del archivo
-     */
-    public static boolean esComprimible(String path) throws FormatoErroneoException {
-        if(!path.contains(".")) return true;
-        String[] splitP = path.split("\\.");
-        String type = splitP[splitP.length-1];
-
-        switch (type) {
-            case "txt":
-            case "ppm":
-                return true;
-            case "imgc":
-            case "lzss":
-            case "lz78":
-            case "lzw":
-            case "comp":
-                return false;
-            default:
-                throw new FormatoErroneoException("No hay ningun tipo de algoritmo compatible");
-        }
     }
 
     public static boolean existeArchivo(String path) {
@@ -123,79 +60,28 @@ public class CtrlDatos {
         GestorArchivo.guardaArchivo(data, path);
     }
 
-    private static String extension(Algoritmo algoritmo, boolean esCompresion) {
-        String extension = null;
-        if(esCompresion) {
-            switch (algoritmo) {
-                case LZW:
-                    extension = "lzw";
-                    break;
-                case LZSS:
-                    extension = "lzss";
-                    break;
-                case LZ78:
-                    extension = "lz78";
-                    break;
-                case JPEG:
-                    extension = "imgc";
-                    break;
-                case CARPETA:
-                    extension = "comp";
-                    break;
-            }
-        } else {
-            switch (algoritmo) {
-                case LZW:
-                case LZSS:
-                case LZ78:
-                    extension = "txt";
-                    break;
-                case JPEG:
-                    extension = "ppm";
-                    break;
-                case CARPETA:
-                    extension = "";
-                    break;
-            }
-        }
-        return extension;
+    public void crearGestorCarpetaComprimir(String pathOriginal, String pathSalida) throws FileNotFoundException {
+        gestorCarpeta = new GestorCarpetaComprimir(pathOriginal, pathSalida);
     }
 
-    /**
-     * Actualiza el path pasado por parámetro para que sea el path de salida del fichero procesado.
-     * @param path El path del archivo antes de ser procesado.
-     * @param algoritmo El algorimo usado en el proceso.
-     * @param esCompresion Indicador de si el proceso ha sido de compresión o no (y por tanto de descompresión).
-     * @return Path del archivo procesado, con su correspondiente extensión.
-     */
-    public static String actualizarPathSalida(String path, Algoritmo algoritmo, boolean esCompresion) {
-        String[] splitP = path.split("\\.");
-        String type = splitP[splitP.length-1];
-        String ext = extension(algoritmo, esCompresion);
-        if(!path.contains(".")) path = path + "." + ext;
-        else if(splitP.length==1) path = path + ext;
-        else if (!type.equalsIgnoreCase(ext)) {
-            if(algoritmo.equals(Algoritmo.CARPETA) && !esCompresion) path = path.replace("." + type, ext);
-            else path = path.replace(type, ext);
-        }
-        return path;
+    public void crearGestorCarpetaDescomprimir(String pathOriginal) throws FileNotFoundException {
+        gestorCarpeta = new GestorCarpetaDescomprimir(pathOriginal);
     }
 
-    public void crearGestorCarpeta(String pathOriginal, String pathSalida, boolean comprimir, Algoritmo algoritmoDeTexto) throws FileNotFoundException {
-        if(comprimir) gestorCarpeta = new GestorCarpetaComprimir(pathOriginal, pathSalida, algoritmoDeTexto);
-        else gestorCarpeta = new GestorCarpetaDescomprimir(pathOriginal, pathSalida);
-    }
-
-    public Algoritmo leerAlgoritmoProximoArchivo() throws IOException {
-        return gestorCarpeta.algoritmoProximoArchivo();
+    public String leerPathProximoArchivo() throws IOException {
+        return gestorCarpeta.pathProximoArchivo();
     }
 
     public byte[] leerProximoArchivo() throws IOException {
         return gestorCarpeta.leerProximoArchivo();
     }
 
-    public void guardaProximoArchivo(byte[] data) throws IOException {
-        gestorCarpeta.guardaProximoArchivo(data);
+    public void guardaProximoArchivo(byte[] data, String path) throws IOException {
+        gestorCarpeta.guardaProximoArchivo(data, path);
+    }
+
+    public void guardaCarpeta(String path) throws IOException {
+        gestorCarpeta.guardaCarpeta(path);
     }
 
     public void finalizarGestorCarpeta() throws IOException {
