@@ -96,24 +96,25 @@ public class CtrlProcesos {
      * @param tipoAlgoritmo El algoritmo a usar para la compresión del fichero.
      * @throws Exception El proceso de compresión y descompresión no se ha podido llevar a cabo.
      */
-    public DatosProceso comprimirDescomprimirArchivo(String path, Algoritmo tipoAlgoritmo) throws Exception {
+    public DatosProceso[] comprimirDescomprimirArchivo(String path, Algoritmo tipoAlgoritmo) throws Exception {
+        DatosProceso[] dp = new DatosProceso[2];
         CtrlDatos ctrlDatos = CtrlDatos.getInstance();
         ProcesoFichero comp = new ProcesoComprimir(ctrlDatos.leerArchivo(path), tipoAlgoritmo);
         comp.ejecutarProceso();
-        DatosProceso dp = comp.getDatosProceso();
-        System.out.println("El proceso ha tardado " + dp.getTiempo() / 1000000000.0 + "s. El cambio de tamaño pasa de " + dp.getOldSize() + "B a " + dp.getNewSize() + "B con diferencia de " + dp.getDiffSize() + "B que resulta en un " + dp.getDiffSizePercentage() + "% del archivo original.");
-        if (dp.isSatisfactorio()) {
-            ctrlDatos.actualizaEstadistica(dp, tipoAlgoritmo, true);
+        dp[0] = comp.getDatosProceso();
+        System.out.println("El proceso ha tardado " + dp[0].getTiempo() / 1000000000.0 + "s. El cambio de tamaño pasa de " + dp[0].getOldSize() + "B a " + dp[0].getNewSize() + "B con diferencia de " + dp[0].getDiffSize() + "B que resulta en un " + dp[0].getDiffSizePercentage() + "% del archivo original.");
+        if (dp[0].isSatisfactorio()) {
+            ctrlDatos.actualizaEstadistica(dp[0], tipoAlgoritmo, true);
         } else {
             System.out.println("El proceso de compresión no ha resultado satisfactorio ya que el archivo comprimido ocupa igual o más que el archivo original. Se guardará igualmente.");
         }
 
         ProcesoFichero desc = new ProcesoDescomprimir(comp.getOutput(), tipoAlgoritmo);
         desc.ejecutarProceso();
-        dp = desc.getDatosProceso();
-        System.out.println("El proceso ha tardado " + dp.getTiempo() / 1000000000.0 + "s. El cambio de tamaño pasa de " + dp.getOldSize() + "B a " + dp.getNewSize() + "B con diferencia de " + dp.getDiffSize() + "B que resulta en un " + dp.getDiffSizePercentage() + "% del archivo original.");
-        if (dp.isSatisfactorio()) {
-            ctrlDatos.actualizaEstadistica(dp, tipoAlgoritmo, false);
+        dp[1] = desc.getDatosProceso();
+        System.out.println("El proceso ha tardado " + dp[1].getTiempo() / 1000000000.0 + "s. El cambio de tamaño pasa de " + dp[1].getOldSize() + "B a " + dp[1].getNewSize() + "B con diferencia de " + dp[1].getDiffSize() + "B que resulta en un " + dp[1].getDiffSizePercentage() + "% del archivo original.");
+        if (dp[1].isSatisfactorio()) {
+            ctrlDatos.actualizaEstadistica(dp[1], tipoAlgoritmo, false);
         }
         return dp;
     }
