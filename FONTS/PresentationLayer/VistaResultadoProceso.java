@@ -27,6 +27,7 @@ public class VistaResultadoProceso extends JDialog{
         NewSize.setText(Long.toString(dp.getNewSize()));
         diffSize.setText(Long.toString(dp.getDiffSize()));
         Ratio.setText(Double.toString(dp.getDiffSizePercentage()));
+
         OKButton.addActionListener(e -> {
             dispose();
         });
