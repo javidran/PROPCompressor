@@ -20,7 +20,7 @@ public class VistaResultadoProceso extends JDialog{
     private JPanel panel;
 
     public VistaResultadoProceso(Frame owner, DatosProceso dp){
-        super (owner, true);
+        super (owner, "Proceso completado",true);
         setContentPane(panel);
         tiempo.setText(Long.toString(dp.getTiempo()));
         OldSize.setText(Long.toString(dp.getOldSize()));
