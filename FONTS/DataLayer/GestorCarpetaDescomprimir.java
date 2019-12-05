@@ -9,15 +9,14 @@ import java.util.List;
 
 public class GestorCarpetaDescomprimir extends GestorCarpeta {
     private BufferedInputStream lector;
-    private Algoritmo algoritmoActual;
 
-    public GestorCarpetaDescomprimir(String pathOriginal, String pathSalida) throws FileNotFoundException {
-        super(pathOriginal, pathSalida);
+    public GestorCarpetaDescomprimir(String pathOriginal) throws FileNotFoundException {
+        super(pathOriginal);
         lector = new BufferedInputStream(new FileInputStream(carpeta));
     }
 
     @Override
-    public Algoritmo algoritmoProximoArchivo() throws IOException {
+    public String pathProximoArchivo() throws IOException {
         byte endOfLine = '\n';
         byte b;
         List<Byte> byteList = new ArrayList<>();
@@ -30,14 +29,7 @@ public class GestorCarpetaDescomprimir extends GestorCarpeta {
         for(int i=0; i<byteArray.length; ++i) {
             byteArray[i] = byteList.get(i);
         }
-        pathArchivoActual = new String(byteArray);
-        Algoritmo[] algoritmosPosibles = CtrlDatos.algoritmosPosibles(pathArchivoActual);
-        if(algoritmosPosibles[0].equals(Algoritmo.CARPETA)) {
-            guardaCarpeta();
-            return algoritmoProximoArchivo();
-        }
-        algoritmoActual = algoritmosPosibles[0];
-        return algoritmoActual;
+        return new String(byteArray);
     }
 
     @Override
@@ -61,13 +53,13 @@ public class GestorCarpetaDescomprimir extends GestorCarpeta {
     }
 
     @Override
-    public void guardaProximoArchivo(byte[] data) throws IOException {
-        String pathCompleto = pathSalida + CtrlDatos.actualizarPathSalida(pathArchivoActual, algoritmoActual,false);
-        GestorArchivo.guardaArchivo(data,pathCompleto);
+    public void guardaProximoArchivo(byte[] data, String path) throws IOException {
+        GestorArchivo.guardaArchivo(data, path);
     }
 
-    private void guardaCarpeta() {
-        new File(pathSalida + pathArchivoActual).mkdirs();
+    @Override
+    public void guardaCarpeta(String path) {
+        new File(path).mkdirs();
     }
 
     @Override
