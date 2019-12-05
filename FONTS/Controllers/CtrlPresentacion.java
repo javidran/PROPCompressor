@@ -171,11 +171,13 @@ public class CtrlPresentacion {
             CtrlProcesos ctrlProcesos = CtrlProcesos.getInstance();
             DatosProceso dp;
             if (!modeloParametros.isConGuardado()) {
+                if (modeloParametros.getAlgoritmo().equals(Algoritmo.JPEG) ) ctrlProcesos.setCalidadJPEG(modeloParametros.getCalidad());
                 dp = ctrlProcesos.comprimirDescomprimirArchivo(modeloParametros.getPathOriginal(), modeloParametros.getAlgoritmo());
             } else if (modeloParametros.isCompresion()) {
                 if (modeloParametros.getAlgoritmo().equals(Algoritmo.CARPETA))
                     ctrlProcesos.comprimirCarpeta(modeloParametros.getPathOriginal(), modeloParametros.getPathResultado());
                 else
+                if (modeloParametros.getAlgoritmo().equals(Algoritmo.JPEG) ) ctrlProcesos.setCalidadJPEG(modeloParametros.getCalidad());
                     dp = ctrlProcesos.comprimirArchivo(modeloParametros.getPathOriginal(), modeloParametros.getPathResultado(), modeloParametros.getAlgoritmo());
             } else {
                 if (modeloParametros.getAlgoritmo().equals(Algoritmo.CARPETA))
@@ -231,6 +233,6 @@ public class CtrlPresentacion {
     }
 
     public void CalidadModificada(int value) {
-        
+        modeloParametros.setCalidad(value);
     }
 }
