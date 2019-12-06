@@ -41,9 +41,7 @@ public class VistaEstadisticas extends JDialog {
         });
         cancelarButton.addActionListener(e -> dispose());
         helpButton.addActionListener(e -> ctrlPresentacion.crearVistaAyudaEstadisticas());
-        atrasButton.addActionListener(e -> {
-            ctrlPresentacion.volverAEscogerEstadística();
-        });
+        atrasButton.addActionListener(e -> ctrlPresentacion.volverAEscogerEstadística());
     }
 
     public void mostrarEstadisticasSelecionadas(DatosEstadistica de) {
@@ -53,10 +51,10 @@ public class VistaEstadisticas extends JDialog {
         alg.setText(Objects.requireNonNull(comboBox1.getSelectedItem()).toString());
         archivosC.setText(Integer.toString(de.getArchivosComprimidos()));
         tiempoC.setText(df.format((double) de.getTiempoCompresión()/ 1000000000.0) + " s");
-        ratioC.setText(Double.toString(de.getRatioCompresión()) + " %");
+        ratioC.setText(de.getRatioCompresión() + " %");
         archivosD.setText(Integer.toString(de.getArchivosDescomprimidos()));
         tiempoD.setText(df.format((double)de.getTiempoDescompresión()/ 1000000000.0) + " s");
-        ratioD.setText(Double.toString(de.getRatioDescompresión()) + " %");
+        ratioD.setText(de.getRatioDescompresión() + " %");
         Estats.setVisible(true);
         Algoritmo.setVisible(false);
         procesarButton.setVisible(false);
