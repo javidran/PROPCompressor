@@ -8,7 +8,7 @@ import DomainLayer.Proceso.ProcesoFichero;
 import Enumeration.Algoritmo;
 import Exceptions.FormatoErroneoException;
 
-import javax.swing.*;
+import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -318,9 +318,9 @@ public class CtrlProcesos {
         ctrlDatos.eliminaArchivo(archivoTemporal());
     }
 
-    public void archivoToTextArea(JTextArea textArea, String path) throws IOException {
+    public TableModel getArchivoAsModel(String path, String titleBar) throws IOException {
         CtrlDatos ctrlDatos = CtrlDatos.getInstance();
-        ctrlDatos.archivoToTextArea(textArea, path);
+        return ctrlDatos.getArchivoAsModel(path, titleBar);
     }
 
     public BufferedImage getBufferedImage(String path) throws IOException {

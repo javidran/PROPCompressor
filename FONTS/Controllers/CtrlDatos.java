@@ -4,8 +4,14 @@ import DataLayer.*;
 import DomainLayer.Proceso.DatosProceso;
 import Enumeration.Algoritmo;
 
-import javax.swing.*;
-import java.io.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CtrlDatos {
     /**
@@ -136,9 +142,15 @@ public class CtrlDatos {
         GestorArchivo.eliminaArchivo(path);
     }
 
-    public void archivoToTextArea(JTextArea textArea, String path) throws IOException {
-        FileReader reader = new FileReader(path);
-        textArea.read(reader, path);
-        reader.close();
+    public TableModel getArchivoAsModel(String path, String titleBar) throws IOException {
+        FileReader fileReader = new FileReader(path);
+        BufferedReader bufferedReader = new BufferedReader(fileReader);
+        List<String> list = new ArrayList<>();
+        String str;
+        while((str=bufferedReader.readLine())!= null) list.add(str);
+        bufferedReader.close();
+        DefaultTableModel model = new DefaultTableModel();
+        model.addColumn(titleBar, list.toArray());
+        return model;
     }
 }

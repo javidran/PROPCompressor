@@ -6,10 +6,8 @@ import javax.swing.*;
 import java.awt.*;
 
 public class VistaComparacionFichero extends JDialog {
-    public JTextArea original;
-    public JTextArea resultante;
+    public JTable original;
     private JButton finalizarButton;
-    private JScrollPane scrollPanel;
     private JPanel panel;
     private JLabel tiempoC;
     private JLabel OldSizeC;
@@ -21,11 +19,18 @@ public class VistaComparacionFichero extends JDialog {
     private JLabel NewSizeD;
     private JLabel DiffSizeD;
     private JLabel RatioD;
+    private JScrollPane originalPanel;
+    private JScrollPane resultadoPanel;
+    public JTable resultado;
 
     public VistaComparacionFichero(Frame owner, DatosProceso[] dp){
         super (owner, "Proceso completado",true);
         setContentPane(panel);
-        scrollPanel.getVerticalScrollBar().setUnitIncrement(16);
+        originalPanel.getVerticalScrollBar().setUnitIncrement(16);
+        originalPanel.getHorizontalScrollBar().setUnitIncrement(16);
+        resultadoPanel.getVerticalScrollBar().setUnitIncrement(16);
+        resultadoPanel.getHorizontalScrollBar().setUnitIncrement(16);
+
         tiempoC.setText(Long.toString(dp[0].getTiempo()));
         OldSizeC.setText(Long.toString(dp[0].getOldSize()));
         NewSizeC.setText(Long.toString(dp[0].getNewSize()));
@@ -37,8 +42,6 @@ public class VistaComparacionFichero extends JDialog {
         NewSizeD.setText(Long.toString(dp[1].getNewSize()));
         DiffSizeD.setText(Long.toString(dp[1].getDiffSize()));
         RatioD.setText(Double.toString(dp[1].getDiffSizePercentage()));
-
-
 
         finalizarButton.addActionListener(e -> dispose());
     }

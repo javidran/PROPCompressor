@@ -4,17 +4,17 @@ import DataLayer.DatosEstadistica;
 import DomainLayer.Proceso.DatosProceso;
 import Enumeration.Algoritmo;
 import Exceptions.FormatoErroneoException;
-import PresentationLayer.*;
 import PresentationLayer.Helpers.HelpVistaEstadisticas;
 import PresentationLayer.Helpers.HelpVistaInicio;
 import PresentationLayer.Helpers.HelpVistaSelectorAlgoritmo;
+import PresentationLayer.*;
 
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicProgressBarUI;
+import javax.swing.table.TableModel;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 
 public class CtrlPresentacion {
     /**
@@ -269,10 +269,10 @@ public class CtrlPresentacion {
         vistaComparacionFichero.setResizable(true);
         CtrlProcesos ctrlProcesos = CtrlProcesos.getInstance();
         try {
-            /*
-            ctrlProcesos.archivoToTextArea(vistaComparacionFichero.original, modeloParametros.getPathOriginal());
-            ctrlProcesos.archivoToTextArea(vistaComparacionFichero.resultante, CtrlProcesos.archivoTemporal());
-            */
+            TableModel modelOriginal = ctrlProcesos.getArchivoAsModel(modeloParametros.getPathOriginal(), "Archivo original");
+            vistaComparacionFichero.original.setModel(modelOriginal);
+            TableModel modelResultado = ctrlProcesos.getArchivoAsModel(modeloParametros.getPathOriginal(), "Archivo comprimido y descomprimido");
+            vistaComparacionFichero.resultado.setModel(modelResultado);
         } catch (Exception e) {
             JOptionPane.showConfirmDialog(null, "Ha ocurrido un error al intentar mostrar los archivos para comparación. Por favor, intentelo de nuevo.",null, JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
         } finally {

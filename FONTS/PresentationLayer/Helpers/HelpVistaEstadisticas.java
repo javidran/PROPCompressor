@@ -2,7 +2,6 @@ package PresentationLayer.Helpers;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.peer.DialogPeer;
 
 
 public class HelpVistaEstadisticas extends JDialog {

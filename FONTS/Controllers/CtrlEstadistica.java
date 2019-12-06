@@ -1,7 +1,6 @@
 package Controllers;
 
 import DataLayer.DatosEstadistica;
-import DomainLayer.Proceso.DatosProceso;
 import Enumeration.Algoritmo;
 
 import java.io.FileNotFoundException;
