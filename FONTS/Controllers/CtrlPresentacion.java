@@ -1,5 +1,6 @@
 package Controllers;
 
+import DataLayer.DatosEstadistica;
 import DomainLayer.Proceso.DatosProceso;
 import Enumeration.Algoritmo;
 import Exceptions.FormatoErroneoException;
@@ -252,7 +253,7 @@ public class CtrlPresentacion {
         }
     }
 
-    public String getEstadisticas(String data) throws IOException {
+    public DatosEstadistica getEstadisticas(String data) throws IOException {
         CtrlEstadistica ce = CtrlEstadistica.getInstance();
         Algoritmo alg;
         switch (data) {
@@ -277,9 +278,8 @@ public class CtrlPresentacion {
     public void crearVistaEstadisticas() {
         vistaEstadisticas = new VistaEstadisticas(vistaInicio);
         vistaEstadisticas.setSize(new Dimension(500, 200));
-        vistaEstadisticas.setMinimumSize(new Dimension(300, 150));
         vistaEstadisticas.setLocationRelativeTo(vistaInicio);
-        vistaEstadisticas.setResizable(true);
+        vistaEstadisticas.setResizable(false);
         vistaEstadisticas.setVisible(true);
     }
 
