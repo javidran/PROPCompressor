@@ -9,6 +9,7 @@ import Enumeration.Algoritmo;
 import Exceptions.FormatoErroneoException;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -360,7 +361,12 @@ public class CtrlProcesos {
         }
         ++pos;
         BufferedImage image = new BufferedImage(width, height,BufferedImage.TYPE_INT_RGB);
-        
+        for (int i = 0; i < height; ++i) {
+            for (int j = 0; j < width; ++j) {
+                int color = new Color(datosInput[pos++], datosInput[pos++], datosInput[pos++]).getRGB();
+                image.setRGB(i, j, color);
+            }
+        }
         return image;
     }
 
