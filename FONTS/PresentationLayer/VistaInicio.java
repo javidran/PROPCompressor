@@ -15,7 +15,6 @@ import java.io.File;
 public class VistaInicio extends JFrame {
     private CtrlPresentacion ctrlPresentacion;
 
-    private JFrame myself;
     private JPanel panel;
     private JButton salirButton;
 
@@ -36,7 +35,6 @@ public class VistaInicio extends JFrame {
 
         this.ctrlPresentacion = CtrlPresentacion.getInstance();
 
-        myself = this;
         setContentPane(panel);
 
         explorarButton.addActionListener(actionEvent -> seleccionDeArchivo());

@@ -30,6 +30,7 @@ public class CtrlPresentacion {
     private HelpVistaInicio helpVistaInicio;
     private HelpVistaEstadisticas helpVistaEstadisticas;
     private HelpVistaSelectorAlgoritmo helpVistaSelectorAlgoritmo;
+    private VistaCompDescImagen vistaCompDescImagen;
 
     /**
      * Getter de la instancia Singleton de CtrlPresentacion
@@ -247,6 +248,7 @@ public class CtrlPresentacion {
 
         if(exceptionProceso[0]!= null) JOptionPane.showConfirmDialog(null, "Se ha dado el siguente error durante el proceso:\n"+exceptionProceso[0].getMessage(),null, JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
         else if (modeloParametros.isConGuardado()) crearVistaResultadoProceso(dp[0]);
+        else if(modeloParametros.getAlgoritmo().equals(Algoritmo.JPEG)) crearVistaCompDescImagen();
         else crearVistaComparacionProceso(dp);
     }
 
@@ -277,6 +279,23 @@ public class CtrlPresentacion {
             ctrlProcesos.eliminaArchivoTemporal();
         }
         vistaComparacionFichero.setVisible(true);
+    }
+
+    public void crearVistaCompDescImagen() {
+
+        vistaCompDescImagen = new VistaCompDescImagen(vistaInicio);
+        vistaCompDescImagen.setSize(new Dimension(800, 800));
+        vistaCompDescImagen.setLocationRelativeTo(vistaInicio);
+        vistaCompDescImagen.setResizable(false);
+        CtrlProcesos ctrlProcesos = CtrlProcesos.getInstance();
+        try {
+            vistaCompDescImagen.setImagenes(ctrlProcesos.getBufferedImage(modeloParametros.getPathOriginal()), ctrlProcesos.getBufferedImage(ctrlProcesos.archivoTemporal()));
+        } catch (Exception e) {
+            JOptionPane.showConfirmDialog(null, "Ha ocurrido un error al intentar mostrar los archivos para comparación. Por favor, intentelo de nuevo.",null, JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
+        } finally {
+            ctrlProcesos.eliminaArchivoTemporal();
+        }
+        vistaCompDescImagen.setVisible(true);
     }
 
     public DatosEstadistica getEstadisticas(String data) throws IOException {
@@ -344,6 +363,8 @@ public class CtrlPresentacion {
         helpVistaSelectorAlgoritmo.setResizable(false);
         helpVistaSelectorAlgoritmo.setVisible(true);
     }
+
+
 
     public void volverAEscogerEstadística() {
         vistaEstadisticas.mostrarSelectorAlgoritmo();
