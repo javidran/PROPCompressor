@@ -21,6 +21,7 @@ public class VistaSelectorAlgoritmo extends JDialog {
     private JPanel selectorSalida;
     private JTextField pathSalida;
     private JButton explorarButton;
+    private JButton helpButton;
 
     public VistaSelectorAlgoritmo(Frame owner) {
         super (owner, true);
@@ -56,6 +57,8 @@ public class VistaSelectorAlgoritmo extends JDialog {
             if (!sliderCalidad.getValueIsAdjusting())
                 ctrlPresentacion.CalidadModificada( sliderCalidad.getValue());
         });
+
+        helpButton.addActionListener(e -> ctrlPresentacion.crearVistaAyudaSelectorAlgoritmo());
     }
 
     private void seleccionDeArchivo() {
