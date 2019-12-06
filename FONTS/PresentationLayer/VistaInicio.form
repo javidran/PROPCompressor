@@ -109,7 +109,7 @@
               </grid>
             </constraints>
             <properties>
-              <text value="Help"/>
+              <text value="Ayuda"/>
             </properties>
           </component>
           <hspacer id="5b908">

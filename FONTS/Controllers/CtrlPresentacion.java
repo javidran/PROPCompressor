@@ -4,6 +4,8 @@ import DomainLayer.Proceso.DatosProceso;
 import Enumeration.Algoritmo;
 import Exceptions.FormatoErroneoException;
 import PresentationLayer.*;
+import PresentationLayer.Helpers.HelpVistaEstadisticas;
+import PresentationLayer.Helpers.HelpVistaInicio;
 
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicProgressBarUI;
@@ -22,6 +24,7 @@ public class CtrlPresentacion {
     private VistaEstadisticas vistaEstadisticas;
     private VistaResultadoProceso vistaResultadoProceso;
     private HelpVistaInicio helpVistaInicio;
+    private HelpVistaEstadisticas helpVistaEstadisticas;
 
     /**
      * Getter de la instancia Singleton de CtrlPresentacion
@@ -293,5 +296,14 @@ public class CtrlPresentacion {
         helpVistaInicio.setLocationRelativeTo(vistaInicio);
         helpVistaInicio.setResizable(true);
         helpVistaInicio.setVisible(true);
+    }
+
+    public void crearVistaAyudaEstadisticas() {
+        helpVistaEstadisticas = new HelpVistaEstadisticas(vistaEstadisticas);
+        helpVistaEstadisticas.setSize(new Dimension(500, 500));
+        helpVistaEstadisticas.setMinimumSize(new Dimension(500, 150));
+        helpVistaEstadisticas.setLocationRelativeTo(vistaEstadisticas);
+        helpVistaEstadisticas.setResizable(true);
+        helpVistaEstadisticas.setVisible(true);
     }
 }
