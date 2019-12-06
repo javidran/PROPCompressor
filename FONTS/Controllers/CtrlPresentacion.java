@@ -4,22 +4,17 @@ import DataLayer.DatosEstadistica;
 import DomainLayer.Proceso.DatosProceso;
 import Enumeration.Algoritmo;
 import Exceptions.FormatoErroneoException;
-import PresentationLayer.*;
 import PresentationLayer.Helpers.HelpVistaEstadisticas;
 import PresentationLayer.Helpers.HelpVistaInicio;
 import PresentationLayer.Helpers.HelpVistaSelectorAlgoritmo;
+import PresentationLayer.*;
 
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicProgressBarUI;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
-import javax.swing.text.Document;
-import javax.swing.text.html.ListView;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.List;
 
 public class CtrlPresentacion {
     /**

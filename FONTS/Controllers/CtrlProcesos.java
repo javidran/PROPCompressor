@@ -8,14 +8,10 @@ import DomainLayer.Proceso.ProcesoFichero;
 import Enumeration.Algoritmo;
 import Exceptions.FormatoErroneoException;
 
-import javax.swing.*;
 import javax.swing.table.TableModel;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Document;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.List;
 
 /**
  * La clase Singleton CtrlProcesos es el Controlador de Dominio del programa, y la encargada de crear procesos de compresión y/o descompresión, además de interactuar con las capas de datos y presentación.

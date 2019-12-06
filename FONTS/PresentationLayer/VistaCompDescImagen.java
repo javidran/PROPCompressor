@@ -1,11 +1,8 @@
 package PresentationLayer;
 
-import DomainLayer.Proceso.DatosProceso;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.text.DecimalFormat;
 
 public class VistaCompDescImagen extends JDialog {
     private JPanel PanelGeneral;
