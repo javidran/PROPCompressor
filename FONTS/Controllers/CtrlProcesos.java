@@ -9,7 +9,10 @@ import Enumeration.Algoritmo;
 import Exceptions.FormatoErroneoException;
 
 import javax.swing.*;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * La clase Singleton CtrlProcesos es el Controlador de Dominio del programa, y la encargada de crear procesos de compresión y/o descompresión, además de interactuar con las capas de datos y presentación.
@@ -340,6 +343,11 @@ public class CtrlProcesos {
     public void archivoToTextArea(JTextArea textArea, String path) throws IOException {
         CtrlDatos ctrlDatos = CtrlDatos.getInstance();
         ctrlDatos.archivoToTextArea(textArea, path);
+    }
+
+    public List<String> getArchivoAsDocument(String path) throws IOException, BadLocationException {
+        CtrlDatos ctrlDatos = CtrlDatos.getInstance();
+        return ctrlDatos.getArchivoAsDocument(path);
     }
 
     /**

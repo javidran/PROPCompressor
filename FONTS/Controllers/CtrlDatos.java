@@ -5,7 +5,10 @@ import DomainLayer.Proceso.DatosProceso;
 import Enumeration.Algoritmo;
 
 import javax.swing.*;
+import javax.swing.text.*;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CtrlDatos {
     /**
@@ -140,5 +143,19 @@ public class CtrlDatos {
         FileReader reader = new FileReader(path);
         textArea.read(reader, path);
         reader.close();
+    }
+
+    public List<String> getArchivoAsDocument(String path) throws IOException, BadLocationException {
+        Document document = new DefaultStyledDocument();
+        FileReader fileReader = new FileReader(path);
+        BufferedReader bufferedReader = new BufferedReader(fileReader);
+        SimpleAttributeSet set = new SimpleAttributeSet();
+        List<String> list = new ArrayList<>();
+        String str;
+        while((str=bufferedReader.readLine())!= null) {
+            list.add(str);
+        }
+        bufferedReader.close();
+        return list;
     }
 }
