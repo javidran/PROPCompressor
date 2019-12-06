@@ -9,6 +9,7 @@ import Enumeration.Algoritmo;
 import Exceptions.FormatoErroneoException;
 
 import javax.swing.*;
+import javax.swing.table.TableModel;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import java.io.IOException;
@@ -345,9 +346,9 @@ public class CtrlProcesos {
         ctrlDatos.archivoToTextArea(textArea, path);
     }
 
-    public List<String> getArchivoAsDocument(String path) throws IOException, BadLocationException {
+    public TableModel getArchivoAsModel(String path, String titleBar) throws IOException {
         CtrlDatos ctrlDatos = CtrlDatos.getInstance();
-        return ctrlDatos.getArchivoAsDocument(path);
+        return ctrlDatos.getArchivoAsModel(path, titleBar);
     }
 
     /**

@@ -11,6 +11,7 @@ import PresentationLayer.Helpers.HelpVistaSelectorAlgoritmo;
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicProgressBarUI;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import javax.swing.text.Document;
 import javax.swing.text.html.ListView;
 import java.awt.*;
@@ -265,11 +266,10 @@ public class CtrlPresentacion {
         vistaComparacionFichero.setResizable(true);
         CtrlProcesos ctrlProcesos = CtrlProcesos.getInstance();
         try {
-            List<String> list = ctrlProcesos.getArchivoAsDocument(modeloParametros.getPathOriginal());
-            DefaultTableModel model = new DefaultTableModel();
-            JTable table = new JTable(model);
-            vistaComparacionFichero.original.
-            vistaComparacionFichero.resultado.setDocument(ctrlProcesos.getArchivoAsDocument(CtrlProcesos.archivoTemporal()));
+            TableModel modelOriginal = ctrlProcesos.getArchivoAsModel(modeloParametros.getPathOriginal(), "Archivo original");
+            vistaComparacionFichero.original.setModel(modelOriginal);
+            TableModel modelResultado = ctrlProcesos.getArchivoAsModel(modeloParametros.getPathOriginal(), "Archivo comprimido y descomprimido");
+            vistaComparacionFichero.resultado.setModel(modelResultado);
         } catch (Exception e) {
             JOptionPane.showConfirmDialog(null, "Ha ocurrido un error al intentar mostrar los archivos para comparación. Por favor, intentelo de nuevo.",null, JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
         } finally {

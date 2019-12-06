@@ -5,6 +5,8 @@ import DomainLayer.Proceso.DatosProceso;
 import Enumeration.Algoritmo;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import javax.swing.text.*;
 import java.io.*;
 import java.util.ArrayList;
@@ -145,17 +147,15 @@ public class CtrlDatos {
         reader.close();
     }
 
-    public List<String> getArchivoAsDocument(String path) throws IOException, BadLocationException {
-        Document document = new DefaultStyledDocument();
+    public TableModel getArchivoAsModel(String path, String titleBar) throws IOException {
         FileReader fileReader = new FileReader(path);
         BufferedReader bufferedReader = new BufferedReader(fileReader);
-        SimpleAttributeSet set = new SimpleAttributeSet();
         List<String> list = new ArrayList<>();
         String str;
-        while((str=bufferedReader.readLine())!= null) {
-            list.add(str);
-        }
+        while((str=bufferedReader.readLine())!= null) list.add(str);
         bufferedReader.close();
-        return list;
+        DefaultTableModel model = new DefaultTableModel();
+        model.addColumn(titleBar, list.toArray());
+        return model;
     }
 }
