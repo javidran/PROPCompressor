@@ -116,13 +116,13 @@ public class MainDriver {
                                     throw new EnumConstantNotPresentException(Algoritmo.class, "El tipo de compresor " + algoritmoComp + " no existe o no está disponible para un archivo .txt\n");
                             }
                             System.out.println("Se inicia el proceso");
-                            ctrlProcesos.comprimirDescomprimirArchivo(s, tipoCompresor);
+                            ctrlProcesos.comprimirDescomprimirArchivo(s, CtrlProcesos.calcularPathTemporal(s), tipoCompresor);
                             System.out.println("El archivo " + s + " se ha comprimido y descomprimido correctamente!\n");
                         } else if (s.endsWith(".ppm")) {
                             System.out.println("Indique la calidad de compresión a usar (del 1 al 7)");
                             ctrlProcesos.setCalidadJPEG(scanner.nextInt());
                             System.out.println("Se inicia el proceso");
-                            ctrlProcesos.comprimirDescomprimirArchivo(s, Algoritmo.JPEG);
+                            ctrlProcesos.comprimirDescomprimirArchivo(s, CtrlProcesos.calcularPathTemporal(s), Algoritmo.JPEG);
                             System.out.println("El archivo " + s + " se ha comprimido y descomprimido correctamente!\n");
                         } else System.out.println("El formato del fichero debe de ser .txt o .ppm!");
                         break;

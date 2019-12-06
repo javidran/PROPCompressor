@@ -96,7 +96,7 @@ public class CtrlProcesos {
      * @param tipoAlgoritmo El algoritmo a usar para la compresión del fichero.
      * @throws Exception El proceso de compresión y descompresión no se ha podido llevar a cabo.
      */
-    public DatosProceso[] comprimirDescomprimirArchivo(String path, Algoritmo tipoAlgoritmo) throws Exception {
+    public DatosProceso[] comprimirDescomprimirArchivo(String path, String pathTemporal, Algoritmo tipoAlgoritmo) throws Exception {
         DatosProceso[] dp = new DatosProceso[2];
         CtrlDatos ctrlDatos = CtrlDatos.getInstance();
         ProcesoFichero comp = new ProcesoComprimir(ctrlDatos.leerArchivo(path), tipoAlgoritmo);
@@ -111,6 +111,7 @@ public class CtrlProcesos {
 
         ProcesoFichero desc = new ProcesoDescomprimir(comp.getOutput(), tipoAlgoritmo);
         desc.ejecutarProceso();
+        ctrlDatos.guardaArchivo(desc.getOutput(), pathTemporal);
         dp[1] = desc.getDatosProceso();
         System.out.println("El proceso ha tardado " + dp[1].getTiempo() / 1000000000.0 + "s. El cambio de tamaño pasa de " + dp[1].getOldSize() + "B a " + dp[1].getNewSize() + "B con diferencia de " + dp[1].getDiffSize() + "B que resulta en un " + dp[1].getDiffSizePercentage() + "% del archivo original.");
         if (dp[1].isSatisfactorio()) {
@@ -317,12 +318,25 @@ public class CtrlProcesos {
         String type = splitP[splitP.length-1];
         String ext = extension(algoritmo, esCompresion);
         if(!path.contains(".") && !(algoritmo.equals(Algoritmo.CARPETA) && !esCompresion)) path = path + "." + ext;
-        else if(splitP.length==1) path = path + ext;
         else if (!type.equalsIgnoreCase(ext)) {
             if(algoritmo.equals(Algoritmo.CARPETA) && !esCompresion) path = path.replace("." + type, ext);
             else path = path.replace(type, ext);
         }
         return path;
+    }
+
+    public static String calcularPathTemporal(String path) {
+        String[] splitP = path.split("\\.");
+        String type = splitP[splitP.length-1];
+        String ext = "temp";
+        if(!path.contains(".")) path = path + "." + ext;
+        else if (!type.equalsIgnoreCase(ext)) path = path.replace(type, ext);
+        return path;
+    }
+
+    public static void eliminaArchivoTemporal(String path) {
+        CtrlDatos ctrlDatos = CtrlDatos.getInstance();
+        ctrlDatos.eliminaArchivo(path);
     }
 
     /**

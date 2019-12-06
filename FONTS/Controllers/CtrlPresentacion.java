@@ -10,6 +10,7 @@ import javax.swing.plaf.basic.BasicProgressBarUI;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 public class CtrlPresentacion {
     /**
@@ -21,6 +22,7 @@ public class CtrlPresentacion {
     private VistaSelectorAlgoritmo vistaSelectorAlgoritmo;
     private VistaEstadisticas vistaEstadisticas;
     private VistaResultadoProceso vistaResultadoProceso;
+    private VistaComparacionFichero vistaComparacionFichero;
 
     /**
      * Getter de la instancia Singleton de CtrlPresentacion
@@ -95,7 +97,7 @@ public class CtrlPresentacion {
         if (!existe) {
             JOptionPane.showConfirmDialog(null, "¡El fichero o carpeta que desea procesar no existe! Seleccione un archivo o carpeta existente", "¡No existe!", JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
         }
-        else{
+        else {
             vistaSelectorAlgoritmo = new VistaSelectorAlgoritmo(vistaInicio);
             modeloParametros.setVistaSelectorAlgoritmo(vistaSelectorAlgoritmo, conGuardado);
             vistaSelectorAlgoritmo.setSize(new Dimension(650, 200));
@@ -146,7 +148,7 @@ public class CtrlPresentacion {
         actualizarPathSalida(modeloParametros.getPathResultado());
     }
 
-    public void iniciarProceso() throws Exception {
+    public void iniciarProceso() {
         boolean existe = (new File(modeloParametros.getPathResultado())).exists();
         if (existe) {
             int respuesta = JOptionPane.showConfirmDialog(null, "El fichero resultante del proceso sobrescribirá uno ya existente, ¿desea sobrescribirlo?", "Sobrescribir",
@@ -156,7 +158,7 @@ public class CtrlPresentacion {
                 crearVistaSeleccionAlgoritmo(modeloParametros.isConGuardado());
             }
         }
-        else  cerrarVistaSeleccionAlgoritmo();
+        else cerrarVistaSeleccionAlgoritmo();
 
         procesar();
     }
@@ -193,7 +195,8 @@ public class CtrlPresentacion {
                 try {
                     CtrlProcesos ctrlProcesos = CtrlProcesos.getInstance();
                     if (!modeloParametros.isConGuardado()) {
-                        DatosProceso[] multiplesDatos = ctrlProcesos.comprimirDescomprimirArchivo(modeloParametros.getPathOriginal(), modeloParametros.getAlgoritmo());
+                        modeloParametros.setPathResultado(CtrlProcesos.calcularPathTemporal(modeloParametros.getPathOriginal()));
+                        DatosProceso[] multiplesDatos = ctrlProcesos.comprimirDescomprimirArchivo(modeloParametros.getPathOriginal(), modeloParametros.getPathResultado(), modeloParametros.getAlgoritmo());
                         dp[0] = multiplesDatos[0];
                         dp[1] = multiplesDatos[1];
                     } else if (modeloParametros.isCompresion()) {
@@ -223,17 +226,41 @@ public class CtrlPresentacion {
         dialog.setVisible(true); // will block but with a responsive GUI
 
         if(exceptionProceso[0]!= null) JOptionPane.showConfirmDialog(null, "Se ha dado el siguente error durante el proceso:\n"+exceptionProceso[0].getMessage(),null, JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
-        else {
-            vistaResultadoProceso = new VistaResultadoProceso(vistaInicio, dp[0]);
-            vistaResultadoProceso.setSize(new Dimension(450, 250));
-            vistaResultadoProceso.setMinimumSize(new Dimension(450, 250));
-            vistaResultadoProceso.setLocationRelativeTo(vistaInicio);
-            vistaResultadoProceso.setResizable(true);
-            vistaResultadoProceso.setVisible(true);
-        }
+        else if (modeloParametros.isConGuardado()) crearVistaResultadoProceso(dp[0]);
+        else crearVistaComparacionProceso(dp);
     }
 
-    public String getEstadisticas(String data) throws IOException {
+    public void crearVistaResultadoProceso(DatosProceso dp) {
+        vistaResultadoProceso = new VistaResultadoProceso(vistaInicio, dp);
+        vistaResultadoProceso.setSize(new Dimension(450, 250));
+        vistaResultadoProceso.setMinimumSize(new Dimension(450, 250));
+        vistaResultadoProceso.setLocationRelativeTo(vistaInicio);
+        vistaResultadoProceso.setResizable(true);
+        vistaResultadoProceso.setVisible(true);
+    }
+
+    public void crearVistaComparacionProceso(DatosProceso[] dp) {
+        vistaComparacionFichero = new VistaComparacionFichero(vistaInicio, dp);
+        vistaComparacionFichero.setSize(new Dimension(450, 250));
+        vistaComparacionFichero.setMinimumSize(new Dimension(450, 250));
+        vistaComparacionFichero.setLocationRelativeTo(vistaInicio);
+        vistaComparacionFichero.setResizable(true);
+        /*
+        try {
+            //CtrlProcesos ctrlProcesos = ctrlProcesos.getInstance();
+            //ctrlProcesos.archivoTemporalToTextArea(JTextArea);
+            vistaComparacionFichero.original.read(new InputStreamReader(
+                    getClass().getResourceAsStream(modeloParametros.getPathOriginal())), null);
+            vistaComparacionFichero.resultante.read(new InputStreamReader(getClass.getmodeloParametros.getPathResultado()), null);
+            CtrlProcesos.eliminaArchivoTemporal(modeloParametros.getPathResultado());
+        } catch (IOException e) {
+            JOptionPane.showConfirmDialog(null, "Se ha dado el siguente error durante el proceso:\n" + e.getMessage(), null, JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
+        }
+        */
+        vistaComparacionFichero.setVisible(true);
+    }
+
+        public String getEstadisticas(String data) throws IOException {
         CtrlEstadistica ce = CtrlEstadistica.getInstance();
         Algoritmo alg;
         switch (data) {

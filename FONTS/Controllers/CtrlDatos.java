@@ -132,4 +132,7 @@ public class CtrlDatos {
         return GestorEstadisticas.getPorcentajeAhorradoMedio(algoritmo,esCompresion);
     }
 
+    public void eliminaArchivo(String path) {
+        GestorArchivo.eliminaArchivo(path);
+    }
 }

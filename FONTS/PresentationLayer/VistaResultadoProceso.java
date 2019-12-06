@@ -8,7 +8,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class VistaResultadoProceso extends JDialog{
+public class VistaResultadoProceso extends JDialog {
 
     private JLabel tiempo;
     private JLabel OldSize;
