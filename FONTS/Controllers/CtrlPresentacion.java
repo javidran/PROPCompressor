@@ -272,7 +272,7 @@ public class CtrlPresentacion {
 
     public void crearVistaEstadisticas() {
         vistaEstadisticas = new VistaEstadisticas(vistaInicio);
-        vistaEstadisticas.setSize(new Dimension(600, 160));
+        vistaEstadisticas.setSize(new Dimension(600, 200));
         vistaEstadisticas.setMinimumSize(new Dimension(300, 150));
         vistaEstadisticas.setLocationRelativeTo(vistaInicio);
         vistaEstadisticas.setResizable(true);
@@ -313,5 +313,9 @@ public class CtrlPresentacion {
         helpVistaSelectorAlgoritmo.setLocationRelativeTo(vistaSelectorAlgoritmo);
         helpVistaSelectorAlgoritmo.setResizable(false);
         helpVistaSelectorAlgoritmo.setVisible(true);
+    }
+
+    public void volverAEscogerEstadística() {
+        vistaEstadisticas.mostrarSelectorAlgoritmo();
     }
 }

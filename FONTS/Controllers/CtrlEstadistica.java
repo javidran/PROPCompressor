@@ -37,9 +37,7 @@ public class CtrlEstadistica {
         StringBuilder resultado = new StringBuilder();
 
         CtrlDatos ctrlDatos = CtrlDatos.getInstance();
-        resultado.append("---------------------------------------------------------------------------------\n");
         resultado.append("Estadísticas generales del algoritmo ").append(algoritmo).append(":\n");
-        resultado.append("---------------------------------------------------------------------------------\n");
         try {
             int num = ctrlDatos.getNumeroElementos(algoritmo, true);
             resultado.append("Archivos comprimidos: ").append(num).append("\n");
@@ -58,7 +56,6 @@ public class CtrlEstadistica {
         } catch (FileNotFoundException e) {
             resultado.append("Archivos descomprimidos: 0\n");
         }
-        resultado.append("---------------------------------------------------------------------------------\n");
 
         return resultado.toString();
     }
