@@ -30,6 +30,7 @@ public class CtrlPresentacion {
     private HelpVistaInicio helpVistaInicio;
     private HelpVistaEstadisticas helpVistaEstadisticas;
     private HelpVistaSelectorAlgoritmo helpVistaSelectorAlgoritmo;
+    private VistaCompDescImagen vistaCompDescImagen;
 
     /**
      * Getter de la instancia Singleton de CtrlPresentacion
@@ -343,6 +344,15 @@ public class CtrlPresentacion {
         helpVistaSelectorAlgoritmo.setLocationRelativeTo(vistaSelectorAlgoritmo);
         helpVistaSelectorAlgoritmo.setResizable(false);
         helpVistaSelectorAlgoritmo.setVisible(true);
+    }
+
+    public void crearVistaCompDescImagen() {
+
+        vistaCompDescImagen = new VistaCompDescImagen(vistaInicio);
+        vistaCompDescImagen.setSize(new Dimension(400, 300));
+        vistaCompDescImagen.setLocationRelativeTo(vistaInicio);
+        vistaCompDescImagen.setResizable(false);
+        vistaCompDescImagen.setVisible(true);
     }
 
     public void volverAEscogerEstadística() {
