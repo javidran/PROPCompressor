@@ -99,8 +99,11 @@ public class CtrlPresentacion {
         else{
             vistaSelectorAlgoritmo = new VistaSelectorAlgoritmo(vistaInicio);
             modeloParametros.setVistaSelectorAlgoritmo(vistaSelectorAlgoritmo, conGuardado);
-            vistaSelectorAlgoritmo.setSize(new Dimension(650, 200));
-            vistaSelectorAlgoritmo.setMinimumSize(new Dimension(500, 200));
+            if (!conGuardado || modeloParametros.getAlgoritmo().equals(Algoritmo.CARPETA)) vistaSelectorAlgoritmo.setSize(new Dimension(650, 160));
+            else {
+                if (modeloParametros.isCompresion()) vistaSelectorAlgoritmo.setSize(new Dimension(650, 210));
+            }
+            vistaSelectorAlgoritmo.setMinimumSize(new Dimension(600, 160));
             vistaSelectorAlgoritmo.setLocationRelativeTo(vistaInicio);
             vistaSelectorAlgoritmo.setResizable(true);
             vistaSelectorAlgoritmo.setVisible(true);
@@ -112,7 +115,13 @@ public class CtrlPresentacion {
     }
 
     public void pulsarCerradoVistaSeleccionAlgoritmo() {
-        algoritmoSeleccionado("Predeterminado"); //Para que en caso de volver atras se quede con el algoritmo predeterminado por si vuelves a entrar al selctor de algoritmo
+        switch (modeloParametros.getAlgoritmo()) {
+            case LZSS:
+            case LZW:
+            case LZ78:
+                algoritmoSeleccionado("Predeterminado"); //Para que en caso de volver atras se quede con el algoritmo predeterminado por si vuelves a entrar al selctor de algoritmo
+                break;
+        }
         cerrarVistaSeleccionAlgoritmo();
     }
 
@@ -258,8 +267,8 @@ public class CtrlPresentacion {
 
     public void crearVistaEstadisticas() {
         vistaEstadisticas = new VistaEstadisticas(vistaInicio);
-        vistaEstadisticas.setSize(new Dimension(600, 150));
-        vistaEstadisticas.setMinimumSize(new Dimension(500, 150));
+        vistaEstadisticas.setSize(new Dimension(600, 160));
+        vistaEstadisticas.setMinimumSize(new Dimension(300, 150));
         vistaEstadisticas.setLocationRelativeTo(vistaInicio);
         vistaEstadisticas.setResizable(true);
         vistaEstadisticas.setVisible(true);
