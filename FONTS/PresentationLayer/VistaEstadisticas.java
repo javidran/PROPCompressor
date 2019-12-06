@@ -58,5 +58,6 @@ public class VistaEstadisticas extends JDialog {
         Algoritmo.setVisible(true);
         procesarButton.setVisible(true);
         helpButton.setVisible(true);
+        atrasButton.setVisible(false);
     }
 }
