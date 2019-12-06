@@ -17,6 +17,7 @@ public class VistaEstadisticas extends JDialog {
     private JButton procesarButton;
     private JTextArea status;
     private JButton helpButton;
+    private JButton atrasButton;
 
     public VistaEstadisticas(Frame owner) {
         super (owner, true);
@@ -24,6 +25,7 @@ public class VistaEstadisticas extends JDialog {
         setContentPane(Estadisticas);
 
         Estats.setVisible(false);
+        atrasButton.setVisible(false);
 
         procesarButton.addActionListener(e -> {
             String data =  Objects.requireNonNull(comboBox1.getSelectedItem()).toString();
@@ -31,10 +33,13 @@ public class VistaEstadisticas extends JDialog {
         });
         cancelarButton.addActionListener(e -> dispose());
         helpButton.addActionListener(e -> ctrlPresentacion.crearVistaAyudaEstadisticas());
+        atrasButton.addActionListener(e -> {
+            ctrlPresentacion.volverAEscogerEstadística();
+        });
     }
 
     public void mostrarEstadisticasSelecionadas(String mensaje) {
-        setSize(375, 325);
+        setSize(375, 400);
         setLocationRelativeTo(getOwner());
         status.setText(mensaje);
         Estats.setVisible(true);
@@ -43,6 +48,16 @@ public class VistaEstadisticas extends JDialog {
         status.setBackground(new Color(0,0,0,0));
         procesarButton.setVisible(false);
         helpButton.setVisible(false);
+        atrasButton.setVisible(true);
     }
 
+    public void mostrarSelectorAlgoritmo() {
+        setSize(600, 200);
+        setLocationRelativeTo(getOwner());
+        Estats.setVisible(false);
+        Algoritmo.setVisible(true);
+        procesarButton.setVisible(true);
+        helpButton.setVisible(true);
+        atrasButton.setVisible(false);
+    }
 }
