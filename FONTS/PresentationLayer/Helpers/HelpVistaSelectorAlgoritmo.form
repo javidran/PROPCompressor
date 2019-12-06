@@ -25,7 +25,7 @@
             <properties>
               <editable value="false"/>
               <font name="Roboto" size="16" style="0"/>
-              <text value="Bienvenido a la interfaz principal del PROPresor &#10;Bla &#10;Bla &#10;Bla &#10;Bla&#10;Bla &#10;Bla &#10;Bla &#10;Bla &#10;Bla &#10;Bla &#10;Bla &#10;Bla &#10;Bla &#10;8==================D----&#10;Bla  &#10; "/>
+              <text value="Bienvenido al selector de algoritmo del PROPresor.&#10;&#10;Seleccione un path donde guardar el fichero con el&#10;botón explorar, y escriba con qué nombre lo quiere&#10;guardar.&#10;&#10;En caso de que el archivo sea de texto, seleccione&#10;un algoritmo entre los disponibles en el menú des-&#10;plegable."/>
             </properties>
           </component>
         </children>

@@ -293,7 +293,7 @@ public class CtrlPresentacion {
 
     public void crearVistaAyudaInicio() {
         helpVistaInicio = new HelpVistaInicio(vistaInicio);
-        helpVistaInicio.setSize(new Dimension(450, 600));
+        helpVistaInicio.setSize(new Dimension(475, 550));
         helpVistaInicio.setLocationRelativeTo(vistaInicio);
         helpVistaInicio.setResizable(false);
         helpVistaInicio.setVisible(true);
@@ -301,7 +301,7 @@ public class CtrlPresentacion {
 
     public void crearVistaAyudaEstadisticas() {
         helpVistaEstadisticas = new HelpVistaEstadisticas(vistaEstadisticas);
-        helpVistaEstadisticas.setSize(new Dimension(500, 500));
+        helpVistaEstadisticas.setSize(new Dimension(400, 300));
         helpVistaEstadisticas.setLocationRelativeTo(vistaEstadisticas);
         helpVistaEstadisticas.setResizable(false);
         helpVistaEstadisticas.setVisible(true);
@@ -309,10 +309,9 @@ public class CtrlPresentacion {
 
     public void crearVistaAyudaSelectorAlgoritmo() {
         helpVistaSelectorAlgoritmo = new HelpVistaSelectorAlgoritmo(vistaSelectorAlgoritmo);
-        helpVistaSelectorAlgoritmo.setSize(new Dimension(500, 500));
-        helpVistaSelectorAlgoritmo.setMinimumSize(new Dimension(500, 150));
+        helpVistaSelectorAlgoritmo.setSize(new Dimension(400, 300));
         helpVistaSelectorAlgoritmo.setLocationRelativeTo(vistaSelectorAlgoritmo);
-        helpVistaSelectorAlgoritmo.setResizable(true);
+        helpVistaSelectorAlgoritmo.setResizable(false);
         helpVistaSelectorAlgoritmo.setVisible(true);
     }
 }
