@@ -291,19 +291,17 @@ public class CtrlPresentacion {
 
     public void crearVistaAyudaInicio() {
         helpVistaInicio = new HelpVistaInicio(vistaInicio);
-        helpVistaInicio.setSize(new Dimension(500, 500));
-        helpVistaInicio.setMinimumSize(new Dimension(500, 150));
+        helpVistaInicio.setSize(new Dimension(450, 600));
         helpVistaInicio.setLocationRelativeTo(vistaInicio);
-        helpVistaInicio.setResizable(true);
+        helpVistaInicio.setResizable(false);
         helpVistaInicio.setVisible(true);
     }
 
     public void crearVistaAyudaEstadisticas() {
         helpVistaEstadisticas = new HelpVistaEstadisticas(vistaEstadisticas);
         helpVistaEstadisticas.setSize(new Dimension(500, 500));
-        helpVistaEstadisticas.setMinimumSize(new Dimension(500, 150));
         helpVistaEstadisticas.setLocationRelativeTo(vistaEstadisticas);
-        helpVistaEstadisticas.setResizable(true);
+        helpVistaEstadisticas.setResizable(false);
         helpVistaEstadisticas.setVisible(true);
     }
 }
