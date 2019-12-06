@@ -251,8 +251,8 @@ public class CtrlPresentacion {
 
     public void crearVistaComparacionProceso(DatosProceso[] dp) {
         vistaComparacionFichero = new VistaComparacionFichero(vistaInicio, dp);
-        vistaComparacionFichero.setSize(new Dimension(450, 250));
-        vistaComparacionFichero.setMinimumSize(new Dimension(450, 250));
+        vistaComparacionFichero.setSize(new Dimension(800, 660));
+        vistaComparacionFichero.setMinimumSize(new Dimension(700, 400));
         vistaComparacionFichero.setLocationRelativeTo(vistaInicio);
         vistaComparacionFichero.setResizable(true);
         /*
