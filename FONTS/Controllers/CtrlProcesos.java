@@ -8,6 +8,9 @@ import DomainLayer.Proceso.ProcesoFichero;
 import Enumeration.Algoritmo;
 import Exceptions.FormatoErroneoException;
 
+import javax.swing.*;
+import java.io.IOException;
+
 /**
  * La clase Singleton CtrlProcesos es el Controlador de Dominio del programa, y la encargada de crear procesos de compresión y/o descompresión, además de interactuar con las capas de datos y presentación.
  */
@@ -96,7 +99,7 @@ public class CtrlProcesos {
      * @param tipoAlgoritmo El algoritmo a usar para la compresión del fichero.
      * @throws Exception El proceso de compresión y descompresión no se ha podido llevar a cabo.
      */
-    public DatosProceso[] comprimirDescomprimirArchivo(String path, String pathTemporal, Algoritmo tipoAlgoritmo) throws Exception {
+    public DatosProceso[] comprimirDescomprimirArchivo(String path, Algoritmo tipoAlgoritmo) throws Exception {
         DatosProceso[] dp = new DatosProceso[2];
         CtrlDatos ctrlDatos = CtrlDatos.getInstance();
         ProcesoFichero comp = new ProcesoComprimir(ctrlDatos.leerArchivo(path), tipoAlgoritmo);
@@ -111,7 +114,7 @@ public class CtrlProcesos {
 
         ProcesoFichero desc = new ProcesoDescomprimir(comp.getOutput(), tipoAlgoritmo);
         desc.ejecutarProceso();
-        ctrlDatos.guardaArchivo(desc.getOutput(), pathTemporal);
+        ctrlDatos.guardaArchivo(desc.getOutput(), archivoTemporal());
         dp[1] = desc.getDatosProceso();
         System.out.println("El proceso ha tardado " + dp[1].getTiempo() / 1000000000.0 + "s. El cambio de tamaño pasa de " + dp[1].getOldSize() + "B a " + dp[1].getNewSize() + "B con diferencia de " + dp[1].getDiffSize() + "B que resulta en un " + dp[1].getDiffSizePercentage() + "% del archivo original.");
         if (dp[1].isSatisfactorio()) {
@@ -325,18 +328,18 @@ public class CtrlProcesos {
         return path;
     }
 
-    public static String calcularPathTemporal(String path) {
-        String[] splitP = path.split("\\.");
-        String type = splitP[splitP.length-1];
-        String ext = "temp";
-        if(!path.contains(".")) path = path + "." + ext;
-        else if (!type.equalsIgnoreCase(ext)) path = path.replace(type, ext);
-        return path;
+    public static String archivoTemporal() {
+        return System.getProperty("user.dir") + "CompDesc.temp";
     }
 
-    public static void eliminaArchivoTemporal(String path) {
+    public void eliminaArchivoTemporal() {
         CtrlDatos ctrlDatos = CtrlDatos.getInstance();
-        ctrlDatos.eliminaArchivo(path);
+        ctrlDatos.eliminaArchivo(archivoTemporal());
+    }
+
+    public void archivoToTextArea(JTextArea textArea, String path) throws IOException {
+        CtrlDatos ctrlDatos = CtrlDatos.getInstance();
+        ctrlDatos.archivoToTextArea(textArea, path);
     }
 
     /**
@@ -346,5 +349,4 @@ public class CtrlProcesos {
     public static void setCalidadJPEG(int calidadJPEG) {
         JPEG.getInstance().setCalidad(calidadJPEG);
     }
-
 }
