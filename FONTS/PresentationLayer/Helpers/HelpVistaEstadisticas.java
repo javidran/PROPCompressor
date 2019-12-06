@@ -7,11 +7,11 @@ import java.awt.peer.DialogPeer;
 
 public class HelpVistaEstadisticas extends JDialog {
 
-    private JPanel OkPanel;
-    private JPanel Ayuda;
     private JTextArea textoAyuda;
     private JButton cerrarButton;
     private JPanel AyudaPrincipal;
+    private JPanel Ayuda;
+    private JPanel OkPanel;
 
 
     public HelpVistaEstadisticas(Dialog owner) {
