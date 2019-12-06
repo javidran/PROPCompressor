@@ -341,11 +341,6 @@ public class CtrlProcesos {
         ctrlDatos.eliminaArchivo(archivoTemporal());
     }
 
-    public void archivoToTextArea(JTextArea textArea, String path) throws IOException {
-        CtrlDatos ctrlDatos = CtrlDatos.getInstance();
-        ctrlDatos.archivoToTextArea(textArea, path);
-    }
-
     public TableModel getArchivoAsModel(String path, String titleBar) throws IOException {
         CtrlDatos ctrlDatos = CtrlDatos.getInstance();
         return ctrlDatos.getArchivoAsModel(path, titleBar);
