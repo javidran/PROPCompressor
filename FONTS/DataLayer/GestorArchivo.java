@@ -63,6 +63,10 @@ public class GestorArchivo {
         else existe = false;
         return existe;
     }
+
+    public static void eliminaArchivo(String path) {
+        new File(path).delete();
+    }
 }
 
 

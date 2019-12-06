@@ -8,6 +8,9 @@ import DomainLayer.Proceso.ProcesoFichero;
 import Enumeration.Algoritmo;
 import Exceptions.FormatoErroneoException;
 
+import javax.swing.*;
+import java.io.IOException;
+
 /**
  * La clase Singleton CtrlProcesos es el Controlador de Dominio del programa, y la encargada de crear procesos de compresión y/o descompresión, además de interactuar con las capas de datos y presentación.
  */
@@ -103,6 +106,7 @@ public class CtrlProcesos {
 
         ProcesoFichero desc = new ProcesoDescomprimir(comp.getOutput(), tipoAlgoritmo);
         desc.ejecutarProceso();
+        ctrlDatos.guardaArchivo(desc.getOutput(), archivoTemporal());
         dp[1] = desc.getDatosProceso();
         if (dp[1].isSatisfactorio()) ctrlDatos.actualizaEstadistica(dp[1], tipoAlgoritmo, false);
         return dp;
@@ -296,12 +300,25 @@ public class CtrlProcesos {
         String type = splitP[splitP.length-1];
         String ext = extension(algoritmo, esCompresion);
         if(!path.contains(".") && !(algoritmo.equals(Algoritmo.CARPETA) && !esCompresion)) path = path + "." + ext;
-        else if(splitP.length==1) path = path + ext;
         else if (!type.equalsIgnoreCase(ext)) {
             if(algoritmo.equals(Algoritmo.CARPETA) && !esCompresion) path = path.replace("." + type, ext);
             else path = path.replace(type, ext);
         }
         return path;
+    }
+
+    public static String archivoTemporal() {
+        return System.getProperty("user.dir") + "CompDesc.temp";
+    }
+
+    public void eliminaArchivoTemporal() {
+        CtrlDatos ctrlDatos = CtrlDatos.getInstance();
+        ctrlDatos.eliminaArchivo(archivoTemporal());
+    }
+
+    public void archivoToTextArea(JTextArea textArea, String path) throws IOException {
+        CtrlDatos ctrlDatos = CtrlDatos.getInstance();
+        ctrlDatos.archivoToTextArea(textArea, path);
     }
 
     /**
@@ -311,5 +328,4 @@ public class CtrlProcesos {
     public static void setCalidadJPEG(int calidadJPEG) {
         JPEG.getInstance().setCalidad(calidadJPEG);
     }
-
 }

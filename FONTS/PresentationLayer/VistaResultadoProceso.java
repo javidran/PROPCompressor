@@ -6,7 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.text.DecimalFormat;
 
-public class VistaResultadoProceso extends JDialog{
+public class VistaResultadoProceso extends JDialog {
 
     private JLabel tiempo;
     private JLabel OldSize;

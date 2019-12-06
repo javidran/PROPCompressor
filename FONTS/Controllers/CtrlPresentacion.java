@@ -14,6 +14,7 @@ import javax.swing.plaf.basic.BasicProgressBarUI;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 public class CtrlPresentacion {
     /**
@@ -25,6 +26,7 @@ public class CtrlPresentacion {
     private VistaSelectorAlgoritmo vistaSelectorAlgoritmo;
     private VistaEstadisticas vistaEstadisticas;
     private VistaResultadoProceso vistaResultadoProceso;
+    private VistaComparacionFichero vistaComparacionFichero;
     private HelpVistaInicio helpVistaInicio;
     private HelpVistaEstadisticas helpVistaEstadisticas;
     private HelpVistaSelectorAlgoritmo helpVistaSelectorAlgoritmo;
@@ -102,7 +104,7 @@ public class CtrlPresentacion {
         if (!existe) {
             JOptionPane.showConfirmDialog(null, "¡El fichero o carpeta que desea procesar no existe! Seleccione un archivo o carpeta existente", "¡No existe!", JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
         }
-        else{
+        else {
             vistaSelectorAlgoritmo = new VistaSelectorAlgoritmo(vistaInicio);
             modeloParametros.setVistaSelectorAlgoritmo(vistaSelectorAlgoritmo, conGuardado);
             if (!conGuardado) vistaSelectorAlgoritmo.setSize(new Dimension(650, 175));
@@ -163,7 +165,7 @@ public class CtrlPresentacion {
         actualizarPathSalida(modeloParametros.getPathResultado());
     }
 
-    public void iniciarProceso() throws Exception {
+    public void iniciarProceso() {
         boolean existe = (new File(modeloParametros.getPathResultado())).exists();
         if (existe) {
             int respuesta = JOptionPane.showConfirmDialog(null, "El fichero resultante del proceso sobrescribirá uno ya existente, ¿desea sobrescribirlo?", "Sobrescribir",
@@ -244,13 +246,37 @@ public class CtrlPresentacion {
         dialog.setVisible(true); // will block but with a responsive GUI
 
         if(exceptionProceso[0]!= null) JOptionPane.showConfirmDialog(null, "Se ha dado el siguente error durante el proceso:\n"+exceptionProceso[0].getMessage(),null, JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
-        else {
-            vistaResultadoProceso = new VistaResultadoProceso(vistaInicio, dp[0]);
-            vistaResultadoProceso.setSize(new Dimension(350, 250));
-            vistaResultadoProceso.setLocationRelativeTo(vistaInicio);
-            vistaResultadoProceso.setResizable(false);
-            vistaResultadoProceso.setVisible(true);
+        else if (modeloParametros.isConGuardado()) crearVistaResultadoProceso(dp[0]);
+        else crearVistaComparacionProceso(dp);
+    }
+
+    public void crearVistaResultadoProceso(DatosProceso dp) {
+        vistaResultadoProceso = new VistaResultadoProceso(vistaInicio, dp);
+        vistaResultadoProceso.setSize(new Dimension(450, 250));
+        vistaResultadoProceso.setMinimumSize(new Dimension(450, 250));
+        vistaResultadoProceso.setLocationRelativeTo(vistaInicio);
+        vistaResultadoProceso.setResizable(true);
+        vistaResultadoProceso.setVisible(true);
+    }
+
+    public void crearVistaComparacionProceso(DatosProceso[] dp) {
+        vistaComparacionFichero = new VistaComparacionFichero(vistaInicio, dp);
+        vistaComparacionFichero.setSize(new Dimension(800, 660));
+        vistaComparacionFichero.setMinimumSize(new Dimension(700, 400));
+        vistaComparacionFichero.setLocationRelativeTo(vistaInicio);
+        vistaComparacionFichero.setResizable(true);
+        CtrlProcesos ctrlProcesos = CtrlProcesos.getInstance();
+        try {
+            /*
+            ctrlProcesos.archivoToTextArea(vistaComparacionFichero.original, modeloParametros.getPathOriginal());
+            ctrlProcesos.archivoToTextArea(vistaComparacionFichero.resultante, CtrlProcesos.archivoTemporal());
+            */
+        } catch (Exception e) {
+            JOptionPane.showConfirmDialog(null, "Ha ocurrido un error al intentar mostrar los archivos para comparación. Por favor, intentelo de nuevo.",null, JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
+        } finally {
+            ctrlProcesos.eliminaArchivoTemporal();
         }
+        vistaComparacionFichero.setVisible(true);
     }
 
     public DatosEstadistica getEstadisticas(String data) throws IOException {
