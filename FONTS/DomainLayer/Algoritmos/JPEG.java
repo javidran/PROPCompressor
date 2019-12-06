@@ -186,9 +186,9 @@ public class JPEG implements CompresorDecompresor {
         long startTime = System.nanoTime(); //starting time
         List<Byte> result = new ArrayList<>(); //data will be written here before passing it into output byte array
         if (datosInput.length < 14) throw new FormatoErroneoException("El formato de .ppm no es correcto!");
-        int pos = 0;
-        StringBuilder buff = new StringBuilder();
+        int pos = 0, width, height;
         //start of header reading
+        StringBuilder buff = new StringBuilder();
         while (pos < datosInput.length - 1 && (char)datosInput[pos] != '\n') {
             buff.append((char) datosInput[pos]);
             result.add(datosInput[pos]);
@@ -204,6 +204,7 @@ public class JPEG implements CompresorDecompresor {
             }
             ++pos;
         }
+        String[] widthHeight;
         buff = new StringBuilder();
         while (pos < datosInput.length - 1 && (char)datosInput[pos] != '\n') {
             buff.append((char) datosInput[pos]);
@@ -212,7 +213,7 @@ public class JPEG implements CompresorDecompresor {
         }
         result.add((byte)'\n');
         ++pos;
-        String[] widthHeight = buff.toString().split(" ");  //read and split dimensions into two (one for each value)
+        widthHeight = buff.toString().split(" ");  //read and split dimensions into two (one for each value)
         if (widthHeight.length > 2 || Integer.parseInt(widthHeight[0]) < 1 || Integer.parseInt(widthHeight[1]) < 1) throw new FormatoErroneoException("El formato de .ppm no es correcto!");
         while (pos < datosInput.length - 1 && (char)datosInput[pos] == '#') {
             while ((char)datosInput[pos] != '\n') { //avoiding comments between parameters...
@@ -220,6 +221,8 @@ public class JPEG implements CompresorDecompresor {
             }
             ++pos;
         }
+        width = Integer.parseInt(widthHeight[0]);  //string to int of image width
+        height = Integer.parseInt(widthHeight[1]); //string to int of image height
         buff = new StringBuilder();
         while (pos < datosInput.length - 1 && (char)datosInput[pos] != '\n') {
             buff.append((char) datosInput[pos]);
@@ -237,8 +240,6 @@ public class JPEG implements CompresorDecompresor {
         //end of header reading
 
         //start of pixelmap reading
-        int width = Integer.parseInt(widthHeight[0]);  //string to int of image width
-        int height = Integer.parseInt(widthHeight[1]); //string to int of image height
         if (width * height > (datosInput.length - pos) / 3 || width * height < (datosInput.length - pos) / 3) throw new FormatoErroneoException("El formato de .ppm no es correcto!");
         int paddedWidth, paddedHeight;
         if (width % 8 != 0) paddedWidth = width + (8 - width % 8);
@@ -248,40 +249,7 @@ public class JPEG implements CompresorDecompresor {
         double[][] Y = new double[paddedHeight][paddedWidth];
         double[][] Cb = new double[paddedHeight][paddedWidth];
         double[][] Cr = new double[paddedHeight][paddedWidth];
-        double[] rgb = new double[3];//red green blue
-        for (int x = 0; x < height; ++x) {//image color decomposition in YCbCr and centering values to 0 (range [-128,127]) (padding boundaries to have 8 multiple dimensions (needed for DCT))
-            for (int y = 0; y < width; ++y) {
-                rgb[0] = ((int)datosInput[pos++] & 0xFF);
-                rgb[1] = ((int)datosInput[pos++] & 0xFF);
-                rgb[2] = ((int)datosInput[pos++] & 0xFF);
-                Y[x][y] = 0.257 * rgb[0] + 0.504 * rgb[1] + 0.098 * rgb[2] + 16.0 - 128.0;
-                Cb[x][y] = - 0.148 * rgb[0] - 0.291 * rgb[1] + 0.439 * rgb[2];
-                Cr[x][y] = 0.439 * rgb[0] - 0.368 * rgb[1] - 0.071 * rgb[2];
-                if (x < height - 1 && y == width - 1) {
-                    for (int j = y; j < paddedWidth; ++j) {
-                        Y[x][j] = Y[x][width-1];
-                        Cb[x][j] = Cb[x][width-1];
-                        Cr[x][j] = Cr[x][width-1];
-                    }
-                }
-                else if (x == height - 1 && y < width - 1) {
-                    for (int i = x; i < paddedHeight; ++i) {
-                        Y[i][y] = Y[height-1][y];
-                        Cb[i][y] = Cb[height-1][y];
-                        Cr[i][y] = Cr[height-1][y];
-                    }
-                }
-                else if (x == height - 1 && y == width - 1) {
-                    for (int i = x; i < paddedHeight; ++i) {
-                        for (int j = y; j < paddedWidth; ++j) {
-                            Y[i][j] = Y[height-1][width-1];
-                            Cb[i][j] = Cb[height-1][width-1];
-                            Cr[i][j] = Cr[height-1][width-1];
-                        }
-                    }
-                }
-            }
-        }
+        readImage(datosInput, pos, width, height, paddedWidth, paddedHeight, Y, Cb, Cr);
         //end of pixelmap reading
 
         //start of image compression
@@ -292,125 +260,64 @@ public class JPEG implements CompresorDecompresor {
         else downSampledPaddedWidth = (paddedWidth/2) + 4;
         double[][] downSampledCb = new double[downSampledPaddedHeight][downSampledPaddedWidth];
         double[][] downSampledCr = new double[downSampledPaddedHeight][downSampledPaddedWidth];
-        for (int x = 0; x < paddedHeight; x += 2) { //Chrominance DownSampled to 25% each colour channel. Compressed image will be arround 50% less large than original thanks to this
-            for (int y = 0; y < paddedWidth; y += 2) { //each color channel is extended to have multiple of 8 dimensions, which is needed to apply DCT-II
-                if (x < paddedHeight - 2 && y < paddedWidth - 2) {
-                    downSampledCb[x/2][y/2] = (Cb[x][y] + Cb[x][y+1] + Cb[x+1][y] + Cb[x+1][y+1]) / 4;
-                    downSampledCr[x/2][y/2] = (Cr[x][y] + Cr[x][y+1] + Cr[x+1][y] + Cr[x+1][y+1]) / 4;
-                } //when on image bounds, boundary values are extended till the image has multiple of 8 dimensions (image will be stored with multiple of 8 dimensions to ease decompression)
-                else if (x < paddedHeight - 2 && y == paddedWidth - 2) {
-                    downSampledCb[x/2][y/2] = (Cb[x][y] + Cb[x+1][y]) / 2;
-                    downSampledCr[x/2][y/2] = (Cr[x][y] + Cr[x+1][y]) / 2;
-                    for (int j = (y/2)+1; j < downSampledPaddedWidth; ++j) {
-                        downSampledCb[x/2][j] = downSampledCb[x/2][y/2];
-                        downSampledCr[x/2][j] = downSampledCr[x/2][y/2];
-                    }
-                }
-                else if (x == paddedHeight - 2 && y < paddedWidth - 2) {
-                    downSampledCb[x/2][y/2] = (Cb[x][y] + Cb[x][y+1]) / 2;
-                    downSampledCr[x/2][y/2] = (Cr[x][y] + Cr[x][y+1]) / 2;
-                    for (int i = (x/2)+1; i < downSampledPaddedHeight; ++i) {
-                        downSampledCb[i][y/2] = downSampledCb[x/2][y/2];
-                        downSampledCr[i][y/2] = downSampledCr[x/2][y/2];
-                    }
-                }
-                else {
-                    downSampledCb[x/2][y/2] = Cb[x][y];
-                    downSampledCr[x/2][y/2] = Cr[x][y];
-                    for (int i = x/2; i < downSampledPaddedHeight; ++i) {
-                        for (int j = y/2; j < downSampledPaddedWidth; ++j) {
-                            downSampledCb[i][j] = downSampledCb[x/2][y/2];
-                            downSampledCr[i][j] = downSampledCr[x/2][y/2];
-                        }
-                    }
-                }
-            }
-        }
+        downSamplingCbCr(paddedWidth, paddedHeight, Cb, Cr, downSampledPaddedHeight, downSampledPaddedWidth, downSampledCb, downSampledCr);
 
         List<Byte>[][] tempResultY = new List[paddedHeight/8][paddedWidth/8];
-        IntStream.range(0, paddedHeight).parallel().filter(x -> x % 8 == 0).forEach(x -> { //image DCT-II and quantization (done in pixel squares of 8x8) for luminance
-            IntStream.range(0, paddedWidth).parallel().filter(y -> y % 8 == 0).forEach(y -> {
-                double[][] buffY = new double[8][8];
-                tempResultY[x /8][y/8] = new ArrayList<>();
-                int topu = x + 8, topv = y + 8;
-                IntStream.range(x, topu).parallel().forEach(u -> {
-                    double alphau, alphav, cosu, cosv;
-                    if (u % 8 == 0) alphau = 1 / Math.sqrt(2);
-                    else alphau = 1;
-                    for (int v = y; v < topv; ++v) { //for each luminance pixel of the 8x8 square, the DCT-II calculation is applied
-                        if (v % 8 == 0) alphav = 1 / Math.sqrt(2);
-                        else alphav = 1;
-                        buffY[u%8][v%8] = 0;
-                        for (int i = x; i < topu; ++i) {
-                            cosu = Math.cos(((2 * (i % 8) + 1) * (u % 8) * Math.PI) / 16.0);
-                            for (int j = y; j < topv; ++j) {
-                                cosv = Math.cos(((2 * (j % 8) + 1) * (v % 8) * Math.PI) / 16.0);
-                                buffY[u%8][v%8] += Y[i][j] * cosu * cosv;
-                            }
-                        }
-                        buffY[u%8][v%8] *= (alphau * alphav * 0.25);
-                        buffY[u%8][v%8] /= (LuminanceQuantizationTable[u%8][v%8] * calidad);
-                    }
-                });
-                boolean up = true;
-                int i = x, j = y, it = 0;
-                byte[] lineY = new byte[64]; //linear vector for zigzagged elements of Y before RLE
-                while (i < topu && j < topv) { //zig-zag, RLE and Huffman Coding of Luminance 8x8 square
-                    lineY[it++] = (byte)Math.round(buffY[i%8][j%8]); //.imgc extension determines that the pixelmap will contain first the luminance pixelmap and then the chrominance one
-                    if (i == x && j != topv - 1 && up) {
-                        ++j;
-                        up = false;
-                    }
-                    else if (j == y && i != topu - 1 && !up) {
-                        ++i;
-                        up = true;
-                    }
-                    else if (i == topu - 1 && j != topv - 1 && !up) {
-                        ++j;
-                        up = true;
-                    }
-                    else if (j == topv - 1 && i != topu - 1 && up) {
-                        ++i;
-                        up = false;
-                    }
-                    else if (i == topu - 1 && j == topv - 1) {
-                        ++i;
-                        ++j;
-                    }
-                    else if (up) {
-                        --i;
-                        ++j;
-                    }
-                    else {
-                        ++i;
-                        --j;
-                    }
-                }
-                String rleY = ""; //RLE: lossless compression of 8x8 block values
-                byte howManyZeroes = 0; //how many zeroes have been ignored until a non zero value found in 8x8 block
-                for (int k = 0; k < 64; ++k) {
-                    if (lineY[k] == 0) {
-                        howManyZeroes++;
-                        if (howManyZeroes > 15) k = 64;
-                    }
-                    else {
-                        //rle refines that each time a non zero value is found, is written how many zeroes have been ignored before and the size of the value in bits
-                        rleY = rleY.concat(ACHuffmanTable[howManyZeroes][bitsNumero(lineY[k])]); //substitution of those 2 values for Huffman value
-                        rleY = rleY.concat(Integer.toBinaryString(lineY[k] & 0xFF)); //then the non zero value is written (only 8 bits or less, the minimum possible to represent its value)
-                        howManyZeroes = 0;
-                    }
-                }
-                rleY = rleY.concat(ACHuffmanTable[0][0]); //end of block: (0,0)
-                int sizeOfBlock = rleY.length() / 8; //header of 8x8 Huffman block
-                int offsetOfBlock = rleY.length() % 8;
-                if (rleY.length() % 8 != 0) sizeOfBlock++; //if there is offset, then there is another byte to be added
-                tempResultY[x /8][y/8].add((byte)sizeOfBlock); //size in bits of block defined before reading each block in order to know how many bytes have to be read
-                tempResultY[x /8][y/8].add((byte)offsetOfBlock);
-                //addition of block to result
-                tempResultY[x /8][y/8].addAll(toByteList(rleY)); //dumping the Huffman block into result
-            });
-        });
+        procesarY(paddedWidth, paddedHeight, Y, tempResultY);
         List<Byte>[][] tempResultCbCr = new List[downSampledPaddedHeight/8][downSampledPaddedWidth/8];
+        procesarCbCr(downSampledPaddedHeight, downSampledPaddedWidth, downSampledCb, downSampledCr, tempResultCbCr);
+        //end of image compression
+
+        escribirResult(result, paddedWidth, paddedHeight, downSampledPaddedHeight, downSampledPaddedWidth, tempResultY, tempResultCbCr);
+        byte[] datosOutput = new byte[result.size()]; //writting image data in output byte array
+        escribirDatosOutput(result, datosOutput);
+        long endTime = System.nanoTime(), totalTime = endTime - startTime; //ending time and total execution time
+        return new OutputAlgoritmo(totalTime, datosOutput); //returning output time and data byte array
+    }
+
+    /**
+     * Escribe el resultado del procesado de la imagen en el byte array de salida.
+     * @param result Datos procesados de la imagen.
+     * @param datosOutput Byte array donde se escrive definitivamente el resultado del algoritmo.
+     */
+    private void escribirDatosOutput(List<Byte> result, byte[] datosOutput) {
+        for (int i = 0; i < result.size(); ++i) {
+            datosOutput[i] = result.get(i);
+        }
+    }
+
+    /**
+     * Escribe los resultados temporales de cada algoritmo en el resultado definitivo.
+     * @param result Datos procesados y en orden correcto de la imagen.
+     * @param paddedWidth Ancho de las dimensiones de la imagen múltiplo de 8 (para poder calcular DCT).
+     * @param paddedHeight Alto de las dimensiones de la imagen múltiplo de 8 (para poder calcular DCT).
+     * @param downSampledPaddedHeight Ancho de las dimensiones downsampled de la imagen múltiplo de 8 (para poder calcular DCT).
+     * @param downSampledPaddedWidth Ancho de las dimensiones downsampled de la imagen múltiplo de 8 (para poder calcular DCT).
+     * @param tempResultY Resultado temporal de los valores de la luminancia de cada bloque procesados.
+     * @param tempResultCbCr Resultado temporal de los valores de la crominancia de cada bloque procesados.
+     */
+    private void escribirResult(List<Byte> result, int paddedWidth, int paddedHeight, int downSampledPaddedHeight, int downSampledPaddedWidth, List<Byte>[][] tempResultY, List<Byte>[][] tempResultCbCr) {
+        for (int x = 0; x < paddedHeight/8; ++x) {
+            for (int y = 0; y < paddedWidth/8; ++y) {
+                result.addAll(tempResultY[x][y]);
+            }
+        }
+        for (int x = 0; x < downSampledPaddedHeight/8; ++x) {
+            for (int y = 0; y < downSampledPaddedWidth/8; ++y) {
+                result.addAll(tempResultCbCr[x][y]);
+            }
+        }
+    }
+
+    /**
+     * Cálculo de DCT, RLE y Huffman coding de las componentes de crominancia (CbCr) de la imagen.
+     * @param downSampledPaddedHeight Ancho de las dimensiones downsampled de la imagen múltiplo de 8 (para poder calcular DCT).
+     * @param downSampledPaddedWidth Ancho de las dimensiones downsampled de la imagen múltiplo de 8 (para poder calcular DCT).
+     * @param downSampledCb Array de valores de la crominacia azul de la imagen tras el downsampling.
+     * @param downSampledCr Array de valores de la crominacia roja de la imagen tras el downsampling.
+     * @param tempResultCbCr Resultado temporal de los valores de la crominancia de cada bloque procesados.
+     */
+    private void procesarCbCr(int downSampledPaddedHeight, int downSampledPaddedWidth, double[][] downSampledCb, double[][] downSampledCr, List<Byte>[][] tempResultCbCr) {
         IntStream.range(0, downSampledPaddedHeight).parallel().filter(x -> x % 8 == 0).forEach(x -> { //image DCT-II and quantization (done in pixel squares of 8x8) for chrominance
             IntStream.range(0, downSampledPaddedWidth).parallel().filter(y -> y % 8 == 0).forEach(y -> { //for each chrominance pixel square of 8x8 of the image, DCT-II algorithm is applied, letting calculate the image frequencies
                 double[][] buffCb = new double[8][8];
@@ -522,27 +429,202 @@ public class JPEG implements CompresorDecompresor {
                 tempResultCbCr[x /8][y/8].addAll(toByteList(rleCr)); //dumping the Huffman block into result
             });
         });
-        for (int x = 0; x < paddedHeight/8; ++x) {
-            for (int y = 0; y < paddedWidth/8; ++y) {
-                result.addAll(tempResultY[x][y]);
-            }
-        }
-        for (int x = 0; x < downSampledPaddedHeight/8; ++x) {
-            for (int y = 0; y < downSampledPaddedWidth/8; ++y) {
-                result.addAll(tempResultCbCr[x][y]);
-            }
-        }
-        //end of image compression
-        byte[] datosOutput = new byte[result.size()]; //writting image data in output byte array
-        for (int i = 0; i < result.size(); ++i) {
-            datosOutput[i] = result.get(i);
-        }
-        long endTime = System.nanoTime(), totalTime = endTime - startTime; //ending time and total execution time
-        return new OutputAlgoritmo(totalTime, datosOutput); //returning output time and data byte array
     }
 
     /**
-     * Enumeration.Algoritmo de descompresión JPEG
+     * Cálculo de DCT, RLE y Huffman coding de la componente de luminancia (Y) de la imagen.
+     * @param paddedWidth Ancho de las dimensiones de la imagen múltiplo de 8 (para poder calcular DCT).
+     * @param paddedHeight Alto de las dimensiones de la imagen múltiplo de 8 (para poder calcular DCT).
+     * @param Y Array de valores de la luminancia de la imagen.
+     * @param tempResultY Resultado temporal de los valores de la luminancia de cada bloque procesados.
+     */
+    private void procesarY(int paddedWidth, int paddedHeight, double[][] Y, List<Byte>[][] tempResultY) {
+        IntStream.range(0, paddedHeight).parallel().filter(x -> x % 8 == 0).forEach(x -> { //image DCT-II and quantization (done in pixel squares of 8x8) for luminance
+            IntStream.range(0, paddedWidth).parallel().filter(y -> y % 8 == 0).forEach(y -> {
+                double[][] buffY = new double[8][8];
+                tempResultY[x /8][y/8] = new ArrayList<>();
+                int topu = x + 8, topv = y + 8;
+                IntStream.range(x, topu).parallel().forEach(u -> {
+                    double alphau, alphav, cosu, cosv;
+                    if (u % 8 == 0) alphau = 1 / Math.sqrt(2);
+                    else alphau = 1;
+                    for (int v = y; v < topv; ++v) { //for each luminance pixel of the 8x8 square, the DCT-II calculation is applied
+                        if (v % 8 == 0) alphav = 1 / Math.sqrt(2);
+                        else alphav = 1;
+                        buffY[u%8][v%8] = 0;
+                        for (int i = x; i < topu; ++i) {
+                            cosu = Math.cos(((2 * (i % 8) + 1) * (u % 8) * Math.PI) / 16.0);
+                            for (int j = y; j < topv; ++j) {
+                                cosv = Math.cos(((2 * (j % 8) + 1) * (v % 8) * Math.PI) / 16.0);
+                                buffY[u%8][v%8] += Y[i][j] * cosu * cosv;
+                            }
+                        }
+                        buffY[u%8][v%8] *= (alphau * alphav * 0.25);
+                        buffY[u%8][v%8] /= (LuminanceQuantizationTable[u%8][v%8] * calidad);
+                    }
+                });
+                boolean up = true;
+                int i = x, j = y, it = 0;
+                byte[] lineY = new byte[64]; //linear vector for zigzagged elements of Y before RLE
+                while (i < topu && j < topv) { //zig-zag, RLE and Huffman Coding of Luminance 8x8 square
+                    lineY[it++] = (byte)Math.round(buffY[i%8][j%8]); //.imgc extension determines that the pixelmap will contain first the luminance pixelmap and then the chrominance one
+                    if (i == x && j != topv - 1 && up) {
+                        ++j;
+                        up = false;
+                    }
+                    else if (j == y && i != topu - 1 && !up) {
+                        ++i;
+                        up = true;
+                    }
+                    else if (i == topu - 1 && j != topv - 1 && !up) {
+                        ++j;
+                        up = true;
+                    }
+                    else if (j == topv - 1 && i != topu - 1 && up) {
+                        ++i;
+                        up = false;
+                    }
+                    else if (i == topu - 1 && j == topv - 1) {
+                        ++i;
+                        ++j;
+                    }
+                    else if (up) {
+                        --i;
+                        ++j;
+                    }
+                    else {
+                        ++i;
+                        --j;
+                    }
+                }
+                String rleY = ""; //RLE: lossless compression of 8x8 block values
+                byte howManyZeroes = 0; //how many zeroes have been ignored until a non zero value found in 8x8 block
+                for (int k = 0; k < 64; ++k) {
+                    if (lineY[k] == 0) {
+                        howManyZeroes++;
+                        if (howManyZeroes > 15) k = 64;
+                    }
+                    else {
+                        //rle refines that each time a non zero value is found, is written how many zeroes have been ignored before and the size of the value in bits
+                        rleY = rleY.concat(ACHuffmanTable[howManyZeroes][bitsNumero(lineY[k])]); //substitution of those 2 values for Huffman value
+                        rleY = rleY.concat(Integer.toBinaryString(lineY[k] & 0xFF)); //then the non zero value is written (only 8 bits or less, the minimum possible to represent its value)
+                        howManyZeroes = 0;
+                    }
+                }
+                rleY = rleY.concat(ACHuffmanTable[0][0]); //end of block: (0,0)
+                int sizeOfBlock = rleY.length() / 8; //header of 8x8 Huffman block
+                int offsetOfBlock = rleY.length() % 8;
+                if (rleY.length() % 8 != 0) sizeOfBlock++; //if there is offset, then there is another byte to be added
+                tempResultY[x /8][y/8].add((byte)sizeOfBlock); //size in bits of block defined before reading each block in order to know how many bytes have to be read
+                tempResultY[x /8][y/8].add((byte)offsetOfBlock);
+                //addition of block to result
+                tempResultY[x /8][y/8].addAll(toByteList(rleY)); //dumping the Huffman block into result
+            });
+        });
+    }
+
+    /**
+     * Downsampling de la crominancia de la imagen, el cual aporta entre un 42 y un 50% de compresión de la imagen.
+     * <p>
+     *     Se aplica un downsampling de 4:2:0.
+     * </p>
+     * @param paddedWidth Ancho de las dimensiones de la imagen múltiplo de 8 (para poder calcular DCT).
+     * @param paddedHeight Alto de las dimensiones de la imagen múltiplo de 8 (para poder calcular DCT).
+     * @param Cb Array de valores de la crominacia azul de la imagen.
+     * @param Cr Array de valores de la crominacia roja de la imagen.
+     * @param downSampledPaddedHeight Ancho de las dimensiones downsampled de la imagen múltiplo de 8 (para poder calcular DCT).
+     * @param downSampledPaddedWidth Ancho de las dimensiones downsampled de la imagen múltiplo de 8 (para poder calcular DCT).
+     * @param downSampledCb Array de valores de la crominacia azul de la imagen tras el downsampling.
+     * @param downSampledCr Array de valores de la crominacia roja de la imagen tras el downsampling.
+     */
+    private void downSamplingCbCr(int paddedWidth, int paddedHeight, double[][] Cb, double[][] Cr, int downSampledPaddedHeight, int downSampledPaddedWidth, double[][] downSampledCb, double[][] downSampledCr) {
+        for (int x = 0; x < paddedHeight; x += 2) { //Chrominance DownSampled to 25% each colour channel. Compressed image will be arround 50% less large than original thanks to this
+            for (int y = 0; y < paddedWidth; y += 2) { //each color channel is extended to have multiple of 8 dimensions, which is needed to apply DCT-II
+                if (x < paddedHeight - 2 && y < paddedWidth - 2) {
+                    downSampledCb[x/2][y/2] = (Cb[x][y] + Cb[x][y+1] + Cb[x+1][y] + Cb[x+1][y+1]) / 4;
+                    downSampledCr[x/2][y/2] = (Cr[x][y] + Cr[x][y+1] + Cr[x+1][y] + Cr[x+1][y+1]) / 4;
+                } //when on image bounds, boundary values are extended till the image has multiple of 8 dimensions (image will be stored with multiple of 8 dimensions to ease decompression)
+                else if (x < paddedHeight - 2 && y == paddedWidth - 2) {
+                    downSampledCb[x/2][y/2] = (Cb[x][y] + Cb[x+1][y]) / 2;
+                    downSampledCr[x/2][y/2] = (Cr[x][y] + Cr[x+1][y]) / 2;
+                    for (int j = (y/2)+1; j < downSampledPaddedWidth; ++j) {
+                        downSampledCb[x/2][j] = downSampledCb[x/2][y/2];
+                        downSampledCr[x/2][j] = downSampledCr[x/2][y/2];
+                    }
+                }
+                else if (x == paddedHeight - 2 && y < paddedWidth - 2) {
+                    downSampledCb[x/2][y/2] = (Cb[x][y] + Cb[x][y+1]) / 2;
+                    downSampledCr[x/2][y/2] = (Cr[x][y] + Cr[x][y+1]) / 2;
+                    for (int i = (x/2)+1; i < downSampledPaddedHeight; ++i) {
+                        downSampledCb[i][y/2] = downSampledCb[x/2][y/2];
+                        downSampledCr[i][y/2] = downSampledCr[x/2][y/2];
+                    }
+                }
+                else {
+                    downSampledCb[x/2][y/2] = Cb[x][y];
+                    downSampledCr[x/2][y/2] = Cr[x][y];
+                    for (int i = x/2; i < downSampledPaddedHeight; ++i) {
+                        for (int j = y/2; j < downSampledPaddedWidth; ++j) {
+                            downSampledCb[i][j] = downSampledCb[x/2][y/2];
+                            downSampledCr[i][j] = downSampledCr[x/2][y/2];
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Lee una imagen PPM y la descompone en los tres componentes de color de JPEG (YCbCr).
+     * @param datosInput Datos de entrada del archivo a leer.
+     * @param pos Offset de lectura de datosInput.
+     * @param width Ancho de las dimensiones de la imagen.
+     * @param height Alto de las dimensiones de la imagen.
+     * @param paddedWidth Ancho de las dimensiones de la imagen múltiplo de 8 (para poder calcular DCT).
+     * @param paddedHeight Alto de las dimensiones de la imagen múltiplo de 8 (para poder calcular DCT).
+     * @param Y Componente de luminancia de JPEG.
+     * @param Cb Componente de crominancia azul de JPEG.
+     * @param Cr Componente de crominancia roja de JPEG.
+     */
+    private void readImage(byte[] datosInput, int pos, int width, int height, int paddedWidth, int paddedHeight, double[][] Y, double[][] Cb, double[][] Cr) {
+        for (int x = 0; x < height; ++x) {//image color decomposition in YCbCr and centering values to 0 (range [-128,127]) (padding boundaries to have 8 multiple dimensions (needed for DCT))
+            for (int y = 0; y < width; ++y) {
+                double[] rgb = new double[3];//red green blue
+                rgb[0] = ((int)datosInput[pos++] & 0xFF);
+                rgb[1] = ((int)datosInput[pos++] & 0xFF);
+                rgb[2] = ((int)datosInput[pos++] & 0xFF);
+                Y[x][y] = 0.257 * rgb[0] + 0.504 * rgb[1] + 0.098 * rgb[2] + 16.0 - 128.0;
+                Cb[x][y] = - 0.148 * rgb[0] - 0.291 * rgb[1] + 0.439 * rgb[2];
+                Cr[x][y] = 0.439 * rgb[0] - 0.368 * rgb[1] - 0.071 * rgb[2];
+                if (x < height - 1 && y == width - 1) {
+                    for (int j = y; j < paddedWidth; ++j) {
+                        Y[x][j] = Y[x][width-1];
+                        Cb[x][j] = Cb[x][width-1];
+                        Cr[x][j] = Cr[x][width-1];
+                    }
+                }
+                else if (x == height - 1 && y < width - 1) {
+                    for (int i = x; i < paddedHeight; ++i) {
+                        Y[i][y] = Y[height-1][y];
+                        Cb[i][y] = Cb[height-1][y];
+                        Cr[i][y] = Cr[height-1][y];
+                    }
+                }
+                else if (x == height - 1 && y == width - 1) {
+                    for (int i = x; i < paddedHeight; ++i) {
+                        for (int j = y; j < paddedWidth; ++j) {
+                            Y[i][j] = Y[height-1][width-1];
+                            Cb[i][j] = Cb[height-1][width-1];
+                            Cr[i][j] = Cr[height-1][width-1];
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Algoritmo de descompresión JPEG
      * <p>
      *     La imagen de entrada tiene que ser .imgc tal y como se ha definido el formato
      * </p>
@@ -602,7 +684,7 @@ public class JPEG implements CompresorDecompresor {
         int height = Integer.parseInt(widthHeight[1]); //string to int
         int rgbMaxVal = Integer.parseInt(rgbMVal); //string to int of rgb maximum value per pixel
 
-        //start of pixelmap reading and image decompression
+        //start of pixelmap reading for luminance
         int paddedWidth, paddedHeight; //height and width multiple of 8 (image has been stored like this, as explained in compression algorithm)
         if (width % 8 != 0) paddedWidth = width + (8 - width % 8);
         else paddedWidth = width;
@@ -613,125 +695,49 @@ public class JPEG implements CompresorDecompresor {
         else downSampledPaddedHeight = (paddedHeight/2) + 4;
         if ((paddedWidth/2) % 8 == 0) downSampledPaddedWidth = paddedWidth/2;
         else downSampledPaddedWidth = (paddedWidth/2) + 4;
+        //end of pixelmap reading for luminance
+
+        //start of image reading and decompression
         int[][] Y = new int[paddedHeight][paddedWidth];//luminance
         int[][] Cb = new int[downSampledPaddedHeight][downSampledPaddedWidth];//chrominance blue
         int[][] Cr = new int[downSampledPaddedHeight][downSampledPaddedWidth];//chrominance red
-        int[][] rleSizeY = new int[paddedHeight/8][paddedWidth/8];
-        int[][] offsetSizeY = new int[paddedHeight/8][paddedWidth/8];
-        StringBuilder[][] huffmanStringBuilderY = new StringBuilder[paddedHeight/8][paddedWidth/8];
-        for (int x = 0; x < paddedHeight; x += 8) {
-            for (int y = 0; y < paddedWidth; y += 8) {
-                rleSizeY[x/8][y/8] = datosInput[pos++]; //reading Huffman block header
-                offsetSizeY[x/8][y/8] = datosInput[pos++];
-                huffmanStringBuilderY[x/8][y/8] = new StringBuilder();
-                for (int it = 0; it < rleSizeY[x/8][y/8]; ++it) {
-                    huffmanStringBuilderY[x/8][y/8].append(String.format("%8s", Integer.toBinaryString((datosInput[pos++] & 0xFF))).replace(' ', '0')); //converting input bytes into binary string
-                }
-                if (offsetSizeY[x/8][y/8] != 0) {
-                    for (int it = 0; it < (8 - offsetSizeY[x/8][y/8]); ++it)
-                        huffmanStringBuilderY[x/8][y/8].deleteCharAt(huffmanStringBuilderY[x/8][y/8].length() - 1); //deleting extra final bits of last byte of block till offset is fulfilled
-                }
+        pos = procesarY(datosInput, pos, paddedWidth, paddedHeight, Y);
+        procesarCbCr(datosInput, pos, downSampledPaddedHeight, downSampledPaddedWidth, Cb, Cr);
+        //end of image reading and decompression
+
+        //start of image writting
+        YCbCrToRGB(result, width, height, rgbMaxVal, Y, Cb, Cr);
+        byte[] datosOutput = new byte[result.size()]; //writting image data in output byte array
+        escribirDatosOutput(result, datosOutput);
+        //end of image writting
+        long endTime = System.nanoTime(), totalTime = endTime - startTime; //ending time and total execution time
+        return new OutputAlgoritmo(totalTime, datosOutput); //returning output time and data byte array
+    }
+
+    private void YCbCrToRGB(List<Byte> result, int width, int height, int rgbMaxVal, int[][] Y, int[][] Cb, int[][] Cr) {
+        int[] rgb = new int[3];
+        for (int x = 0; x < height; ++x) { //converting YCbCr to RGB and changing range from [-128,127] to [0,255]
+            for (int y = 0; y < width; ++y) {
+                rgb[0] = (int)Math.round(1.164 * (double)(Y[x][y] - 16 + 128) + 1.596 * (double)(Cr[x/2][y/2]));
+                rgb[1] = (int)Math.round(1.164 * (double)(Y[x][y] - 16 + 128) - 0.391 * (double)(Cb[x/2][y/2]) - 0.813 * (double)(Cr[x/2][y/2]));
+                rgb[2] = (int)Math.round(1.164 * (double)(Y[x][y] - 16 + 128) + 2.018 * (double)(Cb[x/2][y/2]));
+                result.add((byte)Math.max(0, Math.min(rgb[0], rgbMaxVal))); //controlling and correcting any value that is out of range (0 to rgbMaxVal)
+                result.add((byte)Math.max(0, Math.min(rgb[1], rgbMaxVal)));
+                result.add((byte)Math.max(0, Math.min(rgb[2], rgbMaxVal)));
             }
         }
-        IntStream.range(0, paddedHeight).parallel().filter(x -> x % 8 == 0).forEach(x -> { //image inverse quantization and DCT-III (aka inverse DCT) (done in pixel squares of 8x8) for luminance
-            int topi = x + 8;                           //for each luminance pixel square of 8x8 of the image, inverse downsampling and DCT-III (aka inverse DCT) algorithm are applied, letting recover the image value
-            IntStream.range(0, paddedWidth).parallel().filter(y -> y % 8 == 0).forEach(y -> {
-                double[][] buffY = new double[8][8];
-                int topj = y + 8;
-                boolean up = true;
-                int k = x, l = y;
-                List<Byte> huffmanList = new ArrayList<>();
-                String huffmanBuff = "";
-                for (int it = 0; it < rleSizeY[x /8][y/8] * 8 - offsetSizeY[x /8][y/8]; ++it) { //getting RLE values from Huffman block after offset applied
-                    huffmanBuff += huffmanStringBuilderY[x /8][y/8].charAt(it);
-                    Pair pair = ACInverseHuffmanTable.get(huffmanBuff); //check if Huffman code exists
-                    if (pair != null) { //if exists, get RLE value and store it in zigzag line of block
-                        byte runlength = pair.getKey(); //getting runlength and size of RLE value
-                        huffmanList.add(runlength);
-                        byte size = pair.getValue();
-                        huffmanList.add(size);
-                        StringBuilder amplitude = new StringBuilder();
-                        for (int n = 0; n < size; ++n) {
-                            amplitude.append(huffmanStringBuilderY[x /8][y/8].charAt(++it)); //binary string of non-zero value
-                        }
-                        if (runlength != 0 || size != 0) huffmanList.add((byte)Integer.parseInt(amplitude.toString(), 2)); //binary string (8 bits long) to byte
-                        else it = rleSizeY[x /8][y/8] * 8 - offsetSizeY[x /8][y/8];
-                        huffmanBuff = "";
-                    }
-                }
-                byte[] lineY = new byte[64];
-                int lineYit = 0;
-                for (int it = 0; it < huffmanList.size(); ++it) { //RLE lossless decompression for Luminance
-                    int howManyZeroes = huffmanList.get(it++);
-                    int size = huffmanList.get(it++);
-                    if (howManyZeroes != 0 || size != 0) {
-                        byte value = huffmanList.get(it);
-                        for (int z = 0; z < howManyZeroes; ++z) lineY[lineYit++] = 0;
-                        lineY[lineYit++] = value;
-                    }
-                    else {
-                        while (lineYit < 64) lineY[lineYit++] = 0;
-                        it = huffmanList.size();
-                    }
-                }
-                lineYit = 0;
-                while (k < topi && l < topj) { //zig-zag reading Luminance and inverse downsampling values
-                    buffY[k%8][l%8] = (lineY[lineYit++]) * (LuminanceQuantizationTable[k%8][l%8] * calidad); //(byte) because reads [0,255] but it's been stored as [-128,127]
-                    Y[k][l] = (int)Math.round(buffY[k%8][l%8]);
-                    if (k == x && l != topj - 1 && up) {
-                        ++l;
-                        up = false;
-                    }
-                    else if (l == y && k != topi - 1 && !up) {
-                        ++k;
-                        up = true;
-                    }
-                    else if (k == topi - 1 && l != topj- 1 && !up) {
-                        ++l;
-                        up = true;
-                    }
-                    else if (l == topj - 1 && k != topi - 1 && up) {
-                        ++k;
-                        up = false;
-                    }
-                    else if (k == topi - 1 && l == topj - 1) {
-                        ++k;
-                        ++l;
-                    }
-                    else if (up) {
-                        --k;
-                        ++l;
-                    }
-                    else {
-                        ++k;
-                        --l;
-                    }
-                }
-                IntStream.range(x, topi).parallel().forEach(i -> {
-                    double alphau, alphav, cosu, cosv;
-                    for (int j = y; j < topj; ++j) { //for each luminance pixel of the 8x8 square, the DCT-III calculation is applied
-                        buffY[i%8][j%8] = 0;
-                        for (int u = x; u < topi; ++u) {
-                            if (u % 8 == 0) alphau = 1 / Math.sqrt(2);
-                            else alphau = 1;
-                            cosu = Math.cos(((2 * (i % 8) + 1) * (u % 8) * Math.PI) / 16.0);
-                            for (int v = y; v < topj; ++v) {
-                                if (v % 8 == 0) alphav = 1 / Math.sqrt(2);
-                                else alphav = 1;
-                                cosv = Math.cos(((2 * (j % 8) + 1) * (v % 8) * Math.PI) / 16.0);
-                                buffY[i%8][j%8] += alphau * alphav * (double)Y[u][v] * cosu * cosv;
-                            }
-                        }
-                        buffY[i%8][j%8] *= 0.25;
-                    }
-                });
-                for (int i = x; i < topi; ++i) {
-                    for (int j = y; j < topj; ++j) {
-                        Y[i][j] = (int)Math.round(buffY[i%8][j%8]);
-                    }
-                }
-            });
-        });
+    }
+
+    /**
+     * Lee la crominancia y le aplica DCT, RLE y Huffman coding
+     * @param datosInput Byte array conteniente de una imagen.
+     * @param pos Offset de lectura de datosInput.
+     * @param downSampledPaddedHeight Ancho de las dimensiones downsampled de la imagen múltiplo de 8 (para poder calcular DCT).
+     * @param downSampledPaddedWidth Ancho de las dimensiones downsampled de la imagen múltiplo de 8 (para poder calcular DCT).
+     * @param Cb Array de valores de la crominacia azul de la imagen.
+     * @param Cr Array de valores de la crominacia roja de la imagen.
+     */
+    private void procesarCbCr(byte[] datosInput, int pos, int downSampledPaddedHeight, int downSampledPaddedWidth, int[][] Cb, int[][] Cr) {
         int[][] rleSizeCb = new int[downSampledPaddedHeight/8][downSampledPaddedWidth/8];
         int[][] rleSizeCr = new int[downSampledPaddedHeight/8][downSampledPaddedWidth/8];
         int[][] offsetSizeCb = new int[downSampledPaddedHeight/8][downSampledPaddedWidth/8];
@@ -887,8 +893,8 @@ public class JPEG implements CompresorDecompresor {
                                 if (v % 8 == 0) alphav = 1 / Math.sqrt(2);
                                 else alphav = 1;
                                 cosv = Math.cos(((2 * (j % 8) + 1) * (v % 8) * Math.PI) / 16.0);
-                                buffCb[i%8][j%8] += alphau * alphav * (double)Cb[u][v] * cosu * cosv;
-                                buffCr[i%8][j%8] += alphau * alphav * (double)Cr[u][v] * cosu * cosv;
+                                buffCb[i%8][j%8] += alphau * alphav * (double) Cb[u][v] * cosu * cosv;
+                                buffCr[i%8][j%8] += alphau * alphav * (double) Cr[u][v] * cosu * cosv;
                             }
                         }
                         buffCb[i%8][j%8] *= 0.25;
@@ -903,26 +909,134 @@ public class JPEG implements CompresorDecompresor {
                 }
             });
         });
+    }
 
-        int[] rgb = new int[3];
-        for (int x = 0; x < height; ++x) { //converting YCbCr to RGB and changing range from [-128,127] to [0,255]
-            for (int y = 0; y < width; ++y) {
-                rgb[0] = (int)Math.round(1.164 * (double)(Y[x][y] - 16 + 128) + 1.596 * (double)(Cr[x/2][y/2]));
-                rgb[1] = (int)Math.round(1.164 * (double)(Y[x][y] - 16 + 128) - 0.391 * (double)(Cb[x/2][y/2]) - 0.813 * (double)(Cr[x/2][y/2]));
-                rgb[2] = (int)Math.round(1.164 * (double)(Y[x][y] - 16 + 128) + 2.018 * (double)(Cb[x/2][y/2]));
-                result.add((byte)Math.max(0, Math.min(rgb[0], rgbMaxVal))); //controlling and correcting any value that is out of range (0 to rgbMaxVal)
-                result.add((byte)Math.max(0, Math.min(rgb[1], rgbMaxVal)));
-                result.add((byte)Math.max(0, Math.min(rgb[2], rgbMaxVal)));
+    /**
+     * Lee la luminancia y le aplica DCT, RLE y Huffman coding
+     * @param datosInput Byte array conteniente de una imagen.
+     * @param pos Offset de lectura de datosInput.
+     * @param paddedWidth Ancho de las dimensiones de la imagen múltiplo de 8 (para poder calcular DCT).
+     * @param paddedHeight Alto de las dimensiones de la imagen múltiplo de 8 (para poder calcular DCT).
+     * @param Y Componente de luminancia de JPEG.
+     */
+    private int procesarY(byte[] datosInput, int pos, int paddedWidth, int paddedHeight, int[][] Y) {
+        int[][] rleSizeY = new int[paddedHeight/8][paddedWidth/8];
+        int[][] offsetSizeY = new int[paddedHeight/8][paddedWidth/8];
+        StringBuilder[][] huffmanStringBuilderY = new StringBuilder[paddedHeight/8][paddedWidth/8];
+        for (int x = 0; x < paddedHeight; x += 8) {
+            for (int y = 0; y < paddedWidth; y += 8) {
+                rleSizeY[x/8][y/8] = datosInput[pos++]; //reading Huffman block header
+                offsetSizeY[x/8][y/8] = datosInput[pos++];
+                huffmanStringBuilderY[x/8][y/8] = new StringBuilder();
+                for (int it = 0; it < rleSizeY[x/8][y/8]; ++it) {
+                    huffmanStringBuilderY[x/8][y/8].append(String.format("%8s", Integer.toBinaryString((datosInput[pos++] & 0xFF))).replace(' ', '0')); //converting input bytes into binary string
+                }
+                if (offsetSizeY[x/8][y/8] != 0) {
+                    for (int it = 0; it < (8 - offsetSizeY[x/8][y/8]); ++it)
+                        huffmanStringBuilderY[x/8][y/8].deleteCharAt(huffmanStringBuilderY[x/8][y/8].length() - 1); //deleting extra final bits of last byte of block till offset is fulfilled
+                }
             }
         }
-        //end of image reading and decompression
-
-        byte[] datosOutput = new byte[result.size()]; //writting image data in output byte array
-        for (int i = 0; i < result.size(); ++i) {
-            datosOutput[i] = result.get(i);
-        }
-        long endTime = System.nanoTime(), totalTime = endTime - startTime; //ending time and total execution time
-        return new OutputAlgoritmo(totalTime, datosOutput); //returning output time and data byte array
+        IntStream.range(0, paddedHeight).parallel().filter(x -> x % 8 == 0).forEach(x -> { //image inverse quantization and DCT-III (aka inverse DCT) (done in pixel squares of 8x8) for luminance
+            int topi = x + 8;                           //for each luminance pixel square of 8x8 of the image, inverse downsampling and DCT-III (aka inverse DCT) algorithm are applied, letting recover the image value
+            IntStream.range(0, paddedWidth).parallel().filter(y -> y % 8 == 0).forEach(y -> {
+                double[][] buffY = new double[8][8];
+                int topj = y + 8;
+                boolean up = true;
+                int k = x, l = y;
+                List<Byte> huffmanList = new ArrayList<>();
+                String huffmanBuff = "";
+                for (int it = 0; it < rleSizeY[x /8][y/8] * 8 - offsetSizeY[x /8][y/8]; ++it) { //getting RLE values from Huffman block after offset applied
+                    huffmanBuff += huffmanStringBuilderY[x /8][y/8].charAt(it);
+                    Pair pair = ACInverseHuffmanTable.get(huffmanBuff); //check if Huffman code exists
+                    if (pair != null) { //if exists, get RLE value and store it in zigzag line of block
+                        byte runlength = pair.getKey(); //getting runlength and size of RLE value
+                        huffmanList.add(runlength);
+                        byte size = pair.getValue();
+                        huffmanList.add(size);
+                        StringBuilder amplitude = new StringBuilder();
+                        for (int n = 0; n < size; ++n) {
+                            amplitude.append(huffmanStringBuilderY[x /8][y/8].charAt(++it)); //binary string of non-zero value
+                        }
+                        if (runlength != 0 || size != 0) huffmanList.add((byte)Integer.parseInt(amplitude.toString(), 2)); //binary string (8 bits long) to byte
+                        else it = rleSizeY[x /8][y/8] * 8 - offsetSizeY[x /8][y/8];
+                        huffmanBuff = "";
+                    }
+                }
+                byte[] lineY = new byte[64];
+                int lineYit = 0;
+                for (int it = 0; it < huffmanList.size(); ++it) { //RLE lossless decompression for Luminance
+                    int howManyZeroes = huffmanList.get(it++);
+                    int size = huffmanList.get(it++);
+                    if (howManyZeroes != 0 || size != 0) {
+                        byte value = huffmanList.get(it);
+                        for (int z = 0; z < howManyZeroes; ++z) lineY[lineYit++] = 0;
+                        lineY[lineYit++] = value;
+                    }
+                    else {
+                        while (lineYit < 64) lineY[lineYit++] = 0;
+                        it = huffmanList.size();
+                    }
+                }
+                lineYit = 0;
+                while (k < topi && l < topj) { //zig-zag reading Luminance and inverse downsampling values
+                    buffY[k%8][l%8] = (lineY[lineYit++]) * (LuminanceQuantizationTable[k%8][l%8] * calidad); //(byte) because reads [0,255] but it's been stored as [-128,127]
+                    Y[k][l] = (int)Math.round(buffY[k%8][l%8]);
+                    if (k == x && l != topj - 1 && up) {
+                        ++l;
+                        up = false;
+                    }
+                    else if (l == y && k != topi - 1 && !up) {
+                        ++k;
+                        up = true;
+                    }
+                    else if (k == topi - 1 && l != topj- 1 && !up) {
+                        ++l;
+                        up = true;
+                    }
+                    else if (l == topj - 1 && k != topi - 1 && up) {
+                        ++k;
+                        up = false;
+                    }
+                    else if (k == topi - 1 && l == topj - 1) {
+                        ++k;
+                        ++l;
+                    }
+                    else if (up) {
+                        --k;
+                        ++l;
+                    }
+                    else {
+                        ++k;
+                        --l;
+                    }
+                }
+                IntStream.range(x, topi).parallel().forEach(i -> {
+                    double alphau, alphav, cosu, cosv;
+                    for (int j = y; j < topj; ++j) { //for each luminance pixel of the 8x8 square, the DCT-III calculation is applied
+                        buffY[i%8][j%8] = 0;
+                        for (int u = x; u < topi; ++u) {
+                            if (u % 8 == 0) alphau = 1 / Math.sqrt(2);
+                            else alphau = 1;
+                            cosu = Math.cos(((2 * (i % 8) + 1) * (u % 8) * Math.PI) / 16.0);
+                            for (int v = y; v < topj; ++v) {
+                                if (v % 8 == 0) alphav = 1 / Math.sqrt(2);
+                                else alphav = 1;
+                                cosv = Math.cos(((2 * (j % 8) + 1) * (v % 8) * Math.PI) / 16.0);
+                                buffY[i%8][j%8] += alphau * alphav * (double) Y[u][v] * cosu * cosv;
+                            }
+                        }
+                        buffY[i%8][j%8] *= 0.25;
+                    }
+                });
+                for (int i = x; i < topi; ++i) {
+                    for (int j = y; j < topj; ++j) {
+                        Y[i][j] = (int)Math.round(buffY[i%8][j%8]);
+                    }
+                }
+            });
+        });
+        return pos;
     }
 
 
