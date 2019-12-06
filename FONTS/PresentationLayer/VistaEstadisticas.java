@@ -16,6 +16,7 @@ public class VistaEstadisticas extends JDialog {
     private JPanel Estats;
     private JButton procesarButton;
     private JTextArea status;
+    private JButton helpButton;
 
     public VistaEstadisticas(Frame owner) {
         super (owner, true);
@@ -29,6 +30,7 @@ public class VistaEstadisticas extends JDialog {
             ctrlPresentacion.mostrarEstadisticas(data);
         });
         cancelarButton.addActionListener(e -> dispose());
+        helpButton.addActionListener(e -> ctrlPresentacion.crearVistaAyudaEstadisticas());
     }
 
     public void mostrarEstadisticasSelecionadas(String mensaje) {
