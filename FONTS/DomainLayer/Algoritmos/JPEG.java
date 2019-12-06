@@ -624,7 +624,7 @@ public class JPEG implements CompresorDecompresor {
     }
 
     /**
-     * Enumeration.Algoritmo de descompresión JPEG
+     * Algoritmo de descompresión JPEG
      * <p>
      *     La imagen de entrada tiene que ser .imgc tal y como se ha definido el formato
      * </p>
@@ -701,7 +701,7 @@ public class JPEG implements CompresorDecompresor {
         int[][] Y = new int[paddedHeight][paddedWidth];//luminance
         int[][] Cb = new int[downSampledPaddedHeight][downSampledPaddedWidth];//chrominance blue
         int[][] Cr = new int[downSampledPaddedHeight][downSampledPaddedWidth];//chrominance red
-        procesarY(datosInput, pos, paddedWidth, paddedHeight, Y);
+        pos = procesarY(datosInput, pos, paddedWidth, paddedHeight, Y);
         procesarCbCr(datosInput, pos, downSampledPaddedHeight, downSampledPaddedWidth, Cb, Cr);
         //end of image reading and decompression
 
@@ -919,7 +919,7 @@ public class JPEG implements CompresorDecompresor {
      * @param paddedHeight Alto de las dimensiones de la imagen múltiplo de 8 (para poder calcular DCT).
      * @param Y Componente de luminancia de JPEG.
      */
-    private void procesarY(byte[] datosInput, int pos, int paddedWidth, int paddedHeight, int[][] Y) {
+    private int procesarY(byte[] datosInput, int pos, int paddedWidth, int paddedHeight, int[][] Y) {
         int[][] rleSizeY = new int[paddedHeight/8][paddedWidth/8];
         int[][] offsetSizeY = new int[paddedHeight/8][paddedWidth/8];
         StringBuilder[][] huffmanStringBuilderY = new StringBuilder[paddedHeight/8][paddedWidth/8];
@@ -1036,6 +1036,7 @@ public class JPEG implements CompresorDecompresor {
                 }
             });
         });
+        return pos;
     }
 
 
