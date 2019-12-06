@@ -166,14 +166,18 @@ public class CtrlPresentacion {
         if (existe) {
             int respuesta = JOptionPane.showConfirmDialog(null, "El fichero resultante del proceso sobrescribirá uno ya existente, ¿desea sobrescribirlo?", "Sobrescribir",
                     JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-            cerrarVistaSeleccionAlgoritmo();
+            //cerrarVistaSeleccionAlgoritmo();
             if (respuesta == JOptionPane.NO_OPTION) {
                 crearVistaSeleccionAlgoritmo(modeloParametros.isConGuardado());
             }
+            else if(respuesta == JOptionPane.YES_OPTION){
+                procesar();
+            }
         }
-        else  cerrarVistaSeleccionAlgoritmo();
-
-        procesar();
+        else  {
+            cerrarVistaSeleccionAlgoritmo();
+            procesar();
+        }
     }
 
     private void procesar(){
