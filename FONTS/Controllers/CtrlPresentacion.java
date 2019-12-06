@@ -21,6 +21,7 @@ public class CtrlPresentacion {
     private VistaSelectorAlgoritmo vistaSelectorAlgoritmo;
     private VistaEstadisticas vistaEstadisticas;
     private VistaResultadoProceso vistaResultadoProceso;
+    private HelpVistaInicio helpVistaInicio;
 
     /**
      * Getter de la instancia Singleton de CtrlPresentacion
@@ -276,4 +277,12 @@ public class CtrlPresentacion {
         CtrlProcesos.setCalidadJPEG(value);
     }
 
+    public void crearVistaAyudaInicio() {
+        helpVistaInicio = new HelpVistaInicio(vistaInicio);
+        helpVistaInicio.setSize(new Dimension(500, 500));
+        helpVistaInicio.setMinimumSize(new Dimension(500, 150));
+        helpVistaInicio.setLocationRelativeTo(vistaInicio);
+        helpVistaInicio.setResizable(true);
+        helpVistaInicio.setVisible(true);
+    }
 }
