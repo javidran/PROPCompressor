@@ -7,6 +7,8 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileFilter;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 
 
@@ -27,6 +29,7 @@ public class VistaInicio extends JFrame {
     private JButton estadisticasButton;
     private JButton escogerPrederterminadoButton;
     private JTextField mostrarPredeterminado;
+    private JButton helpButton;
 
     public VistaInicio() {
         super ("PROPresor");
@@ -69,6 +72,8 @@ public class VistaInicio extends JFrame {
         estadisticasButton.addActionListener(e -> ctrlPresentacion.crearVistaEstadisticas());
 
         escogerPrederterminadoButton.addActionListener(e -> ctrlPresentacion.escogerPredeterminadoPulsado());
+
+        helpButton.addActionListener(e -> ctrlPresentacion.crearVistaAyudaInicio());
 
     }
 
