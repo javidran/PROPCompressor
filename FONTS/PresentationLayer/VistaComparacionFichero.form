@@ -29,7 +29,7 @@
                 </constraints>
                 <properties>
                   <editable value="false"/>
-                  <text value="dahwuhduawbd&#10;&#10;hdawda&#10;awd&#10;wad&#10;wa&#10;d&#10;aw&#10;d&#10;waf&#10;ae&#10;sg&#10;dr&#10;h&#10;rdsg&#10;es&#10;g&#10;rtj&#10;&#10;drsg&#10;se&#10;rg&#10;hyf&#10;j&#10;rsf&#10;sr&#10;dujyt&#10;km&#10;hes&#10;adfesrhtryj&#10;&#10;thddsf&#10;ada&#10;fght&#10;j&#10;ghfd&#10;s"/>
+                  <text value=""/>
                 </properties>
               </component>
               <component id="afb89" class="javax.swing.JTextArea" binding="original">
@@ -40,7 +40,7 @@
                 </constraints>
                 <properties>
                   <editable value="false"/>
-                  <text value="dahwuhduawbd&#10;adawdawf&#10;afesafvdzc&#10;wfasvc&#10;&#10;afafa"/>
+                  <text value=""/>
                 </properties>
               </component>
             </children>
