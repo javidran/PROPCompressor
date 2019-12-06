@@ -1,12 +1,10 @@
 package PresentationLayer;
 
-import Controllers.CtrlPresentacion;
 import DomainLayer.Proceso.DatosProceso;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
 
 public class VistaResultadoProceso extends JDialog {
 
@@ -22,7 +20,8 @@ public class VistaResultadoProceso extends JDialog {
     public VistaResultadoProceso(Frame owner, DatosProceso dp){
         super (owner, "Proceso completado",true);
         setContentPane(panel);
-        tiempo.setText(Long.toString(dp.getTiempo()));
+        DecimalFormat df = new DecimalFormat("#.####");
+        tiempo.setText(df.format((double)dp.getTiempo() / 1000000000.0));
         OldSize.setText(Long.toString(dp.getOldSize()));
         NewSize.setText(Long.toString(dp.getNewSize()));
         diffSize.setText(Long.toString(dp.getDiffSize()));

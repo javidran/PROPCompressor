@@ -3,7 +3,7 @@
   <grid id="27dc6" binding="AyudaPrincipal" layout-manager="GridLayoutManager" row-count="2" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="0" left="0" bottom="0" right="0"/>
     <constraints>
-      <xy x="20" y="20" width="441" height="447"/>
+      <xy x="20" y="20" width="1307" height="564"/>
     </constraints>
     <properties/>
     <border type="none"/>
@@ -25,7 +25,7 @@
             <properties>
               <editable value="false"/>
               <font name="Roboto" size="16" style="0"/>
-              <text value="Bienvenido a la interfaz principal del PROPresor.&#10;&#10;Seleccione un archivo con el botón Explorar. &#10;Sólo se admiten aquellos con extensión .txt, .ppm,&#10;.lzss, .lzw, .lz78, .imgc, .comp y carpetas con&#10;archivos que tengan una de las extensiones anteriores.&#10;&#10;A continuación, se activarán los botones de Comprimir,&#10;Descomprimir o Comprimir y Descomprimir en función del&#10;archivo seleccionado. Ahora solo hace falta que haga&#10;click en aquel que desee!&#10;&#10;Los botones de Comprimir y Descomprimir comprimen y&#10;descomprimen respectivamente el archivo o carpeta&#10;seleccionado, mientras que el tercero simula el&#10;proceso de compresión y descompresión, y compara&#10;resultados antes y después del proceso."/>
+              <text value="Bienvenido a la interfaz principal del PROPresor.&#10;&#10;Seleccione un archivo con el botón Explorar. &#10;Sólo se admiten aquellos con extensión .txt, .ppm, .lzss, &#10;.lzw, .lz78, .imgc, .comp y carpetas con archivos que ten-&#10;gan una de las extensiones anteriores.&#10;&#10;A continuación, se activarán los botones de Comprimir, Des-&#10;comprimir o Comprimir y Descomprimir en función del archivo&#10;seleccionado. Ahora solo hace falta que haga click en aquel&#10;que desee!&#10;&#10;Los botones de Comprimir y Descomprimir comprimen y des-&#10;comprimen respectivamente el archivo o carpeta seleccionado, &#10;mientras que el tercero simula el proceso de compresión y des-&#10;compresión, y compara resultados antes y después del proceso.&#10;&#10;Además, los botones Estadísticas y Escoger Predeterminado &#10;permiten ver las estadísticas de cada algoritmo disponible en&#10;el PROPresor y escoger cual de estos es el predeterminado&#10;para comprimir texto respectivamente."/>
             </properties>
           </component>
         </children>
