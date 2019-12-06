@@ -34,7 +34,7 @@ public class VistaEstadisticas extends JDialog {
     }
 
     public void mostrarEstadisticasSelecionadas(String mensaje) {
-        setSize(400, 300);
+        setSize(375, 325);
         setLocationRelativeTo(getOwner());
         status.setText(mensaje);
         Estats.setVisible(true);
@@ -42,6 +42,7 @@ public class VistaEstadisticas extends JDialog {
         Algoritmo.setVisible(false);
         status.setBackground(new Color(0,0,0,0));
         procesarButton.setVisible(false);
+        helpButton.setVisible(false);
     }
 
 }
