@@ -4,8 +4,8 @@ import DataLayer.*;
 import DomainLayer.Proceso.DatosProceso;
 import Enumeration.Algoritmo;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import javax.swing.*;
+import java.io.*;
 
 public class CtrlDatos {
     /**
@@ -134,5 +134,11 @@ public class CtrlDatos {
 
     public void eliminaArchivo(String path) {
         GestorArchivo.eliminaArchivo(path);
+    }
+
+    public void archivoToTextArea(JTextArea textArea, String path) throws IOException {
+        FileReader reader = new FileReader(path);
+        textArea.read(reader, path);
+        reader.close();
     }
 }

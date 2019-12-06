@@ -205,8 +205,7 @@ public class CtrlPresentacion {
                 try {
                     CtrlProcesos ctrlProcesos = CtrlProcesos.getInstance();
                     if (!modeloParametros.isConGuardado()) {
-                        modeloParametros.setPathResultado(CtrlProcesos.calcularPathTemporal(modeloParametros.getPathOriginal()));
-                        DatosProceso[] multiplesDatos = ctrlProcesos.comprimirDescomprimirArchivo(modeloParametros.getPathOriginal(), modeloParametros.getPathResultado(), modeloParametros.getAlgoritmo());
+                        DatosProceso[] multiplesDatos = ctrlProcesos.comprimirDescomprimirArchivo(modeloParametros.getPathOriginal(), modeloParametros.getAlgoritmo());
                         dp[0] = multiplesDatos[0];
                         dp[1] = multiplesDatos[1];
                     } else if (modeloParametros.isCompresion()) {
@@ -255,18 +254,15 @@ public class CtrlPresentacion {
         vistaComparacionFichero.setMinimumSize(new Dimension(450, 250));
         vistaComparacionFichero.setLocationRelativeTo(vistaInicio);
         vistaComparacionFichero.setResizable(true);
-        /*
+        CtrlProcesos ctrlProcesos = CtrlProcesos.getInstance();
         try {
-            //CtrlProcesos ctrlProcesos = ctrlProcesos.getInstance();
-            //ctrlProcesos.archivoTemporalToTextArea(JTextArea);
-            vistaComparacionFichero.original.read(new InputStreamReader(
-                    getClass().getResourceAsStream(modeloParametros.getPathOriginal())), null);
-            vistaComparacionFichero.resultante.read(new InputStreamReader(getClass.getmodeloParametros.getPathResultado()), null);
-            CtrlProcesos.eliminaArchivoTemporal(modeloParametros.getPathResultado());
-        } catch (IOException e) {
-            JOptionPane.showConfirmDialog(null, "Se ha dado el siguente error durante el proceso:\n" + e.getMessage(), null, JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
+            ctrlProcesos.archivoToTextArea(vistaComparacionFichero.original, modeloParametros.getPathOriginal());
+            ctrlProcesos.archivoToTextArea(vistaComparacionFichero.resultante, CtrlProcesos.archivoTemporal());
+        } catch (Exception e) {
+            JOptionPane.showConfirmDialog(null, "Ha ocurrido un error al intentar mostrar los archivos para comparación. Por favor, intentelo de nuevo.",null, JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
+        } finally {
+            ctrlProcesos.eliminaArchivoTemporal();
         }
-        */
         vistaComparacionFichero.setVisible(true);
     }
 
