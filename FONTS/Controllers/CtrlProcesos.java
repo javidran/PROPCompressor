@@ -74,6 +74,8 @@ public class CtrlProcesos {
         ProcesoFichero desc = new ProcesoDescomprimir(ctrlDatos.leerArchivo(pathOriginal), algoritmo);
         desc.ejecutarProceso();
         ctrlDatos.guardaArchivo(desc.getOutput(), pathResultado);
+        //Substituir todo lo siguiente
+        /*
         DatosProceso dp = desc.getDatosProceso();
         System.out.println("El proceso ha tardado " + dp.getTiempo()/1000000000.0 + "s. El cambio de tamaño pasa de " + dp.getOldSize() + "B a " + dp.getNewSize() + "B con diferencia de " + dp.getDiffSize() + "B que resulta en un " + dp.getDiffSizePercentage() + "% del archivo original.");
         if(dp.isSatisfactorio()) {
@@ -82,6 +84,11 @@ public class CtrlProcesos {
             System.out.println("El proceso de descompresión no ha resultado satisfactorio ya que el archivo descomprimido ocupa igual o menos que el archivo original. Se guardará igualmente.");
         }
         return dp;
+
+         */
+        //Substituir todo lo anterior
+        //por la siguiente linea:
+        return desc.getDatosProceso();
     }
 
     /**
