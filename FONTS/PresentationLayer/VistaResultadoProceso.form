@@ -121,7 +121,7 @@
               <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text value="nanosegundos"/>
+              <text value="s"/>
             </properties>
           </component>
           <component id="60e1c" class="javax.swing.JLabel">
@@ -129,7 +129,7 @@
               <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text value="bytes"/>
+              <text value="B"/>
             </properties>
           </component>
           <component id="dbf94" class="javax.swing.JLabel">
@@ -137,7 +137,7 @@
               <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text value="bytes"/>
+              <text value="B"/>
             </properties>
           </component>
           <component id="47ce8" class="javax.swing.JLabel">
@@ -145,7 +145,7 @@
               <grid row="3" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text value="bytes"/>
+              <text value="B"/>
             </properties>
           </component>
           <component id="2a291" class="javax.swing.JLabel">

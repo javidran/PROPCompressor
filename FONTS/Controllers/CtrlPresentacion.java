@@ -1,5 +1,6 @@
 package Controllers;
 
+import DataLayer.DatosEstadistica;
 import DomainLayer.Proceso.DatosProceso;
 import Enumeration.Algoritmo;
 import Exceptions.FormatoErroneoException;
@@ -34,6 +35,7 @@ public class CtrlPresentacion {
     private HelpVistaInicio helpVistaInicio;
     private HelpVistaEstadisticas helpVistaEstadisticas;
     private HelpVistaSelectorAlgoritmo helpVistaSelectorAlgoritmo;
+    private VistaCompDescImagen vistaCompDescImagen;
 
     /**
      * Getter de la instancia Singleton de CtrlPresentacion
@@ -56,7 +58,7 @@ public class CtrlPresentacion {
             modeloParametros.setVistaInicio(vistaInicio);
             vistaInicio.algoritmoPredeterminado(CtrlProcesos.getAlgoritmoDeTextoPredeterminado());
             vistaInicio.setSize(new Dimension(650, 300));
-            vistaInicio.setMinimumSize(new Dimension(500, 200));
+            vistaInicio.setMinimumSize(new Dimension(510, 250));
             vistaInicio.setResizable(true);
             vistaInicio.setVisible(true);
             vistaInicio.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -111,9 +113,10 @@ public class CtrlPresentacion {
         else {
             vistaSelectorAlgoritmo = new VistaSelectorAlgoritmo(vistaInicio);
             modeloParametros.setVistaSelectorAlgoritmo(vistaSelectorAlgoritmo, conGuardado);
-            if (!conGuardado || modeloParametros.getAlgoritmo().equals(Algoritmo.CARPETA)) vistaSelectorAlgoritmo.setSize(new Dimension(650, 160));
+            if (!conGuardado) vistaSelectorAlgoritmo.setSize(new Dimension(650, 175));
             else {
                 if (modeloParametros.isCompresion()) vistaSelectorAlgoritmo.setSize(new Dimension(650, 210));
+                if (modeloParametros.getAlgoritmo().equals(Algoritmo.CARPETA)) vistaSelectorAlgoritmo.setSize(new Dimension(650, 210));
             }
             vistaSelectorAlgoritmo.setMinimumSize(new Dimension(600, 160));
             vistaSelectorAlgoritmo.setLocationRelativeTo(vistaInicio);
@@ -173,14 +176,18 @@ public class CtrlPresentacion {
         if (existe) {
             int respuesta = JOptionPane.showConfirmDialog(null, "El fichero resultante del proceso sobrescribirá uno ya existente, ¿desea sobrescribirlo?", "Sobrescribir",
                     JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-            cerrarVistaSeleccionAlgoritmo();
+            //cerrarVistaSeleccionAlgoritmo();
             if (respuesta == JOptionPane.NO_OPTION) {
                 crearVistaSeleccionAlgoritmo(modeloParametros.isConGuardado());
             }
+            else if(respuesta == JOptionPane.YES_OPTION){
+                procesar();
+            }
         }
-        else cerrarVistaSeleccionAlgoritmo();
-
-        procesar();
+        else  {
+            cerrarVistaSeleccionAlgoritmo();
+            procesar();
+        }
     }
 
     private void procesar(){
@@ -246,6 +253,7 @@ public class CtrlPresentacion {
 
         if(exceptionProceso[0]!= null) JOptionPane.showConfirmDialog(null, "Se ha dado el siguente error durante el proceso:\n"+exceptionProceso[0].getMessage(),null, JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
         else if (modeloParametros.isConGuardado()) crearVistaResultadoProceso(dp[0]);
+        else if(modeloParametros.getAlgoritmo().equals(Algoritmo.JPEG)) crearVistaCompDescImagen();
         else crearVistaComparacionProceso(dp);
     }
 
@@ -278,7 +286,24 @@ public class CtrlPresentacion {
         vistaComparacionFichero.setVisible(true);
     }
 
-        public String getEstadisticas(String data) throws IOException {
+    public void crearVistaCompDescImagen() {
+
+        vistaCompDescImagen = new VistaCompDescImagen(vistaInicio);
+        vistaCompDescImagen.setSize(new Dimension(800, 800));
+        vistaCompDescImagen.setLocationRelativeTo(vistaInicio);
+        vistaCompDescImagen.setResizable(true);
+        CtrlProcesos ctrlProcesos = CtrlProcesos.getInstance();
+        try {
+            vistaCompDescImagen.setImagenes(ctrlProcesos.getBufferedImage(modeloParametros.getPathOriginal()), ctrlProcesos.getBufferedImage(ctrlProcesos.archivoTemporal()));
+        } catch (Exception e) {
+            JOptionPane.showConfirmDialog(null, "Ha ocurrido un error al intentar mostrar los archivos para comparación. Por favor, intentelo de nuevo.",null, JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
+        } finally {
+            ctrlProcesos.eliminaArchivoTemporal();
+        }
+        vistaCompDescImagen.setVisible(true);
+    }
+
+    public DatosEstadistica getEstadisticas(String data) throws IOException {
         CtrlEstadistica ce = CtrlEstadistica.getInstance();
         Algoritmo alg;
         switch (data) {
@@ -302,10 +327,9 @@ public class CtrlPresentacion {
 
     public void crearVistaEstadisticas() {
         vistaEstadisticas = new VistaEstadisticas(vistaInicio);
-        vistaEstadisticas.setSize(new Dimension(600, 160));
-        vistaEstadisticas.setMinimumSize(new Dimension(300, 150));
+        vistaEstadisticas.setSize(new Dimension(500, 200));
         vistaEstadisticas.setLocationRelativeTo(vistaInicio);
-        vistaEstadisticas.setResizable(true);
+        vistaEstadisticas.setResizable(false);
         vistaEstadisticas.setVisible(true);
     }
 
@@ -323,28 +347,31 @@ public class CtrlPresentacion {
 
     public void crearVistaAyudaInicio() {
         helpVistaInicio = new HelpVistaInicio(vistaInicio);
-        helpVistaInicio.setSize(new Dimension(500, 500));
-        helpVistaInicio.setMinimumSize(new Dimension(500, 150));
+        helpVistaInicio.setSize(new Dimension(475, 550));
         helpVistaInicio.setLocationRelativeTo(vistaInicio);
-        helpVistaInicio.setResizable(true);
+        helpVistaInicio.setResizable(false);
         helpVistaInicio.setVisible(true);
     }
 
     public void crearVistaAyudaEstadisticas() {
         helpVistaEstadisticas = new HelpVistaEstadisticas(vistaEstadisticas);
-        helpVistaEstadisticas.setSize(new Dimension(500, 500));
-        helpVistaEstadisticas.setMinimumSize(new Dimension(500, 150));
+        helpVistaEstadisticas.setSize(new Dimension(400, 300));
         helpVistaEstadisticas.setLocationRelativeTo(vistaEstadisticas);
-        helpVistaEstadisticas.setResizable(true);
+        helpVistaEstadisticas.setResizable(false);
         helpVistaEstadisticas.setVisible(true);
     }
 
     public void crearVistaAyudaSelectorAlgoritmo() {
         helpVistaSelectorAlgoritmo = new HelpVistaSelectorAlgoritmo(vistaSelectorAlgoritmo);
-        helpVistaSelectorAlgoritmo.setSize(new Dimension(500, 500));
-        helpVistaSelectorAlgoritmo.setMinimumSize(new Dimension(500, 150));
+        helpVistaSelectorAlgoritmo.setSize(new Dimension(400, 300));
         helpVistaSelectorAlgoritmo.setLocationRelativeTo(vistaSelectorAlgoritmo);
-        helpVistaSelectorAlgoritmo.setResizable(true);
+        helpVistaSelectorAlgoritmo.setResizable(false);
         helpVistaSelectorAlgoritmo.setVisible(true);
+    }
+
+
+
+    public void volverAEscogerEstadística() {
+        vistaEstadisticas.mostrarSelectorAlgoritmo();
     }
 }

@@ -12,6 +12,8 @@ import javax.swing.*;
 import javax.swing.table.TableModel;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.List;
 
@@ -62,7 +64,9 @@ public class CtrlProcesos {
         ProcesoFichero comp = new ProcesoComprimir(ctrlDatos.leerArchivo(pathOriginal), tipoAlgoritmo);
         comp.ejecutarProceso();
         ctrlDatos.guardaArchivo(comp.getOutput(), pathResultado);
-        return comp.getDatosProceso();
+        DatosProceso dp = comp.getDatosProceso();
+        if(dp.isSatisfactorio()) ctrlDatos.actualizaEstadistica(dp, tipoAlgoritmo, true);
+        return dp;
     }
 
     /**
@@ -77,17 +81,12 @@ public class CtrlProcesos {
      */
     public DatosProceso descomprimirArchivo(String pathOriginal, String pathResultado ) throws Exception {
         CtrlDatos ctrlDatos = CtrlDatos.getInstance();
-        Algoritmo algoritmo = algoritmoPosible(pathOriginal);
-        ProcesoFichero desc = new ProcesoDescomprimir(ctrlDatos.leerArchivo(pathOriginal), algoritmo);
+        Algoritmo tipoAlgoritmo = algoritmoPosible(pathOriginal);
+        ProcesoFichero desc = new ProcesoDescomprimir(ctrlDatos.leerArchivo(pathOriginal), tipoAlgoritmo);
         desc.ejecutarProceso();
         ctrlDatos.guardaArchivo(desc.getOutput(), pathResultado);
         DatosProceso dp = desc.getDatosProceso();
-        System.out.println("El proceso ha tardado " + dp.getTiempo()/1000000000.0 + "s. El cambio de tamaño pasa de " + dp.getOldSize() + "B a " + dp.getNewSize() + "B con diferencia de " + dp.getDiffSize() + "B que resulta en un " + dp.getDiffSizePercentage() + "% del archivo original.");
-        if(dp.isSatisfactorio()) {
-            ctrlDatos.actualizaEstadistica(dp, algoritmo, false);
-        } else {
-            System.out.println("El proceso de descompresión no ha resultado satisfactorio ya que el archivo descomprimido ocupa igual o menos que el archivo original. Se guardará igualmente.");
-        }
+        if(dp.isSatisfactorio()) ctrlDatos.actualizaEstadistica(dp, tipoAlgoritmo, false);
         return dp;
     }
 
@@ -109,21 +108,13 @@ public class CtrlProcesos {
         ProcesoFichero comp = new ProcesoComprimir(ctrlDatos.leerArchivo(path), tipoAlgoritmo);
         comp.ejecutarProceso();
         dp[0] = comp.getDatosProceso();
-        System.out.println("El proceso ha tardado " + dp[0].getTiempo() / 1000000000.0 + "s. El cambio de tamaño pasa de " + dp[0].getOldSize() + "B a " + dp[0].getNewSize() + "B con diferencia de " + dp[0].getDiffSize() + "B que resulta en un " + dp[0].getDiffSizePercentage() + "% del archivo original.");
-        if (dp[0].isSatisfactorio()) {
-            ctrlDatos.actualizaEstadistica(dp[0], tipoAlgoritmo, true);
-        } else {
-            System.out.println("El proceso de compresión no ha resultado satisfactorio ya que el archivo comprimido ocupa igual o más que el archivo original. Se guardará igualmente.");
-        }
+        if (dp[0].isSatisfactorio()) ctrlDatos.actualizaEstadistica(dp[0], tipoAlgoritmo, true);
 
         ProcesoFichero desc = new ProcesoDescomprimir(comp.getOutput(), tipoAlgoritmo);
         desc.ejecutarProceso();
         ctrlDatos.guardaArchivo(desc.getOutput(), archivoTemporal());
         dp[1] = desc.getDatosProceso();
-        System.out.println("El proceso ha tardado " + dp[1].getTiempo() / 1000000000.0 + "s. El cambio de tamaño pasa de " + dp[1].getOldSize() + "B a " + dp[1].getNewSize() + "B con diferencia de " + dp[1].getDiffSize() + "B que resulta en un " + dp[1].getDiffSizePercentage() + "% del archivo original.");
-        if (dp[1].isSatisfactorio()) {
-            ctrlDatos.actualizaEstadistica(dp[1], tipoAlgoritmo, false);
-        }
+        if (dp[1].isSatisfactorio()) ctrlDatos.actualizaEstadistica(dp[1], tipoAlgoritmo, false);
         return dp;
     }
 
@@ -153,11 +144,6 @@ public class CtrlProcesos {
             }
         }
         ctrlDatos.finalizarGestorCarpeta();
-
-        long diffSize = oldSize - newSize;
-        double diffSizePercentage = Math.floor((newSize /(double) oldSize)*100);
-        System.out.println("El proceso ha tardado " + tiempo / 1000000000.0 + "s. El cambio de tamaño pasa de " + oldSize + "B a " + newSize + "B con diferencia de " + diffSize + "B que resulta en un " + diffSizePercentage + "% del archivo original.");
-
         return new DatosProceso(tiempo, oldSize, newSize, true);
     }
 
@@ -185,11 +171,6 @@ public class CtrlProcesos {
             }
         }
         ctrlDatos.finalizarGestorCarpeta();
-
-        long diffSize = newSize - oldSize;
-        double diffSizePercentage = Math.floor((newSize /(double) oldSize)*100);
-        System.out.println("El proceso ha tardado " + tiempo / 1000000000.0 + "s. El cambio de tamaño pasa de " + oldSize + "B a " + newSize + "B con diferencia de " + diffSize + "B que resulta en un " + diffSizePercentage + "% del archivo original.");
-
         return new DatosProceso(tiempo, oldSize, newSize, false);
     }
 
@@ -344,6 +325,53 @@ public class CtrlProcesos {
     public TableModel getArchivoAsModel(String path, String titleBar) throws IOException {
         CtrlDatos ctrlDatos = CtrlDatos.getInstance();
         return ctrlDatos.getArchivoAsModel(path, titleBar);
+    }
+
+    public BufferedImage getBufferedImage(String path) throws IOException {
+        byte[] datosInput = CtrlDatos.getInstance().leerArchivo(path);
+        int pos = 0, width, height;
+        StringBuilder buff = new StringBuilder();
+        while (pos < datosInput.length - 1 && (char)datosInput[pos] != '\n') {
+            buff.append((char) datosInput[pos]);
+            ++pos;
+        }
+        ++pos;
+        while (pos < datosInput.length - 1 && (char)datosInput[pos] == '#') {
+            while ((char)datosInput[pos] != '\n') { //avoiding comments between parameters...
+                ++pos;
+            }
+            ++pos;
+        }
+        String[] widthHeight;
+        buff = new StringBuilder();
+        while (pos < datosInput.length - 1 && (char)datosInput[pos] != '\n') {
+            buff.append((char) datosInput[pos]);
+            ++pos;
+        }
+        ++pos;
+        widthHeight = buff.toString().split(" ");  //read and split dimensions into two (one for each value)
+        while (pos < datosInput.length - 1 && (char)datosInput[pos] == '#') {
+            while ((char)datosInput[pos] != '\n') { //avoiding comments between parameters...
+                ++pos;
+            }
+            ++pos;
+        }
+        width = Integer.parseInt(widthHeight[0]);  //string to int of image width
+        height = Integer.parseInt(widthHeight[1]); //string to int of image height
+        buff = new StringBuilder();
+        while (pos < datosInput.length - 1 && (char)datosInput[pos] != '\n') {
+            buff.append((char) datosInput[pos]);
+            ++pos;
+        }
+        ++pos;
+        BufferedImage image = new BufferedImage(height, width, BufferedImage.TYPE_INT_RGB);
+        for (int i = 0; i < height; ++i) {
+            for (int j = 0; j < width; ++j) {
+                int color = new Color(((int)datosInput[pos++] & 0xFF), ((int)datosInput[pos++] & 0xFF), ((int)datosInput[pos++] & 0xFF)).getRGB();
+                image.setRGB(i, j, color);
+            }
+        }
+        return image;
     }
 
     /**
