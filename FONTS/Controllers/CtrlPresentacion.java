@@ -248,6 +248,7 @@ public class CtrlPresentacion {
 
         if(exceptionProceso[0]!= null) JOptionPane.showConfirmDialog(null, "Se ha dado el siguente error durante el proceso:\n"+exceptionProceso[0].getMessage(),null, JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
         else if (modeloParametros.isConGuardado()) crearVistaResultadoProceso(dp[0]);
+        else if(modeloParametros.getAlgoritmo().equals(Algoritmo.JPEG)) crearVistaCompDescImagen();
         else crearVistaComparacionProceso(dp);
     }
 
@@ -283,10 +284,9 @@ public class CtrlPresentacion {
     public void crearVistaCompDescImagen() {
 
         vistaCompDescImagen = new VistaCompDescImagen(vistaInicio);
-        vistaCompDescImagen.setSize(new Dimension(400, 300));
+        vistaCompDescImagen.setSize(new Dimension(800, 800));
         vistaCompDescImagen.setLocationRelativeTo(vistaInicio);
         vistaCompDescImagen.setResizable(false);
-        vistaCompDescImagen.setVisible(true);
         CtrlProcesos ctrlProcesos = CtrlProcesos.getInstance();
         try {
             vistaCompDescImagen.setImagenes(ctrlProcesos.getBufferedImage(modeloParametros.getPathOriginal()), ctrlProcesos.getBufferedImage(ctrlProcesos.archivoTemporal()));
@@ -295,7 +295,7 @@ public class CtrlPresentacion {
         } finally {
             ctrlProcesos.eliminaArchivoTemporal();
         }
-        vistaComparacionFichero.setVisible(true);
+        vistaCompDescImagen.setVisible(true);
     }
 
     public DatosEstadistica getEstadisticas(String data) throws IOException {

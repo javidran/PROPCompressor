@@ -34,7 +34,7 @@ public class VistaCompDescImagen extends JDialog {
     }
 
     public void setImagenes(BufferedImage bufferedImageOriginal, BufferedImage bufferedImageNuevo) {
-        original = new JLabel(new ImageIcon(bufferedImageOriginal));
-        nuevo = new JLabel(new ImageIcon(bufferedImageNuevo));
+        original.setIcon(new ImageIcon(bufferedImageOriginal));
+        nuevo.setIcon(new ImageIcon(bufferedImageNuevo));
     }
 }
