@@ -280,6 +280,24 @@ public class CtrlPresentacion {
         vistaComparacionFichero.setVisible(true);
     }
 
+    public void crearVistaCompDescImagen() {
+
+        vistaCompDescImagen = new VistaCompDescImagen(vistaInicio);
+        vistaCompDescImagen.setSize(new Dimension(400, 300));
+        vistaCompDescImagen.setLocationRelativeTo(vistaInicio);
+        vistaCompDescImagen.setResizable(false);
+        vistaCompDescImagen.setVisible(true);
+        CtrlProcesos ctrlProcesos = CtrlProcesos.getInstance();
+        try {
+            vistaCompDescImagen.setImagenes(ctrlProcesos.getBufferedImage(modeloParametros.getPathOriginal()), ctrlProcesos.getBufferedImage(ctrlProcesos.archivoTemporal()));
+        } catch (Exception e) {
+            JOptionPane.showConfirmDialog(null, "Ha ocurrido un error al intentar mostrar los archivos para comparación. Por favor, intentelo de nuevo.",null, JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
+        } finally {
+            ctrlProcesos.eliminaArchivoTemporal();
+        }
+        vistaComparacionFichero.setVisible(true);
+    }
+
     public DatosEstadistica getEstadisticas(String data) throws IOException {
         CtrlEstadistica ce = CtrlEstadistica.getInstance();
         Algoritmo alg;
@@ -346,14 +364,7 @@ public class CtrlPresentacion {
         helpVistaSelectorAlgoritmo.setVisible(true);
     }
 
-    public void crearVistaCompDescImagen() {
 
-        vistaCompDescImagen = new VistaCompDescImagen(vistaInicio);
-        vistaCompDescImagen.setSize(new Dimension(400, 300));
-        vistaCompDescImagen.setLocationRelativeTo(vistaInicio);
-        vistaCompDescImagen.setResizable(false);
-        vistaCompDescImagen.setVisible(true);
-    }
 
     public void volverAEscogerEstadística() {
         vistaEstadisticas.mostrarSelectorAlgoritmo();
