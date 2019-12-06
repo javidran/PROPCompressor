@@ -9,6 +9,7 @@ import Enumeration.Algoritmo;
 import Exceptions.FormatoErroneoException;
 
 import javax.swing.*;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 /**
@@ -319,6 +320,48 @@ public class CtrlProcesos {
     public void archivoToTextArea(JTextArea textArea, String path) throws IOException {
         CtrlDatos ctrlDatos = CtrlDatos.getInstance();
         ctrlDatos.archivoToTextArea(textArea, path);
+    }
+
+    public BufferedImage getBufferedImage(String path) throws IOException {
+        byte[] datosInput = CtrlDatos.getInstance().leerArchivo(path);
+        int pos = 0, width, height;
+        StringBuilder buff = new StringBuilder();
+        while (pos < datosInput.length - 1 && (char)datosInput[pos] != '\n') {
+            buff.append((char) datosInput[pos]);
+            ++pos;
+        }
+        ++pos;
+        while (pos < datosInput.length - 1 && (char)datosInput[pos] == '#') {
+            while ((char)datosInput[pos] != '\n') { //avoiding comments between parameters...
+                ++pos;
+            }
+            ++pos;
+        }
+        String[] widthHeight;
+        buff = new StringBuilder();
+        while (pos < datosInput.length - 1 && (char)datosInput[pos] != '\n') {
+            buff.append((char) datosInput[pos]);
+            ++pos;
+        }
+        ++pos;
+        widthHeight = buff.toString().split(" ");  //read and split dimensions into two (one for each value)
+        while (pos < datosInput.length - 1 && (char)datosInput[pos] == '#') {
+            while ((char)datosInput[pos] != '\n') { //avoiding comments between parameters...
+                ++pos;
+            }
+            ++pos;
+        }
+        width = Integer.parseInt(widthHeight[0]);  //string to int of image width
+        height = Integer.parseInt(widthHeight[1]); //string to int of image height
+        buff = new StringBuilder();
+        while (pos < datosInput.length - 1 && (char)datosInput[pos] != '\n') {
+            buff.append((char) datosInput[pos]);
+            ++pos;
+        }
+        ++pos;
+        BufferedImage image = new BufferedImage(width, height,BufferedImage.TYPE_INT_RGB);
+        
+        return image;
     }
 
     /**
