@@ -1,4 +1,4 @@
-package PresentationLayer;
+package PresentationLayer.Helpers;
 
 import javax.swing.*;
 import java.awt.*;
