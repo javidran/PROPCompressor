@@ -261,8 +261,10 @@ public class CtrlPresentacion {
         vistaComparacionFichero.setResizable(true);
         CtrlProcesos ctrlProcesos = CtrlProcesos.getInstance();
         try {
+            /*
             ctrlProcesos.archivoToTextArea(vistaComparacionFichero.original, modeloParametros.getPathOriginal());
             ctrlProcesos.archivoToTextArea(vistaComparacionFichero.resultante, CtrlProcesos.archivoTemporal());
+            */
         } catch (Exception e) {
             JOptionPane.showConfirmDialog(null, "Ha ocurrido un error al intentar mostrar los archivos para comparación. Por favor, intentelo de nuevo.",null, JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
         } finally {
