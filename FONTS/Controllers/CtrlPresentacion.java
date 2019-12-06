@@ -240,8 +240,8 @@ public class CtrlPresentacion {
         if(exceptionProceso[0]!= null) JOptionPane.showConfirmDialog(null, "Se ha dado el siguente error durante el proceso:\n"+exceptionProceso[0].getMessage(),null, JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
         else {
             vistaResultadoProceso = new VistaResultadoProceso(vistaInicio, dp[0]);
-            vistaResultadoProceso.setSize(new Dimension(450, 250));
-            vistaResultadoProceso.setMinimumSize(new Dimension(450, 250));
+            vistaResultadoProceso.setSize(new Dimension(475, 250));
+            vistaResultadoProceso.setMinimumSize(new Dimension(475, 250));
             vistaResultadoProceso.setLocationRelativeTo(vistaInicio);
             vistaResultadoProceso.setResizable(true);
             vistaResultadoProceso.setVisible(true);
