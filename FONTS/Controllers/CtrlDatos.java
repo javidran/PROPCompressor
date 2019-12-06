@@ -141,12 +141,6 @@ public class CtrlDatos {
         GestorArchivo.eliminaArchivo(path);
     }
 
-    public void archivoToTextArea(JTextArea textArea, String path) throws IOException {
-        FileReader reader = new FileReader(path);
-        textArea.read(reader, path);
-        reader.close();
-    }
-
     public TableModel getArchivoAsModel(String path, String titleBar) throws IOException {
         FileReader fileReader = new FileReader(path);
         BufferedReader bufferedReader = new BufferedReader(fileReader);
