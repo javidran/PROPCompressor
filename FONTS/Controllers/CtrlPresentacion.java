@@ -50,7 +50,7 @@ public class CtrlPresentacion {
             modeloParametros.setVistaInicio(vistaInicio);
             vistaInicio.algoritmoPredeterminado(CtrlProcesos.getAlgoritmoDeTextoPredeterminado());
             vistaInicio.setSize(new Dimension(650, 300));
-            vistaInicio.setMinimumSize(new Dimension(500, 200));
+            vistaInicio.setMinimumSize(new Dimension(510, 250));
             vistaInicio.setResizable(true);
             vistaInicio.setVisible(true);
             vistaInicio.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -105,9 +105,10 @@ public class CtrlPresentacion {
         else{
             vistaSelectorAlgoritmo = new VistaSelectorAlgoritmo(vistaInicio);
             modeloParametros.setVistaSelectorAlgoritmo(vistaSelectorAlgoritmo, conGuardado);
-            if (!conGuardado || modeloParametros.getAlgoritmo().equals(Algoritmo.CARPETA)) vistaSelectorAlgoritmo.setSize(new Dimension(650, 160));
+            if (!conGuardado) vistaSelectorAlgoritmo.setSize(new Dimension(650, 160));
             else {
                 if (modeloParametros.isCompresion()) vistaSelectorAlgoritmo.setSize(new Dimension(650, 210));
+                if (modeloParametros.getAlgoritmo().equals(Algoritmo.CARPETA)) vistaSelectorAlgoritmo.setSize(new Dimension(650, 210));
             }
             vistaSelectorAlgoritmo.setMinimumSize(new Dimension(600, 160));
             vistaSelectorAlgoritmo.setLocationRelativeTo(vistaInicio);
@@ -167,14 +168,18 @@ public class CtrlPresentacion {
         if (existe) {
             int respuesta = JOptionPane.showConfirmDialog(null, "El fichero resultante del proceso sobrescribirá uno ya existente, ¿desea sobrescribirlo?", "Sobrescribir",
                     JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-            cerrarVistaSeleccionAlgoritmo();
+            //cerrarVistaSeleccionAlgoritmo();
             if (respuesta == JOptionPane.NO_OPTION) {
                 crearVistaSeleccionAlgoritmo(modeloParametros.isConGuardado());
             }
+            else if(respuesta == JOptionPane.YES_OPTION){
+                procesar();
+            }
         }
-        else  cerrarVistaSeleccionAlgoritmo();
-
-        procesar();
+        else  {
+            cerrarVistaSeleccionAlgoritmo();
+            procesar();
+        }
     }
 
     private void procesar(){
@@ -241,8 +246,8 @@ public class CtrlPresentacion {
         if(exceptionProceso[0]!= null) JOptionPane.showConfirmDialog(null, "Se ha dado el siguente error durante el proceso:\n"+exceptionProceso[0].getMessage(),null, JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
         else {
             vistaResultadoProceso = new VistaResultadoProceso(vistaInicio, dp[0]);
-            vistaResultadoProceso.setSize(new Dimension(450, 250));
-            vistaResultadoProceso.setMinimumSize(new Dimension(450, 250));
+            vistaResultadoProceso.setSize(new Dimension(475, 250));
+            vistaResultadoProceso.setMinimumSize(new Dimension(475, 250));
             vistaResultadoProceso.setLocationRelativeTo(vistaInicio);
             vistaResultadoProceso.setResizable(true);
             vistaResultadoProceso.setVisible(true);
