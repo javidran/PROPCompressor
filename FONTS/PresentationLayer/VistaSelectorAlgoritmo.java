@@ -34,11 +34,7 @@ public class VistaSelectorAlgoritmo extends JDialog {
 
         procesarButton.addActionListener(actionEvent -> {
             setVisible(false);
-            try {
-                ctrlPresentacion.iniciarProceso();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            ctrlPresentacion.iniciarProceso();
         });
 
         cancelarButton.addActionListener(actionEvent -> {
