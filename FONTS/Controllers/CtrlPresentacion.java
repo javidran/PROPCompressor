@@ -107,7 +107,7 @@ public class CtrlPresentacion {
             if (!conGuardado) vistaSelectorAlgoritmo.setSize(new Dimension(650, 160));
             else {
                 if (modeloParametros.isCompresion()) vistaSelectorAlgoritmo.setSize(new Dimension(650, 210));
-                if (modeloParametros.getAlgoritmo().equals(Algoritmo.CARPETA));
+                if (modeloParametros.getAlgoritmo().equals(Algoritmo.CARPETA)) vistaSelectorAlgoritmo.setSize(new Dimension(650, 210));
             }
             vistaSelectorAlgoritmo.setMinimumSize(new Dimension(600, 160));
             vistaSelectorAlgoritmo.setLocationRelativeTo(vistaInicio);
