@@ -65,7 +65,7 @@ public class VistaEstadisticas extends JDialog {
     }
 
     public void mostrarSelectorAlgoritmo() {
-        setSize(600, 200);
+        setSize(500, 200);
         setLocationRelativeTo(getOwner());
         Estats.setVisible(false);
         Algoritmo.setVisible(true);
