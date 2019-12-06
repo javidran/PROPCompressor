@@ -19,6 +19,7 @@ public class HelpVistaInicio extends JDialog {
         setContentPane(AyudaPrincipal);
         textoAyuda.setOpaque(false);
         textoAyuda.setBackground(new Color(0,0,0,0));
+        textoAyuda.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 
         cerrarButton.addActionListener(e -> dispose());
     }
