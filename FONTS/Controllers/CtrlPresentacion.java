@@ -49,7 +49,7 @@ public class CtrlPresentacion {
             modeloParametros.setVistaInicio(vistaInicio);
             vistaInicio.algoritmoPredeterminado(CtrlProcesos.getAlgoritmoDeTextoPredeterminado());
             vistaInicio.setSize(new Dimension(650, 300));
-            vistaInicio.setMinimumSize(new Dimension(500, 200));
+            vistaInicio.setMinimumSize(new Dimension(510, 250));
             vistaInicio.setResizable(true);
             vistaInicio.setVisible(true);
             vistaInicio.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
