@@ -32,6 +32,8 @@ public class VistaEstadisticas extends JDialog {
     }
 
     public void mostrarEstadisticasSelecionadas(String mensaje) {
+        setSize(400, 300);
+        setLocationRelativeTo(getOwner());
         status.setText(mensaje);
         Estats.setVisible(true);
         status.setOpaque(false);

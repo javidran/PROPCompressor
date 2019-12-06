@@ -21,6 +21,7 @@ public class CtrlPresentacion {
     private VistaSelectorAlgoritmo vistaSelectorAlgoritmo;
     private VistaEstadisticas vistaEstadisticas;
     private VistaResultadoProceso vistaResultadoProceso;
+    private HelpVistaInicio helpVistaInicio;
 
     /**
      * Getter de la instancia Singleton de CtrlPresentacion
@@ -98,8 +99,11 @@ public class CtrlPresentacion {
         else{
             vistaSelectorAlgoritmo = new VistaSelectorAlgoritmo(vistaInicio);
             modeloParametros.setVistaSelectorAlgoritmo(vistaSelectorAlgoritmo, conGuardado);
-            vistaSelectorAlgoritmo.setSize(new Dimension(650, 300));
-            vistaSelectorAlgoritmo.setMinimumSize(new Dimension(500, 200));
+            if (!conGuardado || modeloParametros.getAlgoritmo().equals(Algoritmo.CARPETA)) vistaSelectorAlgoritmo.setSize(new Dimension(650, 160));
+            else {
+                if (modeloParametros.isCompresion()) vistaSelectorAlgoritmo.setSize(new Dimension(650, 210));
+            }
+            vistaSelectorAlgoritmo.setMinimumSize(new Dimension(600, 160));
             vistaSelectorAlgoritmo.setLocationRelativeTo(vistaInicio);
             vistaSelectorAlgoritmo.setResizable(true);
             vistaSelectorAlgoritmo.setVisible(true);
@@ -111,7 +115,13 @@ public class CtrlPresentacion {
     }
 
     public void pulsarCerradoVistaSeleccionAlgoritmo() {
-        algoritmoSeleccionado("Predeterminado"); //Para que en caso de volver atras se quede con el algoritmo predeterminado por si vuelves a entrar al selctor de algoritmo
+        switch (modeloParametros.getAlgoritmo()) {
+            case LZSS:
+            case LZW:
+            case LZ78:
+                algoritmoSeleccionado("Predeterminado"); //Para que en caso de volver atras se quede con el algoritmo predeterminado por si vuelves a entrar al selctor de algoritmo
+                break;
+        }
         cerrarVistaSeleccionAlgoritmo();
     }
 
@@ -225,8 +235,8 @@ public class CtrlPresentacion {
         if(exceptionProceso[0]!= null) JOptionPane.showConfirmDialog(null, "Se ha dado el siguente error durante el proceso:\n"+exceptionProceso[0].getMessage(),null, JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
         else {
             vistaResultadoProceso = new VistaResultadoProceso(vistaInicio, dp[0]);
-            vistaResultadoProceso.setSize(new Dimension(600, 300));
-            vistaResultadoProceso.setMinimumSize(new Dimension(500, 250));
+            vistaResultadoProceso.setSize(new Dimension(450, 250));
+            vistaResultadoProceso.setMinimumSize(new Dimension(450, 250));
             vistaResultadoProceso.setLocationRelativeTo(vistaInicio);
             vistaResultadoProceso.setResizable(true);
             vistaResultadoProceso.setVisible(true);
@@ -257,8 +267,8 @@ public class CtrlPresentacion {
 
     public void crearVistaEstadisticas() {
         vistaEstadisticas = new VistaEstadisticas(vistaInicio);
-        vistaEstadisticas.setSize(new Dimension(600, 300));
-        vistaEstadisticas.setMinimumSize(new Dimension(500, 250));
+        vistaEstadisticas.setSize(new Dimension(600, 160));
+        vistaEstadisticas.setMinimumSize(new Dimension(300, 150));
         vistaEstadisticas.setLocationRelativeTo(vistaInicio);
         vistaEstadisticas.setResizable(true);
         vistaEstadisticas.setVisible(true);
@@ -276,4 +286,12 @@ public class CtrlPresentacion {
         CtrlProcesos.setCalidadJPEG(value);
     }
 
+    public void crearVistaAyudaInicio() {
+        helpVistaInicio = new HelpVistaInicio(vistaInicio);
+        helpVistaInicio.setSize(new Dimension(500, 500));
+        helpVistaInicio.setMinimumSize(new Dimension(500, 150));
+        helpVistaInicio.setLocationRelativeTo(vistaInicio);
+        helpVistaInicio.setResizable(true);
+        helpVistaInicio.setVisible(true);
+    }
 }
