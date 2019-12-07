@@ -25,12 +25,6 @@ public class CtrlPresentacion {
     private VistaInicio vistaInicio;
     private VistaSelectorAlgoritmo vistaSelectorAlgoritmo;
     private VistaEstadisticas vistaEstadisticas;
-    private VistaResultadoProceso vistaResultadoProceso;
-    private VistaComparacionFichero vistaComparacionFichero;
-    private HelpVistaInicio helpVistaInicio;
-    private HelpVistaEstadisticas helpVistaEstadisticas;
-    private HelpVistaSelectorAlgoritmo helpVistaSelectorAlgoritmo;
-    private VistaCompDescImagen vistaCompDescImagen;
 
     /**
      * Getter de la instancia Singleton de CtrlPresentacion
@@ -169,7 +163,7 @@ public class CtrlPresentacion {
     public void iniciarProceso() {
         boolean existe = (new File(modeloParametros.getPathResultado())).exists();
         cerrarVistaSeleccionAlgoritmo();
-        if (existe) {
+        if (existe && modeloParametros.isConGuardado()) {
             int respuesta = JOptionPane.showConfirmDialog(null, "El fichero resultante del proceso sobrescribirá uno ya existente, ¿desea sobrescribirlo?", "Sobrescribir",
                     JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
             if (respuesta == JOptionPane.NO_OPTION) {
@@ -222,7 +216,7 @@ public class CtrlPresentacion {
                             dp[0] = ctrlProcesos.comprimirArchivo(modeloParametros.getPathOriginal(), modeloParametros.getPathResultado(), modeloParametros.getAlgoritmo());
                     } else {
                         if (modeloParametros.getAlgoritmo().equals(Algoritmo.CARPETA))
-                            dp[0] =ctrlProcesos.descomprimirCarpeta(modeloParametros.getPathOriginal(), modeloParametros.getPathResultado());
+                            dp[0] = ctrlProcesos.descomprimirCarpeta(modeloParametros.getPathOriginal(), modeloParametros.getPathResultado());
                         else
                             dp[0] = ctrlProcesos.descomprimirArchivo(modeloParametros.getPathOriginal(), modeloParametros.getPathResultado());
                     }
@@ -248,7 +242,7 @@ public class CtrlPresentacion {
     }
 
     public void crearVistaResultadoProceso(DatosProceso dp) {
-        vistaResultadoProceso = new VistaResultadoProceso(vistaInicio, dp);
+        VistaResultadoProceso vistaResultadoProceso = new VistaResultadoProceso(vistaInicio, dp);
         vistaResultadoProceso.setSize(new Dimension(450, 250));
         vistaResultadoProceso.setMinimumSize(new Dimension(450, 250));
         vistaResultadoProceso.setLocationRelativeTo(vistaInicio);
@@ -257,7 +251,7 @@ public class CtrlPresentacion {
     }
 
     public void crearVistaComparacionProceso(DatosProceso[] dp) {
-        vistaComparacionFichero = new VistaComparacionFichero(vistaInicio, dp);
+        VistaComparacionFichero vistaComparacionFichero = new VistaComparacionFichero(vistaInicio, dp);
         vistaComparacionFichero.setSize(new Dimension(800, 660));
         vistaComparacionFichero.setMinimumSize(new Dimension(700, 400));
         vistaComparacionFichero.setLocationRelativeTo(vistaInicio);
@@ -278,7 +272,7 @@ public class CtrlPresentacion {
 
     public void crearVistaCompDescImagen(DatosProceso[] dp) {
 
-        vistaCompDescImagen = new VistaCompDescImagen(vistaInicio);
+        VistaCompDescImagen vistaCompDescImagen = new VistaCompDescImagen(vistaInicio);
         vistaCompDescImagen.setSize(new Dimension(800, 570));
         vistaCompDescImagen.setLocationRelativeTo(vistaInicio);
         vistaCompDescImagen.setResizable(false);
@@ -336,7 +330,7 @@ public class CtrlPresentacion {
     }
 
     public void crearVistaAyudaInicio() {
-        helpVistaInicio = new HelpVistaInicio(vistaInicio);
+        HelpVistaInicio helpVistaInicio = new HelpVistaInicio(vistaInicio);
         helpVistaInicio.setSize(new Dimension(475, 550));
         helpVistaInicio.setLocationRelativeTo(vistaInicio);
         helpVistaInicio.setResizable(false);
@@ -344,7 +338,7 @@ public class CtrlPresentacion {
     }
 
     public void crearVistaAyudaEstadisticas() {
-        helpVistaEstadisticas = new HelpVistaEstadisticas(vistaEstadisticas);
+        HelpVistaEstadisticas helpVistaEstadisticas = new HelpVistaEstadisticas(vistaEstadisticas);
         helpVistaEstadisticas.setSize(new Dimension(400, 300));
         helpVistaEstadisticas.setLocationRelativeTo(vistaEstadisticas);
         helpVistaEstadisticas.setResizable(false);
@@ -352,14 +346,12 @@ public class CtrlPresentacion {
     }
 
     public void crearVistaAyudaSelectorAlgoritmo() {
-        helpVistaSelectorAlgoritmo = new HelpVistaSelectorAlgoritmo(vistaSelectorAlgoritmo);
+        HelpVistaSelectorAlgoritmo helpVistaSelectorAlgoritmo = new HelpVistaSelectorAlgoritmo(vistaSelectorAlgoritmo);
         helpVistaSelectorAlgoritmo.setSize(new Dimension(400, 300));
         helpVistaSelectorAlgoritmo.setLocationRelativeTo(vistaSelectorAlgoritmo);
         helpVistaSelectorAlgoritmo.setResizable(false);
         helpVistaSelectorAlgoritmo.setVisible(true);
     }
-
-
 
     public void volverAEscogerEstadistica() {
         vistaEstadisticas.mostrarSelectorAlgoritmo();
