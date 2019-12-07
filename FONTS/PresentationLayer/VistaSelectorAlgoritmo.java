@@ -22,6 +22,7 @@ public class VistaSelectorAlgoritmo extends JDialog {
     private JTextField pathSalida;
     private JButton explorarButton;
     private JButton helpButton;
+    private JFileChooser chooser;
 
     public VistaSelectorAlgoritmo(Frame owner) {
         super (owner, "Configurador del proceso", true);
@@ -58,7 +59,10 @@ public class VistaSelectorAlgoritmo extends JDialog {
     }
 
     private void seleccionDeArchivo() {
-        JFileChooser chooser = new JFileChooser();
+        String pathOut = pathSalida.getText();
+        File f = new File(pathOut);
+        String dir = pathOut.replace(f.getName(), "");
+        chooser = new JFileChooser(new File(dir));
         chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
         int result = chooser.showSaveDialog(null);
         if(result == JFileChooser.APPROVE_OPTION) {
