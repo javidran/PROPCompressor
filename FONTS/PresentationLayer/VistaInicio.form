@@ -99,7 +99,7 @@
               <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text value="Seleccione el archivo o carpeta sobre lo que desee trabajar:"/>
+              <text value="Seleccione el archivo o carpeta sobre el que desee trabajar:"/>
             </properties>
           </component>
           <component id="d3fd4" class="javax.swing.JButton" binding="helpButton" default-binding="true">
