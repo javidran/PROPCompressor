@@ -360,11 +360,11 @@ public class CtrlProcesos {
             ++pos;
         }
         ++pos;
-        BufferedImage image = new BufferedImage(height, width, BufferedImage.TYPE_INT_RGB);
+        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         for (int i = 0; i < height; ++i) {
             for (int j = 0; j < width; ++j) {
                 int color = new Color(((int)datosInput[pos++] & 0xFF), ((int)datosInput[pos++] & 0xFF), ((int)datosInput[pos++] & 0xFF)).getRGB();
-                image.setRGB(i, j, color);
+                image.setRGB(j, i, color);
             }
         }
         return image;
