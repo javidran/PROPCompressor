@@ -243,7 +243,7 @@ public class CtrlPresentacion {
 
         if(exceptionProceso[0]!= null) JOptionPane.showConfirmDialog(null, "Se ha dado el siguente error durante el proceso:\n"+exceptionProceso[0].getMessage(),null, JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
         else if (modeloParametros.isConGuardado()) crearVistaResultadoProceso(dp[0]);
-        else if(modeloParametros.getAlgoritmo().equals(Algoritmo.JPEG)) crearVistaCompDescImagen();
+        else if(modeloParametros.getAlgoritmo().equals(Algoritmo.JPEG)) crearVistaCompDescImagen(dp);
         else crearVistaComparacionProceso(dp);
     }
 
@@ -276,7 +276,7 @@ public class CtrlPresentacion {
         vistaComparacionFichero.setVisible(true);
     }
 
-    public void crearVistaCompDescImagen() {
+    public void crearVistaCompDescImagen(DatosProceso[] dp) {
 
         vistaCompDescImagen = new VistaCompDescImagen(vistaInicio);
         vistaCompDescImagen.setSize(new Dimension(800, 800));
@@ -284,7 +284,7 @@ public class CtrlPresentacion {
         vistaCompDescImagen.setResizable(true);
         CtrlProcesos ctrlProcesos = CtrlProcesos.getInstance();
         try {
-            vistaCompDescImagen.setImagenes(ctrlProcesos.getBufferedImage(modeloParametros.getPathOriginal()), ctrlProcesos.getBufferedImage(ctrlProcesos.archivoTemporal()));
+            vistaCompDescImagen.setImagenes(ctrlProcesos.getBufferedImage(modeloParametros.getPathOriginal()), ctrlProcesos.getBufferedImage(CtrlProcesos.archivoTemporal()), dp);
         } catch (Exception e) {
             JOptionPane.showConfirmDialog(null, "Ha ocurrido un error al intentar mostrar los archivos para comparación. Por favor, intentelo de nuevo.",null, JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
         } finally {
@@ -361,7 +361,7 @@ public class CtrlPresentacion {
 
 
 
-    public void volverAEscogerEstadística() {
+    public void volverAEscogerEstadistica() {
         vistaEstadisticas.mostrarSelectorAlgoritmo();
     }
 }
