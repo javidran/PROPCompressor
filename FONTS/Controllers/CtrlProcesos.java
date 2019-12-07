@@ -323,7 +323,7 @@ public class CtrlProcesos {
         return ctrlDatos.getArchivoAsModel(path, titleBar);
     }
 
-    public BufferedImage getBufferedImage(String path) throws IOException {
+    public Image getBufferedImage(String path) throws IOException {
         byte[] datosInput = CtrlDatos.getInstance().leerArchivo(path);
         int pos = 0, width, height;
         StringBuilder buff = new StringBuilder();
@@ -360,14 +360,15 @@ public class CtrlProcesos {
             ++pos;
         }
         ++pos;
-        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         for (int i = 0; i < height; ++i) {
             for (int j = 0; j < width; ++j) {
                 int color = new Color(((int)datosInput[pos++] & 0xFF), ((int)datosInput[pos++] & 0xFF), ((int)datosInput[pos++] & 0xFF)).getRGB();
-                image.setRGB(j, i, color);
+                bufferedImage.setRGB(j, i, color);
             }
         }
-        return image;
+        double scale = (double) 300 / width;
+        return bufferedImage.getScaledInstance((int) (width * scale), (int) (height * scale),  Image.SCALE_SMOOTH);
     }
 
     /**

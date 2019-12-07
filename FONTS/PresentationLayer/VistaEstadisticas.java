@@ -41,7 +41,7 @@ public class VistaEstadisticas extends JDialog {
         });
         cancelarButton.addActionListener(e -> dispose());
         helpButton.addActionListener(e -> ctrlPresentacion.crearVistaAyudaEstadisticas());
-        atrasButton.addActionListener(e -> ctrlPresentacion.volverAEscogerEstadística());
+        atrasButton.addActionListener(e -> ctrlPresentacion.volverAEscogerEstadistica());
     }
 
     public void mostrarEstadisticasSelecionadas(DatosEstadistica de) {

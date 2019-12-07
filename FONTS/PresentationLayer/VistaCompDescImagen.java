@@ -30,7 +30,7 @@ public class VistaCompDescImagen extends JDialog {
         salirButton.addActionListener(e -> dispose());
     }
 
-    public void setImagenes(BufferedImage bufferedImageOriginal, BufferedImage bufferedImageNuevo) {
+    public void setImagenes(Image bufferedImageOriginal, Image bufferedImageNuevo) {
         original.setIcon(new ImageIcon(bufferedImageOriginal));
         nuevo.setIcon(new ImageIcon(bufferedImageNuevo));
     }
