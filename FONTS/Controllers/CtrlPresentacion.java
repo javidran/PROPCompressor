@@ -279,7 +279,7 @@ public class CtrlPresentacion {
     public void crearVistaCompDescImagen(DatosProceso[] dp) {
 
         vistaCompDescImagen = new VistaCompDescImagen(vistaInicio);
-        vistaCompDescImagen.setSize(new Dimension(800, 660));
+        vistaCompDescImagen.setSize(new Dimension(800, 570));
         vistaCompDescImagen.setLocationRelativeTo(vistaInicio);
         vistaCompDescImagen.setResizable(false);
         CtrlProcesos ctrlProcesos = CtrlProcesos.getInstance();
