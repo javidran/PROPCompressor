@@ -191,7 +191,6 @@ public class CtrlPresentacion {
             protected Color getSelectionBackground() { return Color.black; }
             protected Color getSelectionForeground() { return Color.white; }
         });
-        dialog.pack();
         dialog.setSize(new Dimension(300, 50));
         dialog.setLocationRelativeTo(vistaInicio);
 
@@ -267,6 +266,7 @@ public class CtrlPresentacion {
         } finally {
             ctrlProcesos.eliminaArchivoTemporal();
         }
+        vistaComparacionFichero.pack();
         vistaComparacionFichero.setVisible(true);
     }
 
@@ -284,6 +284,7 @@ public class CtrlPresentacion {
         } finally {
             ctrlProcesos.eliminaArchivoTemporal();
         }
+        vistaCompDescImagen.pack();
         vistaCompDescImagen.setVisible(true);
     }
 
@@ -334,6 +335,7 @@ public class CtrlPresentacion {
         helpVistaInicio.setSize(new Dimension(475, 550));
         helpVistaInicio.setLocationRelativeTo(vistaInicio);
         helpVistaInicio.setResizable(false);
+        helpVistaInicio.pack();
         helpVistaInicio.setVisible(true);
     }
 
@@ -342,6 +344,7 @@ public class CtrlPresentacion {
         helpVistaEstadisticas.setSize(new Dimension(400, 300));
         helpVistaEstadisticas.setLocationRelativeTo(vistaEstadisticas);
         helpVistaEstadisticas.setResizable(false);
+        helpVistaEstadisticas.pack();
         helpVistaEstadisticas.setVisible(true);
     }
 
@@ -350,6 +353,7 @@ public class CtrlPresentacion {
         helpVistaSelectorAlgoritmo.setSize(new Dimension(400, 300));
         helpVistaSelectorAlgoritmo.setLocationRelativeTo(vistaSelectorAlgoritmo);
         helpVistaSelectorAlgoritmo.setResizable(false);
+        helpVistaSelectorAlgoritmo.pack();
         helpVistaSelectorAlgoritmo.setVisible(true);
     }
 
