@@ -15,7 +15,7 @@ public class HelpVistaInicio extends JDialog {
 
 
     public HelpVistaInicio(Frame owner) {
-        super (owner, true);
+        super (owner, "Ayuda", true);
         setContentPane(AyudaPrincipal);
         textoAyuda.setOpaque(false);
         textoAyuda.setBackground(new Color(0,0,0,0));

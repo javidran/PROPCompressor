@@ -11,7 +11,7 @@ public class HelpVistaSelectorAlgoritmo extends JDialog {
     private JPanel OkPanel;
 
     public HelpVistaSelectorAlgoritmo(Dialog owner) {
-        super (owner, true);
+        super (owner, "Ayuda", true);
         setContentPane(AyudaPrincipal);
         textoAyuda.setOpaque(false);
         textoAyuda.setBackground(new Color(0,0,0,0));

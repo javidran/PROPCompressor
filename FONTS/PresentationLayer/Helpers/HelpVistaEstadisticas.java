@@ -14,7 +14,7 @@ public class HelpVistaEstadisticas extends JDialog {
 
 
     public HelpVistaEstadisticas(Dialog owner) {
-        super (owner, true);
+        super (owner, "Ayuda", true);
         setContentPane(AyudaPrincipal);
         //OkPanel.setVisible(true);
         textoAyuda.setOpaque(false);
