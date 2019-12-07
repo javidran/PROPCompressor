@@ -76,6 +76,7 @@ public class CtrlPresentacion {
         dialog.setMinimumSize(new Dimension(600, 200));
         dialog.setLocationRelativeTo(vistaInicio);
         dialog.setResizable(true);
+        dialog.pack();
         dialog.setVisible(true);
     }
 
@@ -110,6 +111,7 @@ public class CtrlPresentacion {
             vistaSelectorAlgoritmo.setMinimumSize(new Dimension(600, 160));
             vistaSelectorAlgoritmo.setLocationRelativeTo(vistaInicio);
             vistaSelectorAlgoritmo.setResizable(true);
+            vistaSelectorAlgoritmo.pack();
             vistaSelectorAlgoritmo.setVisible(true);
         }
     }
@@ -246,6 +248,7 @@ public class CtrlPresentacion {
         vistaResultadoProceso.setMinimumSize(new Dimension(450, 250));
         vistaResultadoProceso.setLocationRelativeTo(vistaInicio);
         vistaResultadoProceso.setResizable(true);
+        vistaResultadoProceso.pack();
         vistaResultadoProceso.setVisible(true);
     }
 
@@ -315,12 +318,14 @@ public class CtrlPresentacion {
         vistaEstadisticas.setSize(new Dimension(500, 200));
         vistaEstadisticas.setLocationRelativeTo(vistaInicio);
         vistaEstadisticas.setResizable(false);
+        vistaEstadisticas.pack();
         vistaEstadisticas.setVisible(true);
     }
 
     public void mostrarEstadisticas(String data) {
         try {
             vistaEstadisticas.mostrarEstadisticasSelecionadas(getEstadisticas(data));
+            vistaEstadisticas.pack();
         } catch (IOException e) {
             JOptionPane.showConfirmDialog(null, "Ha habido un problema al acceder a los datos estadísticos. Por favor, vuelva a intentarlo más tarde.",null, JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
         }
@@ -359,5 +364,6 @@ public class CtrlPresentacion {
 
     public void volverAEscogerEstadistica() {
         vistaEstadisticas.mostrarSelectorAlgoritmo();
+        vistaEstadisticas.pack();
     }
 }
