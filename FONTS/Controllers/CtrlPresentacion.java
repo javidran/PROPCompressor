@@ -169,7 +169,7 @@ public class CtrlPresentacion {
     public void iniciarProceso() {
         boolean existe = (new File(modeloParametros.getPathResultado())).exists();
         cerrarVistaSeleccionAlgoritmo();
-        if (existe) {
+        if (existe && modeloParametros.isConGuardado()) {
             int respuesta = JOptionPane.showConfirmDialog(null, "El fichero resultante del proceso sobrescribirá uno ya existente, ¿desea sobrescribirlo?", "Sobrescribir",
                     JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
             if (respuesta == JOptionPane.NO_OPTION) {
