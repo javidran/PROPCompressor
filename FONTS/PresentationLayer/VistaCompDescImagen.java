@@ -35,7 +35,9 @@ public class VistaCompDescImagen extends JDialog {
 
     public void setImagenes(Image bufferedImageOriginal, Image bufferedImageNuevo, DatosProceso[] dp) {
         original.setIcon(new ImageIcon(bufferedImageOriginal));
+        original.setMaximumSize(new Dimension(300, 200));
         nuevo.setIcon(new ImageIcon(bufferedImageNuevo));
+        nuevo.setMaximumSize(new Dimension(300, 200));
         DecimalFormat df = new DecimalFormat("#.####");
         tiempoC.setText(df.format((double)dp[0].getTiempo() / 1000000000.0));
         OldSizeC.setText(Long.toString(dp[0].getOldSize()));
