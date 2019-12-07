@@ -24,7 +24,7 @@ public class VistaSelectorAlgoritmo extends JDialog {
     private JButton helpButton;
 
     public VistaSelectorAlgoritmo(Frame owner) {
-        super (owner, true);
+        super (owner, "Configurador del proceso", true);
         ctrlPresentacion = CtrlPresentacion.getInstance();
         setContentPane(panel);
 

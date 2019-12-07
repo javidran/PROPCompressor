@@ -19,7 +19,7 @@ public class VistaSelectorAlgortimoPredeterminado extends JDialog {
     private ButtonGroup algortimos;
 
     public VistaSelectorAlgortimoPredeterminado(Frame owner) {
-        super (owner, true);
+        super (owner, "Selector de algoritmo predeterminado", true);
         setContentPane(Predeterminado);
         ctrlPresentacion = CtrlPresentacion.getInstance();
 

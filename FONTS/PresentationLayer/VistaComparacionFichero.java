@@ -25,7 +25,7 @@ public class VistaComparacionFichero extends JDialog {
     public JTable resultado;
 
     public VistaComparacionFichero(Frame owner, DatosProceso[] dp){
-        super (owner, "Proceso completado",true);
+        super (owner, "Comparar textos",true);
         setContentPane(panel);
         originalPanel.getVerticalScrollBar().setUnitIncrement(16);
         originalPanel.getHorizontalScrollBar().setUnitIncrement(16);

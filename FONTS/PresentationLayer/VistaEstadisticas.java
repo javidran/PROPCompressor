@@ -28,7 +28,7 @@ public class VistaEstadisticas extends JDialog {
     private JLabel ratioD;
 
     public VistaEstadisticas(Frame owner) {
-        super (owner, true);
+        super (owner, "Estadísticas", true);
         ctrlPresentacion = CtrlPresentacion.getInstance();
         setContentPane(Estadisticas);
 
