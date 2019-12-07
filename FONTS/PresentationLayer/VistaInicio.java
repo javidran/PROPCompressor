@@ -35,7 +35,9 @@ public class VistaInicio extends JFrame {
         this.ctrlPresentacion = CtrlPresentacion.getInstance();
 
         setContentPane(panel);
-        chooser = new JFileChooser();
+
+        chooser = new JFileChooser(new File(System.getProperty("user.dir")));
+
         explorarButton.addActionListener(actionEvent -> seleccionDeArchivo());
 
         salirButton.addActionListener(e -> {
