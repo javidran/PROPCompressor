@@ -27,6 +27,7 @@ public class VistaInicio extends JFrame {
     private JButton escogerPrederterminadoButton;
     private JTextField mostrarPredeterminado;
     private JButton helpButton;
+    private JFileChooser chooser;
 
     public VistaInicio() {
         super ("PROPresor");
@@ -34,7 +35,7 @@ public class VistaInicio extends JFrame {
         this.ctrlPresentacion = CtrlPresentacion.getInstance();
 
         setContentPane(panel);
-
+        chooser = new JFileChooser();
         explorarButton.addActionListener(actionEvent -> seleccionDeArchivo());
 
         salirButton.addActionListener(e -> {
@@ -74,7 +75,6 @@ public class VistaInicio extends JFrame {
     }
 
     private void seleccionDeArchivo() {
-        JFileChooser chooser = new JFileChooser();
         chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 
         FileFilter fileFilter = new FileFilter() {
