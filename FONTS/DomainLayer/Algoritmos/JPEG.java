@@ -684,7 +684,6 @@ public class JPEG implements CompresorDecompresor {
         int height = Integer.parseInt(widthHeight[1]); //string to int
         int rgbMaxVal = Integer.parseInt(rgbMVal); //string to int of rgb maximum value per pixel
 
-        //start of pixelmap reading for luminance
         int paddedWidth, paddedHeight; //height and width multiple of 8 (image has been stored like this, as explained in compression algorithm)
         if (width % 8 != 0) paddedWidth = width + (8 - width % 8);
         else paddedWidth = width;
@@ -695,7 +694,6 @@ public class JPEG implements CompresorDecompresor {
         else downSampledPaddedHeight = (paddedHeight/2) + 4;
         if ((paddedWidth/2) % 8 == 0) downSampledPaddedWidth = paddedWidth/2;
         else downSampledPaddedWidth = (paddedWidth/2) + 4;
-        //end of pixelmap reading for luminance
 
         //start of image reading and decompression
         int[][] Y = new int[paddedHeight][paddedWidth];//luminance
