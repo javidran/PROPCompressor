@@ -25,7 +25,7 @@
               </grid>
             </constraints>
             <properties>
-              <text value="Tiempo que ha tardado el proceso:"/>
+              <text value="Tiempo transcurrido:"/>
             </properties>
           </component>
           <component id="8aaf5" class="javax.swing.JLabel" binding="tiempo">

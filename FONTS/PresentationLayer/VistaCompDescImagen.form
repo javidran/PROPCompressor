@@ -303,7 +303,7 @@
                   </grid>
                 </constraints>
                 <properties>
-                  <text value="Tiempo que ha tardado el proceso:"/>
+                  <text value="Tiempo transcurrido:"/>
                 </properties>
               </component>
               <component id="941ed" class="javax.swing.JLabel">
