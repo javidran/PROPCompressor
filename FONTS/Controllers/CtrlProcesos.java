@@ -367,7 +367,7 @@ public class CtrlProcesos {
                 bufferedImage.setRGB(j, i, color);
             }
         }
-        double scale = (double) 300 / width;
+        double scale = (double) 375 / width;
         return bufferedImage.getScaledInstance((int) (width * scale), (int) (height * scale),  Image.SCALE_SMOOTH);
     }
 
