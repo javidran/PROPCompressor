@@ -109,6 +109,8 @@
               </grid>
             </constraints>
             <properties>
+              <font style="1"/>
+              <foreground color="-16765960"/>
               <text value="Ayuda"/>
             </properties>
           </component>
