@@ -1,4 +1,4 @@
-package DataLayer;
+package DomainLayer;
 
 public class DatosEstadistica {
 
