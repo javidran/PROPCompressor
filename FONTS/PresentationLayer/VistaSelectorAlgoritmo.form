@@ -81,7 +81,8 @@
               <font style="1"/>
               <foreground color="-16765960"/>
               <hideActionText value="true"/>
-              <text value="Ayuda"/>
+              <icon value="com/sun/java/swing/plaf/windows/icons/Inform.gif"/>
+              <text value=""/>
             </properties>
           </component>
         </children>

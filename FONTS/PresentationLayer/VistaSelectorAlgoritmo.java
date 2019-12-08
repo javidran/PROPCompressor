@@ -53,7 +53,10 @@ public class VistaSelectorAlgoritmo extends JDialog {
             if (!sliderCalidad.getValueIsAdjusting())
                 ctrlPresentacion.calidadModificada( sliderCalidad.getValue());
         });
-
+        helpButton.setBorderPainted(false);
+        helpButton.setBorder(null);
+        helpButton.setMargin(new Insets(0, 0, 0, 0));
+        helpButton.setContentAreaFilled(false);
         helpButton.addActionListener(e -> ctrlPresentacion.crearVistaAyudaSelectorAlgoritmo());
     }
 

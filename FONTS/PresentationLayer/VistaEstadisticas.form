@@ -75,7 +75,8 @@
             <properties>
               <font style="1"/>
               <foreground color="-16765960"/>
-              <text value="Ayuda"/>
+              <icon value="com/sun/java/swing/plaf/windows/icons/Inform.gif"/>
+              <text value=""/>
             </properties>
           </component>
           <component id="f8dfa" class="javax.swing.JButton" binding="atrasButton">

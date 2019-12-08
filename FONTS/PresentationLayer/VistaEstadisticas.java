@@ -40,6 +40,10 @@ public class VistaEstadisticas extends JDialog {
             ctrlPresentacion.mostrarEstadisticas(data);
         });
         cancelarButton.addActionListener(e -> dispose());
+        helpButton.setBorderPainted(false);
+        helpButton.setBorder(null);
+        helpButton.setMargin(new Insets(0, 0, 0, 0));
+        helpButton.setContentAreaFilled(false);
         helpButton.addActionListener(e -> ctrlPresentacion.crearVistaAyudaEstadisticas());
         atrasButton.addActionListener(e -> ctrlPresentacion.volverAEscogerEstadistica());
     }
