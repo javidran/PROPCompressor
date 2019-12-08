@@ -123,7 +123,7 @@ public class CtrlPresentacion {
         vistaCompDescImagen.setResizable(false);
         CtrlProcesos ctrlProcesos = CtrlProcesos.getInstance();
         try {
-            vistaCompDescImagen.setImagenes(ctrlProcesos.getBufferedImage(modeloParametros.getPathOriginal()), ctrlProcesos.getBufferedImage(CtrlProcesos.archivoTemporal()), dp);
+            vistaCompDescImagen.setImagenes(ctrlProcesos.getImage(modeloParametros.getPathOriginal()), ctrlProcesos.getImage(CtrlProcesos.getArchivoTemporal()), dp);
         } catch (Exception e) {
             JOptionPane.showConfirmDialog(null, "Ha ocurrido un error al intentar mostrar los archivos para comparación. Por favor, intentelo de nuevo.",null, JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
         } finally {
