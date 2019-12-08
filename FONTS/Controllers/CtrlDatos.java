@@ -19,7 +19,9 @@ public class CtrlDatos {
      */
     private static CtrlDatos instance = null;
 
-
+    /**
+     * Instancia de GestorCarpeta que se utilizará para leer y guardar archivos o carpetas de la carpeta que se procese
+     */
     private GestorCarpeta gestorCarpeta;
 
 
@@ -35,6 +37,11 @@ public class CtrlDatos {
         return instance;
     }
 
+    /**
+     * Llama a GestorArchivo para que verifique si el archivo indicado en el path existe
+     * @param path path que deberia indicar la posicion que puede existir o no
+     * @return Un boolean indicando si el archivo indicado por el path existe
+     */
     public static boolean existeArchivo(String path) {
         return GestorArchivo.existeArchivo(path);
     }
@@ -66,30 +73,68 @@ public class CtrlDatos {
         GestorArchivo.guardaArchivo(data, path);
     }
 
+
+    /**
+     * Se crea una isnatncia del gestor de carpetas que gestionará la carpeta que se pasa por parámetro para generar el .comp
+     * @param pathOriginal path donde se encuentra la carpeta que el usuario desea comprimir
+     * @param pathSalida path donde el usuario desea dejar la caprpeta comprimida
+     * @throws FileNotFoundException la capreta no existe o no se encuentra en el path indicado
+     */
     public void crearGestorCarpetaComprimir(String pathOriginal, String pathSalida) throws FileNotFoundException {
         gestorCarpeta = new GestorCarpetaComprimir(pathOriginal, pathSalida);
     }
 
+    /**
+     * Se crea una instancia del gestor de carpetas que gestionará el archivo .comp para generar la carpeta descomprimida
+     * @param pathOriginal path donde se encuentra la carpeta que el usuario desea descomprimir
+     * @throws FileNotFoundException la capreta no existe o no se encuentra en el path indicado
+     */
     public void crearGestorCarpetaDescomprimir(String pathOriginal) throws FileNotFoundException {
         gestorCarpeta = new GestorCarpetaDescomprimir(pathOriginal);
     }
 
+
+    /**
+     * Obtiene el path del siguiente archivo de la carpeta que se está procesando
+     * @return el path del proximo archivo en la carpeta
+     * @throws IOException
+     */
     public String leerPathProximoArchivo() throws IOException {
         return gestorCarpeta.pathProximoArchivo();
     }
 
+    /**
+     * Obtiene el bytearray con el contenido del siguiente archivo de la carpeta que se está procesando
+     * @return el path del proximo archivo en la carpeta
+     * @throws IOException
+     */
     public byte[] leerProximoArchivo() throws IOException {
         return gestorCarpeta.leerProximoArchivo();
     }
 
+    /**
+     * Crea un archivo en el path indicado en el parámetro y almacena en él el contenido del byte array.
+     * @param data contenido a almacenar en el archivo
+     * @param path path donde se tiene que guardar la infromación almacenada en el anterior parámetro
+     * @throws IOException
+     */
     public void guardaProximoArchivo(byte[] data, String path) throws IOException {
         gestorCarpeta.guardaProximoArchivo(data, path);
     }
 
+    /**
+     * Crea una carpeta en el path indicado
+     * @param path donde se debe crear la carpeta correspondiente
+     * @throws IOException
+     */
     public void guardaCarpeta(String path) throws IOException {
         gestorCarpeta.guardaCarpeta(path);
     }
 
+    /**
+     * Se cierra el gestor de carpetas
+     * @throws IOException
+     */
     public void finalizarGestorCarpeta() throws IOException {
         gestorCarpeta.finalizarGestor();
         gestorCarpeta = null;
@@ -138,10 +183,21 @@ public class CtrlDatos {
         return GestorEstadisticas.getPorcentajeAhorradoMedio(algoritmo,esCompresion);
     }
 
+    /**
+     * elimina el archivo que se indica en el path que se pasa por parámetro
+     * @param path path del archivo que se desea eliminar
+     */
     public void eliminaArchivo(String path) {
         GestorArchivo.eliminaArchivo(path);
     }
 
+    /**
+     * Función utilizada para mostrar el contenido de un archivo indicado por el path en formato de tabla
+     * @param path indica el archivo que se debe mostrar en una tabla
+     * @param titleBar el título que se mostrará en la columna que contiene el archivo de texto
+     * @return la estructura de tabla para mostrar en una vista de comparación de ficheros
+     * @throws IOException
+     */
     public TableModel getArchivoAsModel(String path, String titleBar) throws IOException {
         FileReader fileReader = new FileReader(path);
         BufferedReader bufferedReader = new BufferedReader(fileReader);

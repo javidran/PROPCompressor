@@ -6,15 +6,26 @@ import javax.swing.*;
 import java.awt.*;
 import java.text.DecimalFormat;
 
+/**
+ * Clase para la implementación de la vista que permite ver los resultados estadísticos de un proceso
+ */
 public class VistaResultadoProceso extends JDialog {
     private JLabel tiempo;
     private JLabel OldSize;
     private JLabel NewSize;
     private JLabel diffSize;
     private JLabel Ratio;
+    /**
+     * Botón para finalizar la visualización de la vista
+     */
     private JButton OKButton;
     private JPanel panel;
 
+    /**
+     * Creadora de una vista que permite al usuario ver los resultados estadísticos de un proceso una vez ha terminado
+     * @param owner vista propietaria de esta nueva vista
+     * @param dp instancia de DatosProceso que contiene los datos del proceso realizado
+     */
     public VistaResultadoProceso(Frame owner, DatosProceso dp){
         super (owner, "Proceso completado",true);
         setContentPane(panel);

@@ -8,21 +8,47 @@ import java.io.File;
 import java.util.Objects;
 
 public class VistaSelectorAlgoritmo extends JDialog {
+    /**
+     * Instancia de CtrlPresentacion que contiene gran parte del codigo que altera la vista y lleva a cabo gran parte de las acciones al pulsar botones
+     */
     private CtrlPresentacion ctrlPresentacion;
 
     private JComboBox comboBox1;
+
+    /**
+     * Botón para procesar el archivo seleccionado en la vista anterior
+     */
     private JButton procesarButton;
     private JPanel panel;
+    /**
+     * Selector de calidad en forma de slide que se muestra en el caso de comprimir una imagen
+     */
     private JSlider sliderCalidad;
     private JPanel calidad;
     private JPanel algoritmo;
+    /**
+     * Botón para cancelar el proceso actual
+     */
     private JButton cancelarButton;
     private JPanel selectorSalida;
     private JTextField pathSalida;
+    /**
+     * Botón para abrir el explorador y seleccionar un nuevo path de salida que no sea el inicial
+     */
     private JButton explorarButton;
+    /**
+     * botón para iniciar la craeción de una vista con ayuda sobre la vista actual
+     */
     private JButton helpButton;
+    /**
+     * Elemento para la selección de archivo o carpeta a procesar
+     */
     private JFileChooser chooser;
 
+    /**
+     * Creación de una vista modal que permite seleccionar el algoritmo con el que se comprimirá el archivo o la calidad de compresión si es una imagen.Tambien permite seleccionar un nuevo path de salida
+     * @param owner vista propietaria de esta nueva vista
+     */
     public VistaSelectorAlgoritmo(Frame owner) {
         super (owner, "Configurador del proceso", true);
         ctrlPresentacion = CtrlPresentacion.getInstance();
@@ -60,6 +86,9 @@ public class VistaSelectorAlgoritmo extends JDialog {
         helpButton.addActionListener(e -> ctrlPresentacion.crearVistaAyudaSelectorAlgoritmo());
     }
 
+    /**
+     * Operación para selección de un algotitmo de compresión y la modificación del path de salida para reflejar el algoritmo seleccionado
+     */
     private void seleccionDeArchivo() {
         String pathOut = pathSalida.getText();
         File f = new File(pathOut);
@@ -73,19 +102,33 @@ public class VistaSelectorAlgoritmo extends JDialog {
         }
     }
 
+    /**
+     * Operación para mostrar el selector de path de salida del resultado del proceso
+     * @param pathResultado path en el que quedará el archivo
+     */
     public void mostrarSelectorDePath(String pathResultado) {
         selectorSalida.setVisible(true);
         pathResultadoCambiado(pathResultado);
     }
 
+    /**
+     * Opreación para actualizar el path de salida que aparece en la vista
+     * @param pathResultado el nuevo path a mostrar
+     */
     public void pathResultadoCambiado(String pathResultado) {
         pathSalida.setText(pathResultado);
     }
 
+    /**
+     * Operación para mostrar el selector de calidad en forma de slider en caso de querer procesar una imagen
+     */
     public void mostrarSliderDeCalidad() {
         calidad.setVisible(true);
     }
 
+    /**
+     * Operación para habilitar el selector de algoritmo de comrpesión en el caso de tratar un archivo .txt
+     */
     public void mostrarSelectorAlgoritmo() {
         algoritmo.setVisible(true);
     }

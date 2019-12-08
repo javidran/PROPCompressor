@@ -6,8 +6,15 @@ import javax.swing.*;
 import java.awt.*;
 import java.text.DecimalFormat;
 
+/**
+ * Clase para la implementación de la vista que permite comparar un fichero original con el resultante de aplicar la comprsesión y descompresión con un algoritmo determinado.
+ */
 public class VistaComparacionFichero extends JDialog {
     public JTable original;
+
+    /**
+     * Botón para finalizar la visualización de la vista
+     */
     private JButton finalizarButton;
     private JPanel panel;
     private JLabel tiempoC;
@@ -24,6 +31,14 @@ public class VistaComparacionFichero extends JDialog {
     private JScrollPane resultadoPanel;
     public JTable resultado;
 
+    /**
+     * Constructora de la vista para la comparación de un fichero con ese mismo procesado.
+     * <p>
+     *     Esta vista no solo permite la visualización de ambos textos sinó que tambien da al usuario datos del proceso de compresión y descompresión
+     * </p>
+     * @param owner vista propietaria de esta nueva vista
+     * @param dp array que contiene los datos de la compresión y la descompresión del archivo mostrado
+     */
     public VistaComparacionFichero(Frame owner, DatosProceso[] dp){
         super (owner, "Comparar textos",true);
         setContentPane(panel);
