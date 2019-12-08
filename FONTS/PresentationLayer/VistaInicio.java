@@ -7,6 +7,7 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileFilter;
+import java.awt.*;
 import java.io.File;
 
 
@@ -72,6 +73,11 @@ public class VistaInicio extends JFrame {
 
         escogerPrederterminadoButton.addActionListener(e -> ctrlPresentacion.escogerPredeterminadoPulsado());
 
+
+        helpButton.setBorderPainted(false);
+        helpButton.setBorder(null);
+        helpButton.setMargin(new Insets(0, 0, 0, 0));
+        helpButton.setContentAreaFilled(false);
         helpButton.addActionListener(e -> ctrlPresentacion.crearVistaAyudaInicio());
 
     }
