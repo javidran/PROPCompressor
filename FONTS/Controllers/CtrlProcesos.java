@@ -10,7 +10,6 @@ import Exceptions.FormatoErroneoException;
 
 import javax.swing.table.TableModel;
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 /**
@@ -116,7 +115,7 @@ public class CtrlProcesos {
     /**
      * Comprime una carpeta provista por su path, y la guarda en el path de salida dado con extensión .comp.
      * <p>
-     *     El path sigue del archivo debe seguir el formato general de cualquier tipo de path de archivo, y debe de ser absoluto.
+     *     El path sigue del archivo debe seguir el formato general de cualquier tipo de path carpeta y debe de ser absoluto.
      * </p>
      * @param pathIn Path de la carpeta a comprimir.
      * @param pathOut Path donde se guardará la carpeta comprimida.
@@ -155,7 +154,7 @@ public class CtrlProcesos {
     /**
      * Descomprime una carpeta comprimida con extensión .comp provista por su path, y la guarda en el path de salida dado.
      * <p>
-     *     El path sigue del archivo debe seguir el formato general de cualquier tipo de path de archivo, y debe de ser absoluto.
+     *     El path sigue del archivo debe seguir el formato general de cualquier tipo de path de carpeta, y debe de ser absoluto.
      * </p>
      * @param pathIn Path de la carpeta a descomprimir.
      * @param pathOut Path donde se guardará la carpeta decomprimida.
@@ -390,51 +389,7 @@ public class CtrlProcesos {
      * @throws IOException Si el path no existe, o la imagen no existe, se activa una excepción de IO.
      */
     public Image getImage(String path) throws IOException {
-        byte[] datosInput = CtrlDatos.getInstance().leerArchivo(path);
-        int pos = 0, width, height;
-        StringBuilder buff = new StringBuilder();
-        while (pos < datosInput.length - 1 && (char)datosInput[pos] != '\n') {
-            buff.append((char) datosInput[pos]);
-            ++pos;
-        }
-        ++pos;
-        while (pos < datosInput.length - 1 && (char)datosInput[pos] == '#') {
-            while ((char)datosInput[pos] != '\n') { //avoiding comments between parameters...
-                ++pos;
-            }
-            ++pos;
-        }
-        String[] widthHeight;
-        buff = new StringBuilder();
-        while (pos < datosInput.length - 1 && (char)datosInput[pos] != '\n') {
-            buff.append((char) datosInput[pos]);
-            ++pos;
-        }
-        ++pos;
-        widthHeight = buff.toString().split(" ");  //read and split dimensions into two (one for each value)
-        while (pos < datosInput.length - 1 && (char)datosInput[pos] == '#') {
-            while ((char)datosInput[pos] != '\n') { //avoiding comments between parameters...
-                ++pos;
-            }
-            ++pos;
-        }
-        width = Integer.parseInt(widthHeight[0]);  //string to int of image width
-        height = Integer.parseInt(widthHeight[1]); //string to int of image height
-        buff = new StringBuilder();
-        while (pos < datosInput.length - 1 && (char)datosInput[pos] != '\n') {
-            buff.append((char) datosInput[pos]);
-            ++pos;
-        }
-        ++pos;
-        BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-        for (int i = 0; i < height; ++i) {
-            for (int j = 0; j < width; ++j) {
-                int color = new Color(((int)datosInput[pos++] & 0xFF), ((int)datosInput[pos++] & 0xFF), ((int)datosInput[pos++] & 0xFF)).getRGB();
-                bufferedImage.setRGB(j, i, color);
-            }
-        }
-        double scale = (double) 250 / height;
-        return bufferedImage.getScaledInstance((int) (width * scale), (int) (height * scale),  Image.SCALE_SMOOTH);
+        return JPEG.getInstance().getImage(CtrlDatos.getInstance().leerArchivo(path));
     }
 
     /**
