@@ -5,12 +5,9 @@ import java.awt.*;
 
 
 public class HelpVistaEstadisticas extends JDialog {
-
     private JTextArea textoAyuda;
     private JButton cerrarButton;
     private JPanel AyudaPrincipal;
-    private JPanel Ayuda;
-    private JPanel OkPanel;
 
 
     public HelpVistaEstadisticas(Dialog owner) {

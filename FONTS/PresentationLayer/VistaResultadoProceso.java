@@ -7,13 +7,11 @@ import java.awt.*;
 import java.text.DecimalFormat;
 
 public class VistaResultadoProceso extends JDialog {
-
     private JLabel tiempo;
     private JLabel OldSize;
     private JLabel NewSize;
     private JLabel diffSize;
     private JLabel Ratio;
-    private JPanel Result;
     private JButton OKButton;
     private JPanel panel;
 

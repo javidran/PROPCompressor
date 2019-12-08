@@ -1,7 +1,7 @@
 package PresentationLayer;
 
 import Controllers.CtrlPresentacion;
-import DataLayer.DatosEstadistica;
+import DomainLayer.DatosEstadistica;
 
 import javax.swing.*;
 import java.awt.*;
@@ -50,11 +50,11 @@ public class VistaEstadisticas extends JDialog {
         DecimalFormat df = new DecimalFormat("#.####");
         alg.setText(Objects.requireNonNull(comboBox1.getSelectedItem()).toString());
         archivosC.setText(Integer.toString(de.getArchivosComprimidos()));
-        tiempoC.setText(df.format((double) de.getTiempoCompresión()/ 1000000000.0) + " s");
-        ratioC.setText(de.getRatioCompresión() + " %");
+        tiempoC.setText(df.format((double) de.getTiempoCompresion()/ 1000000000.0) + " s");
+        ratioC.setText(de.getRatioCompresion() + " %");
         archivosD.setText(Integer.toString(de.getArchivosDescomprimidos()));
-        tiempoD.setText(df.format((double)de.getTiempoDescompresión()/ 1000000000.0) + " s");
-        ratioD.setText(de.getRatioDescompresión() + " %");
+        tiempoD.setText(df.format((double)de.getTiempoDescompresion()/ 1000000000.0) + " s");
+        ratioD.setText(de.getRatioDescompresion() + " %");
         Estats.setVisible(true);
         Algoritmo.setVisible(false);
         procesarButton.setVisible(false);

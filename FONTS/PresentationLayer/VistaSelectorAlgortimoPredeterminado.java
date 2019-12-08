@@ -9,14 +9,12 @@ import java.awt.*;
 public class VistaSelectorAlgortimoPredeterminado extends JDialog {
     private CtrlPresentacion ctrlPresentacion;
 
-    private JPanel algoritmo;
     private JButton CancelButton;
     private JRadioButton LZSSRadioButton;
     private JRadioButton LZWRadioButton;
     private JRadioButton LZ78RadioButton;
-    private JPanel boton;
     private JPanel Predeterminado;
-    private ButtonGroup algortimos;
+    private ButtonGroup algoritmos;
 
     public VistaSelectorAlgortimoPredeterminado(Frame owner) {
         super (owner, "Selector de algoritmo predeterminado", true);

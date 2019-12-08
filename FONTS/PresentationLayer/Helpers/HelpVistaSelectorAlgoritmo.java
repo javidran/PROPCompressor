@@ -7,8 +7,6 @@ public class HelpVistaSelectorAlgoritmo extends JDialog {
     private JTextArea textoAyuda;
     private JButton cerrarButton;
     private JPanel AyudaPrincipal;
-    private JPanel Ayuda;
-    private JPanel OkPanel;
 
     public HelpVistaSelectorAlgoritmo(Dialog owner) {
         super (owner, "Ayuda", true);

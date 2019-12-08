@@ -15,7 +15,6 @@ public class VistaSelectorAlgoritmo extends JDialog {
     private JPanel panel;
     private JSlider sliderCalidad;
     private JPanel calidad;
-    private JPanel procesar;
     private JPanel algoritmo;
     private JButton cancelarButton;
     private JPanel selectorSalida;
@@ -52,7 +51,7 @@ public class VistaSelectorAlgoritmo extends JDialog {
 
         sliderCalidad.addChangeListener(e -> {
             if (!sliderCalidad.getValueIsAdjusting())
-                ctrlPresentacion.CalidadModificada( sliderCalidad.getValue());
+                ctrlPresentacion.calidadModificada( sliderCalidad.getValue());
         });
 
         helpButton.addActionListener(e -> ctrlPresentacion.crearVistaAyudaSelectorAlgoritmo());

@@ -5,14 +5,9 @@ import java.awt.*;
 
 
 public class HelpVistaInicio extends JDialog {
-
-
-    private JPanel OkPanel;
-    private JPanel Ayuda;
     private JTextArea textoAyuda;
     private JButton cerrarButton;
     private JPanel AyudaPrincipal;
-
 
     public HelpVistaInicio(Frame owner) {
         super (owner, "Ayuda", true);

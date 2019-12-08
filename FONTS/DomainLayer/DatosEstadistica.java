@@ -6,21 +6,21 @@ public class DatosEstadistica {
 
     private int archivosDescomprimidos;
 
-    private long tiempoCompresión;
+    private long tiempoCompresion;
 
-    private long tiempoDescompresión;
+    private long tiempoDescompresion;
 
-    private double RatioCompresión;
+    private double RatioCompresion;
 
-    private double RatioDescompresión;
+    private double RatioDescompresion;
 
     public DatosEstadistica(int comprimidos, long tiempoC, double ratioC, int descomprimidos, long tiempoD, double ratioD) {
         archivosComprimidos = comprimidos;
-        tiempoCompresión = tiempoC;
-        RatioCompresión = ratioC;
+        tiempoCompresion = tiempoC;
+        RatioCompresion = ratioC;
         archivosDescomprimidos = descomprimidos;
-        tiempoDescompresión = tiempoD;
-        RatioDescompresión = ratioD;
+        tiempoDescompresion = tiempoD;
+        RatioDescompresion = ratioD;
     }
 
 
@@ -32,19 +32,19 @@ public class DatosEstadistica {
         return archivosDescomprimidos;
     }
 
-    public long getTiempoCompresión() {
-        return tiempoCompresión;
+    public long getTiempoCompresion() {
+        return tiempoCompresion;
     }
 
-    public long getTiempoDescompresión() {
-        return tiempoDescompresión;
+    public long getTiempoDescompresion() {
+        return tiempoDescompresion;
     }
 
-    public double getRatioCompresión() {
-        return RatioCompresión;
+    public double getRatioCompresion() {
+        return RatioCompresion;
     }
 
-    public double getRatioDescompresión() {
-        return RatioDescompresión;
+    public double getRatioDescompresion() {
+        return RatioDescompresion;
     }
 }
