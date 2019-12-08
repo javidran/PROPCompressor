@@ -115,7 +115,7 @@ public class CtrlProcesos {
     /**
      * Comprime una carpeta provista por su path, y la guarda en el path de salida dado con extensión .comp.
      * <p>
-     *     El path sigue del archivo debe seguir el formato general de cualquier tipo de path de archivo, y debe de ser absoluto.
+     *     El path sigue del archivo debe seguir el formato general de cualquier tipo de path carpeta y debe de ser absoluto.
      * </p>
      * @param pathIn Path de la carpeta a comprimir.
      * @param pathOut Path donde se guardará la carpeta comprimida.
@@ -154,7 +154,7 @@ public class CtrlProcesos {
     /**
      * Descomprime una carpeta comprimida con extensión .comp provista por su path, y la guarda en el path de salida dado.
      * <p>
-     *     El path sigue del archivo debe seguir el formato general de cualquier tipo de path de archivo, y debe de ser absoluto.
+     *     El path sigue del archivo debe seguir el formato general de cualquier tipo de path de carpeta, y debe de ser absoluto.
      * </p>
      * @param pathIn Path de la carpeta a descomprimir.
      * @param pathOut Path donde se guardará la carpeta decomprimida.
