@@ -10,7 +10,6 @@ import Exceptions.FormatoErroneoException;
 
 import javax.swing.table.TableModel;
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 /**
@@ -390,51 +389,7 @@ public class CtrlProcesos {
      * @throws IOException Si el path no existe, o la imagen no existe, se activa una excepción de IO.
      */
     public Image getImage(String path) throws IOException {
-        byte[] datosInput = CtrlDatos.getInstance().leerArchivo(path);
-        int pos = 0, width, height;
-        StringBuilder buff = new StringBuilder();
-        while (pos < datosInput.length - 1 && (char)datosInput[pos] != '\n') {
-            buff.append((char) datosInput[pos]);
-            ++pos;
-        }
-        ++pos;
-        while (pos < datosInput.length - 1 && (char)datosInput[pos] == '#') {
-            while ((char)datosInput[pos] != '\n') { //avoiding comments between parameters...
-                ++pos;
-            }
-            ++pos;
-        }
-        String[] widthHeight;
-        buff = new StringBuilder();
-        while (pos < datosInput.length - 1 && (char)datosInput[pos] != '\n') {
-            buff.append((char) datosInput[pos]);
-            ++pos;
-        }
-        ++pos;
-        widthHeight = buff.toString().split(" ");  //read and split dimensions into two (one for each value)
-        while (pos < datosInput.length - 1 && (char)datosInput[pos] == '#') {
-            while ((char)datosInput[pos] != '\n') { //avoiding comments between parameters...
-                ++pos;
-            }
-            ++pos;
-        }
-        width = Integer.parseInt(widthHeight[0]);  //string to int of image width
-        height = Integer.parseInt(widthHeight[1]); //string to int of image height
-        buff = new StringBuilder();
-        while (pos < datosInput.length - 1 && (char)datosInput[pos] != '\n') {
-            buff.append((char) datosInput[pos]);
-            ++pos;
-        }
-        ++pos;
-        BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-        for (int i = 0; i < height; ++i) {
-            for (int j = 0; j < width; ++j) {
-                int color = new Color(((int)datosInput[pos++] & 0xFF), ((int)datosInput[pos++] & 0xFF), ((int)datosInput[pos++] & 0xFF)).getRGB();
-                bufferedImage.setRGB(j, i, color);
-            }
-        }
-        double scale = (double) 250 / height;
-        return bufferedImage.getScaledInstance((int) (width * scale), (int) (height * scale),  Image.SCALE_SMOOTH);
+        return JPEG.getInstance().getImage(CtrlDatos.getInstance().leerArchivo(path));
     }
 
     /**
