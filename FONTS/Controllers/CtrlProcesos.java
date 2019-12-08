@@ -108,12 +108,19 @@ public class CtrlProcesos {
 
         ProcesoFichero desc = new ProcesoDescomprimir(comp.getOutput(), tipoAlgoritmo);
         desc.ejecutarProceso();
-        ctrlDatos.guardaArchivo(desc.getOutput(), archivoTemporal());
+        ctrlDatos.guardaArchivo(desc.getOutput(), getArchivoTemporal());
         dp[1] = desc.getDatosProceso();
         if (dp[1].isSatisfactorio()) ctrlDatos.actualizaEstadistica(dp[1], tipoAlgoritmo, false);
         return dp;
     }
 
+    /**
+     * Comprime una carpeta provista por su path, y la guarda en el path de salida dado con extensión .comp.
+     * @param pathIn Path de la carpeta a comprimir.
+     * @param pathOut Path donde se guardará la carpeta comprimida.
+     * @return Los datos asociados al proceso de compresión, en un objeto de la clase DatosProceso.
+     * @throws Exception Si hay algún problema de IO al usar los paths o de Formato Erróneo al comprimir archivos, se activará una excepción.
+     */
     public DatosProceso comprimirCarpeta(String pathIn, String pathOut) throws Exception {
         long tiempo = 0, oldSize = 0, newSize = 0;
         CtrlDatos ctrlDatos = CtrlDatos.getInstance();
@@ -143,6 +150,13 @@ public class CtrlProcesos {
         return new DatosProceso(tiempo, oldSize, newSize, true);
     }
 
+    /**
+     * Descomprime una carpeta comprimida con extensión .comp provista por su path, y la guarda en el path de salida dado.
+     * @param pathIn Path de la carpeta a descomprimir.
+     * @param pathOut Path donde se guardará la carpeta decomprimida.
+     * @return Los datos asociados al proceso de compresión, en un objeto de la clase DatosProceso.
+     * @throws Exception Si hay algún problema de IO al usar los paths o de Formato Erróneo al descomprimir archivos, se activará una excepción.
+     */
     public DatosProceso descomprimirCarpeta(String pathIn, String pathOut) throws Exception {
         long tiempo = 0, oldSize = 0, newSize = 0;
         CtrlDatos ctrlDatos = CtrlDatos.getInstance();
@@ -252,6 +266,12 @@ public class CtrlProcesos {
         }
     }
 
+    /**
+     * Calcula la extensión que debe tener un archivo en función del algoritmo que se le aplicará y de si se le aplica en compresión o descompresión.
+     * @param algoritmo Algoritmo que se usará en el proceso para ese archivo.
+     * @param esCompresion Booleano que indica si el proceso es de compresión o de descompresión.
+     * @return Un string con la extensión que se le debe aplicar al path del fichero.
+     */
     private static String extension(Algoritmo algoritmo, boolean esCompresion) {
         String extension = null;
         if(esCompresion) {
@@ -309,21 +329,47 @@ public class CtrlProcesos {
         return path;
     }
 
-    public static String archivoTemporal() {
+    /**
+     * Obtiene el path del archivo temporal descomprimido fruto de un proceso de compresión y descompresión.
+     * <p>
+     *     El nombre de este archivo siempre es CompDesc.temp.
+     * </p>
+     * @return String del path de dicho archivo.
+     */
+    public static String getArchivoTemporal() {
         return System.getProperty("user.dir") + "CompDesc.temp";
     }
 
+    /**
+     * Elimina el archivo temporal descomprimido fruto de un proceso de compresión y descompresión.
+     * <p>
+     *     El nombre de este archivo siempre es CompDesc.temp.
+     * </p>
+     */
     public void eliminaArchivoTemporal() {
         CtrlDatos ctrlDatos = CtrlDatos.getInstance();
-        ctrlDatos.eliminaArchivo(archivoTemporal());
+        ctrlDatos.eliminaArchivo(getArchivoTemporal());
     }
 
+    /**
+     * Obtiene una TableModel a partir del contenido de un fichero .txt provisto.
+     * @param path Path del fichero .txt a obtener.
+     * @param titleBar Título de la TableModel.
+     * @return TableModel con el contenido del fichero .txt obtenido con el path.
+     * @throws IOException Si el path no existe, o el fihcero de texto no existe, se activa una excepción de IO.
+     */
     public TableModel getArchivoAsModel(String path, String titleBar) throws IOException {
         CtrlDatos ctrlDatos = CtrlDatos.getInstance();
         return ctrlDatos.getArchivoAsModel(path, titleBar);
     }
 
-    public Image getBufferedImage(String path) throws IOException {
+    /**
+     * Obtiene un objeto Image a partir de una imagen .ppm provista.
+     * @param path Path de la imagen .ppm a obtener.
+     * @return Objeto Image de la imagen leída.
+     * @throws IOException Si el path no existe, o la imagen no existe, se activa una excepción de IO.
+     */
+    public Image getImage(String path) throws IOException {
         byte[] datosInput = CtrlDatos.getInstance().leerArchivo(path);
         int pos = 0, width, height;
         StringBuilder buff = new StringBuilder();
