@@ -44,7 +44,7 @@ public class CtrlProcesos {
     /**
      * Crea y ejecuta un proceso de compresión para un fichero, el cual se comprimirá con un algoritmo, ambos pasados por parámetro.
      * <p>
-     *     El path del archivo debe seguir el formato general de cualquier tipo de path de archivo, y debe ser relativo.
+     *     El path del archivo debe seguir el formato general de cualquier tipo de path de archivo, y debe de ser absoluto.
      * </p>
      * <p>
      *     El algoritmo es capaz de comprimir el formato del fichero.
@@ -68,9 +68,8 @@ public class CtrlProcesos {
     /**
      * Crea y ejecuta un proceso de descompresión para un fichero pasado por parámetro, el cual se descomprimirá con su algoritmo, seleccionado automáticamente en función de su extensión.
      * <p>
-     *     El path sigue del archivo debe seguir el formato general de cualquier tipo de path de archivo, y debe ser relativo.
+     *     El path sigue del archivo debe seguir el formato general de cualquier tipo de path de archivo, y debe de ser absoluto.
      * </p>
-     *
      * @param pathOriginal El path donde se encuentra el fichero a descomprimir.
      * @param pathResultado El path donde se guardará el fichero descomprimido.
      * @throws Exception El proceso de descompresión no se ha podido llevar a cabo.
@@ -89,7 +88,7 @@ public class CtrlProcesos {
     /**
      * Crea y ejecuta un proceso de compresión y descompresión para un fichero, el cual se comprimirá con un algoritmo, ambos pasados por parámetro, y el cual se descomprimirá con su algoritmo, seleccionado automáticamente en función de su extensión.
      * <p>
-     *     El path sigue del archivo debe seguir el formato general de cualquier tipo de path de archivo, y debe ser relativo.
+     *     El path sigue del archivo debe seguir el formato general de cualquier tipo de path de archivo, y debe de ser absoluto.
      * </p>
      * <p>
      *     El algoritmo es capaz de comprimir el formato del fichero.
@@ -116,6 +115,9 @@ public class CtrlProcesos {
 
     /**
      * Comprime una carpeta provista por su path, y la guarda en el path de salida dado con extensión .comp.
+     * <p>
+     *     El path sigue del archivo debe seguir el formato general de cualquier tipo de path de archivo, y debe de ser absoluto.
+     * </p>
      * @param pathIn Path de la carpeta a comprimir.
      * @param pathOut Path donde se guardará la carpeta comprimida.
      * @return Los datos asociados al proceso de compresión, en un objeto de la clase DatosProceso.
@@ -152,6 +154,9 @@ public class CtrlProcesos {
 
     /**
      * Descomprime una carpeta comprimida con extensión .comp provista por su path, y la guarda en el path de salida dado.
+     * <p>
+     *     El path sigue del archivo debe seguir el formato general de cualquier tipo de path de archivo, y debe de ser absoluto.
+     * </p>
      * @param pathIn Path de la carpeta a descomprimir.
      * @param pathOut Path donde se guardará la carpeta decomprimida.
      * @return Los datos asociados al proceso de compresión, en un objeto de la clase DatosProceso.
@@ -186,19 +191,19 @@ public class CtrlProcesos {
 
 
     /**
-     * Asigna un algoritmo de texto predeterminado al Singleton de CtrlProcesos
+     * Asigna un algoritmo de texto predeterminado al Singleton de CtrlProcesos.
      * <p>
-     *     El algoritmoDeTextoPredeterminado es uno de los tres algoritmos de compresión de texto posibles
+     *     El algoritmoDeTextoPredeterminado es uno de los tres algoritmos de compresión de texto posibles.
      * </p>
-     * @param algoritmoDeTextoPredeterminado El algoritmo de texto que se usará por defecto para comprimir ficheros de texto
+     * @param algoritmoDeTextoPredeterminado El algoritmo de texto que se usará por defecto para comprimir ficheros de texto.
      */
     public static void setAlgoritmoDeTextoPredeterminado(Algoritmo algoritmoDeTextoPredeterminado) {
         CtrlProcesos.algoritmoDeTextoPredeterminado = algoritmoDeTextoPredeterminado;
     }
 
     /**
-     * Obtiene el algoritmo de texto predeterminado del Singleton de CtrlProcesos
-     * @return El algoritmoDeTextoPredeterminado que se usa por defecto para comprimir ficheros de texto
+     * Obtiene el algoritmo de texto predeterminado del Singleton de CtrlProcesos.
+     * @return El algoritmoDeTextoPredeterminado que se usa por defecto para comprimir ficheros de texto.
      */
     public static Algoritmo getAlgoritmoDeTextoPredeterminado() {
         return algoritmoDeTextoPredeterminado;
@@ -207,7 +212,7 @@ public class CtrlProcesos {
     /**
      * Comprueba si el archivo es capaz de ser comprimido según la extensión del mismo.
      * <p>
-     *     El path del archivo debe seguir el formato general de cualquier tipo de path de archivo y puede ser relativo o absoluto.
+     *     El path del archivo debe seguir el formato general de cualquier tipo de path de archivo, y debe de ser absoluto.
      * </p>
      * @param path El path del archivo que se quiere comprobar
      * @return Un booleano que indica si el archivo es comprimible
@@ -236,7 +241,7 @@ public class CtrlProcesos {
     /**
      * Comprueba qué algoritmos se pueden usar para comprimir o descomprimir un fichero, el cual se pasa por parámetro.
      * <p>
-     *     El path del archivo debe seguir el formato general de cualquier tipo de path de archivo y puede ser relativo o absoluto.
+     *     El path del archivo debe seguir el formato general de cualquier tipo de path de archivo y debe de ser absoluto.
      * </p>
      * @param path El path del archivo a comprobar
      * @return Un vector de algoritmos posibles a ejecutar para comprimir o descomprimir el fichero
@@ -268,6 +273,9 @@ public class CtrlProcesos {
 
     /**
      * Calcula la extensión que debe tener un archivo en función del algoritmo que se le aplicará y de si se le aplica en compresión o descompresión.
+     * <p>
+     *     El algoritmo es capaz de comprimir el formato del fichero.
+     * </p>
      * @param algoritmo Algoritmo que se usará en el proceso para ese archivo.
      * @param esCompresion Booleano que indica si el proceso es de compresión o de descompresión.
      * @return Un string con la extensión que se le debe aplicar al path del fichero.
@@ -312,6 +320,12 @@ public class CtrlProcesos {
 
     /**
      * Actualiza el path pasado por parámetro para que sea el path de salida del fichero procesado.
+     * <p>
+     *     El path sigue del archivo debe seguir el formato general de cualquier tipo de path de archivo, y debe de ser absoluto.
+     * </p>
+     * <p>
+     *     El algoritmo es capaz de comprimir el formato del fichero.
+     * </p>
      * @param path El path del archivo antes de ser procesado.
      * @param algoritmo El algorimo usado en el proceso.
      * @param esCompresion Indicador de si el proceso ha sido de compresión o no (y por tanto de descompresión).
@@ -353,6 +367,9 @@ public class CtrlProcesos {
 
     /**
      * Obtiene una TableModel a partir del contenido de un fichero .txt provisto.
+     * <p>
+     *     El path sigue del archivo debe seguir el formato general de cualquier tipo de path de archivo, y debe de ser absoluto.
+     * </p>
      * @param path Path del fichero .txt a obtener.
      * @param titleBar Título de la TableModel.
      * @return TableModel con el contenido del fichero .txt obtenido con el path.
@@ -365,6 +382,9 @@ public class CtrlProcesos {
 
     /**
      * Obtiene un objeto Image a partir de una imagen .ppm provista.
+     * <p>
+     *     El path sigue del archivo debe seguir el formato general de cualquier tipo de path de archivo, y debe de ser absoluto.
+     * </p>
      * @param path Path de la imagen .ppm a obtener.
      * @return Objeto Image de la imagen leída.
      * @throws IOException Si el path no existe, o la imagen no existe, se activa una excepción de IO.
