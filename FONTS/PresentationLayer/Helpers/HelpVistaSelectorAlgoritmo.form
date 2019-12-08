@@ -25,7 +25,7 @@
             <properties>
               <editable value="false"/>
               <font name="Roboto" size="16" style="0"/>
-              <text value="Bienvenido al selector de algoritmo del PROPresor.&#10;&#10;Seleccione un path donde guardar el fichero con el&#10;botón explorar, y escriba con qué nombre lo quiere&#10;guardar.&#10;&#10;En caso de que el archivo sea de texto, seleccione&#10;un algoritmo entre los disponibles en el menú des-&#10;plegable."/>
+              <text value="Bienvenido al selector de algoritmo del PROPresor.&#10;&#10;Seleccione un path donde guardar el fichero con el&#10;botón explorar, y escriba con qué nombre lo quiere&#10;guardar.&#10;&#10;En caso de que el archivo sea de texto, seleccione&#10;un algoritmo entre los disponibles en el menú des-&#10;plegable.&#10;&#10;En caso de que el archivo sea una imagen o una car-&#10;peta, la cual puede contener imágenes, seleccione la&#10;calidad de compresión de esta con el slider, siendo 1&#10;la más baja y 7 la más alta. En el caso de las carpe-&#10;tas, el algoritmo para texto será el predeterminado."/>
             </properties>
           </component>
         </children>
