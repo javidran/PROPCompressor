@@ -11,25 +11,57 @@ import java.awt.*;
 import java.io.File;
 
 
+/**
+ * Clase para la implementación de la vista inicial del PROPresor
+ */
 public class VistaInicio extends JFrame {
+    /**
+     * Instancia de CtrlPresentacion que contiene gran parte del codigo que altera la vista y lleva a cabo gran parte de las acciones al pulsar botones
+     */
     private CtrlPresentacion ctrlPresentacion;
 
     private JPanel panel;
+    /**
+     * Botón para cerrar la vista de inicio
+     */
     private JButton salirButton;
 
     private JTextField pathEntrada;
+    /**
+     * Botón para abrir el explorador de archivos y así poder seleccionar un archivo a procesar
+     */
     private JButton explorarButton;
-
+    /**
+     * Botón para iniciar la compresión del archivo seleccioando
+     */
     private JButton comprimirButton;
+    /**
+     * Botón para iniciar la descompresión del archivo seleccioando
+     */
     private JButton descomprimirButton;
+    /**
+     * Botón para iniciar la compresión y posterior descompresión del archivo seleccioando
+     */
     private JButton comprimirYDescomprimirButton;
 
     private JButton estadisticasButton;
+    /**
+     * botón para crear nueva vista para selección de un algoritmo predeterminado para la compresión de texto
+     */
     private JButton escogerPrederterminadoButton;
     private JTextField mostrarPredeterminado;
+    /**
+     * botón para iniciar la creación de una vista con ayuda sobre la vista actual
+     */
     private JButton helpButton;
+    /**
+     * Elemento para la selección de archivo o carpeta a procesar
+     */
     private JFileChooser chooser;
 
+    /**
+     * Creación de la vista principal del PROPpresor
+     */
     public VistaInicio() {
         super ("PROPresor");
 
@@ -82,6 +114,10 @@ public class VistaInicio extends JFrame {
 
     }
 
+
+    /**
+     * Selección del archivoque el usuario desea procesar, dejando el path de este archivo en pathEntrada
+     */
     private void seleccionDeArchivo() {
         chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 
@@ -120,21 +156,39 @@ public class VistaInicio extends JFrame {
             pathEntrada.setText(chooser.getSelectedFile().getAbsolutePath());
     }
 
+    /**
+     * Gestión de los botones de compresió y descompresión
+     * <p>
+     *    Al habilitar el botón de compresión, el botón de descompresión se deshabilita y viceversa
+     * </p>
+     * @param habilitar indica si se desea habilitar el botón de compresión, o en caso de que sea falso habilitar el de compresión
+     */
     public void botonComprimir(boolean habilitar){
         comprimirButton.setEnabled(habilitar);
         descomprimirButton.setEnabled(!habilitar);
     }
 
+    /**
+     * Establece si el botón de compresión y desocmpresión es visible o no lo es en función del boolean que se pasa por parámetro
+     * @param habilitar indica si se debe habilitar o no el boton de compresión y descompresión
+     */
     public void botoncomprimirYDescomprimir(boolean habilitar){
         comprimirYDescomprimirButton.setEnabled(habilitar);
     }
 
+    /**
+     * Dehabilita inicialmente todos los botones de procesado de la interfaz
+     */
     public void deshabilitarBotones() {
         comprimirYDescomprimirButton.setEnabled(false);
         comprimirButton.setEnabled(false);
         descomprimirButton.setEnabled(false);
     }
 
+    /**
+     * Establece el algoritmo que se le indica por parámetro en el campo de texto de la vista
+     * @param algoritmo indica el algoritmo que se debe establecer como predeterminado
+     */
     public void algoritmoPredeterminado(Algoritmo algoritmo) {
         mostrarPredeterminado.setText(String.valueOf(algoritmo));
     }

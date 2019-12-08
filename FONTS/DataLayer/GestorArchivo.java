@@ -64,6 +64,10 @@ public class GestorArchivo {
         return existe;
     }
 
+    /**
+     * Elimina el archivo que se indica en el path pasado por parámetro
+     * @param path indica el archivo que se desea eliminar
+     */
     public static void eliminaArchivo(String path) {
         new File(path).delete();
     }
