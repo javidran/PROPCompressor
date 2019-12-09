@@ -82,14 +82,18 @@ public class VistaComparacionFichero extends JDialog {
         TableModel tm = original.getModel();
         TableColumn tc = original.getColumnModel().getColumn(0);
         TableCellRenderer tcr = original.getDefaultRenderer(tm.getColumnClass(0));
-        Component c = tcr.getTableCellRendererComponent(original,tm.getValueAt(row,0),false,false,row,0);
+        Component c = tcr.getTableCellRendererComponent(original,tm.getValueAt(row,0)+" ",false,false,row,0);
         tc.setPreferredWidth(c.getPreferredSize().width);
     }
 
     public void aplicaTextoResultante(TableModel model) {
         resultado.setModel(model);
+        int row = getWidestLine(model);
+        TableModel tm = resultado.getModel();
         TableColumn tc = resultado.getColumnModel().getColumn(0);
-        tc.setPreferredWidth(getWidestLine(model));
+        TableCellRenderer tcr = resultado.getDefaultRenderer(tm.getColumnClass(0));
+        Component c = tcr.getTableCellRendererComponent(resultado,tm.getValueAt(row,0)+" ",false,false,row,0);
+        tc.setPreferredWidth(c.getPreferredSize().width);
     }
 
     private int getWidestLine(TableModel tableModel) {

@@ -126,10 +126,10 @@ public class CtrlPresentacion {
         CtrlProcesos ctrlProcesos = CtrlProcesos.getInstance();
         try {
             String column = "Archivo original";
-            TableModel modelOriginal = ctrlProcesos.getArchivoAsModel(modeloParametros.getPathOriginal(), column);
+            TableModel modelOriginal = ctrlProcesos.getArchivoAsModel(modeloParametros.getPathOriginal(), "");
             vistaComparacionFichero.aplicaTextoOriginal(modelOriginal);
             column = "Archivo comprimido y descomprimido";
-            TableModel modelResultado = ctrlProcesos.getArchivoAsModel(modeloParametros.getPathOriginal(), column);
+            TableModel modelResultado = ctrlProcesos.getArchivoAsModel(modeloParametros.getPathOriginal(), "");
             vistaComparacionFichero.aplicaTextoResultante(modelResultado);
         } catch (Exception e) {
             e.printStackTrace();
