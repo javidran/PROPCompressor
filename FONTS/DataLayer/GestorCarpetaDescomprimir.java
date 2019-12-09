@@ -22,8 +22,9 @@ public class GestorCarpetaDescomprimir extends GestorCarpeta {
      * @param pathOriginal Path de la carpeta a descomprimir.
      * @throws FileNotFoundException Si hay algún error con la creación del lector de la carpeta comprimida, se activa una excepción de fichero no encontrado.
      */
-    public GestorCarpetaDescomprimir(String pathOriginal) throws FileNotFoundException {
+    public GestorCarpetaDescomprimir(String pathOriginal, String pathSalida) throws FileNotFoundException {
         super(pathOriginal);
+        guardaCarpeta(pathSalida);
         lector = new BufferedInputStream(new FileInputStream(carpeta));
     }
 
