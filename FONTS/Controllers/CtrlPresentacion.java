@@ -125,11 +125,14 @@ public class CtrlPresentacion {
         vistaComparacionFichero.setResizable(true);
         CtrlProcesos ctrlProcesos = CtrlProcesos.getInstance();
         try {
-            TableModel modelOriginal = ctrlProcesos.getArchivoAsModel(modeloParametros.getPathOriginal(), "Archivo original");
-            vistaComparacionFichero.original.setModel(modelOriginal);
-            TableModel modelResultado = ctrlProcesos.getArchivoAsModel(modeloParametros.getPathOriginal(), "Archivo comprimido y descomprimido");
-            vistaComparacionFichero.resultado.setModel(modelResultado);
+            String column = "Archivo original";
+            TableModel modelOriginal = ctrlProcesos.getArchivoAsModel(modeloParametros.getPathOriginal(), column);
+            vistaComparacionFichero.aplicaTextoOriginal(modelOriginal);
+            column = "Archivo comprimido y descomprimido";
+            TableModel modelResultado = ctrlProcesos.getArchivoAsModel(modeloParametros.getPathOriginal(), column);
+            vistaComparacionFichero.aplicaTextoResultante(modelResultado);
         } catch (Exception e) {
+            e.printStackTrace();
             JOptionPane.showConfirmDialog(null, "Ha ocurrido un error al intentar mostrar los archivos para comparación. Por favor, intentelo de nuevo.",null, JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
         } finally {
             ctrlProcesos.eliminaArchivoTemporal();
