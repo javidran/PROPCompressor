@@ -9,12 +9,21 @@ import java.util.List;
 import java.util.Map;
 
 public class LZW implements CompresorDecompresor {
+    /**
+     * Instancia de LZW para garantizar que es una clase Singleton
+     */
     private static LZW instance = null;
 
-    // private constructor restricted to this class itself
+    /**
+     * Constructor de la clase LZW.
+     * <p>Su visibilidad es privada para impedir que se tengan multiples instancias de la clase y satisfacer las propiedades de Singleton.</p>
+     */
     private LZW() { }
 
-    // static method to create instance of Singleton class
+    /**
+     * Método que devuelve la instancia la instancia de la clase LZW.
+     * @return Devuelve la instancia de la clase LZW.
+     */
     public static LZW getInstance()
     {
         if (instance == null)
@@ -28,7 +37,7 @@ public class LZW implements CompresorDecompresor {
      * <p>
      *     El array de bytes debería idealmente ser de una longitud significativa.
      * </p>
-     * @param entrada El array de bytes que se ha obtenido del contenido del fichero.
+     * @param entrada El array de bytes que se ha obtenido del contenido de un fichero.
      * @return Una instancia de la clase OutputAlgoritmo que contiene el tiempo en el que se ha realizado la compresión
      * y el byte [] de la compresión del byte [] de entrada.
      */
@@ -119,7 +128,7 @@ public class LZW implements CompresorDecompresor {
      * <p>
      *     El array de bytes debe estar comprimido con el algoritmo de compresión LZW.
      * </p>
-     * @param entrada El array de bytes que se ha obtenido del contenido del fichero .lzw o de la compresión directamente.
+     * @param entrada El array de bytes que se ha obtenido del contenido de un fichero .lzw o de la compresión directamente.
      * @return Una instancia de la clase OutputAlgoritmo que contiene el tiempo en el que se ha realizado la descompresión
      * y el byte [] de la compresión del byte [] de entrada.
      * @throws FormatoErroneoException El formato en el que está codificado el texto no es correcto.

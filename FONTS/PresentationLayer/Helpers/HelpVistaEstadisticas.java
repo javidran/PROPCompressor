@@ -7,12 +7,12 @@ import java.awt.*;
  * Clase para la creación de una vista que contiene la información de ayuda para la vista de selección de estadísticas del PROPresor
  */
 public class HelpVistaEstadisticas extends JDialog {
+    private JPanel panel;
     private JTextArea textoAyuda;
     /**
      * Botón para cerrar la vista de ayuda
      */
     private JButton cerrarButton;
-    private JPanel AyudaPrincipal;
 
 
     /**
@@ -21,7 +21,7 @@ public class HelpVistaEstadisticas extends JDialog {
      */
     public HelpVistaEstadisticas(Dialog owner) {
         super (owner, "Ayuda", true);
-        setContentPane(AyudaPrincipal);
+        setContentPane(panel);
         textoAyuda.setOpaque(false);
         textoAyuda.setBackground(new Color(0,0,0,0));
 

@@ -21,12 +21,13 @@ public class VistaInicio extends JFrame {
     private CtrlPresentacion ctrlPresentacion;
 
     private JPanel panel;
+    private JTextField mostrarPredeterminado;
+    private JTextField pathEntrada;
     /**
      * Botón para cerrar la vista de inicio
      */
     private JButton salirButton;
 
-    private JTextField pathEntrada;
     /**
      * Botón para abrir el explorador de archivos y así poder seleccionar un archivo a procesar
      */
@@ -43,15 +44,16 @@ public class VistaInicio extends JFrame {
      * Botón para iniciar la compresión y posterior descompresión del archivo seleccioando
      */
     private JButton comprimirYDescomprimirButton;
-
+    /**
+     * Botón para escoger y mostrar las estadísticas
+     */
     private JButton estadisticasButton;
     /**
-     * botón para crear nueva vista para selección de un algoritmo predeterminado para la compresión de texto
+     * Botón para crear nueva vista para selección de un algoritmo predeterminado para la compresión de texto
      */
     private JButton escogerPrederterminadoButton;
-    private JTextField mostrarPredeterminado;
     /**
-     * botón para iniciar la creación de una vista con ayuda sobre la vista actual
+     * Botón para iniciar la creación de una vista con ayuda sobre la vista actual
      */
     private JButton helpButton;
     /**

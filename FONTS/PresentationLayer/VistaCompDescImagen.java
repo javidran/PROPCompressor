@@ -4,14 +4,13 @@ import DomainLayer.Proceso.DatosProceso;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.text.DecimalFormat;
 
 /**
  * Clase para la implementación de la vista que permite comparar un fichero original con el resultante de aplicar la comprsesión y descompresión con un algoritmo determinado.
  */
 public class VistaCompDescImagen extends JDialog {
-    private JPanel PanelGeneral;
+    private JPanel panel;
     private JButton salirButton;
     private JLabel original;
     private JLabel nuevo;
@@ -37,7 +36,7 @@ public class VistaCompDescImagen extends JDialog {
     public VistaCompDescImagen(Frame owner){
         //, Byte[] Original, Byte[] Nuevo
         super (owner, "Comparar imágenes",true);
-        setContentPane(PanelGeneral);
+        setContentPane(panel);
 
         salirButton.addActionListener(e -> dispose());
     }

@@ -10,6 +10,8 @@ import java.text.DecimalFormat;
  * Clase para la implementación de la vista que permite ver los resultados estadísticos de un proceso
  */
 public class VistaResultadoProceso extends JDialog {
+    private JPanel panel;
+
     private JLabel tiempo;
     private JLabel OldSize;
     private JLabel NewSize;
@@ -19,7 +21,6 @@ public class VistaResultadoProceso extends JDialog {
      * Botón para finalizar la visualización de la vista
      */
     private JButton OKButton;
-    private JPanel panel;
 
     /**
      * Creadora de una vista que permite al usuario ver los resultados estadísticos de un proceso una vez ha terminado

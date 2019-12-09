@@ -13,25 +13,28 @@ public class VistaSelectorAlgoritmo extends JDialog {
      */
     private CtrlPresentacion ctrlPresentacion;
 
-    private JComboBox comboBox1;
+    private JPanel panel;
+    private JPanel calidad;
+    private JPanel algoritmo;
+    private JPanel selectorSalida;
 
+    private JTextField pathSalida;
+    /**
+     * ComboBox para escoger uno de los algoritmos posibles
+     */
+    private JComboBox comboBox1;
     /**
      * Botón para procesar el archivo seleccionado en la vista anterior
      */
     private JButton procesarButton;
-    private JPanel panel;
     /**
      * Selector de calidad en forma de slide que se muestra en el caso de comprimir una imagen
      */
     private JSlider sliderCalidad;
-    private JPanel calidad;
-    private JPanel algoritmo;
     /**
      * Botón para cancelar el proceso actual
      */
     private JButton cancelarButton;
-    private JPanel selectorSalida;
-    private JTextField pathSalida;
     /**
      * Botón para abrir el explorador y seleccionar un nuevo path de salida que no sea el inicial
      */

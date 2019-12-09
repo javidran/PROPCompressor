@@ -15,6 +15,8 @@ public class VistaSelectorAlgortimoPredeterminado extends JDialog {
      */
     private CtrlPresentacion ctrlPresentacion;
 
+    private JPanel panel;
+
     /**
      * Botón para cancelar el proceso seleccionado en la vista anterior
      */
@@ -31,7 +33,6 @@ public class VistaSelectorAlgortimoPredeterminado extends JDialog {
      * Botón para la selección de del algoritmo de compresión de texto LZ78
      */
     private JRadioButton LZ78RadioButton;
-    private JPanel Predeterminado;
     private ButtonGroup algoritmos;
 
     /**
@@ -40,7 +41,7 @@ public class VistaSelectorAlgortimoPredeterminado extends JDialog {
      */
     public VistaSelectorAlgortimoPredeterminado(Frame owner) {
         super (owner, "Selector de algoritmo predeterminado", true);
-        setContentPane(Predeterminado);
+        setContentPane(panel);
         ctrlPresentacion = CtrlPresentacion.getInstance();
 
         LZSSRadioButton.addActionListener(actionEvent -> {

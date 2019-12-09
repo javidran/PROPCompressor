@@ -9,16 +9,35 @@ import java.text.DecimalFormat;
 import java.util.Objects;
 
 public class VistaEstadisticas extends JDialog {
+    /**
+     * Instancia de CtrlPresentacion que contiene gran parte del codigo que altera la vista y lleva a cabo gran parte de las acciones al pulsar botones
+     */
     private CtrlPresentacion ctrlPresentacion;
 
-    private JPanel Estadisticas;
+    private JPanel panel;
     private JPanel Algoritmo;
-    private JComboBox comboBox1;
-    private JButton cancelarButton;
     private JPanel Estats;
-    private JButton procesarButton;
-    private JButton helpButton;
+    /**
+     * ComboBox para escoger uno de los algoritmos posibles
+     */
+    private JComboBox comboBox1;
+    /**
+     * Botón para cancelar el proceso actual
+     */
+    private JButton cancelarButton;
+    /**
+     * Botón para visualizar las estadísticas del algoritmo escogido
+     */
+    private JButton visualizarButton;
+    /**
+     * Botón de información que explica que se puede hacer en esta vista
+     */
+    private JButton InfoButton;
+    /**
+     * Botón para volver a la ventana anterior
+     */
     private JButton atrasButton;
+
     private JLabel alg;
     private JLabel archivosC;
     private JLabel tiempoC;
@@ -27,27 +46,36 @@ public class VistaEstadisticas extends JDialog {
     private JLabel tiempoD;
     private JLabel ratioD;
 
+    /**
+     * Creadora de la vista estadística que permite al usuario ver las estadísticos globales de un algoritmo escogido
+     * @param owner vista propietaria de esta nueva vista
+     */
     public VistaEstadisticas(Frame owner) {
         super (owner, "Estadísticas", true);
         ctrlPresentacion = CtrlPresentacion.getInstance();
-        setContentPane(Estadisticas);
+        setContentPane(panel);
 
         Estats.setVisible(false);
         atrasButton.setVisible(false);
 
-        procesarButton.addActionListener(e -> {
+        visualizarButton.addActionListener(e -> {
             String data =  Objects.requireNonNull(comboBox1.getSelectedItem()).toString();
             ctrlPresentacion.mostrarEstadisticas(data);
         });
         cancelarButton.addActionListener(e -> dispose());
-        helpButton.setBorderPainted(false);
-        helpButton.setBorder(null);
-        helpButton.setMargin(new Insets(0, 0, 0, 0));
-        helpButton.setContentAreaFilled(false);
-        helpButton.addActionListener(e -> ctrlPresentacion.crearVistaAyudaEstadisticas());
         atrasButton.addActionListener(e -> ctrlPresentacion.volverAEscogerEstadistica());
+
+        InfoButton.setBorderPainted(false);
+        InfoButton.setBorder(null);
+        InfoButton.setMargin(new Insets(0, 0, 0, 0));
+        InfoButton.setContentAreaFilled(false);
+        InfoButton.addActionListener(e -> ctrlPresentacion.crearVistaAyudaEstadisticas());
     }
 
+    /**
+     * Muestra las estadísticas que se le pasa por paràmetro
+     * @param de Es una instancia de DatosEstadística del algoritmo seleccionado
+     */
     public void mostrarEstadisticasSelecionadas(DatosEstadistica de) {
         setSize(375, 350);
         setLocationRelativeTo(getOwner());
@@ -61,18 +89,21 @@ public class VistaEstadisticas extends JDialog {
         ratioD.setText(de.getRatioDescompresion() + " %");
         Estats.setVisible(true);
         Algoritmo.setVisible(false);
-        procesarButton.setVisible(false);
-        helpButton.setVisible(false);
+        visualizarButton.setVisible(false);
+        InfoButton.setVisible(false);
         atrasButton.setVisible(true);
     }
 
+    /**
+     * Muestra los algoritmos possibles de los cuales obtener las estadísticas
+     */
     public void mostrarSelectorAlgoritmo() {
         setSize(500, 200);
         setLocationRelativeTo(getOwner());
         Estats.setVisible(false);
         Algoritmo.setVisible(true);
-        procesarButton.setVisible(true);
-        helpButton.setVisible(true);
+        visualizarButton.setVisible(true);
+        InfoButton.setVisible(true);
         atrasButton.setVisible(false);
     }
 
