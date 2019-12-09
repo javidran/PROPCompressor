@@ -23,6 +23,8 @@ public class DatosProceso {
      * Indicación para saber si es un proceso de compresión o descompresión.
      */
     private boolean esCompresion;
+
+    private double velocidad;
     /**
      * Indicación para saber si el proceso ha resultado satisfactorio o no según los datos del proceso.
      */
@@ -40,6 +42,10 @@ public class DatosProceso {
         this.oldSize = oldSize;
         this.newSize = newSize;
         this.esCompresion = esCompresion;
+
+        this.velocidad = (double)oldSize/tiempo;
+
+        System.out.println(oldSize + " " + tiempo + " " + velocidad);
         satisfactorio = getDiffSize() > 0;
     }
 
@@ -83,4 +89,7 @@ public class DatosProceso {
      * @return Si el proceso ha resultado satisfactorio o no.
      */
     public boolean isSatisfactorio() { return satisfactorio; }
+
+    public double getVelocidad() {
+        return velocidad; }
 }

@@ -4,6 +4,7 @@ import DomainLayer.Proceso.DatosProceso;
 import Enumeration.Algoritmo;
 
 import java.io.*;
+import java.text.DecimalFormat;
 
 /**
  * Clase utilizada por todos los algoritmos tanto al comprimir como al descomprimir que guarda los diferentes datos estadísiticos que generan los procesos.
@@ -36,17 +37,20 @@ public class GestorEstadisticas {
                 avgTime += (time-avgTime)/numDatos;
                 double avgPercentage = Double.parseDouble(parts[2]);
                 avgPercentage += Math.floor((diffSizePercentage-avgPercentage)/numDatos);
+                double velocidadavg = Double.parseDouble(parts[3]);
+                velocidadavg += Math.floor((((double)oldSize/time) - velocidadavg) / numDatos);
 
-                newContent.append(numDatos).append(" ").append(avgTime).append(" ").append(avgPercentage).append("\n");
+                newContent.append(numDatos).append(" ").append(avgTime).append(" ").append(avgPercentage).append(" ").append(velocidadavg).append("\n");
                 while((line = br.readLine()) != null) {
                     newContent.append(line).append("\n");
                 }
                 br.close();
-                newContent.append(time).append(" ").append(oldSize).append(" ").append(newSize).append(" ").append(diffSizePercentage).append("\n");
+                newContent.append(time).append(" ").append(oldSize).append(" ").append(newSize).append(" ").append(diffSizePercentage).append(" ").append((double)oldSize/ time).append("\n");
             } else {
                 estadistica.createNewFile();
-                newContent.append(numDatos).append(" ").append(time).append(" ").append(diffSizePercentage).append("\n");
-                newContent.append(time).append(" ").append(oldSize).append(" ").append(newSize).append(" ").append(diffSizePercentage).append("\n");
+                double velocidad = (double)oldSize/time;
+                newContent.append(numDatos).append(" ").append(time).append(" ").append(diffSizePercentage).append(" ").append(velocidad).append("\n");
+                newContent.append(time).append(" ").append(oldSize).append(" ").append(newSize).append(" ").append(diffSizePercentage).append(" ").append(velocidad).append("\n");
             }
 
             BufferedWriter bw = new BufferedWriter(new FileWriter(estadistica));
@@ -103,5 +107,14 @@ public class GestorEstadisticas {
         String[] parts = line.split(" ");
         br.close();
         return Double.parseDouble(parts[2]);
+    }
+
+    public static double getVelocidadMedia (Algoritmo algoritmo, boolean esCompresion) throws IOException {
+        File estadistica = new File( System.getProperty("user.dir") +"/resources/estadistica_"+(esCompresion? "1":"0")+"_"+algoritmo+".txt");
+        BufferedReader br = new BufferedReader(new FileReader(estadistica));
+        String line = br.readLine();
+        String[] parts = line.split(" ");
+        br.close();
+        return Double.parseDouble(parts[3]);
     }
 }

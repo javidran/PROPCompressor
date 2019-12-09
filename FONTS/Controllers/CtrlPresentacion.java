@@ -167,7 +167,7 @@ public class CtrlPresentacion {
         vistaEstadisticas = new VistaEstadisticas(vistaInicio);
         vistaEstadisticas.setSize(new Dimension(600, 200));
         vistaEstadisticas.setLocationRelativeTo(vistaInicio);
-        vistaEstadisticas.setResizable(false);
+        vistaEstadisticas.setResizable(true);
         vistaEstadisticas.setVisible(true);
     }
 

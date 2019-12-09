@@ -183,6 +183,10 @@ public class CtrlDatos {
         return GestorEstadisticas.getPorcentajeAhorradoMedio(algoritmo,esCompresion);
     }
 
+    public double getVelocidadMedia(Algoritmo algoritmo, boolean esCompresion) throws IOException {
+        return GestorEstadisticas.getVelocidadMedia(algoritmo,esCompresion);
+    }
+
     /**
      * elimina el archivo que se indica en el path que se pasa por parámetro
      * @param path path del archivo que se desea eliminar

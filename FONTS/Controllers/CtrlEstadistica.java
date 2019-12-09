@@ -40,28 +40,34 @@ public class CtrlEstadistica {
         int comprimidos;
         long tiempoC;
         double ratioC;
+        double velocidadC;
         try {
             comprimidos = ctrlDatos.getNumeroElementos(algoritmo, true);
             tiempoC = ctrlDatos.getTiempoMedio(algoritmo, true);
             ratioC = ctrlDatos.getPorcentajeAhorradoMedio(algoritmo, true);
+            velocidadC = ctrlDatos.getVelocidadMedia(algoritmo,true);
         } catch (FileNotFoundException e) {
             comprimidos = 0;
             tiempoC = 0;
             ratioC = 0.0;
+            velocidadC = 0.0;
         }
 
         int descomprimidos;
         long tiempoD;
         double ratioD;
+        double velocidadD;
         try {
             descomprimidos = ctrlDatos.getNumeroElementos(algoritmo, false);
             tiempoD = ctrlDatos.getTiempoMedio(algoritmo, false);
             ratioD = ctrlDatos.getPorcentajeAhorradoMedio(algoritmo, false);
+            velocidadD = ctrlDatos.getVelocidadMedia(algoritmo,true);
         } catch (FileNotFoundException e) {
             descomprimidos = 0;
             tiempoD = 0;
             ratioD = 0.0;
+            velocidadD = 0.0;
         }
-        return new DatosEstadistica(comprimidos,tiempoC,ratioC,descomprimidos,tiempoD,ratioD);
+        return new DatosEstadistica(comprimidos,tiempoC,ratioC,velocidadC,descomprimidos,tiempoD,ratioD,velocidadD);
     }
 }
