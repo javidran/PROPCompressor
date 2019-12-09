@@ -15,9 +15,3 @@ lib
 *.rar
 *.jar
 hs_err_pid*
-resources/texts/*.lzss
-resources/texts/*.lzw
-resources/texts/*.lz78
-resources/texts/*.imgc
-*_out.txt
-*_out.ppm
