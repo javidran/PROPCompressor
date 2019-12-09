@@ -89,8 +89,8 @@ public class CtrlDatos {
      * @param pathOriginal path donde se encuentra la carpeta que el usuario desea descomprimir
      * @throws FileNotFoundException la capreta no existe o no se encuentra en el path indicado
      */
-    public void crearGestorCarpetaDescomprimir(String pathOriginal) throws FileNotFoundException {
-        gestorCarpeta = new GestorCarpetaDescomprimir(pathOriginal);
+    public void crearGestorCarpetaDescomprimir(String pathOriginal, String pathSalida) throws FileNotFoundException {
+        gestorCarpeta = new GestorCarpetaDescomprimir(pathOriginal, pathSalida);
     }
 
 

@@ -164,7 +164,7 @@ public class CtrlProcesos {
     public DatosProceso descomprimirCarpeta(String pathIn, String pathOut) throws Exception {
         long tiempo = 0, oldSize = 0, newSize = 0;
         CtrlDatos ctrlDatos = CtrlDatos.getInstance();
-        ctrlDatos.crearGestorCarpetaDescomprimir(pathIn);
+        ctrlDatos.crearGestorCarpetaDescomprimir(pathIn, pathOut);
         String pathArchivo;
         while((pathArchivo = ctrlDatos.leerPathProximoArchivo())!= null) {
             Algoritmo algoritmoArchivo = algoritmoPosible(pathArchivo);
