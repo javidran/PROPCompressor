@@ -80,15 +80,14 @@ public class CtrlPresentacion {
         else {
             vistaSelectorAlgoritmo = new VistaSelectorAlgoritmo(vistaInicio);
             modeloParametros.setVistaSelectorAlgoritmo(vistaSelectorAlgoritmo, conGuardado);
-            if (!conGuardado) vistaSelectorAlgoritmo.setSize(new Dimension(650, 175));
+            if (!conGuardado) vistaSelectorAlgoritmo.setSize(new Dimension(650, 190));
             else {
                 if (modeloParametros.isCompresion()) vistaSelectorAlgoritmo.setSize(new Dimension(650, 210));
                 if (modeloParametros.getAlgoritmo().equals(Algoritmo.CARPETA)) vistaSelectorAlgoritmo.setSize(new Dimension(650, 210));
             }
-            vistaSelectorAlgoritmo.setMinimumSize(new Dimension(600, 160));
+            vistaSelectorAlgoritmo.setMinimumSize(new Dimension(600, 180));
             vistaSelectorAlgoritmo.setLocationRelativeTo(vistaInicio);
             vistaSelectorAlgoritmo.setResizable(true);
-            vistaSelectorAlgoritmo.pack();
             vistaSelectorAlgoritmo.setVisible(true);
         }
     }
@@ -166,10 +165,9 @@ public class CtrlPresentacion {
      */
     public void crearVistaEstadisticas() {
         vistaEstadisticas = new VistaEstadisticas(vistaInicio);
-        vistaEstadisticas.setSize(new Dimension(500, 200));
+        vistaEstadisticas.setSize(new Dimension(600, 200));
         vistaEstadisticas.setLocationRelativeTo(vistaInicio);
         vistaEstadisticas.setResizable(false);
-        vistaEstadisticas.pack();
         vistaEstadisticas.setVisible(true);
     }
 
