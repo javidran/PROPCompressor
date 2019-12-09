@@ -26,6 +26,11 @@ public class DatosEstadistica {
      */
     private double RatioDescompresion;
 
+    private double velocidadCompresion;
+
+    private double velocidadDescompresion;
+
+
 
     /**
      * Constructora de la clase, la cual crea una instancia de DatosEstadísctica con los 6 atributos asignados
@@ -35,14 +40,17 @@ public class DatosEstadistica {
      * @param descomprimidos Los archivos que han sido descomprimidos por un algoritmo
      * @param tiempoD  El tiempo medio de descompresión de un algoritmo
      * @param ratioD El porcentaje medio de descompresión de un algoritmo
+     *
      */
-    public DatosEstadistica(int comprimidos, long tiempoC, double ratioC, int descomprimidos, long tiempoD, double ratioD) {
+    public DatosEstadistica(int comprimidos, long tiempoC, double ratioC, double velocidadC, int descomprimidos, long tiempoD, double ratioD, double velocidadD) {
         archivosComprimidos = comprimidos;
         tiempoCompresion = tiempoC;
         RatioCompresion = ratioC;
         archivosDescomprimidos = descomprimidos;
         tiempoDescompresion = tiempoD;
         RatioDescompresion = ratioD;
+        velocidadCompresion = velocidadC;
+        velocidadDescompresion = velocidadD;
     }
 
     /**
@@ -85,5 +93,11 @@ public class DatosEstadistica {
      */
     public double getRatioDescompresion() {
         return RatioDescompresion;
+    }
+
+    public double getVelocidadCompresion() { return velocidadCompresion; }
+
+    public double getVelocidadDescompresion() {
+        return velocidadDescompresion;
     }
 }

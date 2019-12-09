@@ -123,7 +123,7 @@ public class CtrlProcesos {
      * @throws Exception Si hay algún problema de IO al usar los paths o de Formato Erróneo al comprimir archivos, se activará una excepción.
      */
     public DatosProceso comprimirCarpeta(String pathIn, String pathOut) throws Exception {
-        long tiempo = 0, oldSize = 0, newSize = 0;
+        long tiempo = 0, oldSize = 0, newSize = 0, velocidad = 0;
         CtrlDatos ctrlDatos = CtrlDatos.getInstance();
         ctrlDatos.crearGestorCarpetaComprimir(pathIn, pathOut);
         String pathArchivo;

@@ -45,6 +45,8 @@ public class VistaEstadisticas extends JDialog {
     private JLabel archivosD;
     private JLabel tiempoD;
     private JLabel ratioD;
+    private JLabel velocidadC;
+    private JLabel velocidadD;
 
     /**
      * Creadora de la vista estadística que permite al usuario ver las estadísticos globales de un algoritmo escogido
@@ -87,6 +89,8 @@ public class VistaEstadisticas extends JDialog {
         archivosD.setText(Integer.toString(de.getArchivosDescomprimidos()));
         tiempoD.setText(df.format((double)de.getTiempoDescompresion()/ 1000000000.0) + " s");
         ratioD.setText(de.getRatioDescompresion() + " %");
+        velocidadC.setText(df.format(de.getVelocidadCompresion() * 1000000000.0) + " B/s");
+        velocidadD.setText(df.format(de.getVelocidadDescompresion() * 1000000000.0) + " B/s");
         Estats.setVisible(true);
         Algoritmo.setVisible(false);
         visualizarButton.setVisible(false);

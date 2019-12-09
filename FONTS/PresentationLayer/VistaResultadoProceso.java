@@ -17,6 +17,7 @@ public class VistaResultadoProceso extends JDialog {
     private JLabel NewSize;
     private JLabel diffSize;
     private JLabel Ratio;
+    private JLabel velocidad;
     /**
      * Botón para finalizar la visualización de la vista
      */
@@ -36,6 +37,7 @@ public class VistaResultadoProceso extends JDialog {
         NewSize.setText(Long.toString(dp.getNewSize()));
         diffSize.setText(Long.toString(dp.getDiffSize()));
         Ratio.setText(Double.toString(dp.getDiffSizePercentage()));
+        velocidad.setText(df.format(dp.getVelocidad() * 1000000000.0));
 
         OKButton.addActionListener(e -> {
             dispose();
