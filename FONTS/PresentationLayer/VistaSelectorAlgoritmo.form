@@ -73,7 +73,7 @@
               <text value="Procesar"/>
             </properties>
           </component>
-          <component id="ff7cd" class="javax.swing.JButton" binding="helpButton" default-binding="true">
+          <component id="ff7cd" class="javax.swing.JButton" binding="InfoButton" default-binding="true">
             <constraints>
               <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="1" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>

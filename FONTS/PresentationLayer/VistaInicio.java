@@ -55,7 +55,7 @@ public class VistaInicio extends JFrame {
     /**
      * Botón para iniciar la creación de una vista con ayuda sobre la vista actual
      */
-    private JButton helpButton;
+    private JButton InfoButton;
     /**
      * Elemento para la selección de archivo o carpeta a procesar
      */
@@ -108,11 +108,11 @@ public class VistaInicio extends JFrame {
         escogerPrederterminadoButton.addActionListener(e -> ctrlPresentacion.escogerPredeterminadoPulsado());
 
 
-        helpButton.setBorderPainted(false);
-        helpButton.setBorder(null);
-        helpButton.setMargin(new Insets(0, 0, 0, 0));
-        helpButton.setContentAreaFilled(false);
-        helpButton.addActionListener(e -> ctrlPresentacion.crearVistaAyudaInicio());
+        InfoButton.setBorderPainted(false);
+        InfoButton.setBorder(null);
+        InfoButton.setMargin(new Insets(0, 0, 0, 0));
+        InfoButton.setContentAreaFilled(false);
+        InfoButton.addActionListener(e -> ctrlPresentacion.crearVistaAyudaInicio());
 
     }
 

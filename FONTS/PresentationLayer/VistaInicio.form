@@ -102,7 +102,7 @@
               <text value="Seleccione el archivo o carpeta sobre el que desee trabajar:"/>
             </properties>
           </component>
-          <component id="d3fd4" class="javax.swing.JButton" binding="helpButton" default-binding="true">
+          <component id="d3fd4" class="javax.swing.JButton" binding="InfoButton" default-binding="true">
             <constraints>
               <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="1" anchor="0" fill="1" indent="0" use-parent-layout="false">
                 <preferred-size width="30" height="20"/>
