@@ -24,6 +24,8 @@ public class VistaCompDescImagen extends JDialog {
     private JLabel NewSizeC;
     private JLabel DiffSizeC;
     private JLabel RatioC;
+    private JLabel velocidadC;
+    private JLabel velocidadD;
 
     /**
      * Constructora de la vista para la comparación de un imagen con esa misma pero procesada.
@@ -57,11 +59,13 @@ public class VistaCompDescImagen extends JDialog {
         NewSizeC.setText(Long.toString(dp[0].getNewSize()));
         DiffSizeC.setText(Long.toString(dp[0].getDiffSize()));
         RatioC.setText(Double.toString(dp[0].getDiffSizePercentage()));
+        velocidadC.setText(df.format(dp[0].getVelocidad() * 1000000000.0));
 
         tiempoD.setText(df.format((double)dp[1].getTiempo() / 1000000000.0));
         OldSizeD.setText(Long.toString(dp[1].getOldSize()));
         NewSizeD.setText(Long.toString(dp[1].getNewSize()));
         DiffSizeD.setText(Long.toString(dp[1].getDiffSize()));
         RatioD.setText(Double.toString(dp[1].getDiffSizePercentage()));
+        velocidadD.setText(df.format(dp[1].getVelocidad() * 1000000000.0));
     }
 }

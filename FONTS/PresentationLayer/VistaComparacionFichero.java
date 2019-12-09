@@ -30,6 +30,8 @@ public class VistaComparacionFichero extends JDialog {
     private JScrollPane originalPanel;
     private JScrollPane resultadoPanel;
     public JTable resultado;
+    private JLabel velocidadC;
+    private JLabel velocidadD;
 
     /**
      * Constructora de la vista para la comparación de un fichero con ese mismo procesado.
@@ -53,12 +55,14 @@ public class VistaComparacionFichero extends JDialog {
         NewSizeC.setText(Long.toString(dp[0].getNewSize()));
         DiffSizeC.setText(Long.toString(dp[0].getDiffSize()));
         RatioC.setText(Double.toString(dp[0].getDiffSizePercentage()));
+        velocidadC.setText(df.format((double)dp[0].getVelocidad() * 1000000000.0));
 
         tiempoD.setText(df.format((double)dp[1].getTiempo() / 1000000000.0));
         OldSizeD.setText(Long.toString(dp[1].getOldSize()));
         NewSizeD.setText(Long.toString(dp[1].getNewSize()));
         DiffSizeD.setText(Long.toString(dp[1].getDiffSize()));
         RatioD.setText(Double.toString(dp[1].getDiffSizePercentage()));
+        velocidadD.setText(df.format((double)dp[1].getVelocidad() * 1000000000.0));
 
         finalizarButton.addActionListener(e -> dispose());
     }

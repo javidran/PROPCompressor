@@ -89,8 +89,8 @@ public class VistaEstadisticas extends JDialog {
         archivosD.setText(Integer.toString(de.getArchivosDescomprimidos()));
         tiempoD.setText(df.format((double)de.getTiempoDescompresion()/ 1000000000.0) + " s");
         ratioD.setText(de.getRatioDescompresion() + " %");
-        velocidadC.setText(df.format(de.getVelocidadCompresion() * 1000000000.0) + " bytes/s");
-        velocidadD.setText(df.format(de.getVelocidadDescompresion() * 1000000000.0) + " bytes/s");
+        velocidadC.setText(df.format(de.getVelocidadCompresion() * 1000000000.0) + " B/s");
+        velocidadD.setText(df.format(de.getVelocidadDescompresion() * 1000000000.0) + " B/s");
         Estats.setVisible(true);
         Algoritmo.setVisible(false);
         visualizarButton.setVisible(false);
