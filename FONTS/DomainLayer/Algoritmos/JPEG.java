@@ -1088,44 +1088,13 @@ public class JPEG implements CompresorDecompresor {
      * @param datosInput byte array de los datos de la imagen a leer.
      * @return Objeto Image de la imagen leída.
      */
-    public Image getImage(byte[] datosInput) {
+    public Image getImage(byte[] datosInput) throws FormatoErroneoException {
         int pos = 0, width, height;
-        StringBuilder buff = new StringBuilder();
-        //header reading
-        while (pos < datosInput.length - 1 && (char)datosInput[pos] != '\n') {
-            buff.append((char) datosInput[pos]);
-            ++pos;
-        }
-        ++pos;
-        while (pos < datosInput.length - 1 && (char)datosInput[pos] == '#') {
-            while ((char)datosInput[pos] != '\n') { //avoiding comments between parameters...
-                ++pos;
-            }
-            ++pos;
-        }
-        String[] widthHeight;
-        buff = new StringBuilder();
-        while (pos < datosInput.length - 1 && (char)datosInput[pos] != '\n') {
-            buff.append((char) datosInput[pos]);
-            ++pos;
-        }
-        ++pos;
-        widthHeight = buff.toString().split(" ");  //read and split dimensions into two (one for each value)
-        while (pos < datosInput.length - 1 && (char)datosInput[pos] == '#') {
-            while ((char)datosInput[pos] != '\n') { //avoiding comments between parameters...
-                ++pos;
-            }
-            ++pos;
-        }
-        width = Integer.parseInt(widthHeight[0]);  //string to int of image width
-        height = Integer.parseInt(widthHeight[1]); //string to int of image height
-        buff = new StringBuilder();
-        while (pos < datosInput.length - 1 && (char)datosInput[pos] != '\n') {
-            buff.append((char) datosInput[pos]);
-            ++pos;
-        }
-        //end of header reading
-        ++pos;
+        List<Byte> l = new ArrayList<>();
+        DatosHeaderComp datosHeaderComp = new DatosHeaderComp(datosInput, l, pos).readHeader();
+        pos = datosHeaderComp.getPos();
+        width = datosHeaderComp.getWidth();
+        height = datosHeaderComp.getHeight();
         //pixelmap reading
         BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         for (int i = 0; i < height; ++i) {
