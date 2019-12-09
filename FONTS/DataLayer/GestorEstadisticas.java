@@ -24,6 +24,9 @@ public class GestorEstadisticas {
         long newSize = dp.getNewSize();
         double diffSizePercentage = dp.getDiffSizePercentage();
         int numDatos = 1;
+        double velocidadActual = Math.floor((double)oldSize/time * 1000000000.0);
+
+        System.out.println(velocidadActual);
 
         StringBuilder newContent = new StringBuilder();
         String line;
@@ -38,19 +41,18 @@ public class GestorEstadisticas {
                 double avgPercentage = Double.parseDouble(parts[2]);
                 avgPercentage += Math.floor((diffSizePercentage-avgPercentage)/numDatos);
                 double velocidadavg = Double.parseDouble(parts[3]);
-                velocidadavg += Math.floor((((double)oldSize/time) - velocidadavg) / numDatos);
+                velocidadavg += Math.floor((velocidadActual - velocidadavg) / numDatos);
 
                 newContent.append(numDatos).append(" ").append(avgTime).append(" ").append(avgPercentage).append(" ").append(velocidadavg).append("\n");
                 while((line = br.readLine()) != null) {
                     newContent.append(line).append("\n");
                 }
                 br.close();
-                newContent.append(time).append(" ").append(oldSize).append(" ").append(newSize).append(" ").append(diffSizePercentage).append(" ").append((double)oldSize/ time).append("\n");
+                newContent.append(time).append(" ").append(oldSize).append(" ").append(newSize).append(" ").append(diffSizePercentage).append(" ").append(velocidadActual).append("\n");
             } else {
                 estadistica.createNewFile();
-                double velocidad = (double)oldSize/time;
-                newContent.append(numDatos).append(" ").append(time).append(" ").append(diffSizePercentage).append(" ").append(velocidad).append("\n");
-                newContent.append(time).append(" ").append(oldSize).append(" ").append(newSize).append(" ").append(diffSizePercentage).append(" ").append(velocidad).append("\n");
+                newContent.append(numDatos).append(" ").append(time).append(" ").append(diffSizePercentage).append(" ").append(velocidadActual).append("\n");
+                newContent.append(time).append(" ").append(oldSize).append(" ").append(newSize).append(" ").append(diffSizePercentage).append(" ").append(velocidadActual).append("\n");
             }
 
             BufferedWriter bw = new BufferedWriter(new FileWriter(estadistica));

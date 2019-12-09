@@ -55,14 +55,14 @@ public class VistaComparacionFichero extends JDialog {
         NewSizeC.setText(Long.toString(dp[0].getNewSize()));
         DiffSizeC.setText(Long.toString(dp[0].getDiffSize()));
         RatioC.setText(Double.toString(dp[0].getDiffSizePercentage()));
-        velocidadC.setText(df.format((double)dp[0].getVelocidad() * 1000000000.0));
+        velocidadC.setText(df.format((double)dp[0].getVelocidad()));
 
         tiempoD.setText(df.format((double)dp[1].getTiempo() / 1000000000.0));
         OldSizeD.setText(Long.toString(dp[1].getOldSize()));
         NewSizeD.setText(Long.toString(dp[1].getNewSize()));
         DiffSizeD.setText(Long.toString(dp[1].getDiffSize()));
         RatioD.setText(Double.toString(dp[1].getDiffSizePercentage()));
-        velocidadD.setText(df.format((double)dp[1].getVelocidad() * 1000000000.0));
+        velocidadD.setText(df.format((double)dp[1].getVelocidad()));
 
         finalizarButton.addActionListener(e -> dispose());
     }
