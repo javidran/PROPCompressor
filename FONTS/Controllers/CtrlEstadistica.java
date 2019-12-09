@@ -28,10 +28,10 @@ public class CtrlEstadistica {
     }
 
     /**
-     * Se encarga de construir un mensaje con toda la información relevante de compresión y descompresión del algoritmo solicitado.
+     * Se encarga de devolver una instancia DatosEstadística con toda la información relevante de compresión y descompresión del algoritmo seleccionado.
      *
      * @param algoritmo El tipo del algoritmo del que se desa obtener las estadisticas
-     * @return Devuelve un String con toda la información preparada para ser presentada, de tal manera que se pueda visualizar fácilmente los datos interesantes de la estadística.
+     * @return Devuelve DatosEstadistica con toda la información de las estadísticas globales del algoritmo.
      * @throws IOException En caso de haber algún error de lectura de archivos que impida el correcto funcionamiento del método.
      */
     public DatosEstadistica estadisticas(Algoritmo algoritmo) throws IOException {

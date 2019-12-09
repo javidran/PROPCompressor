@@ -37,10 +37,16 @@ public class CtrlPresentacion {
         return instance;
     }
 
+    /**
+     * Crea la instancia ModeloParametros
+     */
     public void crearModeloParametros() {
         modeloParametros = new ModeloParametros();
     }
 
+    /**
+     * Crea la vista VistaInicio
+     */
     public void crearVistaInicio() {
         SwingUtilities.invokeLater(() -> {
             vistaInicio = new VistaInicio();
@@ -55,10 +61,17 @@ public class CtrlPresentacion {
         });
     }
 
+    /**
+     * Cierra la vista VistaInicio
+     */
     public void cerrarVistaInicio() {
         vistaInicio = null;
     }
 
+    /**
+     * Crea la vista VistaSeleccionAlgoritmo
+     * @param conGuardado Indica si es Compresión/Descompresión o no
+     */
     public void crearVistaSeleccionAlgoritmo(boolean conGuardado) {
         boolean existe = CtrlDatos.existeArchivo(modeloParametros.getPathOriginal());
         if (!existe) {
@@ -80,10 +93,17 @@ public class CtrlPresentacion {
         }
     }
 
+    /**
+     * Cierra la vista VistaSeleccionAlgoritmo
+     */
     public void cerrarVistaSeleccionAlgoritmo() {
         vistaSelectorAlgoritmo = null;
     }
 
+    /**
+     * Crea la vista VistaResultadoProceso
+     * @param dp DatosProceso del proceso ejecutado
+     */
     public void crearVistaResultadoProceso(DatosProceso dp) {
         VistaResultadoProceso vistaResultadoProceso = new VistaResultadoProceso(vistaInicio, dp);
         vistaResultadoProceso.setSize(new Dimension(450, 250));
@@ -94,6 +114,10 @@ public class CtrlPresentacion {
         vistaResultadoProceso.setVisible(true);
     }
 
+    /**
+     * Crea la vista ComparacionProceso
+     * @param dp Datos de la compresión y la descompresión del fichero
+     */
     public void crearVistaComparacionProceso(DatosProceso[] dp) {
         VistaComparacionFichero vistaComparacionFichero = new VistaComparacionFichero(vistaInicio, dp);
         vistaComparacionFichero.setSize(new Dimension(800, 660));
@@ -115,6 +139,10 @@ public class CtrlPresentacion {
         vistaComparacionFichero.setVisible(true);
     }
 
+    /**
+     * Crea la vista VistaCompDescImagen
+     * @param dp Datos de la compresión y la descompresión de la imagen
+     */
     public void crearVistaCompDescImagen(DatosProceso[] dp) {
 
         VistaCompDescImagen vistaCompDescImagen = new VistaCompDescImagen(vistaInicio);
@@ -133,6 +161,9 @@ public class CtrlPresentacion {
         vistaCompDescImagen.setVisible(true);
     }
 
+    /**
+     * Crea la vista VistaEstadísticas
+     */
     public void crearVistaEstadisticas() {
         vistaEstadisticas = new VistaEstadisticas(vistaInicio);
         vistaEstadisticas.setSize(new Dimension(500, 200));
@@ -142,6 +173,9 @@ public class CtrlPresentacion {
         vistaEstadisticas.setVisible(true);
     }
 
+    /**
+     * Crea la vista VistaAyudaInicio
+     */
     public void crearVistaAyudaInicio() {
         HelpVistaInicio helpVistaInicio = new HelpVistaInicio(vistaInicio);
         helpVistaInicio.setSize(new Dimension(475, 550));
@@ -150,7 +184,9 @@ public class CtrlPresentacion {
         helpVistaInicio.pack();
         helpVistaInicio.setVisible(true);
     }
-
+    /**
+     * Crea la vista VistaAyudaEstadisticas
+     */
     public void crearVistaAyudaEstadisticas() {
         HelpVistaEstadisticas helpVistaEstadisticas = new HelpVistaEstadisticas(vistaEstadisticas);
         helpVistaEstadisticas.setSize(new Dimension(400, 300));
@@ -159,7 +195,9 @@ public class CtrlPresentacion {
         helpVistaEstadisticas.pack();
         helpVistaEstadisticas.setVisible(true);
     }
-
+    /**
+     * Crea la vista VistaAyudaSelectorAlgoritmo
+     */
     public void crearVistaAyudaSelectorAlgoritmo() {
         HelpVistaSelectorAlgoritmo helpVistaSelectorAlgoritmo = new HelpVistaSelectorAlgoritmo(vistaSelectorAlgoritmo);
         helpVistaSelectorAlgoritmo.setSize(new Dimension(400, 300));
@@ -225,6 +263,10 @@ public class CtrlPresentacion {
         modeloParametros.setPathResultado(path);
     }
 
+    /**
+     * Actualiza en modeloParametros el nuevo algoritmo seleccionado
+     * @param algoritmo Uno de los tres algoritmos de textos que se pueden seleccionar
+     */
     public void algoritmoSeleccionado(String algoritmo) {
         Algoritmo tipoAlgoritmo;
         switch (algoritmo) {
@@ -247,6 +289,9 @@ public class CtrlPresentacion {
         actualizarPathSalida(modeloParametros.getPathResultado());
     }
 
+    /**
+     * Comprueba si el fichero existe y si se va a sobreescribir para iniciar el proceso
+     */
     public void iniciarProceso() {
         boolean existe = (new File(modeloParametros.getPathResultado())).exists();
         cerrarVistaSeleccionAlgoritmo();
@@ -261,6 +306,10 @@ public class CtrlPresentacion {
         else procesar();
     }
 
+    /**
+     * Se ejecuta el proceso de comprimir, descomprimir o ComprimirYDescomprimir
+     * y se indica que se ha de crear una de las vistas que muestra resultados
+     */
     private void procesar(){
 
         final JDialog dialog = new JDialog(vistaInicio, true); // modal
@@ -327,10 +376,19 @@ public class CtrlPresentacion {
         else crearVistaComparacionProceso(dp);
     }
 
+    /**
+     * @param value El valor de calidad con el que se quiere comprimir con el algoritmo jpeg
+     */
     public void calidadModificada(int value) {
         CtrlProcesos.setCalidadJPEG(value);
     }
 
+    /**
+     * Obtención de las estadísticas de unos de los 4 algoritmos posibles
+     * @param data Indica de que algoritmo queremos las estadísticas
+     * @return DatosEstadistica devuelve todos los datos globales del algoritmo seleccionado
+     * @throws IOException excepción si hay un error con la lectura de las estadísticas globales
+     */
     public DatosEstadistica getEstadisticas(String data) throws IOException {
         CtrlEstadistica ce = CtrlEstadistica.getInstance();
         Algoritmo alg;
@@ -353,6 +411,10 @@ public class CtrlPresentacion {
         return ce.estadisticas(alg);
     }
 
+    /**
+     * Muestra las estadísticas en la vista
+     * @param data algoritmo escogido para visualizar las estadísticas de este
+     */
     public void mostrarEstadisticas(String data) {
         try {
             vistaEstadisticas.mostrarEstadisticasSelecionadas(getEstadisticas(data));
@@ -362,6 +424,9 @@ public class CtrlPresentacion {
         }
     }
 
+    /**
+     * Volver para ver los algoritmos posibles de los cuales visualizar estadísticas
+     */
     public void volverAEscogerEstadistica() {
         vistaEstadisticas.mostrarSelectorAlgoritmo();
         vistaEstadisticas.pack();
