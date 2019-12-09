@@ -38,7 +38,7 @@ public class ProcesoDescomprimir extends ProcesoFichero {
 
     /**
      * Indica si el proceso está creado para comprimir o no.
-     * @return False.
+     * @return retorna False ya que es un proceso de descompresión.
      */
     @Override
     public boolean esComprimir() {

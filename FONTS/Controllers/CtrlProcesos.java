@@ -386,7 +386,7 @@ public class CtrlProcesos {
      * </p>
      * @param path Path de la imagen .ppm a obtener.
      * @return Objeto Image de la imagen leída.
-     * @throws IOException Si el path no existe, o la imagen no existe, se activa una excepción de IO.
+     * @throws IOException Si el path no existe, o la imagen no existe, o su formato es erróneo, se activa una excepción de IO.
      */
     public Image getImage(String path) throws IOException {
         return JPEG.getInstance().getImage(CtrlDatos.getInstance().leerArchivo(path));
