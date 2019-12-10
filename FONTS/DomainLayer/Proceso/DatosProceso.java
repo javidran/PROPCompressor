@@ -42,7 +42,8 @@ public class DatosProceso {
         this.oldSize = oldSize;
         this.newSize = newSize;
         this.esCompresion = esCompresion;
-        this.velocidad = Math.floor((double)oldSize/tiempo * 1000000000.0);
+        if (tiempo == 0) this.velocidad = 0;
+        else this.velocidad = Math.floor((double)oldSize/tiempo * 1000000000.0);
 
         satisfactorio = getDiffSize() > 0;
     }
