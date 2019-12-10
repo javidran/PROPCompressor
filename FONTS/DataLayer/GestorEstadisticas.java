@@ -26,8 +26,6 @@ public class GestorEstadisticas {
         int numDatos = 1;
         double velocidadActual = Math.floor((double)oldSize/time * 1000000000.0);
 
-        System.out.println(velocidadActual);
-
         StringBuilder newContent = new StringBuilder();
         String line;
         try {
