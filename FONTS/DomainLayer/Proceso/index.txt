@@ -1,1 +1,1 @@
-Esta clase contiene el codigo de las clases proceso, tambien contiene el Junit de DatosProceso llamado DatosProcesoTest.
+Esta clase contiene el codigo de las clases proceso.

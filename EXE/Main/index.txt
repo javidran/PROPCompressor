@@ -1,7 +1,0 @@
-Este driver es especial porque permite probar todas las funciones del documento. 
-No hay juegos de pruebas para este driver porque todas las clases con las que trata ya han sido testadas.  Es porque al usar una estructura de testeo de Bottom-Up y ser esta la cúspide del programa pues se da todo lo que usa como testado.
-Se puede interactuar directamente el driver ya que es muy guiado y claro.
-Para ejecutar el  .jar del driver:
-	Para ejecutarlo solo debe abrir el terminal y escribir "java -jar NombreDelDriver.jar", entonces ya podra interactuar con el driver.
-
-
