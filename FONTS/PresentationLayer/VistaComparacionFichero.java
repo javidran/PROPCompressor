@@ -3,6 +3,9 @@ package PresentationLayer;
 import DomainLayer.Proceso.DatosProceso;
 
 import javax.swing.*;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableModel;
 import java.awt.*;
 import java.text.DecimalFormat;
 
@@ -67,4 +70,42 @@ public class VistaComparacionFichero extends JDialog {
         finalizarButton.addActionListener(e -> dispose());
     }
 
+//    public void aplicaTextoOriginal(TableModel model) {
+//        original.setModel(model);
+//        TableColumn tc = original.getColumnModel().getColumn(0);
+//        tc.setPreferredWidth(getWidestLine(model));
+//    }
+
+    public void aplicaTextoOriginal(TableModel model) {
+        original.setModel(model);
+        int row = getWidestLine(model);
+        TableModel tm = original.getModel();
+        TableColumn tc = original.getColumnModel().getColumn(0);
+        TableCellRenderer tcr = original.getDefaultRenderer(tm.getColumnClass(0));
+        Component c = tcr.getTableCellRendererComponent(original,tm.getValueAt(row,0)+" ",false,false,row,0);
+        tc.setPreferredWidth(c.getPreferredSize().width);
+    }
+
+    public void aplicaTextoResultante(TableModel model) {
+        resultado.setModel(model);
+        int row = getWidestLine(model);
+        TableModel tm = resultado.getModel();
+        TableColumn tc = resultado.getColumnModel().getColumn(0);
+        TableCellRenderer tcr = resultado.getDefaultRenderer(tm.getColumnClass(0));
+        Component c = tcr.getTableCellRendererComponent(resultado,tm.getValueAt(row,0)+" ",false,false,row,0);
+        tc.setPreferredWidth(c.getPreferredSize().width);
+    }
+
+    private int getWidestLine(TableModel tableModel) {
+        int max = 0;
+        int row = 0;
+        for(int i=0; i<tableModel.getRowCount(); ++i) {
+            String line = (String) tableModel.getValueAt(i, 0);
+            if(max < line.length()) {
+                max = line.length();
+                row = i;
+            }
+        }
+        return row;
+    }
 }
