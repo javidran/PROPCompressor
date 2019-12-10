@@ -1,5 +1,0 @@
-Aqui puede encontrar lo siguiente:
-1. Un driver para probar la clase JPEG:
-	Para ejecutarlo solo debe abrir el terminal y escribir "java -jar NombreDelDriver.jar", entonces ya podra interactuar con el driver.
-2 Carpeta con todos los archivos necesarios para ejecutar los juegos de prueba que se encuentran explicados en el documento JuegosDePruebas.pdf
-	Para probar los juegos de prueba solo hay que seguir la guia del documento JuegosDePruebas.pdf de la carpeta DOCS, los paths relativos a introducir son los mismo que aparecen en las imagenes del documento. 

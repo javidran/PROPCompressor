@@ -1,6 +1,0 @@
-Aqui puede encontrar lo siguiente:
-1. Ejecutable .jar del driver de la clase ProcesoDescomprimir.
-			Para ejecutarlo solo debe abrir el terminal y escribir "java -jar NombreDelDriver.jar", entonces ya podra interactuar con el driver.
-			
-Para probar los juegos de prueba solo hay que seguir la guia del documento JuegosDePruebas.pdf de la carpeta DOCS.
-
