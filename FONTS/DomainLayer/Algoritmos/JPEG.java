@@ -37,11 +37,11 @@ public class JPEG implements CompresorDecompresor {
     /**
      * Tabla de valores estándar para la codificación según Huffman coding de los valores obtenidos con el RLE del algoritmo JPEG. Este atributo es estático
      */
-    private static String[][] ACHuffmanTableLuminance = new String[15][11];
+    private static String[][] ACHuffmanTable = new String[15][11];
     /**
      * Tabla de valores estándar para la descodificación según Huffman coding de los valores obtenidos con el RLE del algoritmo JPEG. Este atributo es estático
      */
-    private static Map<String, Pair> ACInverseHuffmanTableLuminance = new HashMap<>();
+    private static Map<String, Pair> ACInverseHuffmanTable = new HashMap<>();
     /**
      * Getter de la instancia Singleton de JPEG
      * @return La instancia Singleton de JPEG
@@ -80,7 +80,7 @@ public class JPEG implements CompresorDecompresor {
                 {99, 99, 99, 99, 99, 99, 99, 99},
                 {99, 99, 99, 99, 99, 99, 99, 99}
         };
-        ACHuffmanTableLuminance = new String[][] {
+        ACHuffmanTable = new String[][] {
                 {"1010", "00", "01", "100", "1011", "11010", "1111000", "11111000", "1111110110", "1111111110000010", "1111111110000011"},
                 {"", "1100", "11011", "1111001", "111110110", "11111110110", "1111111110000100", "1111111110000101", "1111111110000110", "1111111110000111", "1111111110001000"},
                 {"", "11100", "11111001", "1111110111", "111111110100", "1111111110001001", "1111111110001010", "1111111110001011", "1111111110001100", "1111111110001101", "1111111110001110"},
@@ -98,7 +98,7 @@ public class JPEG implements CompresorDecompresor {
                 {"", "1111111111101011", "1111111111101100", "1111111111101101", "1111111111101110", "1111111111101111", "1111111111110000", "1111111111110001", "1111111111110010", "1111111111110011", "1111111111110100"},
                 {"11111111001", "1111111111110101", "1111111111110110", "1111111111110111", "1111111111111000", "1111111111111001", "1111111111111010", "1111111111111011", "1111111111111100", "1111111111111101", "1111111111111110"}
         };
-        ACInverseHuffmanTableLuminance = new HashMap<String, Pair>() {{
+        ACInverseHuffmanTable = new HashMap<String, Pair>() {{
             put("1010", new Pair((byte) 0, (byte) 0)); put("00", new Pair((byte) 0, (byte) 1)); put("01", new Pair((byte) 0, (byte) 2)); put("100", new Pair((byte) 0, (byte) 3)); put("1011", new Pair((byte) 0, (byte) 4)); put("11010", new Pair((byte) 0, (byte) 5)); put("1111000", new Pair((byte) 0, (byte) 6)); put("11111000", new Pair((byte) 0, (byte) 7)); put("1111110110", new Pair((byte) 0, (byte) 8)); put("1111111110000010", new Pair((byte) 0, (byte) 9)); put("1111111110000011", new Pair((byte) 0, (byte) 10));
             put("1100", new Pair((byte) 1, (byte) 1)); put("11011", new Pair((byte) 1, (byte) 2)); put("1111001", new Pair((byte) 1, (byte) 3)); put("111110110", new Pair((byte) 1, (byte) 4)); put("11111110110", new Pair((byte) 1, (byte) 5)); put("1111111110000100", new Pair((byte) 1, (byte) 6)); put("1111111110000101", new Pair((byte) 1, (byte) 7)); put("1111111110000110", new Pair((byte) 1, (byte) 8)); put("1111111110000111", new Pair((byte) 1, (byte) 9)); put("1111111110001000", new Pair((byte) 1, (byte) 10));
             put("11100", new Pair((byte) 2, (byte) 1)); put("11111001", new Pair((byte) 2, (byte) 2)); put("1111110111", new Pair((byte) 2, (byte) 3)); put("111111110100", new Pair((byte) 2, (byte) 4)); put("1111111110001001", new Pair((byte) 2, (byte) 5)); put("1111111110001010", new Pair((byte) 2, (byte) 6)); put("1111111110001011", new Pair((byte) 2, (byte) 7)); put("1111111110001100", new Pair((byte) 2, (byte) 8)); put("1111111110001101", new Pair((byte) 2, (byte) 9)); put("1111111110001110", new Pair((byte) 2, (byte) 10));
@@ -432,12 +432,12 @@ public class JPEG implements CompresorDecompresor {
                 if (howManyZeroes > 15) k = 64;
             } else {
                 //rle refines that each time a non zero value is found, is written how many zeroes have been ignored before and the size of the value in bits
-                rleY = rleY.concat(ACHuffmanTableLuminance[howManyZeroes][bitsNumero(lineY[k])]); //substitution of those 2 values for Huffman value
+                rleY = rleY.concat(ACHuffmanTable[howManyZeroes][bitsNumero(lineY[k])]); //substitution of those 2 values for Huffman value
                 rleY = rleY.concat(Integer.toBinaryString(lineY[k] & 0xFF)); //then the non zero value is written (only 8 bits or less, the minimum possible to represent its value)
                 howManyZeroes = 0;
             }
         }
-        rleY = rleY.concat(ACHuffmanTableLuminance[0][0]); //end of block: (0,0)
+        rleY = rleY.concat(ACHuffmanTable[0][0]); //end of block: (0,0)
         return rleY;
     }
 
@@ -949,7 +949,7 @@ public class JPEG implements CompresorDecompresor {
         String huffmanBuff = "";
         for (int it = 0; it < i; ++it) { //getting RLE values from Huffman block after offset applied
             huffmanBuff += stringBuilder.charAt(it);
-            Pair pair = ACInverseHuffmanTableLuminance.get(huffmanBuff); //check if Huffman code exists
+            Pair pair = ACInverseHuffmanTable.get(huffmanBuff); //check if Huffman code exists
             if (pair != null) { //if exists, get RLE value and store it in zigzag line of block
                 byte runlength = pair.getKey(); //getting runlength and size of RLE value
                 huffmanList.add(runlength);
