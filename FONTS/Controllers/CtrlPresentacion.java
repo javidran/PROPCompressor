@@ -130,7 +130,6 @@ public class CtrlPresentacion {
             TableModel modelResultado = ctrlProcesos.getArchivoAsModel(modeloParametros.getPathOriginal());
             vistaComparacionFichero.aplicaTextoResultante(modelResultado);
         } catch (Exception e) {
-            e.printStackTrace();
             JOptionPane.showConfirmDialog(null, "Ha ocurrido un error al intentar mostrar los archivos para comparación. Por favor, intentelo de nuevo.",null, JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
         } finally {
             ctrlProcesos.eliminaArchivoTemporal();
