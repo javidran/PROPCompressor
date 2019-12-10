@@ -370,13 +370,12 @@ public class CtrlProcesos {
      *     El path sigue del archivo debe seguir el formato general de cualquier tipo de path de archivo, y debe de ser absoluto.
      * </p>
      * @param path Path del fichero .txt a obtener.
-     * @param titleBar Título de la TableModel.
      * @return TableModel con el contenido del fichero .txt obtenido con el path.
      * @throws IOException Si el path no existe, o el fihcero de texto no existe, se activa una excepción de IO.
      */
-    public TableModel getArchivoAsModel(String path, String titleBar) throws IOException {
+    public TableModel getArchivoAsModel(String path) throws IOException {
         CtrlDatos ctrlDatos = CtrlDatos.getInstance();
-        return ctrlDatos.getArchivoAsModel(path, titleBar);
+        return ctrlDatos.getArchivoAsModel(path);
     }
 
     /**

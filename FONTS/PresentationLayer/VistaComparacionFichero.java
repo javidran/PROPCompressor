@@ -70,12 +70,10 @@ public class VistaComparacionFichero extends JDialog {
         finalizarButton.addActionListener(e -> dispose());
     }
 
-//    public void aplicaTextoOriginal(TableModel model) {
-//        original.setModel(model);
-//        TableColumn tc = original.getColumnModel().getColumn(0);
-//        tc.setPreferredWidth(getWidestLine(model));
-//    }
-
+    /**
+     * Añade el contenido del modelo de tabla la vista para mostrar el archivo original.
+     * @param model Modelo de tabla con el contenido del archivo original.
+     */
     public void aplicaTextoOriginal(TableModel model) {
         original.setModel(model);
         int row = getWidestLine(model);
@@ -86,6 +84,10 @@ public class VistaComparacionFichero extends JDialog {
         tc.setPreferredWidth(c.getPreferredSize().width);
     }
 
+    /**
+     * Añade el contenido del modelo de tabla la vista para mostrar el archivo comprimido y descomprimido.
+     * @param model Modelo de tabla con el contenido del archivo comprimido y descomprimido.
+     */
     public void aplicaTextoResultante(TableModel model) {
         resultado.setModel(model);
         int row = getWidestLine(model);
@@ -96,6 +98,11 @@ public class VistaComparacionFichero extends JDialog {
         tc.setPreferredWidth(c.getPreferredSize().width);
     }
 
+    /**
+     * Busca de entre toda la tabla la fila con el contenido de texto más largo.
+     * @param tableModel Modelo de tabla a analizar.
+     * @return La fila con el contenido de texto más largo.
+     */
     private int getWidestLine(TableModel tableModel) {
         int max = 0;
         int row = 0;

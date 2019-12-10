@@ -198,11 +198,10 @@ public class CtrlDatos {
     /**
      * Función utilizada para mostrar el contenido de un archivo indicado por el path en formato de tabla
      * @param path indica el archivo que se debe mostrar en una tabla
-     * @param titleBar el título que se mostrará en la columna que contiene el archivo de texto
      * @return la estructura de tabla para mostrar en una vista de comparación de ficheros
      * @throws IOException
      */
-    public TableModel getArchivoAsModel(String path, String titleBar) throws IOException {
+    public TableModel getArchivoAsModel(String path) throws IOException {
         FileReader fileReader = new FileReader(path);
         BufferedReader bufferedReader = new BufferedReader(fileReader);
         List<String> list = new ArrayList<>();
@@ -210,7 +209,7 @@ public class CtrlDatos {
         while((str=bufferedReader.readLine())!= null) list.add(str);
         bufferedReader.close();
         DefaultTableModel model = new DefaultTableModel();
-        model.addColumn(titleBar, list.toArray());
+        model.addColumn("", list.toArray());
         return model;
     }
 }

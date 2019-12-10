@@ -125,11 +125,9 @@ public class CtrlPresentacion {
         vistaComparacionFichero.setResizable(true);
         CtrlProcesos ctrlProcesos = CtrlProcesos.getInstance();
         try {
-            String column = "Archivo original";
-            TableModel modelOriginal = ctrlProcesos.getArchivoAsModel(modeloParametros.getPathOriginal(), "");
+            TableModel modelOriginal = ctrlProcesos.getArchivoAsModel(modeloParametros.getPathOriginal());
             vistaComparacionFichero.aplicaTextoOriginal(modelOriginal);
-            column = "Archivo comprimido y descomprimido";
-            TableModel modelResultado = ctrlProcesos.getArchivoAsModel(modeloParametros.getPathOriginal(), "");
+            TableModel modelResultado = ctrlProcesos.getArchivoAsModel(modeloParametros.getPathOriginal());
             vistaComparacionFichero.aplicaTextoResultante(modelResultado);
         } catch (Exception e) {
             e.printStackTrace();
@@ -208,6 +206,10 @@ public class CtrlPresentacion {
         helpVistaSelectorAlgoritmo.setVisible(true);
     }
 
+    /**
+     * Guarda la configuración del archivo a procesar según la extensión del algoritmo. También genera un path resultante estándar.
+     * @param path path del archivo o carpeta a procesar seleccionado.
+     */
     public void pathCambiado(String path) {
         modeloParametros.setPathOriginal(path);
         try {
@@ -219,6 +221,9 @@ public class CtrlPresentacion {
         actualizarPathSalida(path);
    }
 
+    /**
+     * Crea el diálogo que permite seleccionar el algoritmo de texto predeterminado.
+     */
     public void escogerPredeterminadoPulsado() {
         JDialog dialog = new VistaSelectorAlgortimoPredeterminado(vistaInicio);
         dialog.setSize(new Dimension(600, 200));
@@ -229,6 +234,10 @@ public class CtrlPresentacion {
         dialog.setVisible(true);
     }
 
+    /**
+     * Guarda el algoritmo de texto seleccionado como el nuevo algoritmo de texto predeterminado.
+     * @param algoritmo Algoritmo de texto escogido.
+     */
     public void algoritmoPredeterminadoEscogido(Algoritmo algoritmo) {
         CtrlProcesos.setAlgoritmoDeTextoPredeterminado(algoritmo);
         if(modeloParametros.isCompresion()) {
@@ -244,12 +253,15 @@ public class CtrlPresentacion {
         if(vistaInicio != null) vistaInicio.algoritmoPredeterminado(CtrlProcesos.getAlgoritmoDeTextoPredeterminado());
     }
 
+    /**
+     * Cierra correctamente la vista de selección de algoritmo.
+     */
     public void pulsarCerradoVistaSeleccionAlgoritmo() {
         switch (modeloParametros.getAlgoritmo()) {
             case LZSS:
             case LZW:
             case LZ78:
-                algoritmoSeleccionado("Predeterminado"); //Para que en caso de volver atras se quede con el algoritmo predeterminado por si vuelves a entrar al selctor de algoritmo
+                algoritmoSeleccionado("Predeterminado");
                 break;
         }
         cerrarVistaSeleccionAlgoritmo();

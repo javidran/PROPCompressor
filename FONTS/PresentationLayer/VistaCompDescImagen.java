@@ -36,7 +36,6 @@ public class VistaCompDescImagen extends JDialog {
      *
      */
     public VistaCompDescImagen(Frame owner){
-        //, Byte[] Original, Byte[] Nuevo
         super (owner, "Comparar imágenes",true);
         setContentPane(panel);
 
