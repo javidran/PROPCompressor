@@ -55,6 +55,7 @@ public class CtrlPresentacion {
             vistaInicio.setSize(new Dimension(650, 300));
             vistaInicio.setMinimumSize(new Dimension(510, 250));
             vistaInicio.setResizable(true);
+            vistaInicio.pack();
             vistaInicio.setVisible(true);
             vistaInicio.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
             vistaInicio.setLocationRelativeTo(null);
@@ -88,6 +89,7 @@ public class CtrlPresentacion {
             vistaSelectorAlgoritmo.setMinimumSize(new Dimension(600, 180));
             vistaSelectorAlgoritmo.setLocationRelativeTo(vistaInicio);
             vistaSelectorAlgoritmo.setResizable(true);
+            vistaSelectorAlgoritmo.pack();
             vistaSelectorAlgoritmo.setVisible(true);
         }
     }
@@ -168,6 +170,7 @@ public class CtrlPresentacion {
         vistaEstadisticas.setSize(new Dimension(600, 200));
         vistaEstadisticas.setLocationRelativeTo(vistaInicio);
         vistaEstadisticas.setResizable(true);
+        vistaEstadisticas.pack();
         vistaEstadisticas.setVisible(true);
     }
 
