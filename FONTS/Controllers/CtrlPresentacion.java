@@ -87,9 +87,9 @@ public class CtrlPresentacion {
                 if (modeloParametros.getAlgoritmo().equals(Algoritmo.CARPETA)) vistaSelectorAlgoritmo.setSize(new Dimension(650, 210));
             }
             vistaSelectorAlgoritmo.setMinimumSize(new Dimension(600, 180));
-            vistaSelectorAlgoritmo.setLocationRelativeTo(vistaInicio);
             vistaSelectorAlgoritmo.setResizable(true);
             vistaSelectorAlgoritmo.pack();
+            vistaSelectorAlgoritmo.setLocationRelativeTo(vistaInicio);
             vistaSelectorAlgoritmo.setVisible(true);
         }
     }
@@ -109,9 +109,9 @@ public class CtrlPresentacion {
         VistaResultadoProceso vistaResultadoProceso = new VistaResultadoProceso(vistaInicio, dp);
         vistaResultadoProceso.setSize(new Dimension(450, 250));
         vistaResultadoProceso.setMinimumSize(new Dimension(450, 250));
-        vistaResultadoProceso.setLocationRelativeTo(vistaInicio);
         vistaResultadoProceso.setResizable(true);
         vistaResultadoProceso.pack();
+        vistaResultadoProceso.setLocationRelativeTo(vistaInicio);
         vistaResultadoProceso.setVisible(true);
     }
 
@@ -123,7 +123,6 @@ public class CtrlPresentacion {
         VistaComparacionFichero vistaComparacionFichero = new VistaComparacionFichero(vistaInicio, dp);
         vistaComparacionFichero.setSize(new Dimension(800, 660));
         vistaComparacionFichero.setMinimumSize(new Dimension(700, 400));
-        vistaComparacionFichero.setLocationRelativeTo(vistaInicio);
         vistaComparacionFichero.setResizable(true);
         CtrlProcesos ctrlProcesos = CtrlProcesos.getInstance();
         try {
@@ -137,6 +136,7 @@ public class CtrlPresentacion {
             ctrlProcesos.eliminaArchivoTemporal();
         }
         vistaComparacionFichero.pack();
+        vistaComparacionFichero.setLocationRelativeTo(vistaInicio);
         vistaComparacionFichero.setVisible(true);
     }
 
@@ -168,9 +168,9 @@ public class CtrlPresentacion {
     public void crearVistaEstadisticas() {
         vistaEstadisticas = new VistaEstadisticas(vistaInicio);
         vistaEstadisticas.setSize(new Dimension(600, 200));
+        vistaEstadisticas.pack();
         vistaEstadisticas.setLocationRelativeTo(vistaInicio);
         vistaEstadisticas.setResizable(true);
-        vistaEstadisticas.pack();
         vistaEstadisticas.setVisible(true);
     }
 
@@ -180,9 +180,9 @@ public class CtrlPresentacion {
     public void crearVistaAyudaInicio() {
         HelpVistaInicio helpVistaInicio = new HelpVistaInicio(vistaInicio);
         helpVistaInicio.setSize(new Dimension(475, 550));
-        helpVistaInicio.setLocationRelativeTo(vistaInicio);
         helpVistaInicio.setResizable(false);
         helpVistaInicio.pack();
+        helpVistaInicio.setLocationRelativeTo(vistaInicio);
         helpVistaInicio.setVisible(true);
     }
     /**
@@ -191,9 +191,9 @@ public class CtrlPresentacion {
     public void crearVistaAyudaEstadisticas() {
         HelpVistaEstadisticas helpVistaEstadisticas = new HelpVistaEstadisticas(vistaEstadisticas);
         helpVistaEstadisticas.setSize(new Dimension(400, 300));
-        helpVistaEstadisticas.setLocationRelativeTo(vistaEstadisticas);
         helpVistaEstadisticas.setResizable(false);
         helpVistaEstadisticas.pack();
+        helpVistaEstadisticas.setLocationRelativeTo(vistaEstadisticas);
         helpVistaEstadisticas.setVisible(true);
     }
     /**
@@ -202,9 +202,9 @@ public class CtrlPresentacion {
     public void crearVistaAyudaSelectorAlgoritmo() {
         HelpVistaSelectorAlgoritmo helpVistaSelectorAlgoritmo = new HelpVistaSelectorAlgoritmo(vistaSelectorAlgoritmo);
         helpVistaSelectorAlgoritmo.setSize(new Dimension(400, 300));
-        helpVistaSelectorAlgoritmo.setLocationRelativeTo(vistaSelectorAlgoritmo);
         helpVistaSelectorAlgoritmo.setResizable(false);
         helpVistaSelectorAlgoritmo.pack();
+        helpVistaSelectorAlgoritmo.setLocationRelativeTo(vistaSelectorAlgoritmo);
         helpVistaSelectorAlgoritmo.setVisible(true);
     }
 
@@ -230,9 +230,9 @@ public class CtrlPresentacion {
         JDialog dialog = new VistaSelectorAlgortimoPredeterminado(vistaInicio);
         dialog.setSize(new Dimension(600, 200));
         dialog.setMinimumSize(new Dimension(600, 200));
-        dialog.setLocationRelativeTo(vistaInicio);
         dialog.setResizable(true);
         dialog.pack();
+        dialog.setLocationRelativeTo(vistaInicio);
         dialog.setVisible(true);
     }
 
@@ -433,7 +433,6 @@ public class CtrlPresentacion {
     public void mostrarEstadisticas(String data) {
         try {
             vistaEstadisticas.mostrarEstadisticasSelecionadas(getEstadisticas(data));
-            vistaEstadisticas.pack();
         } catch (IOException e) {
             JOptionPane.showConfirmDialog(null, "Ha habido un problema al acceder a los datos estadísticos. Por favor, vuelva a intentarlo más tarde.",null, JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
         }
@@ -444,6 +443,5 @@ public class CtrlPresentacion {
      */
     public void volverAEscogerEstadistica() {
         vistaEstadisticas.mostrarSelectorAlgoritmo();
-        vistaEstadisticas.pack();
     }
 }

@@ -79,8 +79,6 @@ public class VistaEstadisticas extends JDialog {
      * @param de Es una instancia de DatosEstadística del algoritmo seleccionado
      */
     public void mostrarEstadisticasSelecionadas(DatosEstadistica de) {
-        setSize(375, 350);
-        setLocationRelativeTo(getOwner());
         DecimalFormat df = new DecimalFormat("#.####");
         alg.setText(Objects.requireNonNull(comboBox1.getSelectedItem()).toString());
         archivosC.setText(Integer.toString(de.getArchivosComprimidos()));
@@ -96,19 +94,23 @@ public class VistaEstadisticas extends JDialog {
         visualizarButton.setVisible(false);
         InfoButton.setVisible(false);
         atrasButton.setVisible(true);
+        setSize(375, 350);
+        pack();
+        setLocationRelativeTo(getOwner());
     }
 
     /**
      * Muestra los algoritmos possibles de los cuales obtener las estadísticas
      */
     public void mostrarSelectorAlgoritmo() {
-        setSize(500, 200);
-        setLocationRelativeTo(getOwner());
         Estats.setVisible(false);
         Algoritmo.setVisible(true);
         visualizarButton.setVisible(true);
         InfoButton.setVisible(true);
         atrasButton.setVisible(false);
+        setSize(500, 200);
+        pack();
+        setLocationRelativeTo(getOwner());
     }
 
 }
