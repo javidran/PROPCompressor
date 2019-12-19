@@ -43,6 +43,7 @@ public class VistaSelectorAlgoritmo extends JDialog {
      * botón para iniciar la craeción de una vista con ayuda sobre la vista actual
      */
     private JButton InfoButton;
+    private JButton InfoButton2;
     /**
      * Elemento para la selección de archivo o carpeta a procesar
      */
@@ -87,6 +88,11 @@ public class VistaSelectorAlgoritmo extends JDialog {
         InfoButton.setMargin(new Insets(0, 0, 0, 0));
         InfoButton.setContentAreaFilled(false);
         InfoButton.addActionListener(e -> ctrlPresentacion.crearVistaAyudaSelectorAlgoritmo());
+        InfoButton2.setBorderPainted(false);
+        InfoButton2.setBorder(null);
+        InfoButton2.setMargin(new Insets(0, 0, 0, 0));
+        InfoButton2.setContentAreaFilled(false);
+        InfoButton2.addActionListener(e -> ctrlPresentacion.crearVistaAyudaSelectorAlgoritmo());
     }
 
     /**
