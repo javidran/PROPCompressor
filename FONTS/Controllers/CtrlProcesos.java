@@ -53,6 +53,7 @@ public class CtrlProcesos {
      * @param pathResultado El path donde se guardará el fichero comprimido.
      * @param tipoAlgoritmo El algoritmo a usar para la compresión del fichero.
      * @throws Exception El proceso de compresión no se ha podido llevar a cabo.
+     * @return Datos del proceso de compresión
      */
     public DatosProceso comprimirArchivo(String pathOriginal, String pathResultado, Algoritmo tipoAlgoritmo) throws Exception {
         CtrlDatos ctrlDatos = CtrlDatos.getInstance();
@@ -72,6 +73,7 @@ public class CtrlProcesos {
      * @param pathOriginal El path donde se encuentra el fichero a descomprimir.
      * @param pathResultado El path donde se guardará el fichero descomprimido.
      * @throws Exception El proceso de descompresión no se ha podido llevar a cabo.
+     * @return Datos del proceso de descompresión
      */
     public DatosProceso descomprimirArchivo(String pathOriginal, String pathResultado ) throws Exception {
         CtrlDatos ctrlDatos = CtrlDatos.getInstance();
@@ -95,6 +97,7 @@ public class CtrlProcesos {
      * @param path El path donde se encuentra el fichero a comprimir y descomprimir.
      * @param tipoAlgoritmo El algoritmo a usar para la compresión del fichero.
      * @throws Exception El proceso de compresión y descompresión no se ha podido llevar a cabo.
+     * @return Datos del proceso de compresión y descompresión en un array
      */
     public DatosProceso[] comprimirDescomprimirArchivo(String path, Algoritmo tipoAlgoritmo) throws Exception {
         DatosProceso[] dp = new DatosProceso[2];

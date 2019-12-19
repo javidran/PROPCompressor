@@ -40,7 +40,8 @@ public class DatosEstadistica {
      * @param descomprimidos Los archivos que han sido descomprimidos por un algoritmo
      * @param tiempoD  El tiempo medio de descompresión de un algoritmo
      * @param ratioD El porcentaje medio de descompresión de un algoritmo
-     *
+     * @param velocidadC Velocidad media de compresión de un algoritmo
+     * @param velocidadD Velocidad media de descompresión de un algoritmo
      */
     public DatosEstadistica(int comprimidos, long tiempoC, double ratioC, double velocidadC, int descomprimidos, long tiempoD, double ratioD, double velocidadD) {
         archivosComprimidos = comprimidos;

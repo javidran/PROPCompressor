@@ -1086,6 +1086,7 @@ public class JPEG implements CompresorDecompresor {
     /**
      * Obtiene un objeto Image a partir de una imagen .ppm provista.
      * @param datosInput byte array de los datos de la imagen a leer.
+     * @throws FormatoErroneoException Si la imagen no es del formato adecuado (.PPM P6) se activa una excepción de formato erróneo
      * @return Objeto Image de la imagen leída.
      */
     public Image getImage(byte[] datosInput) throws FormatoErroneoException {

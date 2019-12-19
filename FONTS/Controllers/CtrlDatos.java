@@ -87,6 +87,7 @@ public class CtrlDatos {
     /**
      * Se crea una instancia del gestor de carpetas que gestionará el archivo .comp para generar la carpeta descomprimida
      * @param pathOriginal path donde se encuentra la carpeta que el usuario desea descomprimir
+     * @param pathSalida path donde el usuario desea dejar la caprpeta comprimida
      * @throws FileNotFoundException la capreta no existe o no se encuentra en el path indicado
      */
     public void crearGestorCarpetaDescomprimir(String pathOriginal, String pathSalida) throws FileNotFoundException {
@@ -97,7 +98,7 @@ public class CtrlDatos {
     /**
      * Obtiene el path del siguiente archivo de la carpeta que se está procesando
      * @return el path del proximo archivo en la carpeta
-     * @throws IOException
+     * @throws IOException si hay un error de lectura, se activa una excepción de IO
      */
     public String leerPathProximoArchivo() throws IOException {
         return gestorCarpeta.pathProximoArchivo();
@@ -106,7 +107,7 @@ public class CtrlDatos {
     /**
      * Obtiene el bytearray con el contenido del siguiente archivo de la carpeta que se está procesando
      * @return el path del proximo archivo en la carpeta
-     * @throws IOException
+     * @throws IOException si hay un error de lectura, se activa una excepción de IO
      */
     public byte[] leerProximoArchivo() throws IOException {
         return gestorCarpeta.leerProximoArchivo();
@@ -116,7 +117,7 @@ public class CtrlDatos {
      * Crea un archivo en el path indicado en el parámetro y almacena en él el contenido del byte array.
      * @param data contenido a almacenar en el archivo
      * @param path path donde se tiene que guardar la infromación almacenada en el anterior parámetro
-     * @throws IOException
+     * @throws IOException si hay un error de escritura, se activa una excepción de IO
      */
     public void guardaProximoArchivo(byte[] data, String path) throws IOException {
         gestorCarpeta.guardaProximoArchivo(data, path);
@@ -125,7 +126,7 @@ public class CtrlDatos {
     /**
      * Crea una carpeta en el path indicado
      * @param path donde se debe crear la carpeta correspondiente
-     * @throws IOException
+     * @throws IOException si hay un error de escritura, se activa una excepción de IO
      */
     public void guardaCarpeta(String path) throws IOException {
         gestorCarpeta.guardaCarpeta(path);
@@ -133,7 +134,7 @@ public class CtrlDatos {
 
     /**
      * Se cierra el gestor de carpetas
-     * @throws IOException
+     * @throws IOException si hay un error en la finalización del gestor, se activa una excepción de IO
      */
     public void finalizarGestorCarpeta() throws IOException {
         gestorCarpeta.finalizarGestor();
@@ -199,7 +200,7 @@ public class CtrlDatos {
      * Función utilizada para mostrar el contenido de un archivo indicado por el path en formato de tabla
      * @param path indica el archivo que se debe mostrar en una tabla
      * @return la estructura de tabla para mostrar en una vista de comparación de ficheros
-     * @throws IOException
+     * @throws IOException si hay un error de en la obtención del archivo, se activa una excepción de IO
      */
     public TableModel getArchivoAsModel(String path) throws IOException {
         FileReader fileReader = new FileReader(path);

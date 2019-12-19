@@ -20,6 +20,7 @@ public class GestorCarpetaDescomprimir extends GestorCarpeta {
      *     El path existe y tiene el formato de path propio de las carpetas o directorios comprimidos con extensión .comp.
      * </p>
      * @param pathOriginal Path de la carpeta a descomprimir.
+     * @param pathSalida Path destino de la carpeta descomprimida.
      * @throws FileNotFoundException Si hay algún error con la creación del lector de la carpeta comprimida, se activa una excepción de fichero no encontrado.
      */
     public GestorCarpetaDescomprimir(String pathOriginal, String pathSalida) throws FileNotFoundException {

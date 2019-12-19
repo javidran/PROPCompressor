@@ -4,7 +4,6 @@ import DomainLayer.Proceso.DatosProceso;
 import Enumeration.Algoritmo;
 
 import java.io.*;
-import java.text.DecimalFormat;
 
 /**
  * Clase utilizada por todos los algoritmos tanto al comprimir como al descomprimir que guarda los diferentes datos estadísiticos que generan los procesos.
