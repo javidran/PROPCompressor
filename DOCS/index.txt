@@ -2,6 +2,7 @@ Javadocs: Abrir index.html dentro de carpeta para visualizar javadocs.
 DiagramaCasosDeUso: Diagrama de los diferentes casos de uso esperados del programa.
 ExplicacionCasosDeUso: Explicacion de los diferentes casos de uso programados hasta el momento.
 DiagramaDeClases: Diagrama de clases con todas las cases disenadas hasta el momento.
-DescripcionDeClases: Descripcion de todas las clases del diagrama de clases.
+DiagramaDeClases-Dividido: Diagrama de clases con las capas divididas para facilitar su lectura.
 PseudocodigoYEstructuraDeDatos: Explicacion en profundidad de los algoritmos programados.
 RelacionDeClases: Documento donde se refleja quien ha implementado cada clase.
+TestsDeIntegracion: Documento con la explicacion de todos los tests de integracion realizados.

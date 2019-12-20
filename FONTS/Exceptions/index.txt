@@ -1,1 +1,1 @@
-Esta carpeta contiene el codigo de ciertas execepciones
+Esta carpeta contiene el codigo de las excepciones del programa.

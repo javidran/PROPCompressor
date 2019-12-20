@@ -1,0 +1,2 @@
+Contiene el archivo ejecutable del programa.
+La carpeta resources contiene archivos de prueba para comprobar el correcto funcionamiento del programa y los archivos donde se recogen los datos estadisticos del programa.

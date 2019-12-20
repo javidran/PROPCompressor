@@ -1,0 +1,2 @@
+En este directorio se encuentran los archivos que recogen las estadistica de todos los algoritmos.
+Tambien se encuentran las carpetas con diferentes archivos de prueba que se pueden utilizar.

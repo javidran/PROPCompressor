@@ -1,0 +1,2 @@
+Contiene los archivos con el codigo y diseno en formato .form del programa.
+La carpeta Helpers contiene el codigo de las ventanas de ayuda del programa.
