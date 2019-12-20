@@ -13,5 +13,4 @@ lib
 *.zip
 *.tar.gz
 *.rar
-*.jar
 hs_err_pid*
